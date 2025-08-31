@@ -1,6 +1,6 @@
 import type { SVGProps } from "react";
 import Image from 'next/image';
-import { Instagram, Facebook, Globe } from 'lucide-react';
+import { Instagram, Facebook, Globe, Youtube } from 'lucide-react';
 
 
 export function FutsalBallIcon(props: SVGProps<SVGSVGElement>) {
@@ -19,4 +19,8 @@ export const FacebookIcon = (props: SVGProps<SVGSVGElement>) => (
 
 export const GlobeIcon = (props: SVGProps<SVGSVGElement>) => (
   <Globe {...props} />
+);
+
+export const YoutubeIcon = (props: SVGProps<SVGSVGElement>) => (
+    <Youtube {...props} />
 );
