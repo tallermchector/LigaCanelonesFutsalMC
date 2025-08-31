@@ -5,6 +5,7 @@ import { FinishedMatches } from '@/components/landing/FinishedMatches';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { PageHero } from '@/components/layout/PageHero';
+import { SocialsBanner } from '@/components/landing/SocialsBanner';
 
 export default function Home() {
   return (
@@ -39,6 +40,7 @@ export default function Home() {
                 </div>
             </div>
         </section>
+        <SocialsBanner />
       </main>
       <Footer />
     </div>
