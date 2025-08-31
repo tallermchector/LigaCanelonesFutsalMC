@@ -22,11 +22,11 @@ function StatCounter({ label, value, onIncrement, onDecrement, icon }: StatCount
             <span>{label}</span>
         </div>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" onClick={onDecrement}>
+        <Button variant="outline" size="icon" onClick={onDecrement} aria-label={`Decrementar ${label}`}>
           <Minus className="h-4 w-4" />
         </Button>
-        <span className="text-xl font-bold w-8 text-center">{value}</span>
-        <Button variant="outline" size="icon" onClick={onIncrement}>
+        <span className="text-xl font-bold w-8 text-center" aria-live="polite">{value}</span>
+        <Button variant="outline" size="icon" onClick={onIncrement} aria-label={`Incrementar ${label}`}>
           <Plus className="h-4 w-4" />
         </Button>
       </div>
@@ -54,7 +54,7 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
       <CardHeader>
         <CardTitle className="text-center text-primary">{team.name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col items-center gap-6">
+      <CardContent className="flex flex-col items-center gap-6 pt-6">
         <StatCounter
           label="Goles"
           value={score}

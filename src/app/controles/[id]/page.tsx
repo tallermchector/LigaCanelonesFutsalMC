@@ -99,7 +99,7 @@ export default function MatchControlPage() {
         <div className="flex min-h-screen flex-col bg-[hsl(var(--background))]">
         <Header />
         <main className="container mx-auto py-8 px-4 flex flex-col items-center">
-            <div className="w-full flex justify-start mb-8">
+            <div className="w-full flex justify-start mb-8 max-w-6xl">
                 <Button variant="outline" asChild>
                     <Link href="/controles">
                         <ArrowLeft className="mr-2 h-4 w-4" />
@@ -114,4 +114,3 @@ export default function MatchControlPage() {
     </GameProvider>
   );
 }
-

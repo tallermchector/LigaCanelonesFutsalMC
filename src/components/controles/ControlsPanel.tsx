@@ -3,7 +3,7 @@
 import { useGame } from '@/contexts/GameProvider';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, RotateCcw, Flag, Save, CheckCircle } from 'lucide-react';
+import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus } from 'lucide-react';
 
 const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -24,28 +24,28 @@ export function ControlsPanel() {
       <CardHeader>
         <CardTitle className="text-center text-primary">Controles del Juego</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow flex flex-col items-center justify-center gap-6">
+      <CardContent className="flex-grow flex flex-col items-center justify-center gap-6 pt-6">
         <div className="text-center">
             <p className="text-sm text-muted-foreground">Tiempo de Juego</p>
-            <p className="text-6xl font-mono font-bold text-foreground">{formatTime(state.time)}</p>
+            <p className="text-6xl font-mono font-bold text-foreground" aria-live="polite">{formatTime(state.time)}</p>
         </div>
         <div className="flex items-center gap-4">
-            <Button size="lg" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })}>
+            <Button size="lg" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })} aria-label={state.isRunning ? "Pausar tiempo" : "Iniciar tiempo"}>
                 {state.isRunning ? <Pause className="mr-2 h-5 w-5"/> : <Play className="mr-2 h-5 w-5"/>}
                 {state.isRunning ? 'Pausar' : 'Iniciar'}
             </Button>
-            <Button size="lg" variant="outline" onClick={() => dispatch({ type: 'RESET_TIMER' })}>
+            <Button size="lg" variant="outline" onClick={() => dispatch({ type: 'RESET_TIMER' })} aria-label="Reiniciar tiempo">
                 <RotateCcw className="mr-2 h-5 w-5"/>
                 Reiniciar
             </Button>
         </div>
         <div className="flex items-center gap-2">
-            <Button variant="ghost" onClick={() => handlePeriodChange(-1)}>&lt;</Button>
+            <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} aria-label="Disminuir período"><Minus className="h-4 w-4" /></Button>
             <div className="flex items-center gap-2">
                 <Flag className="h-5 w-5 text-muted-foreground" />
-                <span className="font-semibold">Período: {state.period}</span>
+                <span className="font-semibold text-lg">Período: {state.period}</span>
             </div>
-            <Button variant="ghost" onClick={() => handlePeriodChange(1)}>&gt;</Button>
+            <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} aria-label="Aumentar período"><Plus className="h-4 w-4" /></Button>
         </div>
       </CardContent>
       <CardFooter className="grid grid-cols-2 gap-4 p-4 bg-card-foreground/5">

@@ -61,7 +61,10 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'RESET_TIMER':
       return { ...state, time: initialState.time, isRunning: false };
     case 'TICK':
-      return { ...state, time: Math.max(0, state.time - 1) };
+      if (state.time > 0) {
+        return { ...state, time: state.time - 1 };
+      }
+      return { ...state, isRunning: false };
     default:
       return state;
   }
@@ -77,13 +80,17 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
   }, [match]);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: NodeJS.Timeout | undefined;
     if (state.isRunning && state.time > 0) {
       timer = setInterval(() => {
         dispatch({ type: 'TICK' });
       }, 1000);
     }
-    return () => clearInterval(timer);
+    return () => {
+      if (timer) {
+        clearInterval(timer)
+      }
+    };
   }, [state.isRunning, state.time]);
 
   return (
