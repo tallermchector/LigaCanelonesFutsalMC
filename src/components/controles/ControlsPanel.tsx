@@ -25,11 +25,11 @@ export function ControlsPanel() {
   }
 
   return (
-    <Card className="w-full max-w-sm shadow-md flex flex-col h-full">
-      <CardHeader>
+    <Card className="w-full shadow-md flex flex-col h-full">
+      <CardHeader className="flex-shrink-0">
         <CardTitle className="text-center text-primary">Controles del Juego</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow flex flex-col items-center justify-around gap-4 pt-6">
+      <CardContent className="flex-grow flex flex-col items-center justify-around gap-4 pt-6 overflow-y-auto">
         <div className="text-center">
             <p className="text-sm text-muted-foreground">Tiempo de Juego</p>
             <p className="text-6xl font-mono font-bold text-foreground" aria-live="polite">{formatTime(state.time)}</p>
@@ -67,7 +67,7 @@ export function ControlsPanel() {
             </div>
         </div>
       </CardContent>
-      <CardFooter className="grid grid-cols-2 gap-4 p-4 bg-card-foreground/5">
+      <CardFooter className="grid grid-cols-2 gap-4 p-4 bg-card-foreground/5 flex-shrink-0">
         <Button variant="accent" onClick={() => console.log('Guardando cambios...', state)}>
             <Save className="mr-2 h-4 w-4" />
             Guardar Cambios

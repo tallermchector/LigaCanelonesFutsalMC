@@ -1,6 +1,6 @@
 import type {Config} from 'tailwindcss';
 
-export default {
+const config: Config = {
   darkMode: ['class'],
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -16,6 +16,13 @@ export default {
       },
     },
     extend: {
+      height: {
+        'header': 'var(--header-height, 4rem)',
+        'main-content': 'calc(100vh - var(--header-height, 4rem))',
+      },
+      minHeight: {
+        'main-content': 'calc(100vh - var(--header-height, 4rem))',
+      },
       fontFamily: {
         body: ['var(--font-roboto)', 'sans-serif'],
         headline: ['var(--font-orbitron)', 'sans-serif'],
@@ -103,4 +110,5 @@ export default {
     },
   },
   plugins: [require('tailwindcss-animate')],
-} satisfies Config;
+};
+export default config;
