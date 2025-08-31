@@ -7,12 +7,14 @@ import type { GameState, FullMatch } from '@/types';
 export function useLiveMatchState(matchId: string, initialMatchData: FullMatch | null): GameState | null {
   const [liveState, setLiveState] = useState<GameState | null>(null);
 
-  const getInitialState = () => {
+  const getInitialState = (): GameState | null => {
     try {
+      if (typeof window !== 'undefined') {
         const savedState = localStorage.getItem(`futsal-match-state-${matchId}`);
         if (savedState) {
             return JSON.parse(savedState) as GameState;
         }
+      }
     } catch (e) {
         console.error("Could not parse saved state", e);
     }
@@ -20,6 +22,7 @@ export function useLiveMatchState(matchId: string, initialMatchData: FullMatch |
     if (initialMatchData) {
         return {
           matchId: initialMatchData.id,
+          status: initialMatchData.status,
           teamA: initialMatchData.teamA,
           teamB: initialMatchData.teamB,
           scoreA: initialMatchData.scoreA,
