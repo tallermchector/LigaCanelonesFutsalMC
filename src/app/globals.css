@@ -89,6 +89,32 @@
   #__next {
     height: 100%;
   }
+
+  .prose {
+    @apply text-foreground/90 text-base leading-relaxed;
+  }
+
+  .prose h2, .prose h3 {
+    @apply text-primary font-bold mb-4 mt-8;
+  }
+  .prose h2 {
+    @apply text-2xl;
+  }
+  .prose h3 {
+    @apply text-xl;
+  }
+  .prose p {
+    @apply mb-4;
+  }
+  .prose a {
+    @apply text-accent font-medium hover:underline;
+  }
+  .prose ul {
+    @apply list-disc pl-6 mb-4;
+  }
+  .prose li {
+    @apply mb-2;
+  }
 }
 
 @layer utilities {
