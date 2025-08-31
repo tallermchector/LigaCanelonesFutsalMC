@@ -1,39 +1,10 @@
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
-import type { Team } from '@/types';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Minus, Plus, Goal, Shield, Whistle, Timer } from 'lucide-react';
-
-interface StatCounterProps {
-  label: string;
-  value: number;
-  onIncrement: () => void;
-  onDecrement: () => void;
-  icon: React.ReactNode;
-}
-
-function StatCounter({ label, value, onIncrement, onDecrement, icon }: StatCounterProps) {
-  return (
-    <div className="flex flex-col items-center gap-2">
-        <div className='flex items-center gap-2 text-sm font-medium text-muted-foreground'>
-            {icon}
-            <span>{label}</span>
-        </div>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" onClick={onDecrement} aria-label={`Decrementar ${label}`}>
-          <Minus className="h-4 w-4" />
-        </Button>
-        <span className="text-xl font-bold w-8 text-center" aria-live="polite">{value}</span>
-        <Button variant="outline" size="icon" onClick={onIncrement} aria-label={`Incrementar ${label}`}>
-          <Plus className="h-4 w-4" />
-        </Button>
-      </div>
-    </div>
-  );
-}
-
+import { JerseyButton } from './JerseyButton';
+import type { SelectedPlayer } from '@/types';
 
 interface TeamPanelProps {
   teamId: 'A' | 'B';
@@ -43,39 +14,34 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
   const { state, dispatch } = useGame();
   
   const team = teamId === 'A' ? state.teamA : state.teamB;
-  const score = teamId === 'A' ? state.scoreA : state.scoreB;
-  const fouls = teamId === 'A' ? state.foulsA : state.foulsB;
-  const timeouts = teamId === 'A' ? state.timeoutsA : state.timeoutsB;
+  const { selectedPlayer } = state;
 
-  if (!team) return null;
+  if (!team || !team.players) return null;
+
+  const handlePlayerSelect = (playerId: number) => {
+    const payload: SelectedPlayer = { teamId, playerId };
+    dispatch({ type: 'SELECT_PLAYER', payload });
+  };
 
   return (
     <Card className="flex-1 shadow-md">
       <CardHeader>
         <CardTitle className="text-center text-primary">{team.name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col items-center gap-6 pt-6">
-        <StatCounter
-          label="Goles"
-          value={score}
-          onIncrement={() => dispatch({ type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } })}
-          onDecrement={() => dispatch({ type: 'UPDATE_SCORE', payload: { team: teamId, delta: -1 } })}
-          icon={<Goal className="h-5 w-5" />}
-        />
-        <StatCounter
-          label="Faltas"
-          value={fouls}
-          onIncrement={() => dispatch({ type: 'UPDATE_FOULS', payload: { team: teamId, delta: 1 } })}
-          onDecrement={() => dispatch({ type: 'UPDATE_FOULS', payload: { team: teamId, delta: -1 } })}
-          icon={<Whistle className="h-5 w-5" />}
-        />
-        <StatCounter
-          label="Tiempos Muertos"
-          value={timeouts}
-          onIncrement={() => dispatch({ type: 'UPDATE_TIMEOUTS', payload: { team: teamId, delta: 1 } })}
-          onDecrement={() => dispatch({ type: 'UPDATE_TIMEOUTS', payload: { team: teamId, delta: -1 } })}
-          icon={<Timer className="h-5 w-5" />}
-        />
+      <CardContent className="flex flex-wrap items-start justify-center gap-4 pt-6">
+        {team.players.map((player) => (
+          <JerseyButton
+            key={player.id}
+            jerseyNumber={player.number}
+            playerName={player.name}
+            isSelected={
+              !!selectedPlayer &&
+              selectedPlayer.teamId === teamId &&
+              selectedPlayer.playerId === player.id
+            }
+            onClick={() => handlePlayerSelect(player.id)}
+          />
+        ))}
       </CardContent>
     </Card>
   );

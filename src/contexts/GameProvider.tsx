@@ -1,6 +1,7 @@
+
 'use client';
 
-import type { GameState, FullMatch } from '@/types';
+import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType } from '@/types';
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 
 type GameAction =
@@ -11,7 +12,9 @@ type GameAction =
   | { type: 'SET_PERIOD'; payload: number }
   | { type: 'TOGGLE_TIMER' }
   | { type: 'RESET_TIMER' }
-  | { type: 'TICK' };
+  | { type: 'TICK' }
+  | { type: 'SELECT_PLAYER'; payload: SelectedPlayer }
+  | { type: 'ADD_EVENT'; payload: { type: GameEventType } };
 
 const initialState: GameState = {
   matchId: null,
@@ -26,13 +29,15 @@ const initialState: GameState = {
   period: 1,
   time: 1200, // 20 minutes in seconds
   isRunning: false,
+  events: [],
+  selectedPlayer: null,
 };
 
 const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
     case 'LOAD_MATCH':
         return {
-            ...state,
+            ...initialState, // Reset state when loading a new match
             matchId: action.payload.id,
             teamA: action.payload.teamA,
             teamB: action.payload.teamB,
@@ -61,10 +66,50 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'RESET_TIMER':
       return { ...state, time: initialState.time, isRunning: false };
     case 'TICK':
-      if (state.time > 0) {
+      if (state.isRunning && state.time > 0) {
         return { ...state, time: state.time - 1 };
       }
       return { ...state, isRunning: false };
+    case 'SELECT_PLAYER':
+        // If the same player is clicked again, deselect them
+        if (state.selectedPlayer?.playerId === action.payload.playerId && state.selectedPlayer?.teamId === action.payload.teamId) {
+            return { ...state, selectedPlayer: null };
+        }
+        return { ...state, selectedPlayer: action.payload };
+    case 'ADD_EVENT':
+        if (!state.selectedPlayer) {
+            return state;
+        }
+
+        const { teamId, playerId } = state.selectedPlayer;
+        const team = teamId === 'A' ? state.teamA : state.teamB;
+        const player = team?.players?.find(p => p.id === playerId);
+
+        if (!team || !player) {
+            return state;
+        }
+
+        const newEvent: GameEvent = {
+            id: `${Date.now()}-${Math.random()}`,
+            type: action.payload.type,
+            teamId,
+            playerId,
+            playerName: player.name,
+            teamName: team.name,
+            timestamp: state.time,
+        };
+        
+        const newState = { ...state, events: [...state.events, newEvent] };
+
+        // Automatically update score or fouls based on event type
+        if (action.payload.type === 'GOAL') {
+            return gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
+        }
+        if (action.payload.type === 'FOUL') {
+            return gameReducer(newState, { type: 'UPDATE_FOULS', payload: { team: teamId, delta: 1 } });
+        }
+
+        return newState;
     default:
       return state;
   }
