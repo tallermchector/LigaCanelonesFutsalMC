@@ -6,7 +6,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Menu, Shield, Home, Newspaper, CalendarDays } from 'lucide-react';
+import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -68,12 +75,29 @@ export function Header() {
                 ))}
             </nav>
             <div className="hidden md:block">
-             <Button variant="outline" size="sm" asChild>
-                <Link href="/controles" aria-label="Navegar al panel de control">
-                    <Shield className="mr-2 h-4 w-4" />
-                    Admin
-                </Link>
-              </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Shield className="mr-2 h-4 w-4" />
+                      Admin
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href="/controles">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Control de Partidos</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/banner">
+                        <Tv className="mr-2 h-4 w-4" />
+                        <span>Marcador en Vivo</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
             </div>
             <Sheet>
                 <SheetTrigger asChild>
