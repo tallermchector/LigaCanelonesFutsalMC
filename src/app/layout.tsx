@@ -36,9 +36,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${roboto.variable} ${orbitron.variable}`} suppressHydrationWarning={true}>
+    <html lang="es" className={`${roboto.variable} ${orbitron.variable}`}>
       <head />
-      <body className="font-body antialiased">
+      <body className="font-body antialiased" suppressHydrationWarning={true}>
         {children}
         <Toaster />
       </body>
