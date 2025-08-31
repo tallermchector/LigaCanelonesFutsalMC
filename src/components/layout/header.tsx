@@ -42,7 +42,7 @@ export function Header() {
         <div className="mr-4 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <Image src="/logofu.svg" alt="Liga Futsal Logo" width={32} height={32} />
-            <span className="font-bold sm:inline-block text-lg">
+            <span className="font-bold sm:inline-block text-lg whitespace-nowrap">
               Liga Canaria Futsal 
             </span>
           </Link>
