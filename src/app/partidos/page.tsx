@@ -1,0 +1,154 @@
+
+import { getAllMatches } from '@/actions/match-actions';
+import { Header } from '@/components/layout/header';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Calendar, Clock, BarChart2 } from 'lucide-react';
+import type { FullMatch, MatchStatus } from '@/types';
+
+function MatchCard({ match }: { match: FullMatch }) {
+    const scheduledDateTime = new Date(match.scheduledTime);
+    const formattedDate = scheduledDateTime.toLocaleDateString('es-UY', {
+        day: 'numeric',
+        month: 'long',
+    });
+    const formattedTime = scheduledDateTime.toLocaleTimeString('es-UY', {
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+
+    const getStatusInfo = () => {
+        switch (match.status) {
+            case 'LIVE':
+                return { text: 'En Vivo', variant: 'destructive', pulse: true };
+            case 'FINISHED':
+                return { text: 'Finalizado', variant: 'default', pulse: false };
+            case 'SCHEDULED':
+            default:
+                return { text: 'Programado', variant: 'secondary', pulse: false };
+        }
+    };
+    const statusInfo = getStatusInfo();
+
+    return (
+         <Card className="flex h-full flex-col overflow-hidden shadow-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20 bg-card">
+            <CardHeader className="p-4 bg-card-foreground/5">
+                <div className="flex items-center justify-between">
+                    <CardTitle className="text-base font-bold truncate text-card-foreground">
+                        {match.teamA.name} vs {match.teamB.name}
+                    </CardTitle>
+                     <Badge variant={statusInfo.variant} className={statusInfo.pulse ? 'animate-pulse' : ''}>
+                        {statusInfo.text}
+                    </Badge>
+                </div>
+            </CardHeader>
+            <CardContent className="flex-grow p-4 space-y-4">
+                <div className="flex justify-around items-center">
+                    <div className="flex flex-col items-center gap-2 text-center w-24">
+                        <Image
+                            src={match.teamA.logoUrl || `https://avatar.vercel.sh/${match.teamA.name}.png`}
+                            alt={`Logo de ${match.teamA.name}`}
+                            width={64}
+                            height={64}
+                            className="rounded-full aspect-square object-contain"
+                        />
+                        <span className="font-semibold text-sm truncate w-full">{match.teamA.name}</span>
+                    </div>
+
+                    {match.status !== 'SCHEDULED' ? (
+                        <span className="text-2xl font-bold text-primary">{match.scoreA} - {match.scoreB}</span>
+                    ) : (
+                        <span className="text-xl font-bold text-muted-foreground">VS</span>
+                    )}
+
+                    <div className="flex flex-col items-center gap-2 text-center w-24">
+                        <Image
+                            src={match.teamB.logoUrl || `https://avatar.vercel.sh/${match.teamB.name}.png`}
+                            alt={`Logo de ${match.teamB.name}`}
+                            width={64}
+                            height={64}
+                            className="rounded-full aspect-square object-contain"
+                        />
+                        <span className="font-semibold text-sm truncate w-full">{match.teamB.name}</span>
+                    </div>
+                </div>
+                <div className="text-sm text-muted-foreground flex flex-col space-y-2 pt-4 border-t border-border">
+                    <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        <span>{formattedDate}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        <span>{formattedTime} hs.</span>
+                    </div>
+                </div>
+            </CardContent>
+             {match.status === 'FINISHED' && (
+                <Link href={`/partidos/${match.id}/estadisticas`} className="block p-4 bg-accent text-accent-foreground text-center font-semibold hover:bg-accent/90 transition-colors">
+                    <div className="flex items-center justify-center">
+                        <BarChart2 className="mr-2 h-4 w-4" />
+                        Ver Estadísticas
+                    </div>
+                </Link>
+            )}
+        </Card>
+    );
+}
+
+function MatchList({ matches }: { matches: FullMatch[] }) {
+    if (matches.length === 0) {
+        return (
+            <div className="flex h-40 flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted/50 text-center">
+                <h3 className="text-xl font-semibold text-muted-foreground">No hay partidos en este estado.</h3>
+            </div>
+        );
+    }
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {matches.map(match => (
+                <MatchCard key={match.id} match={match} />
+            ))}
+        </div>
+    );
+}
+
+
+export default async function PartidosPage() {
+  const allMatches = await getAllMatches();
+
+  const scheduled = allMatches.filter(m => m.status === 'SCHEDULED');
+  const live = allMatches.filter(m => m.status === 'LIVE');
+  const finished = allMatches.filter(m => m.status === 'FINISHED');
+
+  return (
+    <div className="flex min-h-screen flex-col bg-background">
+      <Header />
+      <main className="container mx-auto flex flex-1 flex-col p-4 py-8 md:p-8">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-primary">Calendario de Partidos</h1>
+          <p className="mt-2 text-muted-foreground">Sigue todos los partidos de la liga.</p>
+        </div>
+
+        <Tabs defaultValue="live" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mx-auto max-w-md">
+            <TabsTrigger value="scheduled">Programados</TabsTrigger>
+            <TabsTrigger value="live">En Vivo</TabsTrigger>
+            <TabsTrigger value="finished">Finalizados</TabsTrigger>
+          </TabsList>
+          <TabsContent value="scheduled" className="mt-6">
+            <MatchList matches={scheduled} />
+          </TabsContent>
+          <TabsContent value="live" className="mt-6">
+             <MatchList matches={live} />
+          </TabsContent>
+          <TabsContent value="finished" className="mt-6">
+            <MatchList matches={finished} />
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
+  );
+}
