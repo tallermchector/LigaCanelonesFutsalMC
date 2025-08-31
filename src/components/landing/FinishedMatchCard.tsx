@@ -34,8 +34,8 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
                 {match.teamA.name} vs {match.teamB.name}
             </CardTitle>
         </CardHeader>
-        <CardContent className="flex-grow flex items-center justify-around p-4">
-          <div className="flex flex-col items-center gap-2 text-center w-24">
+        <CardContent className="flex-grow flex items-center justify-around p-4 gap-2">
+          <div className="flex flex-col items-center gap-2 text-center flex-1 min-w-0">
             <Image
               src={match.teamA.logoUrl || `https://avatar.vercel.sh/${match.teamA.name}.png`}
               alt={`Logo de ${match.teamA.name}`}
@@ -43,11 +43,12 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
               height={56}
               className="rounded-full aspect-square object-contain"
             />
+             <span className="text-sm font-semibold truncate w-full">{match.teamA.name}</span>
           </div>
-          <div className="text-4xl font-bold text-primary tabular-nums">
+          <div className="text-4xl font-bold text-primary tabular-nums px-2">
             {match.scoreA} - {match.scoreB}
           </div>
-           <div className="flex flex-col items-center gap-2 text-center w-24">
+           <div className="flex flex-col items-center gap-2 text-center flex-1 min-w-0">
             <Image
               src={match.teamB.logoUrl || `https://avatar.vercel.sh/${match.teamB.name}.png`}
               alt={`Logo de ${match.teamB.name}`}
@@ -55,6 +56,7 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
               height={56}
               className="rounded-full aspect-square object-contain"
             />
+            <span className="text-sm font-semibold truncate w-full">{match.teamB.name}</span>
           </div>
         </CardContent>
         <CardFooter className="p-3 bg-accent text-accent-foreground justify-center text-sm font-medium group-hover:bg-accent/90 transition-colors">
@@ -64,8 +66,8 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
             </div>
             {formattedDate && (
                 <>
-                    <span className="mx-2">|</span>
-                    <div className='flex items-center gap-2'>
+                    <span className="mx-2 hidden sm:inline">|</span>
+                    <div className='hidden sm:flex items-center gap-2'>
                         <Calendar className="h-4 w-4" />
                         {formattedDate}
                     </div>
