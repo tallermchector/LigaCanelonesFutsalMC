@@ -2,7 +2,7 @@
 import { getAllMatches } from '@/actions/match-actions';
 import { Header } from '@/components/layout/header';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -166,7 +166,7 @@ export default async function PartidosPage() {
           </TabsContent>
           <TabsContent value="live" className="mt-6">
              <MatchList matches={live} />
-          </HtML>
+          </TabsContent>
           <TabsContent value="finished" className="mt-6">
             <MatchList matches={finished} />
           </TabsContent>
