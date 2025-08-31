@@ -60,7 +60,7 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
     <div className={cn("relative font-headline rounded-xl overflow-hidden bg-gray-900 text-white w-full max-w-6xl mx-auto shadow-2xl border-2 border-primary/50")}>
       <div
         className="absolute inset-0 bg-cover bg-center opacity-10"
-        style={{ backgroundImage: "url('/stadium-background.jpg')" }}
+        style={{ backgroundImage: "url('/banner_.jpg')" }}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 to-red-900/50 opacity-50" />
       <div className="relative p-6">
