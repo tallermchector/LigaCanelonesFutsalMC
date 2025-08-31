@@ -10,7 +10,7 @@ const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-  };
+};
 
 export function ControlsPanel() {
   const { state, dispatch } = useGame();
@@ -25,11 +25,11 @@ export function ControlsPanel() {
   }
 
   return (
-    <Card className="w-full max-w-sm shadow-md flex flex-col">
+    <Card className="w-full max-w-sm shadow-md flex flex-col h-full">
       <CardHeader>
         <CardTitle className="text-center text-primary">Controles del Juego</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow flex flex-col items-center justify-center gap-6 pt-6">
+      <CardContent className="flex-grow flex flex-col items-center justify-around gap-4 pt-6">
         <div className="text-center">
             <p className="text-sm text-muted-foreground">Tiempo de Juego</p>
             <p className="text-6xl font-mono font-bold text-foreground" aria-live="polite">{formatTime(state.time)}</p>
