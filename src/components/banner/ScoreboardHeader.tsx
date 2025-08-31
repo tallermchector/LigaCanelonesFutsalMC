@@ -3,6 +3,7 @@
 
 import { Shield, Timer } from 'lucide-react';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -56,7 +57,7 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
   period,
 }) => {
   return (
-    <div className="relative font-sans rounded-xl overflow-hidden bg-gray-900 text-white w-full max-w-6xl mx-auto shadow-2xl border-2 border-primary/50">
+    <div className={cn("relative font-headline rounded-xl overflow-hidden bg-gray-900 text-white w-full max-w-6xl mx-auto shadow-2xl border-2 border-primary/50")}>
       <div
         className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: "url('/stadium-background.jpg')" }}
@@ -74,7 +75,7 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
               className="rounded-full bg-white/10 p-2"
             />
             <div className="text-left">
-              <h1 className="text-4xl font-extrabold tracking-tight">{team1Name}</h1>
+              <h1 className="text-4xl font-extrabold tracking-tight truncate w-64">{team1Name}</h1>
               <div className="flex items-center gap-6 mt-2">
                 <StatDisplay icon={<Shield className="w-8 h-8 text-yellow-400" />} value={fouls1} label="Faltas" />
                 <StatDisplay icon={<Timer className="w-8 h-8 text-green-400" />} value={timeouts1} label="T. Muertos" />
@@ -85,7 +86,7 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
           {/* Time and Score Section */}
           <div className="text-center w-1/3">
             <div className="text-8xl font-black text-primary animate-pulse">{`${score1} - ${score2}`}</div>
-            <div className="mt-2 text-5xl font-mono font-bold tracking-widest">{formatTime(timeLeft)}</div>
+            <div className="mt-2 text-5xl font-bold tracking-widest">{formatTime(timeLeft)}</div>
             <div className="mt-2 text-xl font-semibold uppercase tracking-wider bg-white/20 px-4 py-1 rounded-full inline-block">
               {period}
             </div>
@@ -94,7 +95,7 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
           {/* Team 2 Section */}
           <div className="flex items-center justify-end gap-6 w-1/3">
             <div className="text-right">
-              <h1 className="text-4xl font-extrabold tracking-tight">{team2Name}</h1>
+              <h1 className="text-4xl font-extrabold tracking-tight truncate w-64">{team2Name}</h1>
               <div className="flex items-center justify-end gap-6 mt-2">
                 <StatDisplay icon={<Shield className="w-8 h-8 text-yellow-400" />} value={fouls2} label="Faltas" />
                 <StatDisplay icon={<Timer className="w-8 h-8 text-green-400" />} value={timeouts2} label="T. Muertos" />
