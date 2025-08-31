@@ -8,7 +8,7 @@ type PageHeroProps = {
 
 export function PageHero({ title, description, children }: PageHeroProps) {
   return (
-    <section className="relative bg-cover bg-center py-20 md:py-32 text-white text-center" style={{ backgroundImage: "url('/banner_.jpg')" }}>
+    <section className="relative bg-cover bg-center py-20 md:py-32 text-center text-white" style={{ backgroundImage: "url('/banner_.jpg')" }}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
       <div className="relative container mx-auto px-4">
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{title}</h1>
@@ -18,7 +18,7 @@ export function PageHero({ title, description, children }: PageHeroProps) {
           </p>
         )}
         {children && (
-          <div className="mt-8 flex justify-center gap-4">
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
             {children}
           </div>
         )}
