@@ -6,24 +6,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart2, Calendar } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 interface FinishedMatchCardProps {
   match: FullMatch;
 }
 
 export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
-    const [formattedDate, setFormattedDate] = useState('');
-
-    useEffect(() => {
-      if (match.scheduledTime) {
-        setFormattedDate(new Date(match.scheduledTime).toLocaleDateString('es-UY', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }));
-      }
-    }, [match.scheduledTime]);
+    const formattedDate = match.scheduledTime ? new Date(match.scheduledTime).toLocaleDateString('es-UY', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }) : '';
 
 
   return (
