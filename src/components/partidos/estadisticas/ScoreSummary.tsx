@@ -16,36 +16,38 @@ export function ScoreSummary({ match }: ScoreSummaryProps) {
 
   return (
     <Card className="w-full shadow-lg bg-card/80 backdrop-blur-sm border-primary/20">
-      <CardContent className="p-6">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-center">
+      <CardContent className="p-4 md:p-6">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-4 text-center">
           {/* Team A */}
-          <div className="flex flex-col md:flex-row items-center justify-end gap-4">
-            <h2 className="text-2xl font-bold text-card-foreground text-right truncate max-w-xs">{teamA.name}</h2>
+          <div className="flex flex-col md:flex-row items-center justify-end gap-2 md:gap-4">
+            <h2 className="text-lg md:text-2xl font-bold text-card-foreground text-right">{teamA.name}</h2>
             <Image
               src={teamA.logoUrl || `https://avatar.vercel.sh/${teamA.name}.png`}
               alt={`Logo de ${teamA.name}`}
-              width={80}
-              height={80}
-              className="rounded-full aspect-square object-contain"
+              width={64}
+              height={64}
+              className="w-12 h-12 md:w-20 md:h-20 rounded-full aspect-square object-contain"
             />
           </div>
 
           {/* Score */}
-          <div className="text-6xl font-black tracking-tighter text-primary">
-            {scoreA} - {scoreB}
-            <div className="text-lg font-semibold text-muted-foreground tracking-normal">FINAL</div>
+          <div className="flex flex-col">
+            <div className="text-4xl md:text-6xl font-black tracking-tighter text-primary">
+              {scoreA} - {scoreB}
+            </div>
+            <div className="text-sm md:text-lg font-semibold text-muted-foreground tracking-normal mt-1">FINAL</div>
           </div>
 
           {/* Team B */}
-          <div className="flex flex-col-reverse md:flex-row items-center justify-start gap-4">
-            <Image
+          <div className="flex flex-col-reverse md:flex-row items-center justify-start gap-2 md:gap-4">
+             <Image
               src={teamB.logoUrl || `https://avatar.vercel.sh/${teamB.name}.png`}
               alt={`Logo de ${teamB.name}`}
-              width={80}
-              height={80}
-              className="rounded-full aspect-square object-contain"
+              width={64}
+              height={64}
+              className="w-12 h-12 md:w-20 md:h-20 rounded-full aspect-square object-contain"
             />
-            <h2 className="text-2xl font-bold text-card-foreground text-left truncate max-w-xs">{teamB.name}</h2>
+            <h2 className="text-lg md:text-2xl font-bold text-card-foreground text-left">{teamB.name}</h2>
           </div>
         </div>
 

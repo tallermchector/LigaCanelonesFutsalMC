@@ -8,7 +8,7 @@ import { StatCard } from '@/components/partidos/estadisticas/StatCard';
 import { EventsList } from '@/components/partidos/estadisticas/EventsList';
 import { SummaryHeader } from '@/components/partidos/estadisticas/SummaryHeader';
 import { FutsalBallIcon } from '@/components/icons';
-import { Hand, Shield } from 'lucide-react';
+import { Hand } from 'lucide-react';
 
 interface EstadisticasPageProps {
   params: {
@@ -37,8 +37,8 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
         </div>
 
         <section className="mt-12 max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-center mb-6">Jugadores Destacados</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6">Jugadores Destacados</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <StatCard
               title="Goleador del Partido"
               icon={<FutsalBallIcon className="w-6 h-6 text-primary" />}
@@ -55,7 +55,7 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
         </section>
 
         <section className="mt-12 max-w-5xl mx-auto">
-             <h2 className="text-2xl font-bold text-center mb-6">Línea de Tiempo</h2>
+             <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6">Línea de Tiempo</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <EventsList title="Goles" events={match.events || []} eventType="GOAL" />
                 <EventsList title="Faltas Cometidas" events={match.events || []} eventType="FOUL" />

@@ -16,13 +16,13 @@ export function SummaryHeader({ match }: SummaryHeaderProps) {
 
   return (
     <div className="text-center">
-      <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
+      <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl lg:text-5xl">
         Resumen del Partido
       </h1>
-      <p className="mt-4 text-xl text-muted-foreground">
+      <p className="mt-3 text-lg text-muted-foreground sm:text-xl">
         {match.teamA.name} vs. {match.teamB.name}
       </p>
-      <div className="mt-4 flex justify-center items-center gap-6 text-sm text-muted-foreground">
+      <div className="mt-4 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4" />
           <span>{matchDate}</span>
