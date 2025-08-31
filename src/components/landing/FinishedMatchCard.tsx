@@ -15,7 +15,8 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
     const formattedDate = match.scheduledTime ? new Date(match.scheduledTime).toLocaleDateString('es-UY', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
+      timeZone: 'UTC',
     }) : '';
 
 
