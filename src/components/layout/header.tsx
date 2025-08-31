@@ -9,9 +9,8 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 export function Header() {
   const navLinks = [
     { href: '/', label: 'Inicio' },
-    { href: '/#news-summary', label: 'Noticias' },
-    { href: '/#teams', label: 'Equipos' },
-    { href: '/#results', label: 'Resultados' },
+    { href: '/banner', label: 'Banners' },
+    { href: '/partidos', label: 'Partidos' },
     { href: '/controles', label: 'Controles' },
   ];
 
