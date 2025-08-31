@@ -1,6 +1,7 @@
 
 
 
+
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED';
 
 export interface Player {
@@ -77,3 +78,13 @@ export interface GameState {
   events: GameEvent[];
   selectedPlayer: SelectedPlayer;
 }
+
+export type Post = {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  imageUrl: string;
+  published: boolean;
+  createdAt: string; // Usamos string para simplificar los datos locales
+};
