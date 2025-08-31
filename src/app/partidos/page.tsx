@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Clock, BarChart2 } from 'lucide-react';
+import { Calendar, Clock, BarChart2, Tv } from 'lucide-react';
 import type { FullMatch, MatchStatus } from '@/types';
 
 function MatchCard({ match }: { match: FullMatch }) {
@@ -32,8 +32,20 @@ function MatchCard({ match }: { match: FullMatch }) {
         }
     };
     const statusInfo = getStatusInfo();
+    
+    const CardWrapper = ({children}: {children: React.ReactNode}) => {
+        if (match.status === 'FINISHED') {
+             return <Link href={`/partidos/${match.id}/estadisticas`}>{children}</Link>;
+        }
+        if (match.status === 'LIVE') {
+            return <Link href={`/partidos/${match.id}`}>{children}</Link>
+        }
+        return <>{children}</>
+    }
+
 
     return (
+        <CardWrapper>
          <Card className="flex h-full flex-col overflow-hidden shadow-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20 bg-card">
             <CardHeader className="p-4 bg-card-foreground/5">
                 <div className="flex items-center justify-between">
@@ -86,15 +98,26 @@ function MatchCard({ match }: { match: FullMatch }) {
                     </div>
                 </div>
             </CardContent>
+            <CardFooter className="p-0">
              {match.status === 'FINISHED' && (
-                <Link href={`/partidos/${match.id}/estadisticas`} className="block p-4 bg-accent text-accent-foreground text-center font-semibold hover:bg-accent/90 transition-colors">
+                <div className="w-full block p-4 bg-accent text-accent-foreground text-center font-semibold hover:bg-accent/90 transition-colors">
                     <div className="flex items-center justify-center">
                         <BarChart2 className="mr-2 h-4 w-4" />
                         Ver Estadísticas
                     </div>
-                </Link>
+                </div>
             )}
+             {match.status === 'LIVE' && (
+                <div className="w-full block p-4 bg-destructive text-destructive-foreground text-center font-semibold hover:bg-destructive/90 transition-colors">
+                    <div className="flex items-center justify-center">
+                        <Tv className="mr-2 h-4 w-4" />
+                        Ver en Vivo
+                    </div>
+                </div>
+             )}
+            </CardFooter>
         </Card>
+        </CardWrapper>
     );
 }
 
@@ -143,7 +166,7 @@ export default async function PartidosPage() {
           </TabsContent>
           <TabsContent value="live" className="mt-6">
              <MatchList matches={live} />
-          </TabsContent>
+          </HtML>
           <TabsContent value="finished" className="mt-6">
             <MatchList matches={finished} />
           </TabsContent>
