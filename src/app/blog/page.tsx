@@ -1,15 +1,19 @@
 
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import { getPosts } from '@/actions/blog-actions';
-import Image from 'next/image';
+import { PostCard } from '@/components/blog/PostCard';
+import { BlogPagination } from '@/components/blog/Pagination';
 
-export default async function BlogPage() {
-  const { posts } = await getPosts();
+type BlogPageProps = {
+  searchParams?: {
+    page?: string;
+  };
+};
+
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const currentPage = Number(searchParams?.page) || 1;
+  const { posts, totalPages } = await getPosts(currentPage);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -22,43 +26,22 @@ export default async function BlogPage() {
           </p>
         </div>
 
-        <div className="mx-auto max-w-4xl space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
-            <Card key={post.slug} className="overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-primary/20 flex flex-col md:flex-row">
-              <div className="md:w-1/3">
-                 <Link href={`/blog/${post.slug}`} className="block h-full">
-                    <Image 
-                        src={post.imageUrl}
-                        alt={`Imagen para ${post.title}`}
-                        width={400}
-                        height={250}
-                        className="object-cover w-full h-full"
-                    />
-                 </Link>
-              </div>
-              <div className="md:w-2/3 flex flex-col">
-                <CardHeader>
-                    <CardTitle className="text-2xl hover:text-primary">
-                    <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                    </CardTitle>
-                    <CardDescription>
-                    <span>{new Date(post.createdAt).toLocaleDateString('es-UY', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                    <p className="text-muted-foreground line-clamp-3">{post.content.replace(/<[^>]*>/g, '')}</p>
-                </CardContent>
-                <CardFooter>
-                    <Button asChild variant="link" className="p-0">
-                    <Link href={`/blog/${post.slug}`}>
-                        Leer más <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                    </Button>
-                </CardFooter>
-              </div>
-            </Card>
+            <PostCard key={post.slug} post={post} />
           ))}
         </div>
+
+        {totalPages > 1 && (
+            <div className="mt-12">
+                <BlogPagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    basePath="/blog"
+                />
+            </div>
+        )}
+
       </main>
       <Footer />
     </div>
