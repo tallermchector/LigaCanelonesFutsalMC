@@ -15,6 +15,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const currentPage = Number(searchParams?.page) || 1;
   const { posts, totalPages } = await getPosts(currentPage);
 
+  // Separate the first post only if we are on the first page
+  const featuredPost = currentPage === 1 && posts.length > 0 ? posts.shift() : null;
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -27,6 +30,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredPost && (
+            <div className="md:col-span-2 lg:col-span-3">
+              <PostCard post={featuredPost} isFeatured={true} />
+            </div>
+          )}
           {posts.map((post) => (
             <PostCard key={post.slug} post={post} />
           ))}

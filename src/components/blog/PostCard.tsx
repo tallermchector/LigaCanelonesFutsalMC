@@ -5,9 +5,50 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import type { Post } from '@/types';
 import { formatDate } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { Calendar } from 'lucide-react';
+import { Calendar, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export function PostCard({ post }: { post: Post }) {
+export function PostCard({ post, isFeatured = false }: { post: Post, isFeatured?: boolean }) {
+
+  if (isFeatured) {
+    return (
+      <Card className="flex flex-col md:flex-row overflow-hidden shadow-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20 w-full group">
+        <div className="md:w-1/2 relative min-h-[250px]">
+          <Link href={`/blog/${post.slug}`} className="block h-full" aria-label={`Leer más sobre ${post.title}`}>
+            <Image
+              src={post.imageUrl}
+              alt={`Imagen para ${post.title}`}
+              fill
+              className="object-cover"
+            />
+          </Link>
+          <Badge className="absolute top-3 right-3">{post.category}</Badge>
+        </div>
+        <div className="md:w-1/2 flex flex-col p-6">
+           <CardHeader className="p-0">
+             <div className="flex items-center text-sm text-muted-foreground mb-2">
+                <Calendar className="mr-2 h-4 w-4" />
+                <span>{formatDate(post.createdAt)}</span>
+             </div>
+             <CardTitle className="mb-2 text-2xl font-bold leading-tight hover:text-primary">
+               <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+             </CardTitle>
+           </CardHeader>
+           <CardContent className="p-0 flex-grow">
+             <CardDescription className="text-base text-muted-foreground line-clamp-4">
+                 {post.excerpt}
+             </CardDescription>
+           </CardContent>
+           <CardFooter className="p-0 pt-4">
+              <Link href={`/blog/${post.slug}`} className="font-semibold text-primary inline-flex items-center group-hover:underline">
+                  Leer más <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+           </CardFooter>
+        </div>
+      </Card>
+    );
+  }
+
   return (
       <Card className="flex h-full flex-col overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-primary/20">
         <CardHeader className="relative p-0">
