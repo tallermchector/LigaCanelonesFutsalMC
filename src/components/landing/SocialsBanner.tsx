@@ -1,4 +1,3 @@
-
 'use client';
 
 import { socialLinks } from '@/data/social-links';
@@ -29,10 +28,10 @@ export function SocialsBanner() {
                                 data-ai-hint="social media abstract"
                             />
                             <div className="absolute inset-0 bg-black/60"></div>
-                            <div className="relative z-10 flex flex-col items-center justify-center h-full text-white">
-                                {Icon && <Icon className="w-16 h-16 mb-4" />}
-                                <h2 className="text-4xl md:text-6xl font-bold uppercase tracking-widest">{link.name}</h2>
-                                <Link href={link.url} target="_blank" rel="noopener noreferrer" className="mt-4 text-lg font-semibold border-b-2 border-white pb-1 transition-colors hover:text-primary hover:border-primary">
+                            <div className="relative z-10 flex flex-col items-center justify-center h-full text-white p-4">
+                                {Icon && <Icon className="w-12 h-12 md:w-16 md:h-16 mb-4" />}
+                                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-widest text-center">{link.name}</h2>
+                                <Link href={link.url} target="_blank" rel="noopener noreferrer" className="mt-4 text-base md:text-lg font-semibold border-b-2 border-white pb-1 transition-colors hover:text-primary hover:border-primary">
                                     Visitar Perfil
                                 </Link>
                             </div>
