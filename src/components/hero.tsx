@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { FutsalBallIcon } from '@/components/icons';
+import Image from 'next/image';
 
 export function Hero() {
   return (
@@ -11,8 +11,12 @@ export function Hero() {
     >
       <div className="absolute inset-0 bg-grid-pattern opacity-10" style={{ maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0))' }} />
       <div className="container relative z-10">
-        <FutsalBallIcon 
-          className="h-16 w-16 text-primary mx-auto mb-6 animate-bounce-slow" 
+        <Image 
+          src="/logofu.svg" 
+          alt="Liga Futsal Logo"
+          width={64}
+          height={64}
+          className="mx-auto mb-6 animate-bounce-slow" 
           aria-label="Icono de pelota de futsal" 
           role="img"
         />

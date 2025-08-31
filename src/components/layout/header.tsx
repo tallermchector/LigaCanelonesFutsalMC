@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FutsalBallIcon } from '@/components/icons';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
@@ -20,7 +20,7 @@ export function Header() {
       <div className="container flex h-14 max-w-screen-2xl items-center">
         <div className="mr-4 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <FutsalBallIcon className="h-6 w-6 text-primary" />
+            <Image src="/logofu.svg" alt="Liga Futsal Logo" width={24} height={24} />
             <span className="font-bold sm:inline-block">
               Liga Canelones Futsal
             </span>
