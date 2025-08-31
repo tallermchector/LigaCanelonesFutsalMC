@@ -64,7 +64,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       }
       return { ...state, timeoutsB: Math.max(0, state.timeoutsB + action.payload.delta) };
     case 'SET_PERIOD':
-      return { ...state, period: action.payload };
+      return { ...state, period: action.payload, time: initialState.time, isRunning: false };
     case 'SET_STATUS':
         return { ...state, status: action.payload };
     case 'TOGGLE_TIMER':
