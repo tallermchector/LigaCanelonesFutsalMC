@@ -1,6 +1,5 @@
 
-
-
+import type { ReactNode } from 'react';
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED';
 
@@ -88,3 +87,9 @@ export type Post = {
   published: boolean;
   createdAt: string; // Usamos string para simplificar los datos locales
 };
+
+export interface SocialLink {
+  name: string;
+  url: string;
+  icon?: ReactNode;
+}

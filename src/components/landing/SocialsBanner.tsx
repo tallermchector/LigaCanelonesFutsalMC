@@ -4,15 +4,7 @@
 import { socialLinks } from '@/data/social-links';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { InstagramIcon, FacebookIcon, GlobeIcon } from '@/components/icons';
-import type { SocialLink } from '@/data/social-links';
-
-const iconMap: Record<string, React.ElementType> = {
-  Instagram: InstagramIcon,
-  Facebook: FacebookIcon,
-  'Sitio Web': GlobeIcon,
-};
-
+import type { SocialLink } from '@/types';
 
 export function SocialsBanner() {
   return (
@@ -22,7 +14,7 @@ export function SocialsBanner() {
             <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">Mantente al día con las últimas noticias, resultados y contenido exclusivo.</p>
             <div className="flex flex-wrap justify-center gap-4">
                 {socialLinks.map((link: SocialLink) => {
-                    const Icon = iconMap[link.name];
+                    const Icon = link.icon;
                     return(
                         <Button key={link.name} asChild variant="outline" className="transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:border-primary">
                             <Link href={link.url} target="_blank" rel="noopener noreferrer">
@@ -37,4 +29,3 @@ export function SocialsBanner() {
     </section>
   );
 }
-
