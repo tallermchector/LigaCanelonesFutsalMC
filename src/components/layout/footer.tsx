@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export function Footer() {
   return (
@@ -11,8 +12,8 @@ export function Footer() {
           </p>
         </div>
         <div className="flex items-center gap-4 text-sm font-medium text-muted-foreground">
-          <a href="#" className="transition-colors hover:text-foreground">Política de Privacidad</a>
-          <a href="#" className="transition-colors hover:text-foreground">Términos de Servicio</a>
+          <Link href="/politica-de-privacidad" className="transition-colors hover:text-foreground">Política de Privacidad</Link>
+          <Link href="/terminos-de-servicio" className="transition-colors hover:text-foreground">Términos de Servicio</Link>
         </div>
       </div>
     </footer>
