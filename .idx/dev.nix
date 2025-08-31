@@ -7,6 +7,9 @@
   packages = [
     pkgs.nodejs_20
     pkgs.zulu
+    pkgs.bun
+    pkgs.openssl
+    pkgs.python313
   ];
   # Sets environment variables in the workspace
   env = {};
@@ -22,6 +25,7 @@
     # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
     extensions = [
       # "vscodevim.vim"
+      "Google.validation-agent-extension"
     ];
     workspace = {
       onCreate = {
