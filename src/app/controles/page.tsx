@@ -44,7 +44,7 @@ export default function ControlesPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[hsl(var(--background))]">
       <Header />
-      <main className="container mx-auto py-8 px-4">
+      <main className="container mx-auto py-8 px-4 pt-[var(--header-height)]">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
             <h1 className="text-3xl font-bold text-primary mb-4 sm:mb-0">
             Control de Partidos

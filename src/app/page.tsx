@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 pt-[var(--header-height)]">
         <PageHero
           title="La Pasión del Futsal en Canelones"
           description="Sigue cada partido, cada gol y cada jugada. La plataforma definitiva para los amantes del fútbol sala en la región."

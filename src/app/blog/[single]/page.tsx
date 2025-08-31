@@ -24,7 +24,7 @@ export default async function SinglePostPage({ params }: PostPageProps) {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="container mx-auto flex-1 p-4 py-8 md:p-8">
+      <main className="container mx-auto flex-1 p-4 py-8 md:p-8 pt-[var(--header-height)]">
         <div className="mx-auto max-w-3xl">
           <Button asChild variant="outline" className="mb-8">
             <Link href="/blog">

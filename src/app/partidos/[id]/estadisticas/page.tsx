@@ -29,7 +29,7 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 pt-[var(--header-height)]">
         <PageHero title="Resumen del Partido">
             <div className="mt-8 max-w-5xl mx-auto w-full">
                 <ScoreSummary match={match} />

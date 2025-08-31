@@ -14,7 +14,7 @@ export default async function BannerSelectionPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="container mx-auto flex flex-1 flex-col p-4 py-8 md:p-8">
+      <main className="container mx-auto flex flex-1 flex-col p-4 py-8 md:p-8 pt-[var(--header-height)]">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-primary">Partidos en Vivo</h1>
           <p className="mt-2 text-muted-foreground">Selecciona un partido para ver el marcador en vivo.</p>

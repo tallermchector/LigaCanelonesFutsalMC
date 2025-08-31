@@ -151,7 +151,7 @@ export default async function PartidosPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 pt-[var(--header-height)]">
         <PageHero
           title="Calendario de Partidos"
           description="Consulta los próximos encuentros, los resultados de partidos finalizados y sigue la acción en vivo."

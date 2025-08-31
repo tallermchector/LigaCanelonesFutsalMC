@@ -14,7 +14,7 @@ export default async function BlogPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="container mx-auto flex-1 p-4 py-8 md:p-8">
+      <main className="container mx-auto flex-1 p-4 py-8 md:p-8 pt-[var(--header-height)]">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-primary">Blog de Noticias</h1>
           <p className="mt-2 text-muted-foreground">

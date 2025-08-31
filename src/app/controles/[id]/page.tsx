@@ -72,7 +72,7 @@ export default function MatchControlPage() {
     return (
         <div className="flex min-h-screen flex-col bg-[hsl(var(--background))]">
             <Header />
-            <main className="container mx-auto py-8 px-4">
+            <main className="container mx-auto py-8 px-4 pt-[var(--header-height)]">
                 <MatchControlSkeleton />
             </main>
         </div>
@@ -83,7 +83,7 @@ export default function MatchControlPage() {
     return (
       <div className="flex min-h-screen flex-col bg-[hsl(var(--background))]">
         <Header />
-        <div className="container mx-auto py-8 px-4 text-center">
+        <div className="container mx-auto py-8 px-4 text-center pt-[var(--header-height)]">
             <h1 className="text-2xl font-bold text-destructive mb-4">Error</h1>
             <p className="text-muted-foreground">{error}</p>
             <Button asChild className="mt-4">
@@ -100,7 +100,7 @@ export default function MatchControlPage() {
     <GameProvider match={match}>
       <div className="flex flex-col h-screen bg-background text-foreground">
         <Header />
-        <main className="container mx-auto px-4 py-4 flex-grow flex flex-col h-main-content">
+        <main className="container mx-auto px-4 py-4 flex-grow flex flex-col h-main-content pt-[var(--header-height)]">
            <div className="w-full flex justify-start mb-4 max-w-7xl mx-auto flex-shrink-0">
               <Button variant="outline" asChild>
                   <Link href="/controles">
