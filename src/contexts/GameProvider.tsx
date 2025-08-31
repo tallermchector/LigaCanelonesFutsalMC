@@ -5,7 +5,7 @@ import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType } f
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 
 type GameAction =
-  | { type: 'LOAD_MATCH'; payload: FullMatch }
+  | { type: 'LOAD_MATCH'; payload: { match: FullMatch; state: GameState | null } }
   | { type: 'UPDATE_SCORE'; payload: { team: 'A' | 'B'; delta: number } }
   | { type: 'UPDATE_FOULS'; payload: { team: 'A' | 'B'; delta: number } }
   | { type: 'UPDATE_TIMEOUTS'; payload: { team: 'A' | 'B'; delta: number } }
@@ -14,7 +14,7 @@ type GameAction =
   | { type: 'RESET_TIMER' }
   | { type: 'TICK' }
   | { type: 'SELECT_PLAYER'; payload: SelectedPlayer }
-  | { type: 'ADD_EVENT'; payload: { type: GameEventType } };
+  | { type: 'ADD_EVENT'; payload: { type: GameEventType; teamId?: 'A' | 'B' } };
 
 const initialState: GameState = {
   matchId: null,
@@ -24,10 +24,10 @@ const initialState: GameState = {
   scoreB: 0,
   foulsA: 0,
   foulsB: 0,
-  timeoutsA: 1, // Standard 1 timeout per half
+  timeoutsA: 1,
   timeoutsB: 1,
   period: 1,
-  time: 1200, // 20 minutes in seconds
+  time: 1200,
   isRunning: false,
   events: [],
   selectedPlayer: null,
@@ -36,14 +36,15 @@ const initialState: GameState = {
 const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
     case 'LOAD_MATCH':
-        return {
-            ...initialState, // Reset state when loading a new match
-            matchId: action.payload.id,
-            teamA: action.payload.teamA,
-            teamB: action.payload.teamB,
-            scoreA: action.payload.scoreA,
-            scoreB: action.payload.scoreB,
-        };
+      return action.payload.state || {
+        ...initialState,
+        matchId: action.payload.match.id,
+        teamA: action.payload.match.teamA,
+        teamB: action.payload.match.teamB,
+        scoreA: action.payload.match.scoreA,
+        scoreB: action.payload.match.scoreB,
+        events: action.payload.match.events || [],
+      };
     case 'UPDATE_SCORE':
       if (action.payload.team === 'A') {
         return { ...state, scoreA: Math.max(0, state.scoreA + action.payload.delta) };
@@ -71,45 +72,51 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       }
       return { ...state, isRunning: false };
     case 'SELECT_PLAYER':
-        // If the same player is clicked again, deselect them
-        if (state.selectedPlayer?.playerId === action.payload.playerId && state.selectedPlayer?.teamId === action.payload.teamId) {
-            return { ...state, selectedPlayer: null };
-        }
-        return { ...state, selectedPlayer: action.payload };
-    case 'ADD_EVENT':
-        if (!state.selectedPlayer) {
-            return state;
-        }
+      if (state.selectedPlayer?.playerId === action.payload?.playerId && state.selectedPlayer?.teamId === action.payload?.teamId) {
+          return { ...state, selectedPlayer: null };
+      }
+      return { ...state, selectedPlayer: action.payload };
+    case 'ADD_EVENT': {
+      let teamId = state.selectedPlayer?.teamId;
+      let playerId = state.selectedPlayer?.playerId;
 
-        const { teamId, playerId } = state.selectedPlayer;
-        const team = teamId === 'A' ? state.teamA : state.teamB;
-        const player = team?.players?.find(p => p.id === playerId);
+      if (action.payload.type === 'TIMEOUT') {
+        if (!action.payload.teamId) return state;
+        teamId = action.payload.teamId;
+        playerId = -1; // System event, no specific player
+      }
 
-        if (!team || !player) {
-            return state;
-        }
+      if (!teamId) return state;
+      
+      const team = teamId === 'A' ? state.teamA : state.teamB;
+      const player = team?.players?.find(p => p.id === playerId);
 
-        const newEvent: GameEvent = {
-            id: `${Date.now()}-${Math.random()}`,
-            type: action.payload.type,
-            teamId,
-            playerId,
-            playerName: player.name,
-            teamName: team.name,
-            timestamp: state.time,
-        };
-        
-        const newState = { ...state, events: [...state.events, newEvent] };
+      if (!team || (playerId !== -1 && !player)) return state;
 
-        // Automatically update score or fouls based on event type
-        if (action.payload.type === 'GOAL') {
-            return gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
-        }
-        if (action.payload.type === 'FOUL') {
-            return gameReducer(newState, { type: 'UPDATE_FOULS', payload: { team: teamId, delta: 1 } });
-        }
+      const newEvent: GameEvent = {
+          id: `${Date.now()}-${Math.random()}`,
+          type: action.payload.type,
+          teamId,
+          playerId: playerId!,
+          playerName: player?.name || 'Equipo',
+          teamName: team.name,
+          timestamp: state.time,
+      };
+      
+      const newState = { ...state, events: [...state.events, newEvent] };
 
-        return newState;
+      if (action.payload.type === 'GOAL') {
+          return gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
+      }
+      if (action.payload.type === 'FOUL') {
+          return gameReducer(newState, { type: 'UPDATE_FOULS', payload: { team: teamId, delta: 1 } });
+      }
+       if (action.payload.type === 'TIMEOUT') {
+          return gameReducer(newState, { type: 'UPDATE_TIMEOUTS', payload: { team: teamId, delta: -1 } });
+      }
+
+      return newState;
+    }
     default:
       return state;
   }
@@ -118,11 +125,32 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
 const GameContext = createContext<{ state: GameState; dispatch: React.Dispatch<GameAction> } | undefined>(undefined);
 
 export const GameProvider = ({ children, match }: { children: ReactNode, match: FullMatch }) => {
+  const getInitialState = () => {
+    try {
+      const savedState = localStorage.getItem(`futsal-match-state-${match.id}`);
+      return savedState ? JSON.parse(savedState) : null;
+    } catch (error) {
+      console.error("Failed to read state from localStorage", error);
+      return null;
+    }
+  };
+
   const [state, dispatch] = useReducer(gameReducer, initialState);
+
+  useEffect(() => {
+    dispatch({ type: 'LOAD_MATCH', payload: { match, state: getInitialState() } });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [match.id]);
   
   useEffect(() => {
-    dispatch({ type: 'LOAD_MATCH', payload: match });
-  }, [match]);
+    if (state.matchId) {
+      try {
+        localStorage.setItem(`futsal-match-state-${state.matchId}`, JSON.stringify(state));
+      } catch (error) {
+        console.error("Failed to save state to localStorage", error);
+      }
+    }
+  }, [state]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;

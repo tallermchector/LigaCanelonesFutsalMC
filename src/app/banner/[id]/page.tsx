@@ -1,17 +1,16 @@
 
+'use client';
+
+import { useEffect, useState } from 'react';
+import { notFound, useParams } from 'next/navigation';
 import { getMatchById } from '@/actions/match-actions';
 import { ScoreboardHeader } from '@/components/banner/ScoreboardHeader';
 import { Header } from '@/components/layout/header';
-import type { FullMatch, MatchStatus } from '@/types';
-import { notFound } from 'next/navigation';
+import type { FullMatch, GameState, MatchStatus } from '@/types';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useLiveMatchState } from '@/hooks/useLiveMatchState';
 
-interface BannerPageProps {
-    params: {
-        id: string;
-    }
-}
-
-function getPeriodLabel(status: MatchStatus, period: number | undefined): string {
+function getPeriodLabel(status: MatchStatus, period: number): string {
     switch (status) {
         case 'FINISHED':
             return 'FINAL';
@@ -26,17 +25,52 @@ function getPeriodLabel(status: MatchStatus, period: number | undefined): string
     }
 }
 
-export default async function BannerPage({ params }: BannerPageProps) {
-    const match = await getMatchById(params.id);
+function BannerPageSkeleton() {
+    return (
+        <div className="flex min-h-screen flex-col bg-background">
+            <Header />
+            <main className="container mx-auto flex flex-1 flex-col items-center justify-center p-4 md:p-8">
+                 <Skeleton className="h-12 w-64 mb-2" />
+                 <Skeleton className="h-6 w-80 mb-8" />
+                 <Skeleton className="h-[200px] w-full max-w-6xl" />
+            </main>
+        </div>
+    )
+}
 
-    if (!match) {
+export default function BannerPage() {
+    const params = useParams();
+    const matchId = params.id as string;
+    
+    const [initialMatch, setInitialMatch] = useState<FullMatch | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (matchId) {
+            getMatchById(matchId).then(data => {
+                if (data) {
+                    setInitialMatch(data);
+                }
+                setLoading(false);
+            });
+        }
+    }, [matchId]);
+
+    const liveState = useLiveMatchState(matchId, initialMatch);
+
+    if (loading) {
+        return <BannerPageSkeleton />;
+    }
+
+    if (!liveState) {
         notFound();
     }
     
-    // Simulate some live data for now
-    const liveTime = match.status === 'LIVE' ? 1200 - ((new Date().getMinutes() * 60 + new Date().getSeconds()) % 1200) : 1200;
-    const livePeriod = match.status === 'LIVE' ? (new Date().getMinutes() > 20 ? 2 : 1) : 1;
+    const {teamA, teamB, scoreA, scoreB, foulsA, foulsB, timeoutsA, timeoutsB, period, time} = liveState;
 
+    if(!teamA || !teamB) {
+        return <BannerPageSkeleton />;
+    }
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
@@ -44,27 +78,23 @@ export default async function BannerPage({ params }: BannerPageProps) {
             <main className="container mx-auto flex flex-1 flex-col items-center justify-center p-4 md:p-8">
                 <div className="w-full text-center mb-8">
                     <h1 className="text-4xl font-bold text-primary">Marcador en Vivo</h1>
-                    <p className="text-muted-foreground mt-2">Sigue toda la acción del partido minuto a minuto.</p>
+                    <p className="text-muted-foreground mt-2\">Sigue toda la acción del partido minuto a minuto.</p>
                 </div>
 
                 <ScoreboardHeader
-                    team1Name={match.teamA.name}
-                    team1Logo={match.teamA.logoUrl || ''}
-                    score1={match.scoreA}
-                    fouls1={match.id.charCodeAt(match.id.length-1) % 6} 
-                    timeouts1={match.id.charCodeAt(match.id.length-1) % 2}
-                    team2Name={match.teamB.name}
-                    team2Logo={match.teamB.logoUrl || ''}
-                    score2={match.scoreB}
-                    fouls2={(match.id.charCodeAt(match.id.length-1) + 1) % 6}
-                    timeouts2={(match.id.charCodeAt(match.id.length-1) + 1) % 2}
-                    timeLeft={liveTime}
-                    period={getPeriodLabel(match.status, livePeriod)}
+                    team1Name={teamA.name}
+                    team1Logo={teamA.logoUrl || ''}
+                    score1={scoreA}
+                    fouls1={foulsA} 
+                    timeouts1={timeoutsA}
+                    team2Name={teamB.name}
+                    team2Logo={teamB.logoUrl || ''}
+                    score2={scoreB}
+                    fouls2={foulsB}
+                    timeouts2={timeoutsB}
+                    timeLeft={time}
+                    period={getPeriodLabel('LIVE', period)}
                 />
-                
-                <div className="mt-8 text-center text-muted-foreground">
-                    <p>Esta página se actualizará en tiempo real en futuras versiones.</p>
-                </div>
             </main>
         </div>
     );

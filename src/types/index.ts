@@ -16,7 +16,7 @@ export interface Team {
   players: Player[];
 }
 
-export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT';
+export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT' | 'YELLOW_CARD' | 'RED_CARD' | 'TIMEOUT';
 
 export interface GameEvent {
   id: string;

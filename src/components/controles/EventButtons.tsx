@@ -4,7 +4,7 @@
 import { useGame } from '@/contexts/GameProvider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Goal, Shield, Hand, Footprints } from 'lucide-react';
+import { Goal, Shield, Hand, Footprints, Square } from 'lucide-react';
 import type { GameEventType } from '@/types';
 
 export function EventButtons() {
@@ -32,7 +32,7 @@ export function EventButtons() {
             {selectedPlayerInfo ? `Para: ${selectedPlayerInfo}` : 'Seleccione un jugador'}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-3 pt-4">
+      <CardContent className="grid grid-cols-2 gap-3 pt-4">
         <Button 
             onClick={() => handleAddEvent('GOAL')} 
             disabled={!selectedPlayer}
@@ -64,9 +64,28 @@ export function EventButtons() {
             disabled={!selectedPlayer}
             aria-label="Registrar falta"
             variant="destructive"
+            className="bg-orange-500 hover:bg-orange-600"
         >
           <Shield className="mr-2 h-4 w-4" />
           Falta
+        </Button>
+        <Button
+            onClick={() => handleAddEvent('YELLOW_CARD')}
+            disabled={!selectedPlayer}
+            aria-label="Registrar tarjeta amarilla"
+            className="bg-yellow-400 text-black hover:bg-yellow-500"
+        >
+            <Square className="mr-2 h-4 w-4 fill-current" />
+            Amarilla
+        </Button>
+        <Button
+            onClick={() => handleAddEvent('RED_CARD')}
+            disabled={!selectedPlayer}
+            aria-label="Registrar tarjeta roja"
+            variant="destructive"
+        >
+            <Square className="mr-2 h-4 w-4 fill-current" />
+            Roja
         </Button>
       </CardContent>
     </Card>

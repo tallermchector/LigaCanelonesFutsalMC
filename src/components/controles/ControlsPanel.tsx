@@ -4,13 +4,12 @@
 import { useGame } from '@/contexts/GameProvider';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus } from 'lucide-react';
+import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer } from 'lucide-react';
 
 const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-  };
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;\n  };
 
 export function ControlsPanel() {
   const { state, dispatch } = useGame();
@@ -19,6 +18,10 @@ export function ControlsPanel() {
     const newPeriod = Math.max(1, state.period + delta);
     dispatch({ type: 'SET_PERIOD', payload: newPeriod });
   };
+  
+  const handleTimeout = (teamId: 'A' | 'B') => {
+      dispatch({ type: 'ADD_EVENT', payload: { type: 'TIMEOUT', teamId }})
+  }
 
   return (
     <Card className="w-full max-w-sm shadow-md flex flex-col">
@@ -44,9 +47,23 @@ export function ControlsPanel() {
             <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} aria-label="Disminuir período"><Minus className="h-4 w-4" /></Button>
             <div className="flex items-center gap-2">
                 <Flag className="h-5 w-5 text-muted-foreground" />
-                <span className="font-semibold text-lg">Período: {state.period}</span>
+                <span className="font-semibold text-lg\">Período: {state.period}</span>
             </div>
             <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} aria-label="Aumentar período"><Plus className="h-4 w-4" /></Button>
+        </div>
+        <div className="flex w-full justify-around pt-4 border-t">
+            <div className="text-center">
+                <p className="text-sm font-semibold">{state.teamA?.name}</p>
+                <Button size="sm" variant="outline" className="mt-1" disabled={state.timeoutsA <= 0} onClick={() => handleTimeout('A')}>
+                    <Timer className="mr-2 h-4 w-4" /> T. Muerto ({state.timeoutsA})
+                </Button>
+            </div>
+             <div className="text-center">
+                <p className="text-sm font-semibold">{state.teamB?.name}</p>
+                 <Button size="sm" variant="outline" className="mt-1" disabled={state.timeoutsB <= 0} onClick={() => handleTimeout('B')}>
+                    <Timer className="mr-2 h-4 w-4" /> T. Muerto ({state.timeoutsB})
+                </Button>
+            </div>
         </div>
       </CardContent>
       <CardFooter className="grid grid-cols-2 gap-4 p-4 bg-card-foreground/5">
