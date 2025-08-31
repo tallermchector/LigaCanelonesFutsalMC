@@ -31,8 +31,8 @@ export function SocialCard({ link }: SocialCardProps) {
         ></div>
 
         <CardContent className={cn(
-          "relative z-10 flex flex-col flex-grow items-center justify-center p-6 text-white transition-colors",
-          link.textColor ? `text-[${link.textColor}]` : 'text-white'
+          "relative z-10 flex flex-col flex-grow items-center justify-center p-6 transition-colors",
+          link.textColor ? link.textColor : 'text-white'
         )}>
             {Icon && <Icon className="w-12 h-12 mb-4" />}
             <h3 className="text-xl font-bold">{link.name}</h3>
