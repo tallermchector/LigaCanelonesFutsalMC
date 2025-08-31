@@ -5,10 +5,10 @@ import { futsalTeams } from '@/data/teams';
 
 // Mock data generation
 function createMockMatch(id: number, status: MatchStatus): FullMatch {
-  const teamAIndex = Math.floor(Math.random() * futsalTeams.length);
-  let teamBIndex = Math.floor(Math.random() * futsalTeams.length);
-  while (teamAIndex === teamBIndex) {
-    teamBIndex = Math.floor(Math.random() * futsalTeams.length);
+  const teamAIndex = id % futsalTeams.length;
+  let teamBIndex = (id + 1) % futsalTeams.length;
+  if (teamAIndex === teamBIndex) {
+    teamBIndex = (teamBIndex + 1) % futsalTeams.length;
   }
 
   const now = new Date();
@@ -18,15 +18,15 @@ function createMockMatch(id: number, status: MatchStatus): FullMatch {
 
   switch (status) {
     case 'SCHEDULED':
-      scheduledTime = new Date(now.getTime() + (id + 1) * 24 * 60 * 60 * 1000 + Math.random() * 100000);
+      scheduledTime = new Date(now.getTime() + (id + 1) * 24 * 60 * 60 * 1000 + 100000);
       break;
     case 'LIVE':
       scheduledTime = new Date(now.getTime() - 30 * 60 * 1000); // 30 mins ago
       break;
     case 'FINISHED':
        scheduledTime = new Date(now.getTime() - (id + 1) * 3 * 60 * 60 * 1000); // Few hours/days ago
-       scoreA = Math.floor(Math.random() * 10);
-       scoreB = Math.floor(Math.random() * 10);
+       scoreA = (id % 5) + 1;
+       scoreB = ((id + 3) % 5);
       break;
   }
 
@@ -53,12 +53,6 @@ export async function getAllMatches(): Promise<FullMatch[]> {
   await new Promise(resolve => setTimeout(resolve, 1000));
   
   // In a real app, you would fetch this from a database.
-  // For now, we return the mock data.
-  // We'll add a small chance of error for testing.
-  if (Math.random() < 0.1) {
-     throw new Error("Failed to connect to the database.");
-  }
-
   return mockMatches;
 }
 
@@ -68,10 +62,6 @@ export async function getMatchById(id: string): Promise<FullMatch | undefined> {
   await new Promise(resolve => setTimeout(resolve, 500));
   
   const match = mockMatches.find(m => m.id === id);
-
-  if (Math.random() < 0.1) {
-    throw new Error("Failed to fetch match details.");
-  }
   
   return match;
 }
