@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { Calendar, Clock, BarChart2, Tv } from 'lucide-react';
 import type { FullMatch, MatchStatus } from '@/types';
 import { PageHero } from '@/components/layout/PageHero';
+import { Footer } from '@/components/layout/footer';
 
 function MatchCard({ match }: { match: FullMatch }) {
     const scheduledDateTime = new Date(match.scheduledTime);
@@ -174,6 +175,7 @@ export default async function PartidosPage() {
             </Tabs>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
