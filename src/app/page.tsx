@@ -19,7 +19,7 @@ export default function Home() {
             <Link href="/partidos">Ver Partidos</Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="bg-transparent border-white text-white hover:bg-white hover:text-black">
-            <Link href="#">Tabla de Posiciones</Link>
+            <Link href="/blog">Ver Noticias</Link>
           </Button>
         </PageHero>
         <LiveMatchesBanner />
