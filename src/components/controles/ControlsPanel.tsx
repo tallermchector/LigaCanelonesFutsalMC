@@ -9,7 +9,8 @@ import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer } f
 const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;\n  };
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+  };
 
 export function ControlsPanel() {
   const { state, dispatch } = useGame();
@@ -47,7 +48,7 @@ export function ControlsPanel() {
             <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} aria-label="Disminuir período"><Minus className="h-4 w-4" /></Button>
             <div className="flex items-center gap-2">
                 <Flag className="h-5 w-5 text-muted-foreground" />
-                <span className="font-semibold text-lg\">Período: {state.period}</span>
+                <span className="font-semibold text-lg">Período: {state.period}</span>
             </div>
             <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} aria-label="Aumentar período"><Plus className="h-4 w-4" /></Button>
         </div>
