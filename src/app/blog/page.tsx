@@ -13,7 +13,8 @@ type BlogPageProps = {
 };
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
-  const currentPage = Number(searchParams?.page) || 1;
+  const page = searchParams?.page ?? '1';
+  const currentPage = Number(page);
   const { posts, totalPages } = await getPosts(currentPage);
 
   // Separate the first post only if we are on the first page
