@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import { getMatchById } from '@/actions/match-actions';
 import { ScoreboardHeader } from '@/components/banner/ScoreboardHeader';
-import { Header } from '@/components/layout/header';
 import type { FullMatch, GameState, MatchStatus } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLiveMatchState } from '@/hooks/useLiveMatchState';
@@ -27,13 +26,8 @@ function getPeriodLabel(status: MatchStatus, period: number): string {
 
 function BannerPageSkeleton() {
     return (
-        <div className="flex min-h-screen flex-col bg-background">
-            <Header />
-            <main className="container mx-auto flex flex-1 flex-col items-center justify-center p-4 md:p-8">
-                 <Skeleton className="h-12 w-64 mb-2" />
-                 <Skeleton className="h-6 w-80 mb-8" />
-                 <Skeleton className="h-[200px] w-full max-w-6xl" />
-            </main>
+        <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4 md:p-8">
+            <Skeleton className="h-[200px] w-full max-w-6xl" />
         </div>
     )
 }
@@ -66,36 +60,29 @@ export default function BannerPage() {
         notFound();
     }
     
-    const {teamA, teamB, scoreA, scoreB, foulsA, foulsB, timeoutsA, timeoutsB, period, time} = liveState;
+    const {teamA, teamB, scoreA, scoreB, foulsA, foulsB, timeoutsA, timeoutsB, period, time, status} = liveState;
 
     if(!teamA || !teamB) {
         return <BannerPageSkeleton />;
     }
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
-            <Header />
-            <main className="container mx-auto flex flex-1 flex-col items-center justify-center p-4 md:p-8">
-                <div className="w-full text-center mb-8">
-                    <h1 className="text-4xl font-bold text-primary">Marcador en Vivo</h1>
-                    <p className="text-muted-foreground mt-2\">Sigue toda la acción del partido minuto a minuto.</p>
-                </div>
-
-                <ScoreboardHeader
-                    team1Name={teamA.name}
-                    team1Logo={teamA.logoUrl || ''}
-                    score1={scoreA}
-                    fouls1={foulsA} 
-                    timeouts1={timeoutsA}
-                    team2Name={teamB.name}
-                    team2Logo={teamB.logoUrl || ''}
-                    score2={scoreB}
-                    fouls2={foulsB}
-                    timeouts2={timeoutsB}
-                    timeLeft={time}
-                    period={getPeriodLabel('LIVE', period)}
-                />
-            </main>
+        // Contenedor principal para centrar el Scoreboard en toda la pantalla
+        <div className="flex min-h-screen w-full flex-col items-center justify-center bg-background p-4 md:p-8">
+            <ScoreboardHeader
+                team1Name={teamA.name}
+                team1Logo={teamA.logoUrl || ''}
+                score1={scoreA}
+                fouls1={foulsA} 
+                timeouts1={timeoutsA}
+                team2Name={teamB.name}
+                team2Logo={teamB.logoUrl || ''}
+                score2={scoreB}
+                fouls2={foulsB}
+                timeouts2={timeoutsB}
+                timeLeft={time}
+                period={getPeriodLabel(status, period)}
+            />
         </div>
     );
 }

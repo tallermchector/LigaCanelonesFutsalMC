@@ -13,11 +13,9 @@ export function GameControls() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 w-full h-full">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
       <TeamPanel teamId="A" />
-      <div className="flex flex-col justify-center items-center py-4 md:py-0">
-        <ControlsPanel />
-      </div>
+      <ControlsPanel />
       <TeamPanel teamId="B" />
     </div>
   );

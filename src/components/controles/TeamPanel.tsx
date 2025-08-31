@@ -25,13 +25,12 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
   };
 
   return (
-    <Card className="flex-1 shadow-md h-full flex flex-col">
-      <CardHeader>
+    <Card className="h-full flex flex-col">
+      <CardHeader className="flex-shrink-0">
         <CardTitle className="text-center text-primary">{team.name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow pt-6 overflow-hidden">
-        <ScrollArea className="h-full pr-4">
-          <div className="flex flex-wrap items-start justify-center gap-4">
+      <CardContent className="flex-grow p-2 overflow-y-auto">
+        <div className="flex flex-wrap items-start justify-center gap-4">
             {team.players.map((player) => (
               <JerseyButton
                 key={player.id}
@@ -46,7 +45,6 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
               />
             ))}
           </div>
-        </ScrollArea>
       </CardContent>
     </Card>
   );

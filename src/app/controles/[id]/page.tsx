@@ -98,26 +98,24 @@ export default function MatchControlPage() {
 
   return (
     <GameProvider match={match}>
-      <div className="flex h-screen flex-col bg-[hsl(var(--background))]">
+      <div className="flex flex-col h-screen bg-background text-foreground">
         <Header />
-        <main className="container mx-auto flex flex-grow flex-col py-4 px-4 overflow-hidden">
-            <div className="w-full flex justify-start mb-4">
-                <Button variant="outline" asChild>
-                    <Link href="/controles">
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Volver a Controles
-                    </Link>
-                </Button>
-            </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full mb-4">
-            <div className="lg:col-span-2">
-                <Scoreboard />
-            </div>
-            <div className="lg:col-span-1 flex items-center justify-center">
-                <EventButtons />
-            </div>
+        <main className="container mx-auto px-4 py-4 flex-grow flex flex-col h-main-content">
+           <div className="w-full flex justify-start mb-4 max-w-7xl mx-auto flex-shrink-0">
+              <Button variant="outline" asChild>
+                  <Link href="/controles">
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      Volver a Controles
+                  </Link>
+              </Button>
           </div>
-          <div className="w-full flex-grow overflow-hidden">
+          <div className="flex-shrink-0 w-full max-w-7xl mx-auto">
+            <Scoreboard />
+          </div>
+          <div className="flex-shrink-0 pt-4 w-full max-w-7xl mx-auto">
+            <EventButtons />
+          </div>
+          <div className="flex-grow pt-4 w-full max-w-7xl mx-auto">
             <GameControls />
           </div>
         </main>
