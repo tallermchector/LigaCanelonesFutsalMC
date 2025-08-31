@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -40,8 +41,8 @@ export function Header() {
       <div className="container flex h-[var(--header-height)] max-w-screen-2xl items-center">
         <div className="mr-4 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Image src="/logofu.svg" alt="Liga Futsal Logo" width={24} height={24} />
-            <span className="font-bold sm:inline-block">
+            <Image src="/logofu.svg" alt="Liga Futsal Logo" width={32} height={32} />
+            <span className="font-bold sm:inline-block text-lg">
               Liga Canaria Futsal 
             </span>
           </Link>
