@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Menu, Shield } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { usePathname } from 'next/navigation';
@@ -30,15 +30,14 @@ export function Header() {
     { href: '/', label: 'Inicio' },
     { href: '/partidos', label: 'Partidos' },
     { href: '/blog', label: 'Noticias' },
-    { href: '/banner', label: 'Banners' },
   ];
 
   return (
     <header className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-colors duration-300",
-        scrolled ? 'bg-background/95 border-b backdrop-blur-sm' : 'bg-transparent'
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        scrolled ? 'bg-background/95 border-b backdrop-blur-sm shadow-sm' : 'bg-transparent border-b border-transparent'
     )}>
-      <div className="container flex h-14 max-w-screen-2xl items-center">
+      <div className="container flex h-[var(--header-height)] max-w-screen-2xl items-center">
         <div className="mr-4 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <Image src="/logofu.svg" alt="Liga Futsal Logo" width={24} height={24} />
@@ -52,7 +51,7 @@ export function Header() {
                 key={`${link.href}-${link.label}`}
                 href={link.href}
                 className={cn("text-sm font-medium transition-colors hover:text-primary", 
-                    pathname === link.href ? 'text-primary font-semibold' : 'text-muted-foreground'
+                    pathname === link.href ? 'text-primary font-semibold' : 'text-foreground/60'
                 )}
               >
                 {link.label}
@@ -80,22 +79,25 @@ export function Header() {
               <SheetTitle><VisuallyHidden>Menú de navegación móvil</VisuallyHidden></SheetTitle>
               <nav className="flex flex-col gap-4 pt-6">
                 {navLinks.map((link) => (
-                  <Link
-                    key={`${link.href}-${link.label}-mobile`}
-                    href={link.href}
-                    className={cn("block px-2 py-1 text-lg",
-                        pathname === link.href ? 'text-primary font-semibold' : 'text-foreground'
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                 <Button variant="outline" size="sm" asChild className="mt-4">
-                    <Link href="/controles" aria-label="Navegar al panel de control">
-                        <Shield className="mr-2 h-4 w-4" />
-                        Admin
+                  <SheetClose asChild key={`${link.href}-${link.label}-mobile`}>
+                    <Link
+                      href={link.href}
+                      className={cn("block px-2 py-1 text-lg",
+                          pathname === link.href ? 'text-primary font-semibold' : 'text-foreground'
+                      )}
+                    >
+                      {link.label}
                     </Link>
-                  </Button>
+                  </SheetClose>
+                ))}
+                <SheetClose asChild>
+                  <Button variant="outline" size="sm" asChild className="mt-4">
+                      <Link href="/controles" aria-label="Navegar al panel de control">
+                          <Shield className="mr-2 h-4 w-4" />
+                          Admin
+                      </Link>
+                    </Button>
+                </SheetClose>
               </nav>
             </SheetContent>
           </Sheet>

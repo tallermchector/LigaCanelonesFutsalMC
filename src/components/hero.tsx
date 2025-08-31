@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative py-20 md:py-32 bg-[hsl(var(--background))] text-center overflow-hidden"
+      className="relative pt-32 pb-20 md:pt-40 md:pb-28 bg-[hsl(var(--background))] text-center overflow-hidden"
       aria-label="Sección principal de Liga Canelones Futsal"
     >
       <div className="absolute inset-0 bg-grid-pattern opacity-10" style={{ maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0))' }} />
@@ -28,7 +28,7 @@ export function Hero() {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4 animate-fade-in [animation-delay:0.3s]">
           <Button size="lg" asChild>
-            <Link href="#news-summary" scroll={true}>Ver Noticias</Link>
+            <Link href="/partidos">Ver Partidos</Link>
           </Button>
           <Button size="lg" variant="outline" className="border-accent text-accent hover:bg-accent/10 hover:text-accent" asChild>
             <Link href="#teams">Explorar Equipos</Link>
