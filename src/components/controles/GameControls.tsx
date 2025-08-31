@@ -4,7 +4,6 @@
 import { TeamPanel } from './TeamPanel';
 import { ControlsPanel } from './ControlsPanel';
 import { useGame } from '@/contexts/GameProvider';
-import { EventButtons } from './EventButtons';
 
 export function GameControls() {
   const { state } = useGame();
@@ -18,7 +17,6 @@ export function GameControls() {
       <TeamPanel teamId="A" />
       <div className="flex flex-col justify-start items-center py-4 md:py-0">
         <ControlsPanel />
-        <EventButtons />
       </div>
       <TeamPanel teamId="B" />
     </div>

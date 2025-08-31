@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { GameProvider } from '@/contexts/GameProvider';
 import { Scoreboard } from '@/components/controles/Scoreboard';
 import { GameControls } from '@/components/controles/GameControls';
+import { EventButtons } from '@/components/controles/EventButtons';
 
 function MatchControlSkeleton() {
     return (
@@ -110,6 +111,9 @@ export default function MatchControlPage() {
           </div>
           <div className="w-full max-w-6xl mb-4">
             <Scoreboard />
+          </div>
+           <div className="w-full max-w-4xl mb-4">
+            <EventButtons />
           </div>
           <div className="w-full max-w-6xl flex-grow">
             <GameControls />

@@ -19,20 +19,20 @@ export function EventButtons() {
     if (!selectedPlayer) return null;
     const team = selectedPlayer.teamId === 'A' ? teamA : teamB;
     const player = team?.players?.find(p => p.id === selectedPlayer.playerId);
-    return player ? `${player.name} (${team?.name})` : null;
+    return player ? `${player.name} (#${player.number})` : null;
   }
 
   const selectedPlayerInfo = getPlayerInfo();
 
   return (
-    <Card className="w-full max-w-sm mt-8 shadow-md">
+    <Card className="w-full shadow-md">
       <CardHeader className="text-center pb-2">
         <CardTitle className="text-lg text-primary">Registrar Evento</CardTitle>
         <CardDescription className="h-5">
             {selectedPlayerInfo ? `Para: ${selectedPlayerInfo}` : 'Seleccione un jugador'}
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-3 pt-4">
+      <CardContent className="flex justify-center flex-wrap gap-3 pt-4">
         <Button 
             onClick={() => handleAddEvent('GOAL')} 
             disabled={!selectedPlayer}
