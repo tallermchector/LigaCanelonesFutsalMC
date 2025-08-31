@@ -2,33 +2,35 @@
 import type { SocialLink } from '@/types';
 import { InstagramIcon, FacebookIcon, GlobeIcon, YoutubeIcon } from '@/components/icons';
 
+const createBg = (color: string) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><defs><filter id="f"><feTurbulence type="fractalNoise" baseFrequency="0.05 0.2" numOctaves="3" result="noise" /><feColorMatrix in="noise" type="saturate" values="0" result="grayscale" /><feComponentTransfer in="grayscale" result="coloredNoise"><feFuncR type="linear" slope="4" intercept="0" /><feFuncG type="linear" slope="4" intercept="0" /><feFuncB type="linear" slope="4" intercept="0" /></feComponentTransfer><feFlood flood-color="${color}" result="color" /><feComposite in="color" in2="coloredNoise" operator="in" result="texture" /><feBlend in="SourceGraphic" in2="texture" mode="multiply" /></filter></defs><rect width="100%" height="100%" filter="url(#f)" /></svg>`;
+
 export const socialLinks: SocialLink[] = [
   {
     name: 'Instagram',
     url: 'https://www.instagram.com/ligacanariadefutsaloficial/',
     icon: InstagramIcon,
-    imageUrl: 'https://images.unsplash.com/photo-1571182873726-f1ba0cdf6bde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzb2NpYWwlMjBtZWRpYSUyMGFic3RyYWN0fGVufDB8fHx8MTc1NjY4MjA2M3ww&ixlib=rb-4.1.0&q=80&w=1080',
+    background: createBg('#E1306C'),
     color: '#E1306C',
   },
   {
     name: 'Facebook',
     url: 'https://www.facebook.com/Ligacanariadefutsal',
     icon: FacebookIcon,
-    imageUrl: 'https://images.unsplash.com/photo-1698332328523-a450d7d29d95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzb2NpYWwlMjBtZWRpYSUyMGFic3RyYWN0fGVufDB8fHx8MTc1NjY4MjA2M3ww&ixlib=rb-4.1.0&q=80&w=1080',
+    background: createBg('#1877F2'),
     color: '#1877F2',
   },
   {
     name: 'YouTube',
     url: 'https://youtube.com/@ligacanariadefutsaltv',
     icon: YoutubeIcon,
-    imageUrl: 'https://images.unsplash.com/photo-1511171735792-048024585d63?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c29jaWFsJTIwbWVkaWElMjBhYnN0cmFjdHxlbnwwfHx8fDE3NTY2ODIwNjN8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    background: createBg('#FF0000'),
     color: '#FF0000',
   },
   {
     name: 'Sitio Web',
     url: 'https://ligacanelonesfutsalmc.netlify.app/',
     icon: GlobeIcon,
-    imageUrl: 'https://images.unsplash.com/photo-1634836863374-aa57a032eb82?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzb2NpYWwlMjBtZWRpYSUyMGFic3RyYWN0fGVufDB8fHx8MTc1NjY4MjA2M3ww&ixlib=rb-4.1.0&q=80&w=1080',
+    background: createBg('#800020'),
     color: 'hsl(var(--primary))',
   },
 ];

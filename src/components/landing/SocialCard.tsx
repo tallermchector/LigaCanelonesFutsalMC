@@ -3,10 +3,10 @@
 
 import type { SocialLink } from '@/types';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 interface SocialCardProps {
   link: SocialLink;
@@ -14,20 +14,24 @@ interface SocialCardProps {
 
 export function SocialCard({ link }: SocialCardProps) {
   const Icon = link.icon;
+  const [backgroundUrl, setBackgroundUrl] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const encodedSvg = window.btoa(link.background);
+      setBackgroundUrl(`data:image/svg+xml;base64,${encodedSvg}`);
+    }
+  }, [link.background]);
+
 
   return (
     <Link href={link.url} target="_blank" rel="noopener noreferrer" className="block group h-full">
-      <Card className="relative flex h-full flex-col overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-primary/20 bg-card isolate">
-        <Image 
-            src={link.imageUrl}
-            alt={`Fondo para ${link.name}`}
-            fill
-            className="object-cover -z-10 transition-transform duration-300 group-hover:scale-110"
-            data-ai-hint="social media abstract"
-        />
+      <Card 
+        className="relative flex h-full flex-col overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-primary/20 bg-card isolate"
+        style={{ backgroundImage: `url("${backgroundUrl}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        >
         <div 
-          className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors -z-10"
-          style={{ backgroundColor: `${link.color}50` }}
+          className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors -z-10"
         ></div>
 
         <CardContent className={cn(
