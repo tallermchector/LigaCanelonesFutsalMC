@@ -1,7 +1,15 @@
+
 'use server';
 
-import type { FullMatch, MatchStatus } from '@/types';
+import type { FullMatch, MatchStatus, MatchStats, GameEvent, Player, Team } from '@/types';
 import { futsalTeams } from '@/data/teams';
+
+// Helper to get a random player from a team
+const getRandomPlayer = (team: Team): Player | undefined => {
+  if (!team.players || team.players.length === 0) return undefined;
+  const randomIndex = Math.floor(Math.random() * team.players.length);
+  return team.players[randomIndex];
+};
 
 // Mock data generation
 function createMockMatch(id: number, status: MatchStatus): FullMatch {
@@ -10,11 +18,14 @@ function createMockMatch(id: number, status: MatchStatus): FullMatch {
   if (teamAIndex === teamBIndex) {
     teamBIndex = (teamBIndex + 1) % futsalTeams.length;
   }
+  const teamA = futsalTeams[teamAIndex];
+  const teamB = futsalTeams[teamBIndex];
 
   const now = new Date();
   let scheduledTime: Date;
   let scoreA = 0;
   let scoreB = 0;
+  let events: GameEvent[] = [];
 
   switch (status) {
     case 'SCHEDULED':
@@ -25,8 +36,36 @@ function createMockMatch(id: number, status: MatchStatus): FullMatch {
       break;
     case 'FINISHED':
        scheduledTime = new Date(now.getTime() - (id + 1) * 3 * 60 * 60 * 1000); // Few hours/days ago
-       scoreA = (id % 5) + 1;
-       scoreB = ((id + 3) % 5);
+       scoreA = (id % 4) + 1; // Example: 1-4 goals
+       scoreB = ((id + 2) % 4); // Example: 0-3 goals
+       
+       // Generate mock events
+       for (let i = 0; i < scoreA; i++) {
+         const player = getRandomPlayer(teamA);
+         if (player) {
+           events.push({ id: `evt-a-goal-${i}`, type: 'GOAL', teamId: 'A', playerId: player.id, playerName: player.name, teamName: teamA.name, timestamp: 600 + i * 120 });
+           // Add a chance for an assist
+           if (Math.random() > 0.5) {
+             const assister = getRandomPlayer(teamA);
+             if (assister && assister.id !== player.id) {
+               events.push({ id: `evt-a-assist-${i}`, type: 'ASSIST', teamId: 'A', playerId: assister.id, playerName: assister.name, teamName: teamA.name, timestamp: 600 + i * 120 - 5 });
+             }
+           }
+         }
+       }
+        for (let i = 0; i < scoreB; i++) {
+         const player = getRandomPlayer(teamB);
+         if (player) {
+           events.push({ id: `evt-b-goal-${i}`, type: 'GOAL', teamId: 'B', playerId: player.id, playerName: player.name, teamName: teamB.name, timestamp: 700 + i * 150 });
+         }
+       }
+       // Add some foul events
+       for (let i = 0; i < 3; i++) {
+          const playerA = getRandomPlayer(teamA);
+          if (playerA) events.push({ id: `evt-a-foul-${i}`, type: 'FOUL', teamId: 'A', playerId: playerA.id, playerName: playerA.name, teamName: teamA.name, timestamp: 300 + i * 200 });
+          const playerB = getRandomPlayer(teamB);
+          if (playerB) events.push({ id: `evt-b-foul-${i}`, type: 'FOUL', teamId: 'B', playerId: playerB.id, playerName: playerB.name, teamName: teamB.name, timestamp: 400 + i * 250 });
+       }
       break;
   }
 
@@ -34,10 +73,11 @@ function createMockMatch(id: number, status: MatchStatus): FullMatch {
     id: `match-${id}`,
     scheduledTime: scheduledTime.toISOString(),
     status,
-    teamA: futsalTeams[teamAIndex],
-    teamB: futsalTeams[teamBIndex],
+    teamA,
+    teamB,
     scoreA,
     scoreB,
+    events,
   };
 }
 
@@ -49,19 +89,55 @@ const mockMatches: FullMatch[] = [
 
 export async function getAllMatches(): Promise<FullMatch[]> {
   console.log('Fetching all matches...');
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // In a real app, you would fetch this from a database.
+  await new Promise(resolve => setTimeout(resolve, 500));
   return mockMatches;
 }
 
 export async function getMatchById(id: string): Promise<FullMatch | undefined> {
   console.log(`Fetching match with id: ${id}`);
-  // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 500));
-  
   const match = mockMatches.find(m => m.id === id);
-  
   return match;
+}
+
+export async function getMatchStats(id: string): Promise<MatchStats | undefined> {
+  const match = await getMatchById(id);
+  if (!match || !match.events) {
+    return undefined;
+  }
+
+  const allPlayers = [...match.teamA.players, ...match.teamB.players];
+
+  const getStatsForType = (eventType: GameEventType) => {
+    const eventCounts = match.events!
+      .filter(event => event.type === eventType)
+      .reduce((acc, event) => {
+        acc[event.playerId] = (acc[event.playerId] || 0) + 1;
+        return acc;
+      }, {} as Record<number, number>);
+
+    return Object.entries(eventCounts)
+      .map(([playerId, count]) => {
+        const player = allPlayers.find(p => p.id === parseInt(playerId, 10));
+        return player ? { player, count } : null;
+      })
+      .filter(Boolean)
+      .sort((a, b) => b!.count - a!.count);
+  };
+  
+  const topScorers = getStatsForType('GOAL');
+  const assistsLeaders = getStatsForType('ASSIST');
+  const foulsByPlayer = getStatsForType('FOUL');
+  const shotsByPlayer = getStatsForType('SHOT');
+
+
+  return {
+    ...match,
+    stats: {
+      topScorers: topScorers as any,
+      assistsLeaders: assistsLeaders as any,
+      foulsByPlayer: foulsByPlayer as any,
+      shotsByPlayer: shotsByPlayer as any,
+    },
+  };
 }

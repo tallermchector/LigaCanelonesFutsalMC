@@ -1,4 +1,5 @@
 
+
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED';
 
 export interface Player {
@@ -15,16 +16,6 @@ export interface Team {
   players: Player[];
 }
 
-export interface FullMatch {
-  id: string;
-  scheduledTime: string; 
-  status: MatchStatus;
-  teamA: Team;
-  teamB: Team;
-  scoreA: number;
-  scoreB: number;
-}
-
 export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT';
 
 export interface GameEvent {
@@ -36,6 +27,32 @@ export interface GameEvent {
   teamName: string;
   timestamp: number; // Time in seconds when event occurred
 }
+
+export interface FullMatch {
+  id: string;
+  scheduledTime: string; 
+  status: MatchStatus;
+  teamA: Team;
+  teamB: Team;
+  scoreA: number;
+  scoreB: number;
+  events?: GameEvent[];
+}
+
+export type PlayerStat = {
+  player: Player;
+  count: number;
+};
+
+export interface MatchStats extends FullMatch {
+  stats: {
+    topScorers: PlayerStat[];
+    assistsLeaders: PlayerStat[];
+    foulsByPlayer: PlayerStat[];
+    shotsByPlayer: PlayerStat[];
+  };
+}
+
 
 export type SelectedPlayer = {
   teamId: 'A' | 'B';
