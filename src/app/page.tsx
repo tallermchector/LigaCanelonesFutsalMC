@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { PageHero } from '@/components/layout/PageHero';
 import { SocialsBanner } from '@/components/landing/SocialsBanner';
+import { LatestNewsBanner } from '@/components/landing/LatestNewsBanner';
 
 export default function Home() {
   return (
@@ -29,17 +30,7 @@ export default function Home() {
           <p className="text-muted-foreground mt-2">Próximamente...</p>
         </section>
         <FinishedMatches />
-         <section id="news" className="py-20 text-center bg-secondary">
-            <div className="container px-4 md:px-6">
-                <h2 className="text-3xl font-bold text-primary mb-2">Últimas Noticias</h2>
-                <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">Enterate de las últimas novedades de la liga.</p>
-                <div className="mt-8">
-                    <Button asChild>
-                        <Link href="/blog">Ver todas las noticias</Link>
-                    </Button>
-                </div>
-            </div>
-        </section>
+        <LatestNewsBanner />
         <SocialsBanner />
       </main>
       <Footer />
