@@ -3,7 +3,7 @@
 import { useGame } from '@/contexts/GameProvider';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
-import { Shield, Timer, Whistle, Flag } from 'lucide-react';
+import { Shield, Timer, Flag } from 'lucide-react';
 
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
@@ -34,7 +34,7 @@ export function Scoreboard() {
             />
             <h2 className="text-lg font-bold text-card-foreground truncate">{teamA.name}</h2>
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1"><Whistle className="h-4 w-4" /> Faltas: {foulsA}</div>
+                <div className="flex items-center gap-1"><Shield className="h-4 w-4" /> Faltas: {foulsA}</div>
                 <div className="flex items-center gap-1"><Timer className="h-4 w-4" /> T.M.: {timeoutsA}</div>
             </div>
           </div>
@@ -64,7 +64,7 @@ export function Scoreboard() {
             />
             <h2 className="text-lg font-bold text-card-foreground truncate">{teamB.name}</h2>
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1"><Whistle className="h-4 w-4" /> Faltas: {foulsB}</div>
+                <div className="flex items-center gap-1"><Shield className="h-4 w-4" /> Faltas: {foulsB}</div>
                 <div className="flex items-center gap-1"><Timer className="h-4 w-4" /> T.M.: {timeoutsB}</div>
             </div>
           </div>
