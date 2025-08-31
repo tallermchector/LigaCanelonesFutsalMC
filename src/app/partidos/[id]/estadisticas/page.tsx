@@ -9,10 +9,33 @@ import { EventsList } from '@/components/partidos/estadisticas/EventsList';
 import { FutsalBallIcon } from '@/components/icons';
 import { Hand } from 'lucide-react';
 import { PageHero } from '@/components/layout/PageHero';
+import type { Metadata } from 'next';
 
 interface EstadisticasPageProps {
   params: {
     id: string;
+  };
+}
+
+export async function generateMetadata({ params }: EstadisticasPageProps): Promise<Metadata> {
+  const match = await getMatchStats(params.id);
+
+  if (!match) {
+    return {
+      title: 'Estadísticas no encontradas',
+    };
+  }
+
+  const title = `Estadísticas: ${match.teamA.name} vs ${match.teamB.name}`;
+  const description = `Estadísticas completas y resumen del partido de futsal entre ${match.teamA.name} y ${match.teamB.name}, resultado final ${match.scoreA} - ${match.scoreB}.`;
+
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+    },
   };
 }
 
