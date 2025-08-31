@@ -34,8 +34,8 @@ export default async function BannerPage({ params }: BannerPageProps) {
     }
     
     // Simulate some live data for now
-    const liveTime = match.status === 'LIVE' ? Math.floor(Math.random() * 1200) : 1200;
-    const livePeriod = match.status === 'LIVE' ? (Math.random() > 0.5 ? 2 : 1) : 1;
+    const liveTime = match.status === 'LIVE' ? 1200 - ((new Date().getMinutes() * 60 + new Date().getSeconds()) % 1200) : 1200;
+    const livePeriod = match.status === 'LIVE' ? (new Date().getMinutes() > 20 ? 2 : 1) : 1;
 
 
     return (
@@ -51,13 +51,13 @@ export default async function BannerPage({ params }: BannerPageProps) {
                     team1Name={match.teamA.name}
                     team1Logo={match.teamA.logoUrl || ''}
                     score1={match.scoreA}
-                    fouls1={Math.floor(Math.random() * 6)} 
-                    timeouts1={Math.random() > 0.5 ? 0 : 1}
+                    fouls1={match.id.charCodeAt(match.id.length-1) % 6} 
+                    timeouts1={match.id.charCodeAt(match.id.length-1) % 2}
                     team2Name={match.teamB.name}
                     team2Logo={match.teamB.logoUrl || ''}
                     score2={match.scoreB}
-                    fouls2={Math.floor(Math.random() * 6)}
-                    timeouts2={Math.random() > 0.5 ? 0 : 1}
+                    fouls2={(match.id.charCodeAt(match.id.length-1) + 1) % 6}
+                    timeouts2={(match.id.charCodeAt(match.id.length-1) + 1) % 2}
                     timeLeft={liveTime}
                     period={getPeriodLabel(match.status, livePeriod)}
                 />
@@ -69,4 +69,3 @@ export default async function BannerPage({ params }: BannerPageProps) {
         </div>
     );
 }
-

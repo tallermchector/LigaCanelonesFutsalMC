@@ -1,14 +1,14 @@
 
 'use server';
 
-import type { FullMatch, MatchStatus, MatchStats, GameEvent, Player, Team } from '@/types';
+import type { FullMatch, MatchStatus, MatchStats, GameEvent, Player, Team, GameEventType } from '@/types';
 import { futsalTeams } from '@/data/teams';
 
 // Helper to get a random player from a team
-const getRandomPlayer = (team: Team): Player | undefined => {
+const getRandomPlayer = (team: Team, index: number): Player | undefined => {
   if (!team.players || team.players.length === 0) return undefined;
-  const randomIndex = Math.floor(Math.random() * team.players.length);
-  return team.players[randomIndex];
+  const playerIndex = index % team.players.length;
+  return team.players[playerIndex];
 };
 
 // Mock data generation
@@ -41,12 +41,12 @@ function createMockMatch(id: number, status: MatchStatus): FullMatch {
        
        // Generate mock events
        for (let i = 0; i < scoreA; i++) {
-         const player = getRandomPlayer(teamA);
+         const player = getRandomPlayer(teamA, i);
          if (player) {
            events.push({ id: `evt-a-goal-${i}`, type: 'GOAL', teamId: 'A', playerId: player.id, playerName: player.name, teamName: teamA.name, timestamp: 600 + i * 120 });
            // Add a chance for an assist
-           if (Math.random() > 0.5) {
-             const assister = getRandomPlayer(teamA);
+           if (i % 2 === 0) {
+             const assister = getRandomPlayer(teamA, i + 1);
              if (assister && assister.id !== player.id) {
                events.push({ id: `evt-a-assist-${i}`, type: 'ASSIST', teamId: 'A', playerId: assister.id, playerName: assister.name, teamName: teamA.name, timestamp: 600 + i * 120 - 5 });
              }
@@ -54,16 +54,16 @@ function createMockMatch(id: number, status: MatchStatus): FullMatch {
          }
        }
         for (let i = 0; i < scoreB; i++) {
-         const player = getRandomPlayer(teamB);
+         const player = getRandomPlayer(teamB, i);
          if (player) {
            events.push({ id: `evt-b-goal-${i}`, type: 'GOAL', teamId: 'B', playerId: player.id, playerName: player.name, teamName: teamB.name, timestamp: 700 + i * 150 });
          }
        }
        // Add some foul events
        for (let i = 0; i < 3; i++) {
-          const playerA = getRandomPlayer(teamA);
+          const playerA = getRandomPlayer(teamA, i);
           if (playerA) events.push({ id: `evt-a-foul-${i}`, type: 'FOUL', teamId: 'A', playerId: playerA.id, playerName: playerA.name, teamName: teamA.name, timestamp: 300 + i * 200 });
-          const playerB = getRandomPlayer(teamB);
+          const playerB = getRandomPlayer(teamB, i);
           if (playerB) events.push({ id: `evt-b-foul-${i}`, type: 'FOUL', teamId: 'B', playerId: playerB.id, playerName: playerB.name, teamName: teamB.name, timestamp: 400 + i * 250 });
        }
       break;
@@ -121,8 +121,8 @@ export async function getMatchStats(id: string): Promise<MatchStats | undefined>
         const player = allPlayers.find(p => p.id === parseInt(playerId, 10));
         return player ? { player, count } : null;
       })
-      .filter(Boolean)
-      .sort((a, b) => b!.count - a!.count);
+      .filter((p): p is { player: Player, count: number } => p !== null)
+      .sort((a, b) => b.count - a.count);
   };
   
   const topScorers = getStatsForType('GOAL');
@@ -134,10 +134,10 @@ export async function getMatchStats(id: string): Promise<MatchStats | undefined>
   return {
     ...match,
     stats: {
-      topScorers: topScorers as any,
-      assistsLeaders: assistsLeaders as any,
-      foulsByPlayer: foulsByPlayer as any,
-      shotsByPlayer: shotsByPlayer as any,
+      topScorers: topScorers,
+      assistsLeaders: assistsLeaders,
+      foulsByPlayer: foulsByPlayer,
+      shotsByPlayer: shotsByPlayer,
     },
   };
 }
