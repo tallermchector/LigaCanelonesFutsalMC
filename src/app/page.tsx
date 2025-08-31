@@ -1,3 +1,4 @@
+
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { LiveMatchesBanner } from '@/components/landing/LiveMatchesBanner';
@@ -25,10 +26,6 @@ export default function Home() {
           </Button>
         </PageHero>
         <LiveMatchesBanner />
-        <section id="teams" className="py-20 text-center">
-          <h2 className="text-3xl font-bold">Equipos</h2>
-          <p className="text-muted-foreground mt-2">Próximamente...</p>
-        </section>
         <FinishedMatches />
         <LatestNewsBanner />
         <SocialsBanner />
