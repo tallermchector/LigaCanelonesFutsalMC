@@ -1,129 +1,92 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ControlMatchCard } from "@/components/controles/ControlMatchCard";
-import { Skeleton } from "@/components/ui/skeleton";
-import type { Match } from "@/components/controles/ControlMatchCard";
+import { useEffect, useState } from 'react';
+import { Header } from '@/components/layout/header';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { ControlMatchCard } from '@/components/controles/ControlMatchCard';
+import { MatchListSkeleton } from '@/components/controles/MatchListSkeleton';
+import { useToast } from '@/hooks/use-toast';
+import { getAllMatches } from '@/actions/match-actions';
+import type { FullMatch, MatchStatus } from '@/types';
 
 export default function ControlesPage() {
-  const [matches, setMatches] = useState<Match[]>([]);
+  const [matches, setMatches] = useState<FullMatch[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("SCHEDULED");
+  const [activeTab, setActiveTab] = useState<MatchStatus>('SCHEDULED');
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
-    setLoading(true);
-    // Simulate data loading
-    setTimeout(() => {
-      setMatches([
-        {
-          id: "1",
-          teamA: { name: "Garra Charrua", logo: "https://picsum.photos/100/100" },
-          teamB: { name: "Los Pibes", logo: "https://picsum.photos/100/100" },
-          date: "Sábado, 10 Ago - 20:00hs",
-          status: "SCHEDULED",
-        },
-        {
-          id: "2",
-          teamA: { name: "La Furia", logo: "https://picsum.photos/100/100" },
-          teamB: { name: "El Taladro", logo: "https://picsum.photos/100/100" },
-          date: "Sábado, 10 Ago - 21:30hs",
-          status: "SCHEDULED",
-        },
-        {
-          id: "3",
-          teamA: { name: "Toca y Pasa", logo: "https://picsum.photos/100/100" },
-          teamB: { name: "Atlas", logo: "https://picsum.photos/100/100" },
-          date: "Domingo, 11 Ago - 19:00hs",
-          status: "LIVE",
-        },
-        {
-            id: "4",
-            teamA: { name: "Leyendas FC", logo: "https://picsum.photos/100/100" },
-            teamB: { name: "Resto del Mundo", logo: "https://picsum.photos/100/100" },
-            date: "Viernes, 9 Ago - 22:00hs",
-            status: "FINISHED",
-        },
-      ]);
-      setLoading(false);
-    }, 1500);
-  }, []);
+    async function loadMatches() {
+      setLoading(true);
+      setError(null);
+      try {
+        const fetchedMatches = await getAllMatches();
+        setMatches(fetchedMatches);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'No se pudieron cargar los partidos.';
+        setError(errorMessage);
+        toast({
+          variant: 'destructive',
+          title: 'Error de Carga',
+          description: errorMessage,
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  const filteredMatches = matches.filter((match) => match.status === activeTab);
+    loadMatches();
+  }, [toast]);
+
+  const filteredMatches = matches.filter((m) => m.status === activeTab);
 
   return (
-    <div className="container mx-auto py-8 px-4 md:px-6">
-      <h1 className="text-3xl font-bold tracking-tight text-primary mb-6">
-        Panel de Control
-      </h1>
-      <Tabs
-        defaultValue="SCHEDULED"
-        onValueChange={(value) => setActiveTab(value)}
-        className="w-full"
-      >
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="SCHEDULED">Programados</TabsTrigger>
-          <TabsTrigger value="LIVE">En Vivo</TabsTrigger>
-          <TabsTrigger value="FINISHED">Finalizados</TabsTrigger>
-        </TabsList>
-        <TabsContent value="SCHEDULED">
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-              {[...Array(3)].map((_, i) => (
-                <Skeleton key={i} className="h-64 w-full" />
-              ))}
-            </div>
-          ) : filteredMatches.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-              {filteredMatches.map((match) => (
-                <ControlMatchCard key={match.id} match={match} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 text-muted-foreground">
-              <p>No hay partidos programados.</p>
-            </div>
-          )}
-        </TabsContent>
-        <TabsContent value="LIVE">
-          {loading ? (
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-             {[...Array(1)].map((_, i) => (
-               <Skeleton key={i} className="h-64 w-full" />
-             ))}
-           </div>
-          ) : filteredMatches.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-              {filteredMatches.map((match) => (
-                <ControlMatchCard key={match.id} match={match} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 text-muted-foreground">
-              <p>No hay partidos en vivo en este momento.</p>
-            </div>
-          )}
-        </TabsContent>
-        <TabsContent value="FINISHED">
+    <div className="flex min-h-screen flex-col bg-[hsl(var(--background))]">
+      <Header />
+      <main className="container mx-auto py-8 px-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+            <h1 className="text-3xl font-bold text-primary mb-4 sm:mb-0">
+            Control de Partidos
+            </h1>
+            <Tabs
+            defaultValue="SCHEDULED"
+            onValueChange={(value) => setActiveTab(value as MatchStatus)}
+            aria-label="Filtrar partidos por estado"
+            className="w-full sm:w-auto"
+            >
+            <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="SCHEDULED" role="tab">
+                Programados
+                </TabsTrigger>
+                <TabsTrigger value="LIVE" role="tab">
+                En Vivo
+                </TabsTrigger>
+                <TabsTrigger value="FINISHED" role="tab">
+                Finalizados
+                </TabsTrigger>
+            </TabsList>
+            </Tabs>
+        </div>
+
         {loading ? (
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-             {[...Array(1)].map((_, i) => (
-               <Skeleton key={i} className="h-64 w-full" />
-             ))}
-           </div>
-          ) : filteredMatches.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-              {filteredMatches.map((match) => (
-                <ControlMatchCard key={match.id} match={match} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 text-muted-foreground">
-              <p>No hay partidos finalizados recientemente.</p>
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+          <MatchListSkeleton />
+        ) : error ? (
+          <div className="flex justify-center items-center h-40 text-center text-red-500 bg-red-500/10 rounded-lg">
+            <p>Error: {error}</p>
+          </div>
+        ) : filteredMatches.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {filteredMatches.map((match) => (
+              <ControlMatchCard key={match.id} match={match} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex justify-center items-center h-40 text-center text-muted-foreground bg-secondary/50 rounded-lg">
+            <p>No hay partidos en este estado.</p>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

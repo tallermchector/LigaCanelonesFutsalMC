@@ -1,8 +1,9 @@
+// SummarizeFutsalNews Flow
 'use server';
 /**
- * @fileOverview A flow that summarizes futsal news articles from a given URL.
+ * @fileOverview A flow that summarizes a futsal news article from a given URL.
  *
- * - summarizeFutsalNews - A function that takes a URL and returns a short summary of the article.
+ * - summarizeFutsalNews - A function that summarizes a futsal news article.
  * - SummarizeFutsalNewsInput - The input type for the summarizeFutsalNews function.
  * - SummarizeFutsalNewsOutput - The return type for the summarizeFutsalNews function.
  */
@@ -24,15 +25,11 @@ export async function summarizeFutsalNews(input: SummarizeFutsalNewsInput): Prom
   return summarizeFutsalNewsFlow(input);
 }
 
-const summarizeFutsalNewsPrompt = ai.definePrompt({
+const prompt = ai.definePrompt({
   name: 'summarizeFutsalNewsPrompt',
   input: {schema: SummarizeFutsalNewsInputSchema},
   output: {schema: SummarizeFutsalNewsOutputSchema},
-  prompt: `You are an AI expert in summarizing futsal news articles.
-
-  Please provide a concise summary of the article found at the following URL:
-  {{{url}}}
-  `,
+  prompt: `You are an expert futsal news summarizer.  Summarize the article at the following URL in a concise manner:\n\n{{{url}}}`,  
 });
 
 const summarizeFutsalNewsFlow = ai.defineFlow(
@@ -42,7 +39,7 @@ const summarizeFutsalNewsFlow = ai.defineFlow(
     outputSchema: SummarizeFutsalNewsOutputSchema,
   },
   async input => {
-    const {output} = await summarizeFutsalNewsPrompt(input);
+    const {output} = await prompt(input);
     return output!;
   }
 );
