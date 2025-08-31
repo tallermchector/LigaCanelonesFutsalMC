@@ -13,7 +13,7 @@ export function GameControls() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl h-full">
+    <div className="flex flex-col md:flex-row gap-8 w-full h-full">
       <TeamPanel teamId="A" />
       <div className="flex flex-col justify-start items-center py-4 md:py-0">
         <ControlsPanel />
