@@ -1,3 +1,4 @@
+
 import type { FC, ReactNode, SVGProps } from 'react';
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED';
@@ -65,9 +66,9 @@ export interface GameState {
   teamA: Team | null;
   teamB: Team | null;
   scoreA: number;
-  scoreB: number;
+  scoreB: 0,
   foulsA: number;
-  foulsB: number;
+  foulsB: 0,
   timeoutsA: number;
   timeoutsB: number;
   period: number;
@@ -84,11 +85,13 @@ export type Post = {
   content: string;
   imageUrl: string;
   published: boolean;
-  createdAt: string; // Usamos string para simplificar los datos locales
+  createdAt: string;
+  category: string;
+  excerpt: string;
 };
 
 export interface SocialLink {
   name: string;
   url: string;
-  icon?: FC<SVGProps<SVGSVGElement>>;
+  icon?: React.FC<React.SVGProps<SVGSVGElement>>;
 }

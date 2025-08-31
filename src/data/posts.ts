@@ -1,3 +1,4 @@
+
 import type { Post } from '@/types';
 
 export const mockPosts: Post[] = [
@@ -5,6 +6,8 @@ export const mockPosts: Post[] = [
     id: 1,
     title: '¡Comienza la temporada de Futsal en Canelones!',
     slug: 'comienza-temporada-futsal-canelones',
+    category: 'Noticias',
+    excerpt: 'La liga se pone en marcha con una jornada inaugural cargada de expectación. Los equipos están listos para competir por el título.',
     content: '<p>El futsal vuelve a Canelones con más fuerza que nunca. Los equipos se preparan para una temporada que promete emociones fuertes y partidos inolvidables. ¡No te pierdas el arranque este fin de semana!</p>',
     imageUrl: '/blog/post-1.jpg',
     published: true,
@@ -14,6 +17,8 @@ export const mockPosts: Post[] = [
     id: 2,
     title: 'Análisis de los favoritos al título',
     slug: 'analisis-favoritos-titulo',
+    category: 'Análisis',
+    excerpt: '¿Quiénes son los principales contendientes para levantar la copa? Analizamos las fortalezas y debilidades de los equipos favoritos.',
     content: '<p>En este artículo analizamos a los principales candidatos para levantar la copa esta temporada. ¿Repetirá el campeón o tendremos una sorpresa?</p>',
     imageUrl: '/blog/post-2.jpg',
     published: true,
@@ -23,6 +28,8 @@ export const mockPosts: Post[] = [
     id: 3,
     title: 'La figura de la primera fecha',
     slug: 'figura-primera-fecha',
+    category: 'Jugadores',
+    excerpt: 'Repasamos la actuación del jugador más destacado de la jornada inaugural, cuyas habilidades fueron clave para la victoria de su equipo.',
     content: '<p>Repasamos la actuación del jugador más destacado de la primera jornada, autor de un hat-trick y pieza clave en la victoria de su equipo.</p>',
     imageUrl: '/blog/post-3.jpg',
     published: true,
@@ -32,6 +39,8 @@ export const mockPosts: Post[] = [
     id: 4,
     title: 'Entrevista exclusiva con el DT del equipo revelación',
     slug: 'entrevista-dt-revelacion',
+    category: 'Entrevistas',
+    excerpt: 'Conversamos con el estratega detrás del equipo que sorprendió a todos en la primera fecha. Conoce sus secretos y aspiraciones.',
     content: '<p>Conversamos con el entrenador del equipo que dio la sorpresa en la primera fecha. Nos cuenta las claves de su preparación y sus aspiraciones para el campeonato.</p>',
     imageUrl: '/blog/post-4.jpg',
     published: true,
@@ -39,8 +48,10 @@ export const mockPosts: Post[] = [
   },
   {
     id: 5,
-    title: 'Próxima fecha: Duelos clave en la parte alta de la tabla',
+    title: 'Próxima fecha: Duelos clave en la parte alta',
     slug: 'proxima-fecha-duelos-clave',
+    category: 'Partidos',
+    excerpt: 'La segunda fecha nos trae enfrentamientos directos entre los líderes. Analizamos los partidos que definirán la cima de la tabla.',
     content: '<p>La segunda fecha trae enfrentamientos directos entre los equipos que picaron en punta. Analizamos los partidos que no te puedes perder.</p>',
     imageUrl: '/blog/post-5.jpg',
     published: true,
