@@ -1,5 +1,6 @@
 
 
+
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED';
 
 export interface Player {
@@ -61,6 +62,7 @@ export type SelectedPlayer = {
 
 export interface GameState {
   matchId: string | null;
+  status: MatchStatus;
   teamA: Team | null;
   teamB: Team | null;
   scoreA: number;
