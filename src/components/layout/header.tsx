@@ -10,6 +10,7 @@ export function Header() {
   const navLinks = [
     { href: '/', label: 'Inicio' },
     { href: '/partidos', label: 'Partidos' },
+    { href: '/blog', label: 'Noticias' },
     { href: '/banner', label: 'Banners' },
     { href: '/controles', label: 'Controles' },
   ];
