@@ -112,11 +112,11 @@ export default function MatchControlPage() {
           <div className="flex-shrink-0 w-full max-w-7xl mx-auto">
             <Scoreboard />
           </div>
-          <div className="flex-grow pt-4 w-full max-w-7xl mx-auto">
-            <GameControls />
-          </div>
           <div className="flex-shrink-0 pt-4 w-full max-w-7xl mx-auto">
             <EventButtons />
+          </div>
+          <div className="flex-grow pt-4 w-full max-w-7xl mx-auto">
+            <GameControls />
           </div>
         </main>
       </div>
