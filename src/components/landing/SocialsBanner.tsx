@@ -17,7 +17,7 @@ export function SocialsBanner() {
             }}
         >
             <CarouselContent className="h-full">
-                {socialLinks.map((link: SocialLink, index) => {
+                {socialLinks.map((link: SocialLink) => {
                     const Icon = link.icon;
                     return(
                         <CarouselItem key={link.name} className="relative h-full">
