@@ -133,14 +133,10 @@
     animation: bounceSlow 3s ease-in-out infinite;
   }
   
-  .creative-carousel-hero .carousel-slider .swiper-slide.swiper-slide-active {
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-    z-index: 3;
-  }
-  
   .creative-carousel-hero {
-      height: 60vh;
-      min-height: 500px;
+    height: 60vh;
+    min-height: 500px;
+    max-height: 700px;
   }
 
   @keyframes fadeIn {
