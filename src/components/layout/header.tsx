@@ -1,22 +1,43 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
-import { Menu } from 'lucide-react';
+import { Menu, Shield } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 
 export function Header() {
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const navLinks = [
     { href: '/', label: 'Inicio' },
     { href: '/partidos', label: 'Partidos' },
     { href: '/blog', label: 'Noticias' },
     { href: '/banner', label: 'Banners' },
-    { href: '/controles', label: 'Controles' },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-colors duration-300",
+        scrolled ? 'bg-background/95 border-b backdrop-blur-sm' : 'bg-transparent'
+    )}>
       <div className="container flex h-14 max-w-screen-2xl items-center">
         <div className="mr-4 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
@@ -30,7 +51,9 @@ export function Header() {
               <Link
                 key={`${link.href}-${link.label}`}
                 href={link.href}
-                className="text-sm font-medium text-foreground/60 transition-colors hover:text-foreground/80"
+                className={cn("text-sm font-medium transition-colors hover:text-primary", 
+                    pathname === link.href ? 'text-primary font-semibold' : 'text-muted-foreground'
+                )}
               >
                 {link.label}
               </Link>
@@ -39,8 +62,11 @@ export function Header() {
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
           <div className="hidden md:block">
-             <Button variant="accent" size="sm" asChild>
-                <Link href="/controles" aria-label="Navegar al panel de control">Panel de Control</Link>
+             <Button variant="outline" size="sm" asChild>
+                <Link href="/controles" aria-label="Navegar al panel de control">
+                    <Shield className="mr-2 h-4 w-4" />
+                    Admin
+                </Link>
               </Button>
           </div>
           <Sheet>
@@ -57,13 +83,18 @@ export function Header() {
                   <Link
                     key={`${link.href}-${link.label}-mobile`}
                     href={link.href}
-                    className="block px-2 py-1 text-lg"
+                    className={cn("block px-2 py-1 text-lg",
+                        pathname === link.href ? 'text-primary font-semibold' : 'text-foreground'
+                    )}
                   >
                     {link.label}
                   </Link>
                 ))}
-                 <Button variant="accent" size="sm" asChild className="mt-4">
-                    <Link href="/controles" aria-label="Navegar al panel de control">Panel de Control</Link>
+                 <Button variant="outline" size="sm" asChild className="mt-4">
+                    <Link href="/controles" aria-label="Navegar al panel de control">
+                        <Shield className="mr-2 h-4 w-4" />
+                        Admin
+                    </Link>
                   </Button>
               </nav>
             </SheetContent>
