@@ -1,5 +1,4 @@
-
-import type { ReactNode } from 'react';
+import type { FC, ReactNode, SVGProps } from 'react';
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED';
 
@@ -91,5 +90,5 @@ export type Post = {
 export interface SocialLink {
   name: string;
   url: string;
-  icon?: ReactNode;
+  icon?: FC<SVGProps<SVGSVGElement>>;
 }
