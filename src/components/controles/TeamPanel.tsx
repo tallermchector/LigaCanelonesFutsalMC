@@ -24,11 +24,11 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
   };
 
   return (
-    <Card className="flex-1 shadow-md">
+    <Card className="flex-1 shadow-md h-full flex flex-col">
       <CardHeader>
         <CardTitle className="text-center text-primary">{team.name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-wrap items-start justify-center gap-4 pt-6">
+      <CardContent className="flex flex-wrap items-start justify-center gap-4 pt-6 overflow-y-auto">
         {team.players.map((player) => (
           <JerseyButton
             key={player.id}
