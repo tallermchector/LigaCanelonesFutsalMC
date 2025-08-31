@@ -33,6 +33,8 @@ function createMockMatch(id: number, status: MatchStatus): FullMatch {
       break;
     case 'LIVE':
       scheduledTime = new Date(now.getTime() - 30 * 60 * 1000); // 30 mins ago
+      scoreA = (id % 3); 
+      scoreB = ((id + 1) % 3);
       break;
     case 'FINISHED':
        scheduledTime = new Date(now.getTime() - (id + 1) * 3 * 60 * 60 * 1000); // Few hours/days ago
@@ -91,6 +93,12 @@ export async function getAllMatches(): Promise<FullMatch[]> {
   console.log('Fetching all matches...');
   await new Promise(resolve => setTimeout(resolve, 500));
   return mockMatches;
+}
+
+export async function getLiveMatches(): Promise<FullMatch[]> {
+    console.log('Fetching live matches...');
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockMatches.filter(match => match.status === 'LIVE');
 }
 
 export async function getMatchById(id: string): Promise<FullMatch | undefined> {
