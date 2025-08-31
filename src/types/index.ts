@@ -95,4 +95,7 @@ export interface SocialLink {
   url: string;
   icon?: React.FC<React.SVGProps<SVGSVGElement>>;
   imageUrl: string;
+  color: string;
+  textColor?: string;
 }
+

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowUpRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface SocialCardProps {
   link: SocialLink;
@@ -24,9 +25,15 @@ export function SocialCard({ link }: SocialCardProps) {
             className="object-cover -z-10 transition-transform duration-300 group-hover:scale-110"
             data-ai-hint="social media abstract"
         />
-        <div className="absolute inset-0 bg-black/60 -z-10"></div>
+        <div 
+          className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors -z-10"
+          style={{ backgroundColor: `${link.color}50` }}
+        ></div>
 
-        <CardContent className="relative z-10 flex flex-col flex-grow items-center justify-center p-6 text-white">
+        <CardContent className={cn(
+          "relative z-10 flex flex-col flex-grow items-center justify-center p-6 text-white transition-colors",
+          link.textColor ? `text-[${link.textColor}]` : 'text-white'
+        )}>
             {Icon && <Icon className="w-12 h-12 mb-4" />}
             <h3 className="text-xl font-bold">{link.name}</h3>
             <div className="mt-2 inline-flex items-center text-sm font-semibold opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -37,4 +44,3 @@ export function SocialCard({ link }: SocialCardProps) {
     </Link>
   );
 }
-
