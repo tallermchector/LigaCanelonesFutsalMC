@@ -7,13 +7,6 @@ import type { SocialLink } from '@/types';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Image from 'next/image';
 
-const socialImages = [
-    'https://picsum.photos/1920/1080?random=1',
-    'https://picsum.photos/1920/1080?random=2',
-    'https://picsum.photos/1920/1080?random=3',
-    'https://picsum.photos/1920/1080?random=4',
-];
-
 export function SocialsBanner() {
   return (
     <section className="relative w-full h-screen creative-carousel-hero">
@@ -29,7 +22,7 @@ export function SocialsBanner() {
                     return(
                         <CarouselItem key={link.name} className="relative h-full">
                             <Image
-                                src={socialImages[index % socialImages.length]}
+                                src={link.imageUrl}
                                 alt={`Background for ${link.name}`}
                                 fill
                                 className="object-cover"
