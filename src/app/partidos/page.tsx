@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, Clock, BarChart2, Tv } from 'lucide-react';
 import type { FullMatch, MatchStatus } from '@/types';
+import { PageHero } from '@/components/layout/PageHero';
 
 function MatchCard({ match }: { match: FullMatch }) {
     const scheduledDateTime = new Date(match.scheduledTime);
@@ -149,28 +150,29 @@ export default async function PartidosPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="container mx-auto flex flex-1 flex-col p-4 py-8 md:p-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-primary">Calendario de Partidos</h1>
-          <p className="mt-2 text-muted-foreground">Sigue todos los partidos de la liga.</p>
+      <main className="flex-1">
+        <PageHero
+          title="Calendario de Partidos"
+          description="Consulta los próximos encuentros, los resultados de partidos finalizados y sigue la acción en vivo."
+        />
+        <div className="container mx-auto flex-1 p-4 py-8 md:p-8">
+            <Tabs defaultValue="live" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mx-auto max-w-md">
+                <TabsTrigger value="scheduled">Programados</TabsTrigger>
+                <TabsTrigger value="live">En Vivo</TabsTrigger>
+                <TabsTrigger value="finished">Finalizados</TabsTrigger>
+            </TabsList>
+            <TabsContent value="scheduled" className="mt-6">
+                <MatchList matches={scheduled} />
+            </TabsContent>
+            <TabsContent value="live" className="mt-6">
+                <MatchList matches={live} />
+            </TabsContent>
+            <TabsContent value="finished" className="mt-6">
+                <MatchList matches={finished} />
+            </TabsContent>
+            </Tabs>
         </div>
-
-        <Tabs defaultValue="live" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mx-auto max-w-md">
-            <TabsTrigger value="scheduled">Programados</TabsTrigger>
-            <TabsTrigger value="live">En Vivo</TabsTrigger>
-            <TabsTrigger value="finished">Finalizados</TabsTrigger>
-          </TabsList>
-          <TabsContent value="scheduled" className="mt-6">
-            <MatchList matches={scheduled} />
-          </TabsContent>
-          <TabsContent value="live" className="mt-6">
-             <MatchList matches={live} />
-          </TabsContent>
-          <TabsContent value="finished" className="mt-6">
-            <MatchList matches={finished} />
-          </TabsContent>
-        </Tabs>
       </main>
     </div>
   );
