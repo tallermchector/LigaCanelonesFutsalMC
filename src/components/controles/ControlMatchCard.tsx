@@ -1,3 +1,6 @@
+
+'use client';
+
 import type { FullMatch } from '@/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { Calendar, Clock, Edit, BarChart2, Users } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 interface ControlMatchCardProps {
   match: FullMatch;
@@ -23,16 +27,22 @@ const statusTextMap: Record<FullMatch['status'], string> = {
 };
 
 export function ControlMatchCard({ match }: ControlMatchCardProps) {
-  const scheduledDateTime = new Date(match.scheduledTime);
-  const formattedDate = scheduledDateTime.toLocaleDateString('es-UY', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
-  const formattedTime = scheduledDateTime.toLocaleTimeString('es-UY', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const [formattedDate, setFormattedDate] = useState('');
+  const [formattedTime, setFormattedTime] = useState('');
+
+  useEffect(() => {
+    const scheduledDateTime = new Date(match.scheduledTime);
+    setFormattedDate(scheduledDateTime.toLocaleDateString('es-UY', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }));
+    setFormattedTime(scheduledDateTime.toLocaleTimeString('es-UY', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }));
+  }, [match.scheduledTime]);
+
 
   const renderActions = () => {
     const commonButtonClass = "w-full sm:w-auto";
