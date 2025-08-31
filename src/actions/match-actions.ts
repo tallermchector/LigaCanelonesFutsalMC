@@ -101,6 +101,12 @@ export async function getLiveMatches(): Promise<FullMatch[]> {
     return mockMatches.filter(match => match.status === 'LIVE');
 }
 
+export async function getFinishedMatches(): Promise<FullMatch[]> {
+    console.log('Fetching finished matches...');
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockMatches.filter(match => match.status === 'FINISHED');
+}
+
 export async function getMatchById(id: string): Promise<FullMatch | undefined> {
   console.log(`Fetching match with id: ${id}`);
   await new Promise(resolve => setTimeout(resolve, 500));

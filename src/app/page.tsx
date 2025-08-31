@@ -2,6 +2,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Hero } from '@/components/hero';
 import { LiveMatchesBanner } from '@/components/landing/LiveMatchesBanner';
+import { FinishedMatches } from '@/components/landing/FinishedMatches';
 
 export default function Home() {
   return (
@@ -14,10 +15,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold">Equipos</h2>
           <p className="text-muted-foreground mt-2">Próximamente...</p>
         </section>
-        <section id="results" className="py-20 text-center bg-secondary">
-          <h2 className="text-3xl font-bold">Resultados</h2>
-          <p className="text-muted-foreground mt-2">Próximamente...</p>
-        </section>
+        <FinishedMatches />
       </main>
       <Footer />
     </div>
