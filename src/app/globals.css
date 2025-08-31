@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @tailwind base;
 @tailwind components;
@@ -130,6 +131,11 @@
 
   .animate-bounce-slow {
     animation: bounceSlow 3s ease-in-out infinite;
+  }
+  
+  .creative-carousel-hero .carousel-slider .swiper-slide.swiper-slide-active {
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    z-index: 3;
   }
 
   @keyframes fadeIn {

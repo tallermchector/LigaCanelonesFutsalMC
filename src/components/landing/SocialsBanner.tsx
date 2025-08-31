@@ -2,30 +2,54 @@
 'use client';
 
 import { socialLinks } from '@/data/social-links';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import type { SocialLink } from '@/types';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import Image from 'next/image';
+
+const socialImages = [
+    'https://picsum.photos/1920/1080?random=1',
+    'https://picsum.photos/1920/1080?random=2',
+    'https://picsum.photos/1920/1080?random=3',
+    'https://picsum.photos/1920/1080?random=4',
+];
 
 export function SocialsBanner() {
   return (
-    <section className="py-20 text-center bg-background">
-        <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold text-primary mb-2">Síguenos en Nuestras Redes</h2>
-            <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">Mantente al día con las últimas noticias, resultados y contenido exclusivo.</p>
-            <div className="flex flex-wrap justify-center gap-4">
-                {socialLinks.map((link: SocialLink) => {
+    <section className="relative w-full h-screen creative-carousel-hero">
+        <Carousel
+            className="w-full h-full"
+            opts={{
+                loop: true,
+            }}
+        >
+            <CarouselContent className="h-full">
+                {socialLinks.map((link: SocialLink, index) => {
                     const Icon = link.icon;
                     return(
-                        <Button key={link.name} asChild variant="outline" className="transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:border-primary">
-                            <Link href={link.url} target="_blank" rel="noopener noreferrer">
-                                {Icon && <Icon className="mr-2 h-5 w-5" />}
-                                {link.name}
-                            </Link>
-                        </Button>
+                        <CarouselItem key={link.name} className="relative h-full">
+                            <Image
+                                src={socialImages[index % socialImages.length]}
+                                alt={`Background for ${link.name}`}
+                                fill
+                                className="object-cover"
+                                data-ai-hint="social media abstract"
+                            />
+                            <div className="absolute inset-0 bg-black/60"></div>
+                            <div className="relative z-10 flex flex-col items-center justify-center h-full text-white">
+                                {Icon && <Icon className="w-16 h-16 mb-4" />}
+                                <h2 className="text-4xl md:text-6xl font-bold uppercase tracking-widest">{link.name}</h2>
+                                <Link href={link.url} target="_blank" rel="noopener noreferrer" className="mt-4 text-lg font-semibold border-b-2 border-white pb-1 transition-colors hover:text-primary hover:border-primary">
+                                    Visitar Perfil
+                                </Link>
+                            </div>
+                        </CarouselItem>
                     )
                 })}
-            </div>
-        </div>
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-4 md:left-10 top-1/2 -translate-y-1/2 z-20 text-white bg-white/20 hover:bg-white/40" />
+            <CarouselNext className="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 z-20 text-white bg-white/20 hover:bg-white/40" />
+        </Carousel>
     </section>
   );
 }
