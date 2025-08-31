@@ -1,3 +1,4 @@
+
 import type { SVGProps } from "react";
 import Image from 'next/image';
 import { Instagram, Facebook, Globe, Youtube } from 'lucide-react';
@@ -10,11 +11,11 @@ export function FutsalBallIcon(props: SVGProps<SVGSVGElement>) {
 }
 
 export const InstagramIcon = (props: SVGProps<SVGSVGElement>) => (
-  <Instagram {...props} />
+  <Image src="/icon/instagram.svg" alt="Instagram icon" width={48} height={48} {...props} />
 );
 
 export const FacebookIcon = (props: SVGProps<SVGSVGElement>) => (
-  <Facebook {...props} />
+  <Image src="/icon/facebook.svg" alt="Facebook icon" width={48} height={48} {...props} />
 );
 
 export const GlobeIcon = (props: SVGProps<SVGSVGElement>) => (
@@ -22,5 +23,5 @@ export const GlobeIcon = (props: SVGProps<SVGSVGElement>) => (
 );
 
 export const YoutubeIcon = (props: SVGProps<SVGSVGElement>) => (
-    <Youtube {...props} />
+    <Image src="/icon/youtube.svg" alt="YouTube icon" width={48} height={48} {...props} />
 );
