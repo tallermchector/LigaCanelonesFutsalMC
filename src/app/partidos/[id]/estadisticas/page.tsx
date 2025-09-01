@@ -5,9 +5,10 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { EventsList } from '@/components/partidos/estadisticas/EventsList';
 import type { Metadata } from 'next';
-import { MatchSummaryHeader } from '@/components/resumen/MatchSummaryHeader';
-import { MatchSummaryStats } from '@/components/resumen/MatchSummaryStats';
 import { ScoreSummary } from '@/components/partidos/estadisticas/ScoreSummary';
+import { MatchSummaryStats } from '@/components/resumen/MatchSummaryStats';
+import { Team } from '@/types';
+
 
 interface EstadisticasPageProps {
   params: {
@@ -51,6 +52,14 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
   }
 
   const allEvents = (match.events || []).sort((a, b) => a.timestamp - b.timestamp);
+  
+  // A placeholder function to generate a gradient from team colors
+  // In a real app, you would fetch these colors from your DB.
+  const getTeamGradient = (teamA: Team, teamB: Team) => {
+      const colorA = teamA.logoUrl?.includes('1.png') ? '#FF0000' : '#0000FF';
+      const colorB = teamB.logoUrl?.includes('10.png') ? '#FFFF00' : '#00FF00';
+      return `linear-gradient(135deg, ${colorA}40, ${colorB}40)`;
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -59,8 +68,8 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
         className="flex-1 pt-[var(--header-height)] bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/stadium-bg.jpg')" }}
       >
-        <div className="bg-black/70 min-h-full">
-            <div className="container mx-auto px-4 py-8 md:py-12">
+        <div className="bg-black/80 backdrop-blur-sm min-h-full">
+            <div className="container mx-auto px-2 sm:px-4 py-8 md:py-12">
                 <div className="max-w-4xl mx-auto">
                     <ScoreSummary match={match} />
                     <MatchSummaryStats match={match} />

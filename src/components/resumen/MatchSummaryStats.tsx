@@ -30,20 +30,22 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
 
     return (
         <div ref={ref} className="w-full">
-            <div className="flex justify-between items-center text-white font-bold text-sm md:text-base px-2 mb-1.5">
+            <div className="flex justify-between items-center text-white font-bold text-sm md:text-base px-1 sm:px-2 mb-1.5">
                 <span className="tabular-nums">{valueA}</span>
-                <span className="uppercase tracking-wider text-white/80">{label}</span>
+                <span className="uppercase tracking-wider text-white/80 text-xs sm:text-sm text-center">{label}</span>
                 <span className="tabular-nums">{valueB}</span>
             </div>
             <div className="h-3 md:h-4 w-full bg-white/10 rounded-full overflow-hidden flex justify-between">
                 <motion.div
                     className="h-full bg-primary rounded-l-full"
+                    style={{ background: `linear-gradient(90deg, hsl(var(--primary) / 0.7), hsl(var(--primary)))` }}
                     variants={variantsA}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
                 />
                 <motion.div
                     className="h-full bg-accent rounded-r-full"
+                    style={{ background: `linear-gradient(90deg, hsl(var(--accent)), hsl(var(--accent) / 0.7))` }}
                     variants={variantsB}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}

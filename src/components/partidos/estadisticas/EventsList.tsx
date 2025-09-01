@@ -16,7 +16,7 @@ interface EventsListProps {
   teamBLogo: string;
 }
 
-const eventDisplayConfig: Record<GameEventType, { icon: React.ReactNode; label: string; className: string }> = {
+const eventDisplayConfig: Record<string, { icon: React.ReactNode; label: string; className: string }> = {
     GOAL: { icon: <FutsalBallIcon className="w-5 h-5" />, label: "Gol", className: "text-green-400 font-bold" },
     ASSIST: { icon: <Hand className="w-5 h-5" />, label: "Asistencia", className: "text-blue-400" },
     FOUL: { icon: <Shield className="w-5 h-5" />, label: "Falta", className: "text-orange-400" },
@@ -111,7 +111,7 @@ export function EventsList({ events, teamALogo, teamBLogo }: EventsListProps) {
                     {teamLogo && (
                       <Image src={teamLogo} alt={`${event.teamName} logo`} width={32} height={32} className="w-6 h-6 sm:w-8 sm:h-8 object-contain bg-white/10 rounded-full p-1"/>
                     )}
-                    {renderEventContent()}
+                    <div className="flex-1 min-w-0">{renderEventContent()}</div>
                   </div>
                 </Card>
             </div>
