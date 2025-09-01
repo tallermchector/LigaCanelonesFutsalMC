@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown } from 'lucide-react';
+import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown, BarChartHorizontal } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -46,6 +46,7 @@ export function Header() {
     { href: '/', label: 'Inicio', icon: <Home /> },
     { href: '/partidos', label: 'Partidos', icon: <CalendarDays /> },
     { href: '/blog', label: 'Noticias', icon: <Newspaper /> },
+    { href: '/resumen', label: 'Resumen', icon: <BarChartHorizontal /> },
   ];
   
   const adminLinks = [

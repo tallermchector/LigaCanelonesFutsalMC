@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { FullMatch } from '@/types';
@@ -22,7 +23,7 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
 
   return (
     <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="h-full">
-      <Link href={`/partidos/${match.id}/estadisticas`} className="block group h-full">
+      <Link href={`/resumen/${match.id}`} className="block group h-full">
         <Card className="flex flex-col h-full overflow-hidden shadow-lg bg-card">
           <CardHeader className="p-4">
               <CardTitle className="text-base font-bold truncate text-center text-card-foreground">
@@ -57,7 +58,7 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
           <CardFooter className="p-3 bg-accent text-accent-foreground justify-center text-sm font-medium group-hover:bg-accent/90 transition-colors">
               <div className='flex items-center gap-2'>
                   <BarChart2 className="h-4 w-4" />
-                  Ver Estadísticas
+                  Ver Resumen
               </div>
               {formattedDate && (
                   <>
