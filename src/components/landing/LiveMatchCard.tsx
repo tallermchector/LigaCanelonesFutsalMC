@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { FullMatch } from '@/types';
@@ -15,23 +14,20 @@ interface LiveMatchCardProps {
 
 export function LiveMatchCard({ match }: LiveMatchCardProps) {
   return (
-    <Link href={`/banner/${match.id}`} className="block group">
-       <motion.div
-        whileHover={{ scale: 1.05, boxShadow: 'var(--tw-shadow-elevated)' }}
-        transition={{ duration: 0.3 }}
-       >
+    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+      <Link href={`/banner/${match.id}`} className="block group">
         <Card className="overflow-hidden shadow-lg">
           <CardHeader className="p-4 bg-card-foreground/5 flex-row items-center justify-between">
               <h3 className="font-bold text-sm truncate">{match.teamA.name} vs {match.teamB.name}</h3>
-              <motion.div
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 2, repeat: Infinity }}
+              <motion.span
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
               >
                 <Badge variant="destructive" className="animate-pulse">
                     <Tv className="mr-1.5 h-3 w-3" />
                     EN VIVO
                 </Badge>
-              </motion.div>
+              </motion.span>
           </CardHeader>
           <CardContent className="p-4 flex items-center justify-around">
             <div className="flex flex-col items-center gap-2 text-center w-20">
@@ -59,7 +55,7 @@ export function LiveMatchCard({ match }: LiveMatchCardProps) {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 }

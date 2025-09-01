@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { FullMatch } from '@/types';
@@ -22,12 +21,8 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
 
 
   return (
-    <Link href={`/partidos/${match.id}/estadisticas`} className="block group">
-      <motion.div
-        whileHover={{ scale: 1.05, boxShadow: 'var(--tw-shadow-elevated)' }}
-        transition={{ duration: 0.3 }}
-        className="h-full"
-      >
+    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="h-full">
+      <Link href={`/partidos/${match.id}/estadisticas`} className="block group h-full">
         <Card className="flex flex-col h-full overflow-hidden shadow-lg bg-card">
           <CardHeader className="p-4">
               <CardTitle className="text-base font-bold truncate text-center text-card-foreground">
@@ -75,7 +70,7 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
               )}
           </CardFooter>
         </Card>
-      </motion.div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 }
