@@ -26,7 +26,7 @@ const baseTeams: Omit<Team, 'players'>[] = [
   {
     id: 13,
     name: "STELLA",
-    logoUrl: "/equipos/13.png",
+    logoUrl: '/equipos/13.png',
   },
   {
     id: 14,
@@ -76,7 +76,7 @@ const baseTeams: Omit<Team, 'players'>[] = [
   {
     id: 9,
     name: "CAPINCHO",
-    logoUrl: "/equipos/9.png",
+    logoUrl: '/equipos/9.png',
   }
 ];
 

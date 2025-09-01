@@ -67,9 +67,9 @@ export interface GameState {
   teamA: Team | null;
   teamB: Team | null;
   scoreA: number;
-  scoreB: 0,
+  scoreB: number;
   foulsA: number;
-  foulsB: 0,
+  foulsB: number;
   timeoutsA: number;
   timeoutsB: number;
   period: number;
