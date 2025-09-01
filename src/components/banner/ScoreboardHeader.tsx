@@ -28,12 +28,14 @@ interface ScoreboardHeaderProps {
 }
 
 const StatDisplay = ({ label, value, icon, hasPenalty }: { label: string, value: number, icon: React.ReactNode, hasPenalty?: boolean }) => (
-    <div className="flex flex-col items-center gap-1 text-white/80">
+    <div className="flex flex-col items-center gap-1 text-center">
         <div className="flex items-center gap-2">
-            {icon}
-            <span className={cn("text-lg font-bold text-white", hasPenalty && "text-red-500")}>{value}</span>
+            <div className={cn('h-6 w-6', hasPenalty ? 'text-destructive' : 'text-muted-foreground/80')}>{icon}</div>
+            <span className={cn('text-xl font-bold', hasPenalty ? 'text-destructive' : 'text-foreground')}>
+                {value}
+            </span>
         </div>
-        <span className="text-xs uppercase tracking-widest">{label}</span>
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
     </div>
 );
 
@@ -63,12 +65,12 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
   };
 
   return (
-    <div className="relative font-headline w-full max-w-4xl mx-auto flex flex-col items-center">
-      <div className="z-10 mb-[-20px] bg-background p-1 rounded-full border-4 border-background shadow-md">
+    <div className="font-headline w-full max-w-4xl mx-auto flex flex-col items-center">
+      <div className="relative z-10 mb-[-20px] bg-background p-1 rounded-full border-4 border-background shadow-md">
         <FutsalBallIcon className="w-10 h-10 md:w-12 md:h-12" />
       </div>
 
-      <div className="w-full text-white shadow-2xl rounded-lg overflow-hidden bg-accent flex items-stretch justify-between h-20 md:h-24">
+      <div className="w-full text-white shadow-2xl rounded-lg overflow-hidden flex items-stretch justify-between h-20 md:h-24">
         
         {/* Team 1 */}
         <div className="flex items-center gap-2 md:gap-4 p-2 md:p-4 bg-navy-custom flex-1">
@@ -94,16 +96,16 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
       </div>
       
       {/* Stats Section */}
-      <div className="w-full grid grid-cols-2 gap-4 px-4 md:px-8 mt-2">
+      <div className="w-full grid grid-cols-2 gap-4 px-4 md:px-8 mt-4">
           {/* Team 1 Stats */}
           <div className="flex items-center justify-start gap-4 md:gap-8">
-              <StatDisplay label="Faltas" value={fouls1} icon={<Shield className="w-4 h-4" />} hasPenalty={fouls1 >= 6} />
-              <StatDisplay label="T.M." value={timeouts1} icon={<Timer className="w-4 h-4 text-green-400" />} />
+              <StatDisplay label="Faltas" value={fouls1} icon={<Shield />} hasPenalty={fouls1 >= 6} />
+              <StatDisplay label="T.M." value={timeouts1} icon={<Timer className="text-green-500" />} />
           </div>
           {/* Team 2 Stats */}
           <div className="flex items-center justify-end gap-4 md:gap-8">
-              <StatDisplay label="Faltas" value={fouls2} icon={<Shield className="w-4 h-4" />} hasPenalty={fouls2 >= 6} />
-              <StatDisplay label="T.M." value={timeouts2} icon={<Timer className="w-4 h-4 text-green-400" />} />
+              <StatDisplay label="T.M." value={timeouts2} icon={<Timer className="text-green-500" />} />
+              <StatDisplay label="Faltas" value={fouls2} icon={<Shield />} hasPenalty={fouls2 >= 6} />
           </div>
       </div>
     </div>
