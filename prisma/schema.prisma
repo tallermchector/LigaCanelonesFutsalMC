@@ -7,17 +7,18 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Player {
-  id       Int    @id @default(autoincrement())
+  id       Int         @id @default(autoincrement())
   name     String
   number   Int
   position String
   teamId   Int
-  team     Team   @relation(fields: [teamId], references: [id])
+  team     Team        @relation(fields: [teamId], references: [id])
   events   GameEvent[]
 }
 
@@ -31,38 +32,38 @@ model Team {
 }
 
 model GameEvent {
-    id              String      @id @default(cuid())
-    type            String
-    teamId          String
-    playerId        Int
-    playerName      String
-    playerInId      Int?
-    playerInName    String?
-    teamName        String
-    timestamp       Int
-    matchId         String
-    match           Match       @relation(fields: [matchId], references: [id])
-    player          Player      @relation(fields: [playerId], references: [id])
+  id           String  @id @default(cuid())
+  type         String
+  teamId       String
+  playerId     Int
+  playerName   String
+  playerInId   Int?
+  playerInName String?
+  teamName     String
+  timestamp    Int
+  matchId      String
+  match        Match   @relation(fields: [matchId], references: [id])
+  player       Player  @relation(fields: [playerId], references: [id])
 }
 
 model Match {
-  id              String      @id @default(cuid())
-  scheduledTime   DateTime
-  status          String
-  teamAId         Int
-  teamBId         Int
-  scoreA          Int
-  scoreB          Int
-  foulsA          Int
-  foulsB          Int
-  timeoutsA       Int
-  timeoutsB       Int
-  period          Int
-  time            Int
-  isRunning       Boolean
-  events          GameEvent[]
-  activePlayersA  Json
-  activePlayersB  Json
-  teamA           Team        @relation("TeamA", fields: [teamAId], references: [id])
-  teamB           Team        @relation("TeamB", fields: [teamBId], references: [id])
+  id             String      @id @default(cuid())
+  scheduledTime  DateTime
+  status         String
+  teamAId        Int
+  teamBId        Int
+  scoreA         Int
+  scoreB         Int
+  foulsA         Int
+  foulsB         Int
+  timeoutsA      Int
+  timeoutsB      Int
+  period         Int
+  time           Int
+  isRunning      Boolean
+  events         GameEvent[]
+  activePlayersA Json
+  activePlayersB Json
+  teamA          Team        @relation("TeamA", fields: [teamAId], references: [id])
+  teamB          Team        @relation("TeamB", fields: [teamBId], references: [id])
 }
