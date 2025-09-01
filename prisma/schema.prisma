@@ -1,14 +1,13 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Team {
@@ -27,16 +26,18 @@ model Player {
   position String
   team     Team    @relation(fields: [teamId], references: [id])
   teamId   Int
-  GameEvent GameEvent[]
+  events   GameEvent[]
+
+  @@index([teamId])
 }
 
 model Match {
-  id             String      @id
+  id             String    @id @default(cuid())
   scheduledTime  DateTime
   status         String
-  teamA          Team        @relation("TeamAHomeMatches", fields: [teamAId], references: [id])
+  teamA          Team      @relation("TeamAHomeMatches", fields: [teamAId], references: [id])
   teamAId        Int
-  teamB          Team        @relation("TeamBAwayMatches", fields: [teamBId], references: [id])
+  teamB          Team      @relation("TeamBAwayMatches", fields: [teamBId], references: [id])
   teamBId        Int
   scoreA         Int
   scoreB         Int
@@ -47,24 +48,27 @@ model Match {
   period         Int
   time           Int
   isRunning      Boolean
+  round          Int
   activePlayersA Int[]
   activePlayersB Int[]
   events         GameEvent[]
-  round          Int // Added the missing round field
+
+  @@index([teamAId])
+  @@index([teamBId])
+  @@index([status])
 }
 
-
 model GameEvent {
-  id           String @id @default(cuid())
-  match        Match  @relation(fields: [matchId], references: [id])
-  matchId      String
-  type         String
-  teamId       String
-  playerId     Int?
-  playerName   String?
-  playerInId   Int?
-  playerInName String?
-  teamName     String?
-  timestamp    Int
-  player       Player? @relation(fields: [playerId], references: [id])
+  id            String  @id @default(cuid())
+  match         Match   @relation(fields: [matchId], references: [id])
+  matchId       String
+  type          String
+  teamId        String
+  playerId      Int?
+  playerName    String?
+  playerInId    Int?
+  playerInName  String?
+  teamName      String
+  timestamp     Int
+  player        Player? @relation(fields: [playerId], references: [id])
 }
