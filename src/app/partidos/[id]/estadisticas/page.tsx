@@ -7,7 +7,7 @@ import { EventsList } from '@/components/partidos/estadisticas/EventsList';
 import type { Metadata } from 'next';
 import { ScoreSummary } from '@/components/partidos/estadisticas/ScoreSummary';
 import { MatchSummaryStats } from '@/components/resumen/MatchSummaryStats';
-import { Team } from '@/types';
+import type { Team } from '@/types';
 
 
 interface EstadisticasPageProps {
@@ -74,12 +74,12 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
                     <ScoreSummary match={match} />
                     <MatchSummaryStats match={match} />
 
-                    <section className="mt-12">
+                    <section className="mt-8 md:mt-12">
                         <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-white">Línea de Tiempo</h2>
                         <EventsList 
                           events={allEvents} 
-                          teamALogo={match.teamA.logoUrl || ''} 
-                          teamBLogo={match.teamB.logoUrl || ''}
+                          teamA={match.teamA}
+                          teamB={match.teamB}
                         />
                     </section>
                 </div>
