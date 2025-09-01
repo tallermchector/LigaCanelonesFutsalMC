@@ -24,6 +24,7 @@ const eventDisplayConfig: Record<GameEventType, { icon: React.ReactNode; label: 
     YELLOW_CARD: { icon: <YellowCardIcon className="w-4 h-4 md:w-5 md:h-5" />, label: "Amarilla", className: "text-yellow-400" },
     RED_CARD: { icon: <RedCardIcon className="w-4 h-4 md:w-5 md:h-5" />, label: "Roja", className: "text-red-500 font-bold" },
     TIMEOUT: { icon: <Hand className="w-4 h-4 md:w-5 md:h-5" />, label: "T. Muerto", className: "text-teal-400" },
+    SUBSTITUTION: { icon: <Hand className="w-4 h-4 md:w-5 md:h-5" />, label: "Cambio", className: "text-cyan-400" },
 };
 
 
@@ -61,6 +62,8 @@ export function EventsList({ events, teamALogo, teamBLogo }: EventsListProps) {
       >
       {events.map((event, index) => {
         const config = eventDisplayConfig[event.type];
+        if (!config) return null; // Safely skip events with no config
+
         const isTeamA = event.teamId === 'A';
         const teamLogo = isTeamA ? teamALogo : teamBLogo;
         const time = formatTimeFromTotalSeconds(event.timestamp);
