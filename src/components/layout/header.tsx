@@ -28,20 +28,11 @@ import { cn } from '@/lib/utils';
 
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     setIsMounted(true);
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
   }, []);
 
 
@@ -59,7 +50,18 @@ export function Header() {
   ]
   
   if (!isMounted) {
-    return null; // Or a placeholder/skeleton
+    return (
+        <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)]">
+            <div className="container flex h-full max-w-screen-2xl items-center justify-between">
+                <div className="flex items-center space-x-2">
+                     <Image src="/logofu.svg" alt="Liga Futsal Logo" width={32} height={32} />
+                    <span className="font-bold sm:inline-block text-lg whitespace-nowrap">
+                        Liga Canaria Futsal
+                    </span>
+                </div>
+            </div>
+        </header>
+    );
   }
 
   return (
@@ -69,7 +71,7 @@ export function Header() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled ? 'bg-background/95 border-b backdrop-blur-sm shadow-sm' : 'bg-transparent border-b border-transparent'
+        'bg-background/95 border-b backdrop-blur-sm shadow-sm'
     )}>
       <div className="container flex h-[var(--header-height)] max-w-screen-2xl items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
