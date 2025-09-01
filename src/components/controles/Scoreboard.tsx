@@ -27,7 +27,7 @@ export function Scoreboard() {
           {/* Team A Info */}
           <div className="flex flex-col items-center justify-center gap-2">
             <Image
-              src={teamA.logoUrl || `https://avatar.vercel.sh/${teamA.name}.png`}
+              src={teamA.logoUrl || ''}
               alt={`Logo de ${teamA.name}`}
               width={64}
               height={64}
@@ -57,7 +57,7 @@ export function Scoreboard() {
           {/* Team B Info */}
           <div className="flex flex-col items-center justify-center gap-2">
             <Image
-              src={teamB.logoUrl || `https://avatar.vercel.sh/${teamB.name}.png`}
+              src={teamB.logoUrl || ''}
               alt={`Logo de ${teamB.name}`}
               width={64}
               height={64}

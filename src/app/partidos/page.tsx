@@ -63,7 +63,7 @@ function MatchCard({ match }: { match: FullMatch }) {
                 <div className="flex justify-around items-center">
                     <div className="flex flex-col items-center gap-2 text-center w-24">
                         <Image
-                            src={match.teamA.logoUrl || `https://avatar.vercel.sh/${match.teamA.name}.png`}
+                            src={match.teamA.logoUrl || ''}
                             alt={`Logo de ${match.teamA.name}`}
                             width={64}
                             height={64}
@@ -80,7 +80,7 @@ function MatchCard({ match }: { match: FullMatch }) {
 
                     <div className="flex flex-col items-center gap-2 text-center w-24">
                         <Image
-                            src={match.teamB.logoUrl || `https://avatar.vercel.sh/${match.teamB.name}.png`}
+                            src={match.teamB.logoUrl || ''}
                             alt={`Logo de ${match.teamB.name}`}
                             width={64}
                             height={64}

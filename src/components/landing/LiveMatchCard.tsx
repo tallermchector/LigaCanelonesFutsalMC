@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { FullMatch } from '@/types';
@@ -32,7 +33,7 @@ export function LiveMatchCard({ match }: LiveMatchCardProps) {
           <CardContent className="p-4 flex items-center justify-around">
             <div className="flex flex-col items-center gap-2 text-center w-20">
               <Image
-                src={match.teamA.logoUrl || `https://avatar.vercel.sh/${match.teamA.name}.png`}
+                src={match.teamA.logoUrl || ''}
                 alt={`Logo de ${match.teamA.name}`}
                 width={48}
                 height={48}
@@ -45,7 +46,7 @@ export function LiveMatchCard({ match }: LiveMatchCardProps) {
             </div>
             <div className="flex flex-col items-center gap-2 text-center w-20">
               <Image
-                src={match.teamB.logoUrl || `https://avatar.vercel.sh/${match.teamB.name}.png`}
+                src={match.teamB.logoUrl || ''}
                 alt={`Logo de ${match.teamB.name}`}
                 width={48}
                 height={48}

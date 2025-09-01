@@ -15,7 +15,7 @@ export function MatchSummaryHeader({ match }: MatchSummaryHeaderProps) {
             <div className="flex justify-center items-center h-28 md:h-36 bg-black/30 rounded-lg backdrop-blur-sm px-4">
                 <div className="flex-1 flex items-center justify-start gap-2 md:gap-4">
                      <Image
-                        src={teamA.logoUrl || `https://avatar.vercel.sh/${teamA.name}.png`}
+                        src={teamA.logoUrl || ''}
                         alt={`Logo de ${teamA.name}`}
                         width={80}
                         height={80}
@@ -33,7 +33,7 @@ export function MatchSummaryHeader({ match }: MatchSummaryHeaderProps) {
                 <div className="flex-1 flex items-center justify-end gap-2 md:gap-4">
                      <h2 className="text-base sm:text-xl md:text-2xl font-bold uppercase truncate text-right">{teamB.name}</h2>
                      <Image
-                        src={teamB.logoUrl || `https://avatar.vercel.sh/${teamB.name}.png`}
+                        src={teamB.logoUrl || ''}
                         alt={`Logo de ${teamB.name}`}
                         width={80}
                         height={80}

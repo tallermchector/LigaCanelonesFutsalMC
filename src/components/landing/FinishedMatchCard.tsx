@@ -33,7 +33,7 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
           <CardContent className="flex-grow flex items-center justify-around p-4 gap-2">
             <div className="flex flex-col items-center gap-2 text-center flex-1 min-w-0">
               <Image
-                src={match.teamA.logoUrl || `https://avatar.vercel.sh/${match.teamA.name}.png`}
+                src={match.teamA.logoUrl || ''}
                 alt={`Logo de ${match.teamA.name}`}
                 width={56}
                 height={56}
@@ -46,7 +46,7 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
             </div>
             <div className="flex flex-col items-center gap-2 text-center flex-1 min-w-0">
               <Image
-                src={match.teamB.logoUrl || `https://avatar.vercel.sh/${match.teamB.name}.png`}
+                src={match.teamB.logoUrl || ''}
                 alt={`Logo de ${match.teamB.name}`}
                 width={56}
                 height={56}

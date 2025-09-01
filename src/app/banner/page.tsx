@@ -39,7 +39,7 @@ export default async function BannerSelectionPage() {
                   <CardContent className="flex flex-grow items-center justify-around p-4">
                     <div className="flex flex-col items-center gap-2 text-center">
                        <Image
-                            src={match.teamA.logoUrl || `https://avatar.vercel.sh/${match.teamA.name}.png`}
+                            src={match.teamA.logoUrl || ''}
                             alt={`Logo de ${match.teamA.name}`}
                             width={64}
                             height={64}
@@ -50,7 +50,7 @@ export default async function BannerSelectionPage() {
                     <span className="text-2xl font-bold text-primary">{match.scoreA} - {match.scoreB}</span>
                     <div className="flex flex-col items-center gap-2 text-center">
                         <Image
-                            src={match.teamB.logoUrl || `https://avatar.vercel.sh/${match.teamB.name}.png`}
+                            src={match.teamB.logoUrl || ''}
                             alt={`Logo de ${match.teamB.name}`}
                             width={64}
                             height={64}
