@@ -25,7 +25,7 @@ function createMockMatch(id: number, status: MatchStatus): FullMatch {
   let scheduledTime: Date;
   let scoreA = 0;
   let scoreB = 0;
-  let events: GameEvent[] = [];
+  const events: GameEvent[] = [];
 
   switch (status) {
     case 'SCHEDULED':
