@@ -16,17 +16,22 @@ interface StatDisplayProps {
   value: number;
   label: string;
   className?: string;
+  isPenalty?: boolean;
 }
 
-const StatDisplay: React.FC<StatDisplayProps> = ({ icon, value, label, className }) => (
+const StatDisplay: React.FC<StatDisplayProps> = ({ icon, value, label, className, isPenalty }) => (
   <div className={cn("flex flex-col items-center text-center text-white gap-1", className)}>
-    <div className="flex items-center gap-1.5">
+    <div className={cn(
+        "flex items-center gap-1.5 transition-colors duration-300",
+        isPenalty ? "text-red-500 animate-pulse" : "text-white"
+    )}>
       {icon}
       <span className="font-bold text-lg">{value}</span>
     </div>
     <span className="text-xs text-white/80 uppercase tracking-wider">{label}</span>
   </div>
 );
+
 
 interface ScoreboardHeaderProps {
   team1Name: string;
@@ -81,18 +86,18 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
             />
             <h2 className="text-2xl md:text-3xl font-extrabold uppercase tracking-wide">{team1Name}</h2>
             <div className="flex items-center justify-center gap-4 md:gap-6 mt-2">
-                <StatDisplay icon={<Shield className="w-4 h-4 text-yellow-400" />} value={fouls1} label="Faltas" />
+                <StatDisplay icon={<Shield className="w-4 h-4" />} value={fouls1} label="Faltas" isPenalty={fouls1 >= 6} />
                 <StatDisplay icon={<Timer className="w-4 h-4 text-green-400" />} value={timeouts1} label="T.M." />
             </div>
         </div>
 
         {/* Center Section: Score, Time, Period */}
         <div className="flex flex-col items-center justify-center text-center">
-          <div className="text-6xl md:text-8xl font-black text-white font-orbitron" style={{ textShadow: '0 0 15px hsla(var(--primary), 0.5)' }}>
+          <div className="text-6xl md:text-8xl font-black text-yellow-300 font-orbitron" style={{ textShadow: '0 0 15px hsla(var(--primary), 0.5)' }}>
             {`${score1} - ${score2}`}
           </div>
-          <div className="text-4xl md:text-5xl font-bold tracking-widest mt-2 font-orbitron">{formatTime(timeLeft)}</div>
-          <div className="text-base md:text-xl font-semibold uppercase tracking-wider bg-white/20 px-4 py-1 rounded-full inline-block mt-4">
+          <div className="text-4xl md:text-5xl font-bold tracking-widest mt-2 font-orbitron text-cyan-300">{formatTime(timeLeft)}</div>
+          <div className="text-base md:text-xl font-semibold uppercase tracking-wider bg-white/20 px-4 py-1 rounded-full inline-block mt-4 text-white/90">
             {period}
           </div>
         </div>
@@ -108,7 +113,7 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
             />
             <h2 className="text-2xl md:text-3xl font-extrabold uppercase tracking-wide">{team2Name}</h2>
             <div className="flex items-center justify-center gap-4 md:gap-6 mt-2">
-              <StatDisplay icon={<Shield className="w-4 h-4 text-yellow-400" />} value={fouls2} label="Faltas" />
+              <StatDisplay icon={<Shield className="w-4 h-4" />} value={fouls2} label="Faltas" isPenalty={fouls2 >= 6}/>
               <StatDisplay icon={<Timer className="w-4 h-4 text-green-400" />} value={timeouts2} label="T.M." />
             </div>
         </div>
