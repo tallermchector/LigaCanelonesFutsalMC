@@ -1,56 +1,41 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
-}
-
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider     = "sqlite"
+  url          = "file:./dev.db"
 }
 
-model Player {
-  id       Int         @id @default(autoincrement())
-  name     String
-  number   Int
-  position String
-  teamId   Int
-  team     Team        @relation(fields: [teamId], references: [id])
-  events   GameEvent[]
+generator client {
+  provider = "prisma-client-js"
 }
 
 model Team {
-  id       Int      @id @default(autoincrement())
-  name     String
-  logoUrl  String?
-  players  Player[]
-  matchesA Match[]  @relation("TeamA")
-  matchesB Match[]  @relation("TeamB")
+  id      Int      @id @default(autoincrement())
+  name    String
+  logoUrl String?
+  players Player[]
+  homeMatches Match[] @relation("TeamAHomeMatches")
+  awayMatches Match[] @relation("TeamBAwayMatches")
 }
 
-model GameEvent {
-  id           String  @id @default(cuid())
-  type         String
-  teamId       String
-  playerId     Int
-  playerName   String
-  playerInId   Int?
-  playerInName String?
-  teamName     String
-  timestamp    Int
-  matchId      String
-  match        Match   @relation(fields: [matchId], references: [id])
-  player       Player  @relation(fields: [playerId], references: [id])
+model Player {
+  id       Int     @id @default(autoincrement())
+  name     String
+  number   Int
+  position String
+  team     Team    @relation(fields: [teamId], references: [id])
+  teamId   Int
+  GameEvent GameEvent[]
 }
 
 model Match {
-  id             String      @id @default(cuid())
+  id             String      @id
   scheduledTime  DateTime
   status         String
+  teamA          Team        @relation("TeamAHomeMatches", fields: [teamAId], references: [id])
   teamAId        Int
+  teamB          Team        @relation("TeamBAwayMatches", fields: [teamBId], references: [id])
   teamBId        Int
   scoreA         Int
   scoreB         Int
@@ -61,9 +46,24 @@ model Match {
   period         Int
   time           Int
   isRunning      Boolean
+  activePlayersA Int[]
+  activePlayersB Int[]
   events         GameEvent[]
-  activePlayersA Json
-  activePlayersB Json
-  teamA          Team        @relation("TeamA", fields: [teamAId], references: [id])
-  teamB          Team        @relation("TeamB", fields: [teamBId], references: [id])
+  round          Int // Added the missing round field
+}
+
+
+model GameEvent {
+  id           String @id @default(cuid())
+  match        Match  @relation(fields: [matchId], references: [id])
+  matchId      String
+  type         String
+  teamId       String
+  playerId     Int?
+  playerName   String?
+  playerInId   Int?
+  playerInName String?
+  teamName     String?
+  timestamp    Int
+  player       Player? @relation(fields: [playerId], references: [id])
 }
