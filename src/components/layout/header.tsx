@@ -29,9 +29,11 @@ import { cn } from '@/lib/utils';
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
+    setIsMounted(true);
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
@@ -41,6 +43,7 @@ export function Header() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
 
   const navLinks = [
     { href: '/', label: 'Inicio', icon: <Home /> },
@@ -54,6 +57,10 @@ export function Header() {
       { href: '/controles', label: 'Control de Partidos', icon: <Settings /> },
       { href: '/banner', label: 'Marcador en Vivo', icon: <Tv /> },
   ]
+  
+  if (!isMounted) {
+    return null; // Or a placeholder/skeleton
+  }
 
   return (
     <motion.header 
