@@ -7,6 +7,8 @@ import { JerseyButton } from './JerseyButton';
 import type { SelectedPlayer } from '@/types';
 import { motion } from 'framer-motion';
 import { Shirt } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+
 
 interface TeamPanelProps {
   teamId: 'A' | 'B';
@@ -34,27 +36,66 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
       return substitutionState?.playerOut.teamId === teamId && substitutionState?.playerOut.playerId === playerId;
   }
   
-  const isSubstitutionModeForThisTeam = () => {
-      return substitutionState?.playerOut.teamId === teamId;
-  }
-  
-  const canRegisterEventForPlayer = (playerId: number, eventType: 'card' | 'action') => {
-      if (eventType === 'card') return true;
-      return activePlayers.includes(playerId);
-  }
-
   const getPlayerVariant = (playerId: number, isSelected: boolean) => {
       const isActive = activePlayers.includes(playerId);
       
       if (isPlayerBeingSubbedOut(playerId)) return 'destructive';
       if (isSelected) return 'accent';
-      if (isActive) return 'default'; // A new variant or style to show they are active
+      if (isActive) return 'default';
       
       return 'outline';
   }
   
   const playersWithStatus = team.players.map(p => ({ ...p, isActive: activePlayers.includes(p.id) }));
-  const sortedPlayers = [...playersWithStatus].sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0));
+  const starters = playersWithStatus.filter(p => p.isActive);
+  const substitutes = playersWithStatus.filter(p => !p.isActive);
+
+  const renderPlayerButtons = (playersToRender: typeof playersWithStatus) => {
+      return playersToRender.map((player) => {
+          const isSelected = !!selectedPlayer &&
+                                selectedPlayer.teamId === teamId &&
+                                selectedPlayer.playerId === player.id;
+          
+          let isDisabled = false;
+          // When in substitution mode...
+          if (substitutionState) {
+              const subOutTeam = substitutionState.playerOut.teamId;
+              
+              if (teamId === subOutTeam) {
+                  // On the team making the sub, only non-active players can be selected to come IN.
+                  if (player.isActive) {
+                      isDisabled = true;
+                  }
+              } else {
+                  // On the other team, all players are disabled.
+                  isDisabled = true;
+              }
+          } 
+          // When NOT in substitution mode and game is LIVE/FINISHED...
+          else if (status !== 'SCHEDULED') {
+              // Only active players can initiate events (except cards, handled by event button disabling)
+              if (!player.isActive) {
+                 isDisabled = true;
+              }
+          }
+          
+          const variant = getPlayerVariant(player.id, isSelected);
+
+          return (
+            <motion.div key={player.id} whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
+              <JerseyButton
+                jerseyNumber={player.number}
+                playerName={player.name}
+                isSelected={isSelected || isPlayerBeingSubbedOut(player.id)}
+                isActive={player.isActive}
+                isDisabled={isDisabled}
+                variant={variant}
+                onClick={() => handlePlayerSelect(player.id)}
+              />
+            </motion.div>
+          );
+      });
+  }
 
 
   return (
@@ -67,51 +108,36 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
         </div>
       </CardHeader>
       <CardContent className="flex-grow p-2 overflow-y-auto">
-        <div className="flex flex-wrap items-start justify-center gap-4">
-            {sortedPlayers.map((player) => {
-              const isSelected = !!selectedPlayer &&
-                                 selectedPlayer.teamId === teamId &&
-                                 selectedPlayer.playerId === player.id;
-              
-              let isDisabled = false;
-              if (status !== 'SCHEDULED') {
-                  if (substitutionState) {
-                      const subOutTeam = substitutionState.playerOut.teamId;
-                      const subOutPlayerId = substitutionState.playerOut.playerId;
-                      if (teamId === subOutTeam) {
-                          // Team making the sub: disable player coming out, disable subs
-                          if (player.id === subOutPlayerId) isDisabled = true;
-                          if (!activePlayers.includes(player.id)) isDisabled = true;
-                      } else {
-                          // Other team: disable everyone
-                          isDisabled = true;
-                      }
-                  } else {
-                      // Not in substitution mode
-                      const isCardEventSelected = false; // This needs a way to be known
-                      if (!isCardEventSelected && !activePlayers.includes(player.id)) {
-                          isDisabled = true;
-                      }
-                  }
-              }
-              
-              const variant = getPlayerVariant(player.id, isSelected);
-
-              return (
-              <motion.div key={player.id} whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
-                <JerseyButton
-                  jerseyNumber={player.number}
-                  playerName={player.name}
-                  isSelected={isSelected || isPlayerBeingSubbedOut(player.id)}
-                  isActive={player.isActive}
-                  isDisabled={isDisabled}
-                  variant={variant}
-                  onClick={() => handlePlayerSelect(player.id)}
-                />
-              </motion.div>
-              );
-            })}
+          {/* Starters */}
+          <div>
+              <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Titulares</h3>
+              <div className="flex flex-wrap items-start justify-center gap-4">
+                  {starters.length > 0 ? renderPlayerButtons(starters) : <p className="text-xs text-muted-foreground p-4 text-center">Seleccione hasta 5 jugadores titulares.</p>}
+              </div>
           </div>
+          
+          {/* Substitutes */}
+          {!substitutionState && (
+            <div className="mt-4">
+                <Separator className="my-2" />
+                <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Suplentes</h3>
+                <div className="flex flex-wrap items-start justify-center gap-4">
+                    {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes disponibles.</p>}
+                </div>
+            </div>
+          )}
+
+           {/* Substitutes during substitution */}
+           {substitutionState && substitutionState.playerOut.teamId === teamId && (
+             <div className="mt-4">
+                 <Separator className="my-2" />
+                <h3 className="px-2 mb-2 text-sm font-semibold text-blue-500 animate-pulse">Seleccione jugador entrante</h3>
+                <div className="flex flex-wrap items-start justify-center gap-4">
+                    {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes para el cambio.</p>}
+                </div>
+             </div>
+           )}
+
       </CardContent>
     </Card>
   );
