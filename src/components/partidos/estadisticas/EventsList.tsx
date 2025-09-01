@@ -3,12 +3,12 @@
 
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { GoalIcon, FoulIcon, YellowCardIcon, RedCardIcon } from '@/components/icons';
-import { Hand, RefreshCw, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Hand, RefreshCw, ArrowRight, ArrowLeft, Shield, Square, Timer, Footprints, Target, FileText } from 'lucide-react';
 import type { GameEvent, GameEventType } from '@/types';
 import { cn } from '@/lib/utils';
 import { animationVariants } from '@/lib/animations';
 import Image from 'next/image';
+import { FutsalBallIcon } from '@/components/icons';
 
 interface EventsListProps {
   events: GameEvent[];
@@ -17,13 +17,13 @@ interface EventsListProps {
 }
 
 const eventDisplayConfig: Record<GameEventType, { icon: React.ReactNode; label: string; className: string }> = {
-    GOAL: { icon: <GoalIcon className="w-5 h-5" />, label: "Gol", className: "text-green-400 font-bold" },
+    GOAL: { icon: <FutsalBallIcon className="w-5 h-5" />, label: "Gol", className: "text-green-400 font-bold" },
     ASSIST: { icon: <Hand className="w-5 h-5" />, label: "Asistencia", className: "text-blue-400" },
-    FOUL: { icon: <FoulIcon className="w-5 h-5" />, label: "Falta", className: "text-orange-400" },
-    SHOT: { icon: <GoalIcon className="w-5 h-5" />, label: "Tiro", className: "text-gray-400" },
-    YELLOW_CARD: { icon: <YellowCardIcon className="w-5 h-5" />, label: "Amarilla", className: "text-yellow-400" },
-    RED_CARD: { icon: <RedCardIcon className="w-5 h-5" />, label: "Roja", className: "text-red-500 font-bold" },
-    TIMEOUT: { icon: <Hand className="w-5 h-5" />, label: "T. Muerto", className: "text-teal-400" },
+    FOUL: { icon: <Shield className="w-5 h-5" />, label: "Falta", className: "text-orange-400" },
+    SHOT: { icon: <Target className="w-5 h-5" />, label: "Tiro", className: "text-gray-400" },
+    YELLOW_CARD: { icon: <Square className="w-5 h-5 text-yellow-400 fill-current" />, label: "Amarilla", className: "text-yellow-400" },
+    RED_CARD: { icon: <Square className="w-5 h-5 text-red-500 fill-current" />, label: "Roja", className: "text-red-500 font-bold" },
+    TIMEOUT: { icon: <Timer className="w-5 h-5" />, label: "T. Muerto", className: "text-teal-400" },
     SUBSTITUTION: { icon: <RefreshCw className="w-5 h-5" />, label: "Cambio", className: "text-cyan-400" },
 };
 
@@ -62,7 +62,7 @@ export function EventsList({ events, teamALogo, teamBLogo }: EventsListProps) {
       >
       {events.map((event, index) => {
         const config = eventDisplayConfig[event.type];
-        if (!config) return null; // Safely skip events with no config
+        if (!config) return null;
 
         const isTeamA = event.teamId === 'A';
         const teamLogo = isTeamA ? teamALogo : teamBLogo;
@@ -76,14 +76,14 @@ export function EventsList({ events, teamALogo, teamBLogo }: EventsListProps) {
         const renderEventContent = () => {
             if (event.type === 'SUBSTITUTION' && event.playerInName) {
                 return (
-                    <div className="flex flex-col gap-1 w-full">
-                        <div className={cn("flex items-center gap-2 text-sm text-red-400", isTeamA ? 'flex-row-reverse' : '')}>
-                           <ArrowRight className="w-4 h-4 shrink-0" />
-                           <span className="truncate flex-1">{event.playerName} (Sale)</span>
+                    <div className="flex flex-col gap-1 w-full text-sm">
+                        <div className={cn("flex items-center gap-2", isTeamA ? 'flex-row-reverse' : '')}>
+                           <ArrowRight className="w-4 h-4 shrink-0 text-red-400" />
+                           <span className="truncate flex-1 text-white/80">{event.playerName} (Sale)</span>
                         </div>
-                         <div className={cn("flex items-center gap-2 text-sm text-green-400", isTeamA ? 'flex-row-reverse' : '')}>
-                           <ArrowLeft className="w-4 h-4 shrink-0" />
-                           <span className="truncate flex-1">{event.playerInName} (Entra)</span>
+                         <div className={cn("flex items-center gap-2", isTeamA ? 'flex-row-reverse' : '')}>
+                           <ArrowLeft className="w-4 h-4 shrink-0 text-green-400" />
+                           <span className="truncate flex-1 text-white/80">{event.playerInName} (Entra)</span>
                         </div>
                     </div>
                 )
