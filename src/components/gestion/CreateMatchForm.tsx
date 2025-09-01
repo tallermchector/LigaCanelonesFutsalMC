@@ -31,7 +31,7 @@ import { es } from "date-fns/locale"
 import { Team } from "@/types"
 import { createMatch } from "@/actions/prisma-actions"
 import { useToast } from "@/hooks/use-toast"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 
 const createMatchSchema = z.object({
@@ -59,13 +59,19 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
 
     const form = useForm<CreateMatchFormValues>({
         resolver: zodResolver(createMatchSchema),
+        // We leave scheduledTime undefined initially to prevent hydration mismatch.
+        // It will be set on the client by the useEffect hook.
         defaultValues: {
             teamAId: '',
             teamBId: '',
-            scheduledTime: new Date(),
             round: 1,
         },
     });
+
+    // Set the default date on the client side to avoid hydration errors.
+    useEffect(() => {
+        form.setValue('scheduledTime', new Date());
+    }, [form]);
     
     async function onSubmit(values: CreateMatchFormValues) {
         setIsSubmitting(true)
@@ -79,7 +85,7 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
                 title: "Partido Creado",
                 description: "El nuevo partido ha sido programado exitosamente.",
             })
-            form.reset()
+            form.reset({ round: 1, teamAId: '', teamBId: '', scheduledTime: new Date() })
             router.refresh() // Re-fetch server-side props
         } catch (error) {
              toast({
@@ -103,7 +109,7 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Equipo Local</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger><SelectValue placeholder="Seleccione un equipo" /></SelectTrigger>
                                         </FormControl>
@@ -124,7 +130,7 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Equipo Visitante</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger><SelectValue placeholder="Seleccione un equipo" /></SelectTrigger>
                                         </FormControl>
