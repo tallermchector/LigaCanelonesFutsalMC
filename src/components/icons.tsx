@@ -24,3 +24,7 @@ export const GlobeIcon = (props: SVGProps<SVGSVGElement>) => (
 export const YoutubeIcon = ({ width = 48, height = 48, ...props }: CustomIconProps) => (
     <Image src="/icon/icon-youtube.svg" alt="YouTube icon" width={width} height={height} {...props} />
 );
+
+export const GoalIcon = ({ width = 24, height = 24, ...props }: CustomIconProps) => (
+    <Image src="/icon/icon-gol.svg" alt="Goal icon" width={width} height={height} {...props} />
+);
