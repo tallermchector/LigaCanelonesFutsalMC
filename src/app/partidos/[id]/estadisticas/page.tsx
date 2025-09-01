@@ -48,6 +48,8 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
 
   const topScorer = match.stats.topScorers[0];
   const assistsLeader = match.stats.assistsLeaders[0];
+  const allEvents = (match.events || []).sort((a, b) => a.timestamp - b.timestamp);
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -80,10 +82,7 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
 
             <section className="mt-12 max-w-5xl mx-auto">
                 <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6">Línea de Tiempo</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <EventsList title="Goles" events={match.events || []} eventType="GOAL" />
-                    <EventsList title="Faltas Cometidas" events={match.events || []} eventType="FOUL" />
-                </div>
+                <EventsList events={allEvents} />
             </section>
         </div>
       </main>
