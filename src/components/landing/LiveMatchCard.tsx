@@ -46,6 +46,12 @@ interface LiveMatchCardProps {
 }
 
 export function LiveMatchCard({ match }: LiveMatchCardProps) {
+  
+  const getPeriodLabel = () => {
+    if (match.period === 2) return '2T';
+    return '1T';
+  }
+
   return (
     <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="h-full">
       <Link href={`/partidos/${match.id}`} className="block group h-full">
@@ -58,7 +64,10 @@ export function LiveMatchCard({ match }: LiveMatchCardProps) {
             <CardFooter className="p-0">
                 <div className="w-full bg-slate-800 text-white flex justify-between items-center px-4 py-2">
                     <span className="font-semibold text-sm">{formatDate(match.scheduledTime)}</span>
-                    <span className="font-mono text-lg font-bold animate-pulse">{formatTime(match.time)}</span>
+                    <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm">{getPeriodLabel()}</span>
+                        <span className="font-mono text-lg font-bold animate-pulse">{formatTime(match.time)}</span>
+                    </div>
                 </div>
             </CardFooter>
         </Card>
