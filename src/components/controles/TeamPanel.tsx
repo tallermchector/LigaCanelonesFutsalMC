@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -24,7 +25,7 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
 
   const handlePlayerSelect = (playerId: number) => {
     const payload: SelectedPlayer = { teamId, playerId };
-    if (status === 'SCHEDULED') {
+    if (status === 'SELECTING_STARTERS') {
       dispatch({ type: 'TOGGLE_ACTIVE_PLAYER', payload });
     } else {
       dispatch({ type: 'SELECT_PLAYER', payload });
@@ -48,6 +49,8 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
   const playersWithStatus = team.players.map(p => ({ ...p, isActive: activePlayers.includes(p.id) }));
   const starters = playersWithStatus.filter(p => p.isActive);
   const substitutes = playersWithStatus.filter(p => !p.isActive);
+  
+  const isSelectionMode = status === 'SELECTING_STARTERS';
 
   const renderPlayerButtons = (playersToRender: typeof playersWithStatus) => {
       return playersToRender.map((player) => {
@@ -69,7 +72,11 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
                   // On the other team, all players are disabled.
                   isDisabled = true;
               }
-          } 
+          } else if (!isSelectionMode) {
+              // Outside of selection modes, only active players can be selected for events
+              // unless it's for a card
+              // This part is tricky, let's allow selection and handle logic in EventButtons
+          }
           
           const variant = getPlayerVariant(player.id, isSelected);
 
@@ -100,35 +107,43 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
         </div>
       </CardHeader>
       <CardContent className="flex-grow p-2 overflow-y-auto">
-          {/* Starters */}
-          <div>
-              <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Titulares</h3>
+          { isSelectionMode ? (
               <div className="flex flex-wrap items-start justify-center gap-4">
-                  {starters.length > 0 ? renderPlayerButtons(starters) : <p className="text-xs text-muted-foreground p-4 text-center">Seleccione hasta 5 jugadores titulares.</p>}
+                 {renderPlayerButtons(playersWithStatus)}
               </div>
-          </div>
-          
-          {/* Substitutes */}
-          {!substitutionState && (
-            <div className="mt-4">
-                <Separator className="my-2" />
-                <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Suplentes</h3>
-                <div className="flex flex-wrap items-start justify-center gap-4">
-                    {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes disponibles.</p>}
+          ) : (
+            <>
+              {/* Starters */}
+              <div>
+                  <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Titulares</h3>
+                  <div className="flex flex-wrap items-start justify-center gap-4">
+                      {starters.length > 0 ? renderPlayerButtons(starters) : <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares definidos.</p>}
+                  </div>
+              </div>
+              
+              {/* Substitutes */}
+              {!substitutionState && (
+                <div className="mt-4">
+                    <Separator className="my-2" />
+                    <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Suplentes</h3>
+                    <div className="flex flex-wrap items-start justify-center gap-4">
+                        {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes disponibles.</p>}
+                    </div>
                 </div>
-            </div>
-          )}
+              )}
 
-           {/* Substitutes during substitution */}
-           {substitutionState && substitutionState.playerOut.teamId === teamId && (
-             <div className="mt-4">
-                 <Separator className="my-2" />
-                <h3 className="px-2 mb-2 text-sm font-semibold text-blue-500 animate-pulse">Seleccione jugador entrante</h3>
-                <div className="flex flex-wrap items-start justify-center gap-4">
-                    {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes para el cambio.</p>}
-                </div>
-             </div>
-           )}
+               {/* Substitutes during substitution */}
+               {substitutionState && substitutionState.playerOut.teamId === teamId && (
+                 <div className="mt-4">
+                     <Separator className="my-2" />
+                    <h3 className="px-2 mb-2 text-sm font-semibold text-blue-500 animate-pulse">Seleccione jugador entrante</h3>
+                    <div className="flex flex-wrap items-start justify-center gap-4">
+                        {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes para el cambio.</p>}
+                    </div>
+                 </div>
+               )}
+            </>
+          )}
 
       </CardContent>
     </Card>

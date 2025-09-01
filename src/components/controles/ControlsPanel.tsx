@@ -4,7 +4,9 @@
 import { useGame } from '@/contexts/GameProvider';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer } from 'lucide-react';
+import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer, Users } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
 
 const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -14,6 +16,7 @@ const formatTime = (seconds: number) => {
 
 export function ControlsPanel() {
   const { state, dispatch } = useGame();
+  const { toast } = useToast();
 
   const handlePeriodChange = (delta: number) => {
     const newPeriod = Math.max(1, state.period + delta);
@@ -23,60 +26,93 @@ export function ControlsPanel() {
   const handleTimeout = (teamId: 'A' | 'B') => {
       dispatch({ type: 'ADD_EVENT', payload: { type: 'TIMEOUT', teamId }})
   }
+  
+  const handleDefineStarters = () => {
+      dispatch({ type: 'SET_STATUS', payload: 'SELECTING_STARTERS' });
+  }
+
+  const handleConfirmStarters = () => {
+      if (state.activePlayersA.length !== 5 || state.activePlayersB.length !== 5) {
+          toast({
+              variant: 'destructive',
+              title: 'Error',
+              description: 'Cada equipo debe tener exactamente 5 titulares seleccionados.',
+          });
+          return;
+      }
+      dispatch({ type: 'SET_STATUS', payload: 'SCHEDULED' });
+  }
+  
+  const isStarterSelectionMode = state.status === 'SELECTING_STARTERS';
 
   return (
     <Card className="w-full shadow-md flex flex-col h-full">
       <CardHeader className="flex-shrink-0">
         <CardTitle className="text-center text-primary">Controles del Juego</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow flex flex-col items-center justify-around gap-4 pt-6 overflow-y-auto">
-        <div className="text-center">
-            <p className="text-sm text-muted-foreground">Tiempo de Juego</p>
-            <p className="text-6xl font-mono font-bold text-foreground" aria-live="polite">{formatTime(state.time)}</p>
-        </div>
-        <div className="flex items-center gap-4">
-            <Button size="lg" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })} aria-label={state.isRunning ? "Pausar tiempo" : "Iniciar tiempo"}>
-                {state.isRunning ? <Pause className="mr-2 h-5 w-5"/> : <Play className="mr-2 h-5 w-5"/>}
-                {state.isRunning ? 'Pausar' : 'Iniciar'}
-            </Button>
-            <Button size="lg" variant="outline" onClick={() => dispatch({ type: 'RESET_TIMER' })} aria-label="Reiniciar tiempo">
-                <RotateCcw className="mr-2 h-5 w-5"/>
-                Reiniciar
-            </Button>
-        </div>
-        <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} aria-label="Disminuir período"><Minus className="h-4 w-4" /></Button>
-            <div className="flex items-center gap-2">
-                <Flag className="h-5 w-5 text-muted-foreground" />
-                <span className="font-semibold text-lg">Período: {state.period}</span>
-            </div>
-            <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} aria-label="Aumentar período"><Plus className="h-4 w-4" /></Button>
-        </div>
-        <div className="flex w-full justify-around pt-4 border-t">
-            <div className="text-center">
-                <p className="text-sm font-semibold">{state.teamA?.name}</p>
-                <Button size="sm" variant="outline" className="mt-1" disabled={state.timeoutsA <= 0} onClick={() => handleTimeout('A')}>
-                    <Timer className="mr-2 h-4 w-4" /> T. Muerto ({state.timeoutsA})
+
+      {isStarterSelectionMode ? (
+          <CardContent className="flex-grow flex flex-col items-center justify-center gap-4 text-center">
+              <Users className="w-16 h-16 text-primary" />
+              <h3 className="text-lg font-semibold">Definir Titulares</h3>
+              <p className="text-sm text-muted-foreground">Selecciona 5 jugadores de cada equipo para que comiencen el partido.</p>
+              <Button onClick={handleConfirmStarters} variant="accent" size="lg">
+                  <CheckCircle className="mr-2 h-5 w-5" />
+                  Confirmar Titulares
+              </Button>
+          </CardContent>
+      ) : (
+        <>
+            <CardContent className="flex-grow flex flex-col items-center justify-around gap-4 pt-6 overflow-y-auto">
+                <div className="text-center">
+                    <p className="text-sm text-muted-foreground">Tiempo de Juego</p>
+                    <p className="text-6xl font-mono font-bold text-foreground" aria-live="polite">{formatTime(state.time)}</p>
+                </div>
+                <div className="flex items-center gap-4">
+                    <Button size="lg" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })} aria-label={state.isRunning ? "Pausar tiempo" : "Iniciar tiempo"}>
+                        {state.isRunning ? <Pause className="mr-2 h-5 w-5"/> : <Play className="mr-2 h-5 w-5"/>}
+                        {state.isRunning ? 'Pausar' : 'Iniciar'}
+                    </Button>
+                    <Button size="lg" variant="outline" onClick={() => dispatch({ type: 'RESET_TIMER' })} aria-label="Reiniciar tiempo">
+                        <RotateCcw className="mr-2 h-5 w-5"/>
+                        Reiniciar
+                    </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} aria-label="Disminuir período"><Minus className="h-4 w-4" /></Button>
+                    <div className="flex items-center gap-2">
+                        <Flag className="h-5 w-5 text-muted-foreground" />
+                        <span className="font-semibold text-lg">Período: {state.period}</span>
+                    </div>
+                    <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} aria-label="Aumentar período"><Plus className="h-4 w-4" /></Button>
+                </div>
+                <div className="flex w-full justify-around pt-4 border-t">
+                    <div className="text-center">
+                        <p className="text-sm font-semibold">{state.teamA?.name}</p>
+                        <Button size="sm" variant="outline" className="mt-1" disabled={state.timeoutsA <= 0} onClick={() => handleTimeout('A')}>
+                            <Timer className="mr-2 h-4 w-4" /> T. Muerto ({state.timeoutsA})
+                        </Button>
+                    </div>
+                     <div className="text-center">
+                        <p className="text-sm font-semibold">{state.teamB?.name}</p>
+                         <Button size="sm" variant="outline" className="mt-1" disabled={state.timeoutsB <= 0} onClick={() => handleTimeout('B')}>
+                            <Timer className="mr-2 h-4 w-4" /> T. Muerto ({state.timeoutsB})
+                        </Button>
+                    </div>
+                </div>
+            </CardContent>
+            <CardFooter className="grid grid-cols-2 gap-4 p-4 bg-card-foreground/5 flex-shrink-0">
+                <Button variant="secondary" onClick={handleDefineStarters}>
+                    <Users className="mr-2 h-4 w-4" />
+                    Definir Titulares
                 </Button>
-            </div>
-             <div className="text-center">
-                <p className="text-sm font-semibold">{state.teamB?.name}</p>
-                 <Button size="sm" variant="outline" className="mt-1" disabled={state.timeoutsB <= 0} onClick={() => handleTimeout('B')}>
-                    <Timer className="mr-2 h-4 w-4" /> T. Muerto ({state.timeoutsB})
+                <Button variant="destructive" onClick={() => console.log('Finalizando partido...')}>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Finalizar Partido
                 </Button>
-            </div>
-        </div>
-      </CardContent>
-      <CardFooter className="grid grid-cols-2 gap-4 p-4 bg-card-foreground/5 flex-shrink-0">
-        <Button variant="accent" onClick={() => console.log('Guardando cambios...', state)}>
-            <Save className="mr-2 h-4 w-4" />
-            Guardar Cambios
-        </Button>
-        <Button variant="destructive" onClick={() => console.log('Finalizando partido...')}>
-            <CheckCircle className="mr-2 h-4 w-4" />
-            Finalizar Partido
-        </Button>
-      </CardFooter>
+            </CardFooter>
+        </>
+      )}
     </Card>
   );
 }

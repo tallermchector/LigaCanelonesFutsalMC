@@ -1,7 +1,6 @@
-
 import type { ElementType } from 'react';
 
-export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED';
+export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED' | 'SELECTING_STARTERS';
 
 export interface Player {
   id: number;
