@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: EstadisticasPageProps): Promi
   const { id } = params;
   const match = await getMatchStatsFromDb(id);
 
-  if (!match || match.status !== 'FINISHED') {
+  if (!match) {
     return {
       title: 'Estadísticas no encontradas',
     };
@@ -47,7 +47,7 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
     notFound();
   }
   
-  if (match.status !== 'FINISHED') {
+  if (match.status === 'SCHEDULED') {
       redirect('/partidos');
   }
 

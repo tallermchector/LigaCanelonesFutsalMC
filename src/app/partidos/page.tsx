@@ -12,6 +12,7 @@ import type { FullMatch, MatchStatus } from '@/types';
 import { PageHero } from '@/components/layout/PageHero';
 import { Footer } from '@/components/layout/footer';
 import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 function MatchCard({ match }: { match: FullMatch }) {
     const scheduledDateTime = new Date(match.scheduledTime);
@@ -36,20 +37,8 @@ function MatchCard({ match }: { match: FullMatch }) {
         }
     };
     const statusInfo = getStatusInfo();
-    
-    const CardWrapper = ({children}: {children: React.ReactNode}) => {
-        if (match.status === 'FINISHED') {
-             return <Link href={`/partidos/${match.id}/estadisticas`}>{children}</Link>;
-        }
-        if (match.status === 'LIVE') {
-            return <Link href={`/partidos/${match.id}`}>{children}</Link>
-        }
-        return <div className="cursor-default">{children}</div>
-    }
-
 
     return (
-        <CardWrapper>
          <Card className="flex h-full flex-col overflow-hidden shadow-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20 bg-card">
             <CardHeader className="p-4 bg-card-foreground/5">
                 <div className="flex items-center justify-between">
@@ -102,22 +91,25 @@ function MatchCard({ match }: { match: FullMatch }) {
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="p-0 h-[45px]">
-             {match.status === 'FINISHED' && (
-                <div className="w-full flex items-center justify-center p-4 bg-accent text-accent-foreground text-center font-semibold hover:bg-accent/90 transition-colors h-full">
-                    <BarChart2 className="mr-2 h-4 w-4" />
-                    Ver Estadísticas
-                </div>
+            <CardFooter className="p-2 grid grid-cols-2 gap-2 bg-muted/50">
+             {(match.status === 'FINISHED' || match.status === 'LIVE') && (
+                <Button asChild size="sm" variant="outline">
+                    <Link href={`/partidos/${match.id}/estadisticas`}>
+                        <BarChart2 className="mr-2 h-4 w-4" />
+                        Estadísticas
+                    </Link>
+                </Button>
             )}
              {match.status === 'LIVE' && (
-                <div className="w-full flex items-center justify-center p-4 bg-destructive text-destructive-foreground text-center font-semibold hover:bg-destructive/90 transition-colors h-full">
-                    <Tv className="mr-2 h-4 w-4" />
-                    Ver en Vivo
-                </div>
+                <Button asChild size="sm" variant="destructive" className="text-white">
+                     <Link href={`/partidos/${match.id}`}>
+                        <Tv className="mr-2 h-4 w-4" />
+                        Ver en Vivo
+                    </Link>
+                </Button>
              )}
             </CardFooter>
         </Card>
-        </CardWrapper>
     );
 }
 
