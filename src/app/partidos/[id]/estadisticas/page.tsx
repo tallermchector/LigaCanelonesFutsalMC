@@ -15,7 +15,8 @@ interface EstadisticasPageProps {
 }
 
 export async function generateMetadata({ params }: EstadisticasPageProps): Promise<Metadata> {
-  const match = await getMatchStatsFromDb(params.id);
+  const { id } = params;
+  const match = await getMatchStatsFromDb(id);
 
   if (!match) {
     return {
@@ -37,7 +38,8 @@ export async function generateMetadata({ params }: EstadisticasPageProps): Promi
 }
 
 export default async function EstadisticasPage({ params }: EstadisticasPageProps) {
-  const match = await getMatchStatsFromDb(params.id);
+  const { id } = params;
+  const match = await getMatchStatsFromDb(id);
 
   if (!match) {
     notFound();

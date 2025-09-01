@@ -6,6 +6,8 @@ import { Footer } from '@/components/layout/footer';
 import { MatchSummaryHeader } from '@/components/resumen/MatchSummaryHeader';
 import { MatchSummaryStats } from '@/components/resumen/MatchSummaryStats';
 import type { Metadata } from 'next';
+import type { MatchStats } from '@/types';
+
 
 interface ResumenPageProps {
   params: {
@@ -14,7 +16,8 @@ interface ResumenPageProps {
 }
 
 export async function generateMetadata({ params }: ResumenPageProps): Promise<Metadata> {
-  const match = await getMatchStatsFromDb(params.id);
+  const { id } = params;
+  const match = await getMatchStatsFromDb(id);
 
   if (!match) {
     return {
@@ -37,7 +40,8 @@ export async function generateMetadata({ params }: ResumenPageProps): Promise<Me
 
 
 export default async function ResumenPage({ params }: ResumenPageProps) {
-  const match = await getMatchStatsFromDb(params.id);
+  const { id } = params;
+  const match = await getMatchStatsFromDb(id);
 
   if (!match) {
     notFound();
@@ -53,8 +57,8 @@ export default async function ResumenPage({ params }: ResumenPageProps) {
         <div className="bg-black/70 min-h-full">
             <div className="container mx-auto px-4 py-8 md:py-12">
                 <div className="max-w-4xl mx-auto">
-                    <MatchSummaryHeader match={match} />
-                    <MatchSummaryStats match={match} />
+                    <MatchSummaryHeader match={match as MatchStats} />
+                    <MatchSummaryStats match={match as MatchStats} />
                 </div>
             </div>
         </div>
