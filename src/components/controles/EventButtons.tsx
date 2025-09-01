@@ -3,7 +3,7 @@
 import { useGame } from '@/contexts/GameProvider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Goal, Shield, Hand, Footprints, Square } from 'lucide-react';
+import { Goal, Shield, Hand, Footprints, Square, RefreshCw } from 'lucide-react';
 import type { GameEventType } from '@/types';
 import { motion } from 'framer-motion';
 
@@ -98,6 +98,18 @@ export function EventButtons() {
             <Square className="mr-2 h-4 w-4 fill-current" />
             Roja
         </Button>
+        </motion.div>
+        <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
+            <Button
+                onClick={() => handleAddEvent('SUBSTITUTION')}
+                disabled={!selectedPlayer}
+                aria-label="Registrar cambio"
+                variant="outline"
+                className="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+            >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Cambio
+            </Button>
         </motion.div>
       </CardContent>
     </Card>

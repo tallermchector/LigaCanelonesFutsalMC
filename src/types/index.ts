@@ -1,5 +1,4 @@
 
-
 import type { ElementType } from 'react';
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED';
@@ -18,7 +17,7 @@ export interface Team {
   players: Player[];
 }
 
-export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT' | 'YELLOW_CARD' | 'RED_CARD' | 'TIMEOUT';
+export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT' | 'YELLOW_CARD' | 'RED_CARD' | 'TIMEOUT' | 'SUBSTITUTION';
 
 export interface GameEvent {
   id: string;
