@@ -7,6 +7,7 @@ import { EventsList } from '@/components/partidos/estadisticas/EventsList';
 import type { Metadata } from 'next';
 import { MatchSummaryHeader } from '@/components/resumen/MatchSummaryHeader';
 import { MatchSummaryStats } from '@/components/resumen/MatchSummaryStats';
+import { ScoreSummary } from '@/components/partidos/estadisticas/ScoreSummary';
 
 interface EstadisticasPageProps {
   params: {
@@ -61,7 +62,7 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
         <div className="bg-black/70 min-h-full">
             <div className="container mx-auto px-4 py-8 md:py-12">
                 <div className="max-w-4xl mx-auto">
-                    <MatchSummaryHeader match={match} />
+                    <ScoreSummary match={match} />
                     <MatchSummaryStats match={match} />
 
                     <section className="mt-12">
