@@ -7,8 +7,35 @@ interface ScoreSummaryProps {
   match: MatchStats;
 }
 
+const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+};
+
+const getPeriodLabel = (period: number): string => {
+    if (period === 2) return 'PERÍODO 2';
+    return 'PERÍODO 1';
+};
+
 export function ScoreSummary({ match }: ScoreSummaryProps) {
-  const { teamA, teamB, scoreA, scoreB } = match;
+  const { teamA, teamB, scoreA, scoreB, status, period, time } = match;
+
+  const renderStatus = () => {
+    if (status === 'LIVE') {
+        return (
+            <div className="flex flex-col items-center">
+                <div className="font-mono text-xl md:text-2xl font-bold text-white">
+                    {formatTime(time)}
+                </div>
+                <div className="text-xs md:text-sm font-semibold text-white/80 tracking-widest mt-1">
+                    {getPeriodLabel(period)}
+                </div>
+            </div>
+        );
+    }
+    return <div className="text-sm md:text-lg font-semibold text-white/80 tracking-widest mt-1">FINAL</div>
+  }
 
   return (
     <Card className="w-full shadow-lg bg-black/30 backdrop-blur-sm border-white/10 text-white overflow-hidden">
@@ -27,11 +54,13 @@ export function ScoreSummary({ match }: ScoreSummaryProps) {
           </div>
 
           {/* Score */}
-          <div className="flex flex-col">
+          <div className="flex flex-col items-center justify-center h-full">
             <div className="text-4xl md:text-6xl font-black tracking-tighter text-white">
               {scoreA} - {scoreB}
             </div>
-            <div className="text-sm md:text-lg font-semibold text-white/80 tracking-widest mt-1">FINAL</div>
+            <div className="h-12 flex items-center justify-center">
+                {renderStatus()}
+            </div>
           </div>
 
           {/* Team B */}
