@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { useToast } from '@/hooks/use-toast';
-import { getMatchById } from '@/actions/match-actions';
+import { getMatchByIdFromDb } from '@/actions/prisma-actions';
 import type { FullMatch } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -46,7 +46,7 @@ export default function MatchControlPage() {
         setLoading(true);
         setError(null);
         try {
-          const fetchedMatch = await getMatchById(id);
+          const fetchedMatch = await getMatchByIdFromDb(id);
           if (fetchedMatch) {
             setMatch(fetchedMatch);
           } else {

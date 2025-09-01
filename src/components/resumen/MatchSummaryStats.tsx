@@ -54,19 +54,27 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
 };
 
 export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
-    const { events = [] } = match;
+    const { events = [], teamA, teamB } = match;
 
-    const getStatCount = (teamId: 'A' | 'B', eventType: GameEventType) => {
-        return events.filter(e => e.teamId === teamId && e.type === eventType).length;
+    const getStatCount = (teamId: number, eventType: GameEventType) => {
+        return events.filter(e => {
+            const playerTeam = teamA.players.some(p => p.id === e.playerId) ? 'A' : 'B';
+            const targetTeamId = teamA.id === teamId ? 'A' : 'B';
+            return playerTeam === targetTeamId && e.type === eventType;
+        }).length;
     };
+    
+    const getTeamId = (team: 'A' | 'B') => {
+        return team === 'A' ? match.teamA.id : match.teamB.id;
+    }
 
     const statsData = [
         { label: 'Goles', valueA: match.scoreA, valueB: match.scoreB },
-        { label: 'Asistencias', valueA: getStatCount('A', 'ASSIST'), valueB: getStatCount('B', 'ASSIST') },
-        { label: 'Tiros al Arco', valueA: getStatCount('A', 'SHOT'), valueB: getStatCount('B', 'SHOT') },
-        { label: 'Faltas', valueA: getStatCount('A', 'FOUL'), valueB: getStatCount('B', 'FOUL') },
-        { label: 'Tarjetas Amarillas', valueA: getStatCount('A', 'YELLOW_CARD'), valueB: getStatCount('B', 'YELLOW_CARD') },
-        { label: 'Tarjetas Rojas', valueA: getStatCount('A', 'RED_CARD'), valueB: getStatCount('B', 'RED_CARD') },
+        { label: 'Asistencias', valueA: getStatCount(getTeamId('A'), 'ASSIST'), valueB: getStatCount(getTeamId('B'), 'ASSIST') },
+        { label: 'Tiros al Arco', valueA: getStatCount(getTeamId('A'), 'SHOT'), valueB: getStatCount(getTeamId('B'), 'SHOT') },
+        { label: 'Faltas', valueA: getStatCount(getTeamId('A'), 'FOUL'), valueB: getStatCount(getTeamId('B'), 'FOUL') },
+        { label: 'Tarjetas Amarillas', valueA: getStatCount(getTeamId('A'), 'YELLOW_CARD'), valueB: getStatCount(getTeamId('B'), 'YELLOW_CARD') },
+        { label: 'Tarjetas Rojas', valueA: getStatCount(getTeamId('A'), 'RED_CARD'), valueB: getStatCount(getTeamId('B'), 'RED_CARD') },
     ];
     
     return (

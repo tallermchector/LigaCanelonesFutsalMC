@@ -7,13 +7,13 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ControlMatchCard } from '@/components/controles/ControlMatchCard';
 import { MatchListSkeleton } from '@/components/controles/MatchListSkeleton';
 import { useToast } from '@/hooks/use-toast';
-import { getAllMatches } from '@/actions/match-actions';
+import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 import type { FullMatch, MatchStatus } from '@/types';
 
 export default function ControlesPage() {
   const [matches, setMatches] = useState<FullMatch[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<MatchStatus>('LIVE');
+  const [activeTab, setActiveTab] = useState<MatchStatus | 'ALL'>('LIVE');
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -22,7 +22,7 @@ export default function ControlesPage() {
       setLoading(true);
       setError(null);
       try {
-        const fetchedMatches = await getAllMatches();
+        const fetchedMatches = await getAllMatchesFromDb();
         setMatches(fetchedMatches);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'No se pudieron cargar los partidos.';
@@ -40,7 +40,7 @@ export default function ControlesPage() {
     loadMatches();
   }, [toast]);
 
-  const filteredMatches = matches.filter((m) => m.status === activeTab);
+  const filteredMatches = matches.filter((m) => activeTab === 'ALL' || m.status === activeTab);
 
   return (
     <div className="flex min-h-screen flex-col bg-[hsl(var(--background))]">

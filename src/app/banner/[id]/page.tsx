@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { notFound, useParams } from 'next/navigation';
-import { getMatchById } from '@/actions/match-actions';
+import { getMatchByIdFromDb } from '@/actions/prisma-actions';
 import { ScoreboardHeader } from '@/components/banner/ScoreboardHeader';
 import type { FullMatch, MatchStatus } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -40,7 +40,7 @@ export default function BannerPage() {
 
     useEffect(() => {
         if (matchId) {
-            getMatchById(matchId).then(data => {
+            getMatchByIdFromDb(matchId).then(data => {
                 if (data) {
                     setInitialMatch(data);
                 }

@@ -6,7 +6,7 @@ import { FinishedMatchCard } from './FinishedMatchCard';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import type { FullMatch } from '@/types';
-import { getFinishedMatches } from '@/actions/match-actions';
+import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 
 function FinishedMatchesSkeleton() {
     return (
@@ -24,8 +24,8 @@ export function FinishedMatches() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getFinishedMatches().then(matches => {
-            setFinishedMatches(matches);
+        getAllMatchesFromDb().then(matches => {
+            setFinishedMatches(matches.filter(m => m.status === 'FINISHED'));
             setLoading(false);
         });
     }, []);

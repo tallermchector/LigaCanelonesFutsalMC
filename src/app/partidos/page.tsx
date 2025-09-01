@@ -1,5 +1,6 @@
 
-import { getAllMatches } from '@/actions/match-actions';
+'use client';
+import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,9 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, Clock, BarChart2, Tv } from 'lucide-react';
-import type { FullMatch } from '@/types';
+import type { FullMatch, MatchStatus } from '@/types';
 import { PageHero } from '@/components/layout/PageHero';
 import { Footer } from '@/components/layout/footer';
+import { useEffect, useState } from 'react';
 
 function MatchCard({ match }: { match: FullMatch }) {
     const scheduledDateTime = new Date(match.scheduledTime);
@@ -137,8 +139,16 @@ function MatchList({ matches }: { matches: FullMatch[] }) {
 }
 
 
-export default async function PartidosPage() {
-  const allMatches = await getAllMatches();
+export default function PartidosPage() {
+  const [allMatches, setAllMatches] = useState<FullMatch[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAllMatchesFromDb().then(data => {
+        setAllMatches(data);
+        setLoading(false);
+    });
+  }, []);
 
   const scheduled = allMatches.filter(m => m.status === 'SCHEDULED');
   const live = allMatches.filter(m => m.status === 'LIVE');

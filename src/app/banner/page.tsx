@@ -1,15 +1,26 @@
 
-import { getAllMatches } from '@/actions/match-actions';
+'use client';
+
+import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Tv } from 'lucide-react';
 import Image from 'next/image';
+import { FullMatch } from '@/types';
+import { useEffect, useState } from 'react';
 
-export default async function BannerSelectionPage() {
-  const allMatches = await getAllMatches();
-  const liveMatches = allMatches.filter(match => match.status === 'LIVE');
+export default function BannerSelectionPage() {
+  const [liveMatches, setLiveMatches] = useState<FullMatch[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+      getAllMatchesFromDb().then(matches => {
+          setLiveMatches(matches.filter(match => match.status === 'LIVE'));
+          setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

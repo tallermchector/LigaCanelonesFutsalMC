@@ -1,13 +1,25 @@
 
-import { getFinishedMatches } from '@/actions/match-actions';
+'use client';
+
+import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { PageHero } from '@/components/layout/PageHero';
 import { FinishedMatchCard } from '@/components/landing/FinishedMatchCard';
+import { useEffect, useState } from 'react';
+import { FullMatch } from '@/types';
 
 
-export default async function ResumenSelectionPage() {
-  const finishedMatches = await getFinishedMatches();
+export default function ResumenSelectionPage() {
+  const [finishedMatches, setFinishedMatches] = useState<FullMatch[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAllMatchesFromDb().then(matches => {
+        setFinishedMatches(matches.filter(m => m.status === 'FINISHED'));
+        setLoading(false);
+    });
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -36,4 +48,3 @@ export default async function ResumenSelectionPage() {
     </div>
   );
 }
-

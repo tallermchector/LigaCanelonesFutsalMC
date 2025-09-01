@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown, BarChartHorizontal } from 'lucide-react';
+import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown, BarChartHorizontal, PenSquare } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -50,6 +50,7 @@ export function Header() {
   ];
   
   const adminLinks = [
+      { href: '/gestion', label: 'Gestión de Partidos', icon: <PenSquare /> },
       { href: '/controles', label: 'Control de Partidos', icon: <Settings /> },
       { href: '/banner', label: 'Marcador en Vivo', icon: <Tv /> },
   ]

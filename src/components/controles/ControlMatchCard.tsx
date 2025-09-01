@@ -17,12 +17,14 @@ const statusVariantMap: Record<FullMatch['status'], 'default' | 'destructive' | 
   SCHEDULED: 'secondary',
   LIVE: 'destructive',
   FINISHED: 'default',
+  SELECTING_STARTERS: 'secondary',
 };
 
 const statusTextMap: Record<FullMatch['status'], string> = {
     SCHEDULED: 'Programado',
     LIVE: 'En Vivo',
     FINISHED: 'Finalizado',
+    SELECTING_STARTERS: 'Seleccionando Titulares'
 };
 
 export function ControlMatchCard({ match }: ControlMatchCardProps) {

@@ -1,43 +1,25 @@
 import type { ElementType } from 'react';
+import type { Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent } from '@prisma/client';
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED' | 'SELECTING_STARTERS';
 
-export interface Player {
-  id: number;
-  name: string;
-  number: number;
-  position: 'Goalkeeper' | 'Defender' | 'Winger' | 'Pivot';
-}
+export interface Player extends PrismaPlayer {}
 
-export interface Team {
-  id: number;
-  name: string;
-  logoUrl?: string;
+export interface Team extends PrismaTeam {
   players: Player[];
 }
 
 export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT' | 'YELLOW_CARD' | 'RED_CARD' | 'TIMEOUT' | 'SUBSTITUTION';
 
-export interface GameEvent {
-  id: string;
-  type: GameEventType;
-  teamId: 'A' | 'B';
-  playerId: number; // For single-player events or player_out for substitutions
-  playerName: string;
-  playerInId?: number; // For substitutions
-  playerInName?: string; // For substitutions
-  teamName: string;
-  timestamp: number; // Time in seconds when event occurred
+export interface GameEvent extends Omit<PrismaGameEvent, 'matchId' | 'type'> {
+    type: GameEventType;
 }
 
-export interface FullMatch {
-  id: string;
+export interface FullMatch extends Omit<PrismaMatch, 'teamAId' | 'teamBId' | 'events' | 'scheduledTime' | 'status'> {
   scheduledTime: string; 
   status: MatchStatus;
   teamA: Team;
   teamB: Team;
-  scoreA: number;
-  scoreB: number;
   events?: GameEvent[];
 }
 
