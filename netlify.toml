@@ -1,0 +1,21 @@
+# Configuración para el plugin de Next.js en Netlify
+[build]
+  # Comando para construir tu aplicación Next.js usando Bun
+  command = "bun run build"
+  # Directorio donde Next.js genera la salida de producción
+  publish = ".next"
+
+# Asegura que el runtime de Next.js se maneje correctamente
+[functions]
+  # Directorio para las funciones serverless de Next.js
+  directory = ".next/functions"
+
+# Configuración específica para el plugin de Next.js
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Variables de entorno para el proceso de build
+[build.environment]
+  # Especifica la versión de Bun que Netlify debe usar
+  # Puedes ajustarla a la versión que usas en desarrollo
+  BUN_VERSION = "1.0.25"
