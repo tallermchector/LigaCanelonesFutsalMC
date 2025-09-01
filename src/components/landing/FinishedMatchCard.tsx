@@ -4,7 +4,7 @@
 import type { FullMatch } from '@/types';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart2, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../ui/button';
