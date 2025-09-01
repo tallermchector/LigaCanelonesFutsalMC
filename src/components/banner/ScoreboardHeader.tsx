@@ -80,12 +80,12 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
         
         {/* Score & Time */}
         <div className="flex-grow flex items-center justify-center bg-primary text-xl md:text-3xl font-black px-2 md:px-4 gap-2 md:gap-4">
-            <span className="text-2xl md:text-4xl">{score1}</span>
+            <span className="text-3xl md:text-5xl">{score1}</span>
             <div className="flex flex-col items-center text-center leading-tight">
                  <span className="text-xs md:text-sm font-bold uppercase">{getPeriodText()}</span>
                  <span className="text-lg md:text-2xl font-bold font-orbitron">{formatTime(timeLeft)}</span>
             </div>
-            <span className="text-2xl md:text-4xl">{score2}</span>
+            <span className="text-3xl md:text-5xl">{score2}</span>
         </div>
 
         {/* Team 2 */}
