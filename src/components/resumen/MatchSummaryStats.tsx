@@ -1,6 +1,10 @@
 
-import type { MatchStats, GameEvent, GameEventType } from '@/types';
+'use client';
+
+import type { MatchStats, GameEventType } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 
 interface MatchSummaryStatsProps {
     match: MatchStats;
@@ -10,29 +14,46 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
     const total = valueA + valueB;
     const percentageA = total > 0 ? (valueA / total) * 100 : 50;
 
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, amount: 0.5 });
+    
+    const variantsA = {
+      hidden: { width: '0%' },
+      visible: { width: `${percentageA}%`, transition: { duration: 0.8, ease: 'easeOut' } }
+    };
+
+    const variantsB = {
+      hidden: { width: '0%' },
+      visible: { width: `${100 - percentageA}%`, transition: { duration: 0.8, ease: 'easeOut' } }
+    };
+
     return (
-        <div className="w-full">
-            <div className="flex justify-between items-center text-white font-bold text-sm md:text-base px-2 mb-1">
-                <span>{valueA}</span>
-                <span className="uppercase tracking-wider">{label}</span>
-                <span>{valueB}</span>
+        <div ref={ref} className="w-full">
+            <div className="flex justify-between items-center text-white font-bold text-sm md:text-base px-2 mb-1.5">
+                <span className="tabular-nums">{valueA}</span>
+                <span className="uppercase tracking-wider text-white/80">{label}</span>
+                <span className="tabular-nums">{valueB}</span>
             </div>
-            <div className="h-4 md:h-5 w-full bg-gray-600/50 rounded-full overflow-hidden flex">
-                <div
-                    className="h-full bg-red-600 transition-all duration-500"
-                    style={{ width: `${percentageA}%` }}
-                ></div>
-                <div
-                    className="h-full bg-blue-600 transition-all duration-500"
-                    style={{ width: `${100 - percentageA}%` }}
-                ></div>
+            <div className="h-3 md:h-4 w-full bg-white/10 rounded-full overflow-hidden flex">
+                <motion.div
+                    className="h-full bg-primary"
+                    variants={variantsA}
+                    initial="hidden"
+                    animate={isInView ? "visible" : "hidden"}
+                />
+                <motion.div
+                    className="h-full bg-accent"
+                    variants={variantsB}
+                    initial="hidden"
+                    animate={isInView ? "visible" : "hidden"}
+                />
             </div>
         </div>
     );
 };
 
 export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
-    const { teamA, teamB, events = [] } = match;
+    const { events = [] } = match;
 
     const getStatCount = (teamId: 'A' | 'B', eventType: GameEventType) => {
         return events.filter(e => e.teamId === teamId && e.type === eventType).length;
@@ -49,7 +70,7 @@ export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
     
     return (
         <Card className="bg-black/30 backdrop-blur-sm border-white/10 text-white">
-            <CardContent className="p-4 md:p-6 space-y-4 md:space-y-6">
+            <CardContent className="p-4 md:p-6 space-y-4 md:space-y-5">
                 {statsData.map(stat => (
                     <StatBar key={stat.label} {...stat} />
                 ))}
