@@ -1,13 +1,17 @@
 
 'use client';
 
-import type { FullMatch } from '@/types';
+import type { FullMatch, MatchStatus } from '@/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
-import { Calendar, Clock, Edit, BarChart2, Users } from 'lucide-react';
+import { Calendar, Clock, Edit, BarChart2, Users, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
+import { updateMatchStatus } from '@/actions/prisma-actions';
+import { useRouter } from 'next/navigation';
+
 
 interface ControlMatchCardProps {
   match: FullMatch;
@@ -29,6 +33,8 @@ const statusTextMap: Record<FullMatch['status'], string> = {
 
 export function ControlMatchCard({ match }: ControlMatchCardProps) {
     const scheduledDateTime = new Date(match.scheduledTime);
+    const { toast } = useToast();
+    const router = useRouter();
     const formattedDate = scheduledDateTime.toLocaleDateString('es-UY', {
       day: 'numeric',
       month: 'long',
@@ -40,6 +46,24 @@ export function ControlMatchCard({ match }: ControlMatchCardProps) {
       minute: '2-digit',
       timeZone: 'UTC',
     });
+
+  const handleFinishMatch = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      await updateMatchStatus(match.id, 'FINISHED');
+      toast({
+        title: "Partido Finalizado",
+        description: `El partido entre ${match.teamA.name} y ${match.teamB.name} ha sido marcado como finalizado.`,
+      });
+      router.refresh();
+    } catch (error) {
+       toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo finalizar el partido.",
+      });
+    }
+  }
 
 
   const renderActions = () => {
@@ -62,12 +86,18 @@ export function ControlMatchCard({ match }: ControlMatchCardProps) {
         );
       case 'LIVE':
         return (
-          <Button variant="accent" size="sm" className={`${commonButtonClass} animate-pulse`} asChild>
-            <Link href={`/controles/${match.id}`}>
-              <Edit className="mr-2 h-4 w-4" />
-              Controlar (En Vivo)
-            </Link>
-          </Button>
+          <>
+            <Button variant="outline" size="sm" onClick={handleFinishMatch}>
+                <CheckCircle className="mr-2 h-4 w-4" />
+                Finalizar Partido
+            </Button>
+            <Button variant="accent" size="sm" className={`${commonButtonClass} animate-pulse`} asChild>
+                <Link href={`/controles/${match.id}`}>
+                <Edit className="mr-2 h-4 w-4" />
+                Controlar (En Vivo)
+                </Link>
+            </Button>
+          </>
         );
       case 'FINISHED':
         return (
