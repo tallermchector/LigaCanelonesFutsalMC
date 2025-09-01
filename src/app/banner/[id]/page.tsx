@@ -16,11 +16,10 @@ function getPeriodLabel(status: MatchStatus, period: number): string {
         case 'SCHEDULED':
             return 'PROGRAMADO';
         case 'LIVE':
-            if (period === 1) return 'PERÍODO 1';
             if (period === 2) return 'PERÍODO 2';
-            return 'EN VIVO';
+            return 'PERÍODO 1';
         default:
-            return '';
+            return 'PERÍODO 1';
     }
 }
 
