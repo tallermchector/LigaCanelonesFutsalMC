@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -6,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { JerseyButton } from './JerseyButton';
 import type { SelectedPlayer } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { motion } from 'framer-motion';
 
 interface TeamPanelProps {
   teamId: 'A' | 'B';
@@ -32,17 +32,18 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
       <CardContent className="flex-grow p-2 overflow-y-auto">
         <div className="flex flex-wrap items-start justify-center gap-4">
             {team.players.map((player) => (
-              <JerseyButton
-                key={player.id}
-                jerseyNumber={player.number}
-                playerName={player.name}
-                isSelected={
-                  !!selectedPlayer &&
-                  selectedPlayer.teamId === teamId &&
-                  selectedPlayer.playerId === player.id
-                }
-                onClick={() => handlePlayerSelect(player.id)}
-              />
+              <motion.div key={player.id} whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
+                <JerseyButton
+                  jerseyNumber={player.number}
+                  playerName={player.name}
+                  isSelected={
+                    !!selectedPlayer &&
+                    selectedPlayer.teamId === teamId &&
+                    selectedPlayer.playerId === player.id
+                  }
+                  onClick={() => handlePlayerSelect(player.id)}
+                />
+              </motion.div>
             ))}
           </div>
       </CardContent>

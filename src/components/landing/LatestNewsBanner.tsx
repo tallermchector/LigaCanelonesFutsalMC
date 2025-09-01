@@ -1,4 +1,7 @@
-import { getPosts } from '@/actions/blog-actions';
+
+'use client';
+
+import { useState, useEffect } from 'react';
 import { PostCard } from '../blog/PostCard';
 import { Button } from '../ui/button';
 import Link from 'next/link';
@@ -9,9 +12,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import type { Post } from '@/types';
+import { getPosts } from '@/actions/blog-actions';
 
-export async function LatestNewsBanner() {
-    const { posts } = await getPosts(1);
+export function LatestNewsBanner() {
+    const [posts, setPosts] = useState<Post[]>([]);
+
+    useEffect(() => {
+        getPosts(1).then(({ posts }) => setPosts(posts));
+    }, []);
 
     if (posts.length === 0) {
         return null;

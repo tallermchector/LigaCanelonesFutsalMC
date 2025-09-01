@@ -1,11 +1,19 @@
 
-import { getFinishedMatches } from '@/actions/match-actions';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { FinishedMatchCard } from './FinishedMatchCard';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import type { FullMatch } from '@/types';
+import { getFinishedMatches } from '@/actions/match-actions';
 
-export async function FinishedMatches() {
-    const finishedMatches = await getFinishedMatches();
+export function FinishedMatches() {
+    const [finishedMatches, setFinishedMatches] = useState<FullMatch[]>([]);
+
+    useEffect(() => {
+        getFinishedMatches().then(setFinishedMatches);
+    }, []);
 
     if (finishedMatches.length === 0) {
         return null;
