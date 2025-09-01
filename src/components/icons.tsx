@@ -28,3 +28,15 @@ export const YoutubeIcon = ({ width = 48, height = 48, ...props }: CustomIconPro
 export const GoalIcon = ({ width = 24, height = 24, ...props }: CustomIconProps) => (
     <Image src="/icon/icon-gol.svg" alt="Goal icon" width={width} height={height} {...props} />
 );
+
+export const FoulIcon = ({ width = 24, height = 24, ...props }: CustomIconProps) => (
+    <Image src="/icon/icon-falta.svg" alt="Foul icon" width={width} height={height} {...props} />
+);
+
+export const YellowCardIcon = ({ width = 24, height = 24, ...props }: CustomIconProps) => (
+    <Image src="/icon/icon-amarilla.svg" alt="Yellow card icon" width={width} height={height} {...props} />
+);
+
+export const RedCardIcon = ({ width = 24, height = 24, ...props }: CustomIconProps) => (
+    <Image src="/icon/icon-roja.svg" alt="Red card icon" width={width} height={height} {...props} />
+);

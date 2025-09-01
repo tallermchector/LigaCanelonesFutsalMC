@@ -3,7 +3,7 @@
 
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { GoalIcon } from '@/components/icons';
+import { GoalIcon, FoulIcon, YellowCardIcon, RedCardIcon } from '@/components/icons';
 import { Shield, Hand, Square } from 'lucide-react';
 import type { GameEvent, GameEventType } from '@/types';
 import { cn } from '@/lib/utils';
@@ -19,10 +19,10 @@ interface EventsListProps {
 const eventDisplayConfig: Record<GameEventType, { icon: React.ReactNode; label: string; className: string }> = {
     GOAL: { icon: <GoalIcon className="w-4 h-4 md:w-5 md:h-5" />, label: "Gol", className: "text-green-400 font-bold" },
     ASSIST: { icon: <Hand className="w-4 h-4 md:w-5 md:h-5" />, label: "Asistencia", className: "text-blue-400" },
-    FOUL: { icon: <Shield className="w-4 h-4 md:w-5 md:h-5" />, label: "Falta", className: "text-orange-400" },
+    FOUL: { icon: <FoulIcon className="w-4 h-4 md:w-5 md:h-5" />, label: "Falta", className: "text-orange-400" },
     SHOT: { icon: <GoalIcon className="w-4 h-4 md:w-5 md:h-5" />, label: "Tiro", className: "text-gray-400" },
-    YELLOW_CARD: { icon: <Square className="w-4 h-4 md:w-5 md:h-5 fill-current" />, label: "Amarilla", className: "text-yellow-400" },
-    RED_CARD: { icon: <Square className="w-4 h-4 md:w-5 md:h-5 fill-current" />, label: "Roja", className: "text-red-500 font-bold" },
+    YELLOW_CARD: { icon: <YellowCardIcon className="w-4 h-4 md:w-5 md:h-5" />, label: "Amarilla", className: "text-yellow-400" },
+    RED_CARD: { icon: <RedCardIcon className="w-4 h-4 md:w-5 md:h-5" />, label: "Roja", className: "text-red-500 font-bold" },
     TIMEOUT: { icon: <Hand className="w-4 h-4 md:w-5 md:h-5" />, label: "T. Muerto", className: "text-teal-400" },
 };
 
