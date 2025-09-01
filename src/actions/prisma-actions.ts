@@ -102,7 +102,7 @@ export async function getMatchByIdFromDb(id: string): Promise<FullMatch | undefi
             ...match,
             scheduledTime: match.scheduledTime.toISOString(),
             status: match.status as FullMatch['status'],
-            events: match.events.map(e => ({...e, type: e.type as GameEventType['type']})),
+            events: match.events.map((e: GameEventType) => ({...e, type: e.type as GameEventType['type']})),
         };
     } catch (error) {
         console.error(`Failed to fetch match ${id} from DB:`, error);

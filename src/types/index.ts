@@ -1,3 +1,4 @@
+
 import type { ElementType } from 'react';
 import type { Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent } from '@prisma/client';
 
