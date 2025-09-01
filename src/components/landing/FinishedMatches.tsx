@@ -1,16 +1,20 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import { FinishedMatchCard } from './FinishedMatchCard';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import type { FullMatch } from '@/types';
+import { getFinishedMatches } from '@/actions/match-actions';
 
-interface FinishedMatchesProps {
-    finishedMatches: FullMatch[];
-}
+export function FinishedMatches() {
+    const [finishedMatches, setFinishedMatches] = useState<FullMatch[]>([]);
 
-export function FinishedMatches({ finishedMatches }: FinishedMatchesProps) {
+    useEffect(() => {
+        getFinishedMatches().then(setFinishedMatches);
+    }, []);
+
     if (finishedMatches.length === 0) {
         return null;
     }

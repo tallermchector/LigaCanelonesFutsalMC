@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { LiveMatchesBanner } from '@/components/landing/LiveMatchesBanner';
@@ -8,16 +10,10 @@ import Link from 'next/link';
 import { PageHero } from '@/components/layout/PageHero';
 import { SocialsBanner } from '@/components/landing/SocialsBanner';
 import { LatestNewsBanner } from '@/components/landing/LatestNewsBanner';
-import { getFinishedMatches, getLiveMatches } from '@/actions/match-actions';
 import { motion } from 'framer-motion';
 import { animationVariants } from '@/lib/animations';
-import { getPosts } from '@/actions/blog-actions';
 
-export default async function Home() {
-  const liveMatches = await getLiveMatches();
-  const finishedMatches = await getFinishedMatches();
-  const { posts } = await getPosts(1);
-
+export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -39,9 +35,9 @@ export default async function Home() {
             <Link href="/blog">Ver Noticias</Link>
           </Button>
         </PageHero>
-        <LiveMatchesBanner liveMatches={liveMatches} />
-        <FinishedMatches finishedMatches={finishedMatches} />
-        <LatestNewsBanner posts={posts} />
+        <LiveMatchesBanner />
+        <FinishedMatches />
+        <LatestNewsBanner />
         <SocialsBanner />
       </motion.main>
       <Footer />

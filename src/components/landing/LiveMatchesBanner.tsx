@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -10,12 +11,15 @@ import {
 } from "@/components/ui/carousel";
 import { LiveMatchCard } from './LiveMatchCard';
 import type { FullMatch } from '@/types';
+import { getLiveMatches } from '@/actions/match-actions';
 
-interface LiveMatchesBannerProps {
-  liveMatches: FullMatch[];
-}
+export function LiveMatchesBanner() {
+  const [liveMatches, setLiveMatches] = useState<FullMatch[]>([]);
 
-export function LiveMatchesBanner({ liveMatches }: LiveMatchesBannerProps) {
+  useEffect(() => {
+    getLiveMatches().then(setLiveMatches);
+  }, []);
+
   if (liveMatches.length === 0) {
     return null;
   }

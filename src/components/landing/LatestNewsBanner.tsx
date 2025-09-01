@@ -1,5 +1,7 @@
+
 'use client';
 
+import { useState, useEffect } from 'react';
 import { PostCard } from '../blog/PostCard';
 import { Button } from '../ui/button';
 import Link from 'next/link';
@@ -11,12 +13,15 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import type { Post } from '@/types';
+import { getPosts } from '@/actions/blog-actions';
 
-interface LatestNewsBannerProps {
-    posts: Post[];
-}
+export function LatestNewsBanner() {
+    const [posts, setPosts] = useState<Post[]>([]);
 
-export function LatestNewsBanner({ posts }: LatestNewsBannerProps) {
+    useEffect(() => {
+        getPosts(1).then(({ posts }) => setPosts(posts));
+    }, []);
+
     if (posts.length === 0) {
         return null;
     }
