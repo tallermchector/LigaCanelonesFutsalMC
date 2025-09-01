@@ -1,6 +1,4 @@
 
-'use client';
-
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { Roboto, Orbitron } from 'next/font/google';
@@ -26,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${roboto.variable} ${orbitron.variable}`} suppressHydrationWarning>
+    <html lang="es" className={`${roboto.variable} ${orbitron.variable}`}>
       <head>
         <meta charSet="utf-8" />
         <title>Liga Canelones Futsal - Pasión por el Fútbol Sala</title>
@@ -37,7 +35,7 @@ export default function RootLayout({
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="es_UY" />
       </head>
-      <body className="font-body antialiased" suppressHydrationWarning>
+      <body className="font-body antialiased">
         {children}
         <Toaster />
       </body>
