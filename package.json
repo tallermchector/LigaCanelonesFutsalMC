@@ -80,6 +80,7 @@
     "esbuild",
     "prisma",
     "protobufjs",
-    "sharp"
+    "sharp",
+    "unrs-resolver"
   ]
 }
