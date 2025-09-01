@@ -5,6 +5,7 @@ import type { MatchStats, GameEventType } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { cn } from '@/lib/utils';
 
 interface MatchSummaryStatsProps {
     match: MatchStats;
@@ -12,19 +13,20 @@ interface MatchSummaryStatsProps {
 
 const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; valueB: number }) => {
     const total = valueA + valueB;
-    const percentageA = total > 0 ? (valueA / total) * 100 : 50;
+    const percentageA = total > 0 ? (valueA / total) * 100 : 0;
+    const percentageB = total > 0 ? (valueB / total) * 100 : 0;
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.5 });
     
     const variantsA = {
       hidden: { width: '0%' },
-      visible: { width: `${percentageA}%`, transition: { duration: 0.8, ease: 'easeOut' } }
+      visible: { width: `${percentageA}%`, transition: { duration: 0.8, ease: 'easeOut', delay: 0.2 } }
     };
-
+    
     const variantsB = {
       hidden: { width: '0%' },
-      visible: { width: `${100 - percentageA}%`, transition: { duration: 0.8, ease: 'easeOut' } }
+      visible: { width: `${percentageB}%`, transition: { duration: 0.8, ease: 'easeOut', delay: 0.2 } }
     };
 
     return (
@@ -34,15 +36,15 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
                 <span className="uppercase tracking-wider text-white/80">{label}</span>
                 <span className="tabular-nums">{valueB}</span>
             </div>
-            <div className="h-3 md:h-4 w-full bg-white/10 rounded-full overflow-hidden flex">
+            <div className="h-3 md:h-4 w-full bg-white/10 rounded-full overflow-hidden flex justify-between">
                 <motion.div
-                    className="h-full bg-primary"
+                    className="h-full bg-primary rounded-l-full"
                     variants={variantsA}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
                 />
                 <motion.div
-                    className="h-full bg-accent"
+                    className="h-full bg-accent rounded-r-full"
                     variants={variantsB}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
@@ -69,7 +71,7 @@ export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
     ];
     
     return (
-        <Card className="bg-black/30 backdrop-blur-sm border-white/10 text-white">
+        <Card className="bg-black/30 backdrop-blur-sm border-white/10 text-white mt-8">
             <CardContent className="p-4 md:p-6 space-y-4 md:space-y-5">
                 {statsData.map(stat => (
                     <StatBar key={stat.label} {...stat} />
