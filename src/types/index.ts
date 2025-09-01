@@ -81,6 +81,8 @@ export interface GameState {
   substitutionState: {
       playerOut: SelectedPlayer;
   } | null;
+  activePlayersA: number[];
+  activePlayersB: number[];
 }
 
 export type Post = {

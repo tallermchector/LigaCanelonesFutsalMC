@@ -17,7 +17,8 @@ type GameAction =
   | { type: 'SELECT_PLAYER'; payload: SelectedPlayer }
   | { type: 'ADD_EVENT'; payload: { type: GameEventType; teamId?: 'A' | 'B' } }
   | { type: 'INITIATE_SUBSTITUTION' }
-  | { type: 'CANCEL_SUBSTITUTION' };
+  | { type: 'CANCEL_SUBSTITUTION' }
+  | { type: 'TOGGLE_ACTIVE_PLAYER'; payload: { teamId: 'A' | 'B'; playerId: number } };
 
 
 const initialState: GameState = {
@@ -37,12 +38,14 @@ const initialState: GameState = {
   events: [],
   selectedPlayer: null,
   substitutionState: null,
+  activePlayersA: [],
+  activePlayersB: [],
 };
 
 const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
-    case 'LOAD_MATCH':
-      return action.payload.state || {
+    case 'LOAD_MATCH': {
+      const baseState = action.payload.state || {
         ...initialState,
         matchId: action.payload.match.id,
         status: action.payload.match.status,
@@ -53,6 +56,11 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         events: action.payload.match.events || [],
         substitutionState: null,
       };
+      // Ensure active players arrays exist
+      if (!baseState.activePlayersA) baseState.activePlayersA = [];
+      if (!baseState.activePlayersB) baseState.activePlayersB = [];
+      return baseState;
+    }
     case 'UPDATE_SCORE':
       if (action.payload.team === 'A') {
         return { ...state, scoreA: Math.max(0, state.scoreA + action.payload.delta) };
@@ -113,11 +121,17 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
                     timestamp: state.time,
                 };
                 
+                 // Update active players list
+                const activePlayersKey = playerOut.teamId === 'A' ? 'activePlayersA' : 'activePlayersB';
+                const currentActivePlayers = state[activePlayersKey];
+                const updatedActivePlayers = currentActivePlayers.filter(id => id !== pOut.id).concat(pIn.id);
+
                 return {
                     ...state,
                     events: [...state.events, newEvent],
                     selectedPlayer: null,
                     substitutionState: null,
+                    [activePlayersKey]: updatedActivePlayers,
                 };
             }
             // If the same player is selected again, or a player from another team, cancel substitution
@@ -189,6 +203,32 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         };
     case 'CANCEL_SUBSTITUTION':
         return { ...state, substitutionState: null };
+    
+    case 'TOGGLE_ACTIVE_PLAYER': {
+        const { teamId, playerId } = action.payload;
+        const activePlayersKey = teamId === 'A' ? 'activePlayersA' : 'activePlayersB';
+        const currentActivePlayers: number[] = state[activePlayersKey];
+        const isCurrentlyActive = currentActivePlayers.includes(playerId);
+        
+        let updatedActivePlayers: number[];
+        
+        if (isCurrentlyActive) {
+            updatedActivePlayers = currentActivePlayers.filter(id => id !== playerId);
+        } else {
+            if (currentActivePlayers.length < 5) {
+                updatedActivePlayers = [...currentActivePlayers, playerId];
+            } else {
+                // Optionally, provide feedback that the active player limit is reached
+                console.warn(`Team ${teamId} already has 5 active players.`);
+                return state;
+            }
+        }
+        
+        return {
+            ...state,
+            [activePlayersKey]: updatedActivePlayers,
+        };
+    }
     default:
       return state;
   }
@@ -205,6 +245,8 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
         if (parsedState) {
           // Ensure new state fields are initialized
           parsedState.substitutionState = null;
+          if (!parsedState.activePlayersA) parsedState.activePlayersA = [];
+          if (!parsedState.activePlayersB) parsedState.activePlayersB = [];
         }
         return parsedState;
       }

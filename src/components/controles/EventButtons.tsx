@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 
 export function EventButtons() {
   const { state, dispatch } = useGame();
-  const { selectedPlayer, teamA, teamB, substitutionState } = state;
+  const { selectedPlayer, teamA, teamB, substitutionState, activePlayersA, activePlayersB } = state;
 
   const handleAddEvent = (type: GameEventType) => {
     if (type === 'SUBSTITUTION') {
@@ -33,6 +33,16 @@ export function EventButtons() {
   }
 
   const selectedPlayerInfo = getPlayerInfo();
+
+  const isPlayerActive = () => {
+      if (!selectedPlayer) return false;
+      const activeList = selectedPlayer.teamId === 'A' ? activePlayersA : activePlayersB;
+      return activeList.includes(selectedPlayer.playerId);
+  }
+
+  const canRegisterAction = selectedPlayer && isPlayerActive();
+  const canRegisterCard = !!selectedPlayer;
+  const canRegisterSubstitution = canRegisterAction;
   
   if (substitutionState) {
     return (
@@ -71,7 +81,7 @@ export function EventButtons() {
         <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
             <Button 
                 onClick={() => handleAddEvent('GOAL')} 
-                disabled={!selectedPlayer}
+                disabled={!canRegisterAction}
                 aria-label="Registrar gol"
             >
               <Goal className="mr-2 h-4 w-4" />
@@ -81,7 +91,7 @@ export function EventButtons() {
         <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
             <Button 
                 onClick={() => handleAddEvent('ASSIST')} 
-                disabled={!selectedPlayer}
+                disabled={!canRegisterAction}
                 aria-label="Registrar asistencia"
                 variant="outline"
             >
@@ -92,7 +102,7 @@ export function EventButtons() {
         <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
          <Button 
             onClick={() => handleAddEvent('SHOT')} 
-            disabled={!selectedPlayer}
+            disabled={!canRegisterAction}
             aria-label="Registrar tiro al arco"
             variant="outline"
         >
@@ -103,7 +113,7 @@ export function EventButtons() {
         <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
         <Button 
             onClick={() => handleAddEvent('FOUL')} 
-            disabled={!selectedPlayer}
+            disabled={!canRegisterAction}
             aria-label="Registrar falta"
             variant="destructive"
             className="bg-orange-500 hover:bg-orange-600"
@@ -115,7 +125,7 @@ export function EventButtons() {
         <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
         <Button
             onClick={() => handleAddEvent('YELLOW_CARD')}
-            disabled={!selectedPlayer}
+            disabled={!canRegisterCard}
             aria-label="Registrar tarjeta amarilla"
             className="bg-yellow-400 text-black hover:bg-yellow-500"
         >
@@ -126,7 +136,7 @@ export function EventButtons() {
         <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
         <Button
             onClick={() => handleAddEvent('RED_CARD')}
-            disabled={!selectedPlayer}
+            disabled={!canRegisterCard}
             aria-label="Registrar tarjeta roja"
             variant="destructive"
         >
@@ -137,7 +147,7 @@ export function EventButtons() {
         <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
             <Button
                 onClick={() => handleAddEvent('SUBSTITUTION')}
-                disabled={!selectedPlayer}
+                disabled={!canRegisterSubstitution}
                 aria-label="Registrar cambio"
                 variant="outline"
                 className="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
