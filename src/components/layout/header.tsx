@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { motion } from 'framer-motion';
 
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { usePathname } from 'next/navigation';
@@ -53,7 +54,11 @@ export function Header() {
   ]
 
   return (
-    <header className={cn(
+    <motion.header 
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled ? 'bg-background/95 border-b backdrop-blur-sm shadow-sm' : 'bg-transparent border-b border-transparent'
     )}>
@@ -169,6 +174,6 @@ export function Header() {
             </Sheet>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }

@@ -1,5 +1,6 @@
 
-import { getLiveMatches } from '@/actions/match-actions';
+'use client';
+
 import {
   Carousel,
   CarouselContent,
@@ -8,10 +9,13 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { LiveMatchCard } from './LiveMatchCard';
+import type { FullMatch } from '@/types';
 
-export async function LiveMatchesBanner() {
-  const liveMatches = await getLiveMatches();
+interface LiveMatchesBannerProps {
+  liveMatches: FullMatch[];
+}
 
+export function LiveMatchesBanner({ liveMatches }: LiveMatchesBannerProps) {
   if (liveMatches.length === 0) {
     return null;
   }

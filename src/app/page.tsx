@@ -8,12 +8,24 @@ import Link from 'next/link';
 import { PageHero } from '@/components/layout/PageHero';
 import { SocialsBanner } from '@/components/landing/SocialsBanner';
 import { LatestNewsBanner } from '@/components/landing/LatestNewsBanner';
+import { getFinishedMatches, getLiveMatches } from '@/actions/match-actions';
+import { motion } from 'framer-motion';
+import { animationVariants } from '@/lib/animations';
 
-export default function Home() {
+export default async function Home() {
+  const liveMatches = await getLiveMatches();
+  const finishedMatches = await getFinishedMatches();
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1 pt-[var(--header-height)]">
+      <motion.main 
+        className="flex-1 pt-[var(--header-height)]"
+        variants={animationVariants.fadeIn}
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.5 }}
+      >
         <PageHero
           title="La Pasión del Futsal en Canelones"
           description="Sigue cada partido, cada gol y cada jugada. La plataforma definitiva para los amantes del fútbol sala en la región."
@@ -25,11 +37,11 @@ export default function Home() {
             <Link href="/blog">Ver Noticias</Link>
           </Button>
         </PageHero>
-        <LiveMatchesBanner />
-        <FinishedMatches />
+        <LiveMatchesBanner liveMatches={liveMatches} />
+        <FinishedMatches finishedMatches={finishedMatches} />
         <LatestNewsBanner />
         <SocialsBanner />
-      </main>
+      </motion.main>
       <Footer />
     </div>
   );

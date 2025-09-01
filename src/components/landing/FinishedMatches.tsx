@@ -1,12 +1,15 @@
 
-import { getFinishedMatches } from '@/actions/match-actions';
+
 import { FinishedMatchCard } from './FinishedMatchCard';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import type { FullMatch } from '@/types';
 
-export async function FinishedMatches() {
-    const finishedMatches = await getFinishedMatches();
+interface FinishedMatchesProps {
+    finishedMatches: FullMatch[];
+}
 
+export function FinishedMatches({ finishedMatches }: FinishedMatchesProps) {
     if (finishedMatches.length === 0) {
         return null;
     }
