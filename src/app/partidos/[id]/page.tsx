@@ -1,7 +1,7 @@
 
 'use client';
 
-import { getMatchById } from '@/actions/match-actions';
+import { getMatchByIdFromDb } from '@/actions/prisma-actions';
 import { ScoreboardHeader } from '@/components/banner/ScoreboardHeader';
 import { Header } from '@/components/layout/header';
 import type { FullMatch, MatchStatus } from '@/types';
@@ -44,7 +44,7 @@ export default function MatchPage() {
 
     useEffect(() => {
         if (matchId) {
-            getMatchById(matchId).then(data => {
+            getMatchByIdFromDb(matchId).then(data => {
                 if (data) {
                     setMatch(data);
                 }

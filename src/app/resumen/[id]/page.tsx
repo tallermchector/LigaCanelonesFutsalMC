@@ -1,6 +1,6 @@
 
 import { notFound } from 'next/navigation';
-import { getMatchStats } from '@/actions/match-actions';
+import { getMatchStatsFromDb } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { MatchSummaryHeader } from '@/components/resumen/MatchSummaryHeader';
@@ -14,7 +14,7 @@ interface ResumenPageProps {
 }
 
 export async function generateMetadata({ params }: ResumenPageProps): Promise<Metadata> {
-  const match = await getMatchStats(params.id);
+  const match = await getMatchStatsFromDb(params.id);
 
   if (!match) {
     return {
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: ResumenPageProps): Promise<Me
 
 
 export default async function ResumenPage({ params }: ResumenPageProps) {
-  const match = await getMatchStats(params.id);
+  const match = await getMatchStatsFromDb(params.id);
 
   if (!match) {
     notFound();

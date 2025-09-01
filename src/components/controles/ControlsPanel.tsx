@@ -4,8 +4,10 @@
 import { useGame } from '@/contexts/GameProvider';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer, Users } from 'lucide-react';
+import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer, Users, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { saveMatchState } from '@/actions/prisma-actions';
+import { useRouter } from 'next/navigation';
 
 
 const formatTime = (seconds: number) => {
@@ -17,6 +19,7 @@ const formatTime = (seconds: number) => {
 export function ControlsPanel() {
   const { state, dispatch } = useGame();
   const { toast } = useToast();
+  const router = useRouter();
 
   const handlePeriodChange = (delta: number) => {
     const newPeriod = Math.max(1, state.period + delta);
@@ -43,6 +46,23 @@ export function ControlsPanel() {
       dispatch({ type: 'SET_STATUS', payload: 'SCHEDULED' });
   }
   
+  const handleSave = async () => {
+    try {
+        await saveMatchState(state);
+        toast({
+            title: 'Éxito',
+            description: 'El estado del partido ha sido guardado.',
+        });
+        router.push('/controles');
+    } catch (error) {
+        toast({
+            variant: 'destructive',
+            title: 'Error al Guardar',
+            description: 'No se pudo guardar el estado del partido en la base de datos.',
+        });
+    }
+  }
+  
   const isStarterSelectionMode = state.status === 'SELECTING_STARTERS';
 
   return (
@@ -56,10 +76,16 @@ export function ControlsPanel() {
               <Users className="w-16 h-16 text-primary" />
               <h3 className="text-lg font-semibold">Definir Titulares</h3>
               <p className="text-sm text-muted-foreground">Selecciona 5 jugadores de cada equipo para que comiencen el partido.</p>
-              <Button onClick={handleConfirmStarters} variant="accent" size="lg">
-                  <CheckCircle className="mr-2 h-5 w-5" />
-                  Confirmar Titulares
-              </Button>
+              <div className="flex gap-4">
+                <Button onClick={() => dispatch({ type: 'SET_STATUS', payload: 'SCHEDULED' })} variant="outline" size="lg">
+                    <ArrowLeft className="mr-2 h-5 w-5" />
+                    Volver
+                </Button>
+                <Button onClick={handleConfirmStarters} variant="accent" size="lg">
+                    <CheckCircle className="mr-2 h-5 w-5" />
+                    Confirmar Titulares
+                </Button>
+              </div>
           </CardContent>
       ) : (
         <>
@@ -106,9 +132,9 @@ export function ControlsPanel() {
                     <Users className="mr-2 h-4 w-4" />
                     Definir Titulares
                 </Button>
-                <Button variant="destructive" onClick={() => console.log('Finalizando partido...')}>
-                    <CheckCircle className="mr-2 h-4 w-4" />
-                    Finalizar Partido
+                <Button variant="destructive" onClick={handleSave}>
+                    <Save className="mr-2 h-4 w-4" />
+                    Guardar y Salir
                 </Button>
             </CardFooter>
         </>

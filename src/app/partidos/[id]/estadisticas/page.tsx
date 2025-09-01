@@ -1,6 +1,6 @@
 
 import { notFound } from 'next/navigation';
-import { getMatchStats } from '@/actions/match-actions';
+import { getMatchStatsFromDb } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { EventsList } from '@/components/partidos/estadisticas/EventsList';
@@ -15,7 +15,7 @@ interface EstadisticasPageProps {
 }
 
 export async function generateMetadata({ params }: EstadisticasPageProps): Promise<Metadata> {
-  const match = await getMatchStats(params.id);
+  const match = await getMatchStatsFromDb(params.id);
 
   if (!match) {
     return {
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: EstadisticasPageProps): Promi
 }
 
 export default async function EstadisticasPage({ params }: EstadisticasPageProps) {
-  const match = await getMatchStats(params.id);
+  const match = await getMatchStatsFromDb(params.id);
 
   if (!match) {
     notFound();
