@@ -3,8 +3,8 @@
 
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { Hand, RefreshCw, ArrowRight, ArrowLeft, Shield, Square, Timer, Footprints, Target, FileText } from 'lucide-react';
-import type { GameEvent, GameEventType } from '@/types';
+import { Hand, RefreshCw, Shield, Square, Timer, Footprints, Target, FileText, ArrowRight, ArrowLeft } from 'lucide-react';
+import type { GameEvent } from '@/types';
 import { cn } from '@/lib/utils';
 import { animationVariants } from '@/lib/animations';
 import Image from 'next/image';
@@ -26,7 +26,6 @@ const eventDisplayConfig: Record<string, { icon: React.ReactNode; label: string;
     TIMEOUT: { icon: <Timer className="w-5 h-5" />, label: "T. Muerto", className: "text-teal-400" },
     SUBSTITUTION: { icon: <RefreshCw className="w-5 h-5" />, label: "Cambio", className: "text-cyan-400" },
 };
-
 
 const formatTimeFromTotalSeconds = (totalSeconds: number) => {
     const gameDurationPerPeriod = 1200; // 20 mins
@@ -62,8 +61,7 @@ export function EventsList({ events, teamALogo, teamBLogo }: EventsListProps) {
       >
       {events.map((event, index) => {
         const config = eventDisplayConfig[event.type];
-        if (!config) return null;
-
+        
         const isTeamA = event.teamId === 'A';
         const teamLogo = isTeamA ? teamALogo : teamBLogo;
         const time = formatTimeFromTotalSeconds(event.timestamp);
@@ -88,6 +86,7 @@ export function EventsList({ events, teamALogo, teamBLogo }: EventsListProps) {
                     </div>
                 )
             }
+            if(!config) return null;
             return (
                 <div className="w-full">
                     <p className="font-semibold text-sm md:text-base text-white truncate">{event.playerName}</p>
