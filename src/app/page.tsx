@@ -11,10 +11,12 @@ import { LatestNewsBanner } from '@/components/landing/LatestNewsBanner';
 import { getFinishedMatches, getLiveMatches } from '@/actions/match-actions';
 import { motion } from 'framer-motion';
 import { animationVariants } from '@/lib/animations';
+import { getPosts } from '@/actions/blog-actions';
 
 export default async function Home() {
   const liveMatches = await getLiveMatches();
   const finishedMatches = await getFinishedMatches();
+  const { posts } = await getPosts(1);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -39,7 +41,7 @@ export default async function Home() {
         </PageHero>
         <LiveMatchesBanner liveMatches={liveMatches} />
         <FinishedMatches finishedMatches={finishedMatches} />
-        <LatestNewsBanner />
+        <LatestNewsBanner posts={posts} />
         <SocialsBanner />
       </motion.main>
       <Footer />

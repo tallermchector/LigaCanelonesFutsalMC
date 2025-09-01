@@ -1,4 +1,9 @@
+
+'use client';
+
 import React from 'react';
+import { motion } from 'framer-motion';
+import { animationVariants } from '@/lib/animations';
 
 type PageHeroProps = {
   title: string;
@@ -8,14 +13,28 @@ type PageHeroProps = {
 
 export function PageHero({ title, description, children }: PageHeroProps) {
   return (
-    <section className="relative bg-cover bg-center py-20 md:py-32 text-center text-white" style={{ backgroundImage: "url('/banner_.jpg')" }}>
+    <motion.section 
+      className="relative bg-cover bg-center py-20 md:py-32 text-center text-white" 
+      style={{ backgroundImage: "url('/banner_.jpg')" }}
+      variants={animationVariants.staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
       <div className="relative container mx-auto px-4">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{title}</h1>
+        <motion.h1 
+          className="text-4xl md:text-6xl font-bold tracking-tight"
+          variants={animationVariants.slideInUp}
+        >
+          {title}
+        </motion.h1>
         {description && (
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-white/80">
+          <motion.p 
+            className="mt-4 max-w-2xl mx-auto text-lg text-white/80"
+            variants={animationVariants.slideInUp}
+          >
             {description}
-          </p>
+          </motion.p>
         )}
         {children && (
           <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -23,6 +42,6 @@ export function PageHero({ title, description, children }: PageHeroProps) {
           </div>
         )}
       </div>
-    </section>
+    </motion.section>
   );
 }

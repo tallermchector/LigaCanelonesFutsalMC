@@ -1,4 +1,5 @@
-import { getPosts } from '@/actions/blog-actions';
+'use client';
+
 import { PostCard } from '../blog/PostCard';
 import { Button } from '../ui/button';
 import Link from 'next/link';
@@ -9,10 +10,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import type { Post } from '@/types';
 
-export async function LatestNewsBanner() {
-    const { posts } = await getPosts(1);
+interface LatestNewsBannerProps {
+    posts: Post[];
+}
 
+export function LatestNewsBanner({ posts }: LatestNewsBannerProps) {
     if (posts.length === 0) {
         return null;
     }

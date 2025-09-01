@@ -1,4 +1,5 @@
 
+'use client';
 
 import { FinishedMatchCard } from './FinishedMatchCard';
 import { Button } from '../ui/button';
