@@ -25,12 +25,12 @@ function MatchCard({ match }: { match: FullMatch }) {
     const getStatusInfo = () => {
         switch (match.status) {
             case 'LIVE':
-                return { text: 'En Vivo', variant: 'destructive', pulse: true };
+                return { text: 'En Vivo', variant: 'destructive' as const, pulse: true };
             case 'FINISHED':
-                return { text: 'Finalizado', variant: 'default', pulse: false };
+                return { text: 'Finalizado', variant: 'default' as const, pulse: false };
             case 'SCHEDULED':
             default:
-                return { text: 'Programado', variant: 'secondary', pulse: false };
+                return { text: 'Programado', variant: 'secondary' as const, pulse: false };
         }
     };
     const statusInfo = getStatusInfo();
@@ -42,7 +42,7 @@ function MatchCard({ match }: { match: FullMatch }) {
         if (match.status === 'LIVE') {
             return <Link href={`/partidos/${match.id}`}>{children}</Link>
         }
-        return <>{children}</>
+        return <div className="cursor-default">{children}</div>
     }
 
 
@@ -100,21 +100,17 @@ function MatchCard({ match }: { match: FullMatch }) {
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="p-0">
+            <CardFooter className="p-0 h-[45px]">
              {match.status === 'FINISHED' && (
-                <div className="w-full block p-4 bg-accent text-accent-foreground text-center font-semibold hover:bg-accent/90 transition-colors">
-                    <div className="flex items-center justify-center">
-                        <BarChart2 className="mr-2 h-4 w-4" />
-                        Ver Estadísticas
-                    </div>
+                <div className="w-full flex items-center justify-center p-4 bg-accent text-accent-foreground text-center font-semibold hover:bg-accent/90 transition-colors h-full">
+                    <BarChart2 className="mr-2 h-4 w-4" />
+                    Ver Estadísticas
                 </div>
             )}
              {match.status === 'LIVE' && (
-                <div className="w-full block p-4 bg-destructive text-destructive-foreground text-center font-semibold hover:bg-destructive/90 transition-colors">
-                    <div className="flex items-center justify-center">
-                        <Tv className="mr-2 h-4 w-4" />
-                        Ver en Vivo
-                    </div>
+                <div className="w-full flex items-center justify-center p-4 bg-destructive text-destructive-foreground text-center font-semibold hover:bg-destructive/90 transition-colors h-full">
+                    <Tv className="mr-2 h-4 w-4" />
+                    Ver en Vivo
                 </div>
              )}
             </CardFooter>
