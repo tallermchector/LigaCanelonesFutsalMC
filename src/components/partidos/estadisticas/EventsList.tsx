@@ -37,6 +37,60 @@ const formatTimeFromTotalSeconds = (totalSeconds: number) => {
     return { period: `${period}T`, minute: `${minute}'` };
 }
 
+const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team, isTeamA: boolean }) => {
+    const config = eventDisplayConfig[event.type];
+    if (!config) return null;
+
+    const renderEventContent = () => {
+        if (event.type === 'SUBSTITUTION' && event.playerInName) {
+            return (
+                <>
+                    <p className="font-semibold text-sm md:text-base text-white truncate">{config.label}</p>
+                    <div className="flex flex-col gap-1 w-full text-xs mt-1">
+                        <div className="flex items-center gap-2 text-red-400">
+                            <ArrowRight className="w-3 h-3 shrink-0" />
+                            <span className="truncate flex-1">{event.playerName} (Sale)</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-green-400">
+                            <ArrowLeft className="w-3 h-3 shrink-0" />
+                            <span className="truncate flex-1">{event.playerInName} (Entra)</span>
+                        </div>
+                    </div>
+                </>
+            );
+        }
+        return (
+            <>
+                <p className="font-semibold text-sm md:text-base text-white truncate">{event.playerName || team.name}</p>
+                <p className={cn("text-xs md:text-sm", config.className)}>{config.label}</p>
+            </>
+        );
+    };
+
+    return (
+        <Card className={cn(
+            "w-full bg-black/40 backdrop-blur-sm border p-0 shadow-md transition-colors",
+            isTeamA ? 'border-primary/50 hover:border-primary' : 'border-accent/50 hover:border-accent'
+        )}>
+            <CardContent className="flex items-center gap-3 p-3">
+                {team.logoUrl && (
+                    <Image
+                        src={team.logoUrl}
+                        alt={`${team.name} logo`}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 object-contain bg-white/10 rounded-full p-1"
+                    />
+                )}
+                <div className="flex-1 min-w-0 text-left">
+                    {renderEventContent()}
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
+
+
 export function EventsList({ events, teamA, teamB }: EventsListProps) {
   if (events.length === 0) {
     return (
@@ -49,11 +103,11 @@ export function EventsList({ events, teamA, teamB }: EventsListProps) {
   }
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full max-w-sm mx-auto">
       {/* Central timeline bar */}
-      <div className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-white/10" aria-hidden="true"></div>
+      <div className="absolute left-5 top-0 h-full w-0.5 -translate-x-1/2 bg-white/10" aria-hidden="true"></div>
 
-      <div className="relative flex flex-col items-center gap-y-8">
+      <div className="relative flex flex-col items-start gap-y-6">
         {events.map((event, index) => {
           const config = eventDisplayConfig[event.type];
           if (!config) return null;
@@ -62,80 +116,32 @@ export function EventsList({ events, teamA, teamB }: EventsListProps) {
           const isTeamA = event.teamId === 'A';
           const time = formatTimeFromTotalSeconds(event.timestamp);
 
-          const renderEventContent = () => {
-              if (event.type === 'SUBSTITUTION' && event.playerInName) {
-                  return (
-                      <>
-                          <p className="font-semibold text-sm md:text-base text-white truncate">{team.name}</p>
-                          <div className="flex flex-col gap-1 w-full text-sm mt-1">
-                              <div className="flex items-center gap-2 text-red-400">
-                                <ArrowRight className="w-4 h-4 shrink-0" />
-                                <span className="truncate flex-1">{event.playerName} (Sale)</span>
-                              </div>
-                              <div className="flex items-center gap-2 text-green-400">
-                                <ArrowLeft className="w-4 h-4 shrink-0" />
-                                <span className="truncate flex-1">{event.playerInName} (Entra)</span>
-                              </div>
-                          </div>
-                      </>
-                  )
-              }
-              return (
-                  <>
-                      <p className="font-semibold text-sm md:text-base text-white truncate">{event.playerName}</p>
-                      <p className={cn("text-xs md:text-sm", config.className)}>{config.label}</p>
-                  </>
-              )
-          }
-
           return (
             <motion.div 
               key={event.id || index} 
-              className={cn(
-                  "relative z-10 w-full flex items-center",
-                  isTeamA ? 'justify-start' : 'justify-end'
-              )}
+              className="relative z-10 w-full flex items-start gap-x-4 pl-10"
               variants={animationVariants.slideInUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.5 }}
              >
-              <div className={cn(
-                  'w-[calc(50%-2.5rem)] flex',
-                  isTeamA ? 'justify-end' : 'justify-start'
-              )}>
-                  <Card className={cn(
-                      "flex-shrink-0 w-40 sm:w-48 bg-black/40 backdrop-blur-sm border p-2 shadow-md transition-colors",
-                      isTeamA ? 'border-primary/50 hover:border-primary' : 'border-accent/50 hover:border-accent'
-                  )}>
-                    <div className="flex items-center gap-2">
-                        {team.logoUrl && (
-                          <Image src={team.logoUrl} alt={`${team.name} logo`} width={24} height={24} className="w-6 h-6 object-contain bg-white/10 rounded-full p-0.5"/>
-                        )}
-                        <div className="flex-1 min-w-0 text-left">{renderEventContent()}</div>
+                <div className="absolute top-0 left-0 flex flex-col items-center">
+                    <div className="relative grid h-10 w-10 place-items-center">
+                        <div className={cn(
+                            "relative z-10 grid h-10 w-10 place-items-center rounded-full border border-white/20 text-white",
+                            config.iconBg
+                        )}>
+                        {config.icon}
+                        </div>
                     </div>
-                  </Card>
-              </div>
-
-              <div className="relative grid h-20 w-20 place-items-center">
-                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-0.5 bg-white/10"></div>
-                 <div className={cn(
-                     "relative z-10 grid h-12 w-12 place-items-center rounded-full border border-white/20 text-white",
-                     config.iconBg
-                  )}>
-                   {config.icon}
-                 </div>
-              </div>
-              
-              <div className={cn(
-                  'w-[calc(50%-2.5rem)] flex font-mono text-xs sm:text-sm text-white/80',
-                  isTeamA ? 'justify-start' : 'justify-end'
-              )}>
-                   <div className="bg-black/50 px-2 py-1 rounded-md border border-white/10">
+                     <div className="mt-1.5 font-mono text-xs text-white/80">
                        <span>{time.period}</span> {time.minute}
                    </div>
-              </div>
-
+                </div>
+                
+                <div className="pt-1 w-full">
+                     <EventCard event={event} team={team} isTeamA={isTeamA} />
+                </div>
             </motion.div>
           );
         })}
