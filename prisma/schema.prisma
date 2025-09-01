@@ -1,65 +1,68 @@
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
-model Team {
-  id      Int      @id @default(autoincrement())
-  name    String
-  logoUrl String?
-  players Player[]
-
-  homeMatches Match[] @relation("TeamA")
-  awayMatches Match[] @relation("TeamB")
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Player {
-  id       Int    @id @default(autoincedit())
+  id       Int    @id @default(autoincrement())
   name     String
   number   Int
   position String
   teamId   Int
   team     Team   @relation(fields: [teamId], references: [id])
+  events   GameEvent[]
 }
 
-model Match {
-  id            String      @id
-  scheduledTime DateTime
-  status        String
-  teamAId       Int
-  teamBId       Int
-  scoreA        Int
-  scoreB        Int
-  foulsA        Int
-  foulsB        Int
-  timeoutsA     Int
-  timeoutsB     Int
-  period        Int
-  time          Int
-  isRunning     Boolean
-  teamA         Team        @relation("TeamA", fields: [teamAId], references: [id])
-  teamB         Team        @relation("TeamB", fields: [teamBId], references: [id])
-  events        GameEvent[]
-
-  activePlayersA Int[]
-  activePlayersB Int[]
+model Team {
+  id       Int      @id @default(autoincrement())
+  name     String
+  logoUrl  String?
+  players  Player[]
+  matchesA Match[]  @relation("TeamA")
+  matchesB Match[]  @relation("TeamB")
 }
 
 model GameEvent {
-  id           String  @id @default(cuid())
-  type         String
-  teamId       String
-  playerId     Int
-  playerName   String
-  playerInId   Int?
-  playerInName String?
-  teamName     String
-  timestamp    Int
-  matchId      String
-  match        Match   @relation(fields: [matchId], references: [id])
+    id              String      @id @default(cuid())
+    type            String
+    teamId          String
+    playerId        Int
+    playerName      String
+    playerInId      Int?
+    playerInName    String?
+    teamName        String
+    timestamp       Int
+    matchId         String
+    match           Match       @relation(fields: [matchId], references: [id])
+    player          Player      @relation(fields: [playerId], references: [id])
+}
+
+model Match {
+  id              String      @id @default(cuid())
+  scheduledTime   DateTime
+  status          String
+  teamAId         Int
+  teamBId         Int
+  scoreA          Int
+  scoreB          Int
+  foulsA          Int
+  foulsB          Int
+  timeoutsA       Int
+  timeoutsB       Int
+  period          Int
+  time            Int
+  isRunning       Boolean
+  events          GameEvent[]
+  activePlayersA  Json
+  activePlayersB  Json
+  teamA           Team        @relation("TeamA", fields: [teamAId], references: [id])
+  teamB           Team        @relation("TeamB", fields: [teamBId], references: [id])
 }
