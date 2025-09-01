@@ -2,7 +2,7 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import type { GameState, FullMatch, MatchStats, GameEvent as GameEventType, MatchStatus, Team, Player } from '@/types';
+import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, Team, Player, GameEventType } from '@/types';
 import { revalidatePath } from 'next/cache';
 
 export async function saveMatchState(state: GameState): Promise<void> {
@@ -102,7 +102,7 @@ export async function getMatchByIdFromDb(id: string): Promise<FullMatch | undefi
             ...match,
             scheduledTime: match.scheduledTime.toISOString(),
             status: match.status as FullMatch['status'],
-            events: match.events.map((e: GameEventType) => ({...e, type: e.type as GameEventType['type']})),
+            events: match.events.map(e => ({...e, type: e.type as GameEventType})),
         };
     } catch (error) {
         console.error(`Failed to fetch match ${id} from DB:`, error);
@@ -143,7 +143,7 @@ export async function getMatchStatsFromDb(id: string): Promise<MatchStats | unde
     
   const allPlayers = [...match.teamA.players, ...match.teamB.players];
 
-  const getStatsForType = (eventType: GameEventType['type']) => {
+  const getStatsForType = (eventType: GameEventType) => {
     const eventCounts = match.events!
       .filter(event => event.type === eventType)
       .reduce((acc, event) => {
