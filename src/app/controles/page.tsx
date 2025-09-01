@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/header';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ControlMatchCard } from '@/components/controles/ControlMatchCard';
 import { MatchListSkeleton } from '@/components/controles/MatchListSkeleton';
 import { useToast } from '@/hooks/use-toast';
