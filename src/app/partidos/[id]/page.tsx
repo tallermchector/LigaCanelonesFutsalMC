@@ -5,7 +5,7 @@ import { getMatchById } from '@/actions/match-actions';
 import { ScoreboardHeader } from '@/components/banner/ScoreboardHeader';
 import { Header } from '@/components/layout/header';
 import type { FullMatch, MatchStatus } from '@/types';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -36,20 +36,22 @@ function MatchPageSkeleton() {
     )
 }
 
-export default function MatchPage({ params }: { params: { id: string }}) {
+export default function MatchPage() {
+    const params = useParams();
+    const matchId = params.id as string;
     const [match, setMatch] = useState<FullMatch | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (params.id) {
-            getMatchById(params.id).then(data => {
+        if (matchId) {
+            getMatchById(matchId).then(data => {
                 if (data) {
                     setMatch(data);
                 }
                 setLoading(false);
             });
         }
-    }, [params.id]);
+    }, [matchId]);
 
 
     if (loading) {
