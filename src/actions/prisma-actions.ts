@@ -2,7 +2,7 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import type { GameState, FullMatch, MatchStats, GameEvent as GameEventType, MatchStatus, Team } from '@/types';
+import type { GameState, FullMatch, MatchStats, GameEvent as GameEventType, MatchStatus, Team, Player } from '@/types';
 import { revalidatePath } from 'next/cache';
 
 export async function saveMatchState(state: GameState): Promise<void> {
@@ -60,6 +60,7 @@ export async function saveMatchState(state: GameState): Promise<void> {
         isRunning,
         activePlayersA,
         activePlayersB,
+        round: 1, // Add a default round or get it from somewhere
         events: {
           create: events.map(event => ({
             id: event.id,
@@ -121,7 +122,7 @@ export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
             },
         });
         
-        return matches.map(match => ({
+        return matches.map((match): FullMatch => ({
             ...match,
             scheduledTime: match.scheduledTime.toISOString(),
             status: match.status as FullMatch['status'],
@@ -156,7 +157,7 @@ export async function getMatchStatsFromDb(id: string): Promise<MatchStats | unde
         const player = allPlayers.find(p => p.id === parseInt(playerId, 10));
         return player ? { player, count } : null;
       })
-      .filter((p): p is { player: any, count: number } => p !== null)
+      .filter((p): p is { player: Player, count: number } => p !== null)
       .sort((a, b) => b.count - a.count);
   };
   
