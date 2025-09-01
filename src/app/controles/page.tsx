@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -12,7 +13,7 @@ import type { FullMatch, MatchStatus } from '@/types';
 export default function ControlesPage() {
   const [matches, setMatches] = useState<FullMatch[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<MatchStatus>('SCHEDULED');
+  const [activeTab, setActiveTab] = useState<MatchStatus>('LIVE');
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -50,7 +51,7 @@ export default function ControlesPage() {
             Control de Partidos
             </h1>
             <Tabs
-            defaultValue="SCHEDULED"
+            defaultValue="LIVE"
             onValueChange={(value) => setActiveTab(value as MatchStatus)}
             aria-label="Filtrar partidos por estado"
             className="w-full sm:w-auto"
