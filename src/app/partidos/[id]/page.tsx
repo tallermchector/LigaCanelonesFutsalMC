@@ -1,38 +1,14 @@
 
+'use client';
+
 import { getMatchById } from '@/actions/match-actions';
 import { ScoreboardHeader } from '@/components/banner/ScoreboardHeader';
 import { Header } from '@/components/layout/header';
-import type { MatchStatus } from '@/types';
+import type { FullMatch, MatchStatus } from '@/types';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
+import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
-interface MatchPageProps {
-    params: {
-        id: string;
-    }
-}
-
-export async function generateMetadata({ params }: MatchPageProps): Promise<Metadata> {
-  const match = await getMatchById(params.id);
-
-  if (!match) {
-    return {
-      title: 'Partido no encontrado',
-    };
-  }
-
-  const title = `${match.teamA.name} vs ${match.teamB.name}`;
-  const description = `Sigue el marcador en vivo del partido de futsal entre ${match.teamA.name} y ${match.teamB.name}.`;
-
-  return {
-    title: title,
-    description: description,
-    openGraph: {
-      title: title,
-      description: description,
-    },
-  };
-}
 
 function getPeriodLabel(status: MatchStatus, period: number | undefined): string {
     switch (status) {
@@ -49,8 +25,44 @@ function getPeriodLabel(status: MatchStatus, period: number | undefined): string
     }
 }
 
-export default async function MatchPage({ params }: MatchPageProps) {
-    const match = await getMatchById(params.id);
+function MatchPageSkeleton() {
+    return (
+        <div className="container mx-auto flex flex-1 flex-col items-center justify-center p-4 md:p-8">
+            <div className="w-full text-center mb-8">
+                <Skeleton className="h-10 w-3/4 mx-auto" />
+                <Skeleton className="h-6 w-1/2 mx-auto mt-4" />
+            </div>
+            <Skeleton className="h-48 w-full max-w-6xl" />
+        </div>
+    )
+}
+
+export default function MatchPage({ params }: { params: { id: string }}) {
+    const [match, setMatch] = useState<FullMatch | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (params.id) {
+            getMatchById(params.id).then(data => {
+                if (data) {
+                    setMatch(data);
+                }
+                setLoading(false);
+            });
+        }
+    }, [params.id]);
+
+
+    if (loading) {
+        return (
+             <div className="flex min-h-screen flex-col bg-background">
+                <Header />
+                <main className="flex flex-1 flex-col pt-[var(--header-height)]">
+                    <MatchPageSkeleton />
+                </main>
+            </div>
+        )
+    }
 
     if (!match) {
         notFound();

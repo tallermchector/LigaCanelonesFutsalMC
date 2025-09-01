@@ -1,12 +1,24 @@
 
 'use client';
 
-import type { Metadata } from 'next';
-import { Orbitron, Roboto } from 'next/font/google';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import { motion } from 'framer-motion';
-import { animationVariants } from '@/lib/animations';
+import { Roboto, Orbitron } from 'next/font/google';
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-roboto',
+  display: 'swap',
+});
+
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  weight: ['400', '700', '900'],
+  variable: '--font-orbitron',
+  display: 'swap',
+});
+
 
 export default function RootLayout({
   children,
@@ -32,15 +44,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-const roboto = Roboto({
-  subsets: ['latin'],
-  weight: ['400', '500', '700'],
-  variable: '--font-roboto',
-});
-
-const orbitron = Orbitron({
-  subsets: ['latin'],
-  weight: ['400', '700', '900'],
-  variable: '--font-orbitron',
-});

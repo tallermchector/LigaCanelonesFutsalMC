@@ -11,7 +11,6 @@ import { PageHero } from '@/components/layout/PageHero';
 import { SocialsBanner } from '@/components/landing/SocialsBanner';
 import { LatestNewsBanner } from '@/components/landing/LatestNewsBanner';
 import { motion } from 'framer-motion';
-import { animationVariants } from '@/lib/animations';
 
 export default function Home() {
   return (
@@ -30,7 +29,7 @@ export default function Home() {
           <Button asChild size="lg">
             <Link href="/partidos">Ver Partidos</Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="bg-transparent border-white text-white hover:bg-white hover:text-black">
+          <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-accent">
             <Link href="/blog">Ver Noticias</Link>
           </Button>
         </PageHero>
