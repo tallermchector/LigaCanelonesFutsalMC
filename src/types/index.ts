@@ -1,5 +1,6 @@
 
 import type { FC, ReactNode, SVGProps } from 'react';
+import { ImageProps } from 'next/image';
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED';
 
@@ -93,8 +94,8 @@ export type Post = {
 export interface SocialLink {
   name: string;
   url: string;
-  icon?: React.FC<React.SVGProps<SVGSVGElement>>;
-  background: string;
+  icon?: React.FC<Omit<ImageProps, 'src' | 'alt'>>;
+  imageUrl: string;
   color: string;
   textColor?: string;
 }
