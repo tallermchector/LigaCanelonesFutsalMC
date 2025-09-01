@@ -26,6 +26,8 @@
     extensions = [
       # "vscodevim.vim"
       "Google.validation-agent-extension"
+      "ms-python.debugpy"
+      "ms-python.python"
     ];
     workspace = {
       onCreate = {
