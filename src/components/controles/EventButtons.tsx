@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Goal, Shield, Hand, Footprints, Square } from 'lucide-react';
 import type { GameEventType } from '@/types';
+import { motion } from 'framer-motion';
 
 export function EventButtons() {
   const { state, dispatch } = useGame();
@@ -33,23 +33,28 @@ export function EventButtons() {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center flex-wrap gap-3 pt-4">
-        <Button 
-            onClick={() => handleAddEvent('GOAL')} 
-            disabled={!selectedPlayer}
-            aria-label="Registrar gol"
-        >
-          <Goal className="mr-2 h-4 w-4" />
-          Gol
-        </Button>
-        <Button 
-            onClick={() => handleAddEvent('ASSIST')} 
-            disabled={!selectedPlayer}
-            aria-label="Registrar asistencia"
-            variant="outline"
-        >
-          <Hand className="mr-2 h-4 w-4" />
-          Asistencia
-        </Button>
+        <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
+            <Button 
+                onClick={() => handleAddEvent('GOAL')} 
+                disabled={!selectedPlayer}
+                aria-label="Registrar gol"
+            >
+              <Goal className="mr-2 h-4 w-4" />
+              Gol
+            </Button>
+        </motion.div>
+        <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
+            <Button 
+                onClick={() => handleAddEvent('ASSIST')} 
+                disabled={!selectedPlayer}
+                aria-label="Registrar asistencia"
+                variant="outline"
+            >
+              <Hand className="mr-2 h-4 w-4" />
+              Asistencia
+            </Button>
+        </motion.div>
+        <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
          <Button 
             onClick={() => handleAddEvent('SHOT')} 
             disabled={!selectedPlayer}
@@ -59,6 +64,8 @@ export function EventButtons() {
           <Footprints className="mr-2 h-4 w-4" />
           Tiro al arco
         </Button>
+        </motion.div>
+        <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
         <Button 
             onClick={() => handleAddEvent('FOUL')} 
             disabled={!selectedPlayer}
@@ -69,6 +76,8 @@ export function EventButtons() {
           <Shield className="mr-2 h-4 w-4" />
           Falta
         </Button>
+        </motion.div>
+        <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
         <Button
             onClick={() => handleAddEvent('YELLOW_CARD')}
             disabled={!selectedPlayer}
@@ -78,6 +87,8 @@ export function EventButtons() {
             <Square className="mr-2 h-4 w-4 fill-current" />
             Amarilla
         </Button>
+        </motion.div>
+        <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
         <Button
             onClick={() => handleAddEvent('RED_CARD')}
             disabled={!selectedPlayer}
@@ -87,6 +98,7 @@ export function EventButtons() {
             <Square className="mr-2 h-4 w-4 fill-current" />
             Roja
         </Button>
+        </motion.div>
       </CardContent>
     </Card>
   );
