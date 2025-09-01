@@ -94,7 +94,7 @@ export type Post = {
 export interface SocialLink {
   name: string;
   url: string;
-  icon?: React.FC<Omit<ImageProps, 'src' | 'alt'>>;
+  icon?: React.FC<any>;
   imageUrl: string;
   color: string;
   textColor?: string;
