@@ -1,10 +1,10 @@
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { JerseyButton } from './JerseyButton';
 import type { SelectedPlayer } from '@/types';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { motion } from 'framer-motion';
 
 interface TeamPanelProps {

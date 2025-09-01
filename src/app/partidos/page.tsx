@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, Clock, BarChart2, Tv } from 'lucide-react';
-import type { FullMatch, MatchStatus } from '@/types';
+import type { FullMatch } from '@/types';
 import { PageHero } from '@/components/layout/PageHero';
 import { Footer } from '@/components/layout/footer';
 

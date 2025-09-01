@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import { getMatchById } from '@/actions/match-actions';
 import { ScoreboardHeader } from '@/components/banner/ScoreboardHeader';
-import type { FullMatch, GameState, MatchStatus } from '@/types';
+import type { FullMatch, MatchStatus } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLiveMatchState } from '@/hooks/useLiveMatchState';
 

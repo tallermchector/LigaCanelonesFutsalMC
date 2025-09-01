@@ -4,7 +4,7 @@
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { GoalIcon, FoulIcon, YellowCardIcon, RedCardIcon } from '@/components/icons';
-import { Shield, Hand, Square } from 'lucide-react';
+import { Hand } from 'lucide-react';
 import type { GameEvent, GameEventType } from '@/types';
 import { cn } from '@/lib/utils';
 import { animationVariants } from '@/lib/animations';

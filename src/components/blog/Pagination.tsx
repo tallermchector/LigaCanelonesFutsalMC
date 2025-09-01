@@ -10,7 +10,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import Link from "next/link";
 
 type Props = {
   currentPage: number;
@@ -24,8 +23,7 @@ export function BlogPagination({ currentPage, totalPages, basePath }: Props) {
 
   const renderPageNumbers = () => {
     const pages = [];
-    const pagesToShow = new Set([1, totalPages, currentPage, currentPage - 1, currentPage + 1]);
-
+    
     let lastPage = 0;
     for (let i = 1; i <= totalPages; i++) {
         if (i > 0 && i <= totalPages && (i <= 2 || i >= totalPages - 1 || (i >= currentPage - 1 && i <= currentPage + 1))) {

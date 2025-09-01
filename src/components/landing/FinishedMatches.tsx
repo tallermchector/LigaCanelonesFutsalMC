@@ -7,7 +7,6 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import type { FullMatch } from '@/types';
 import { getFinishedMatches } from '@/actions/match-actions';
-import { Skeleton } from '../ui/skeleton';
 
 function FinishedMatchesSkeleton() {
     return (

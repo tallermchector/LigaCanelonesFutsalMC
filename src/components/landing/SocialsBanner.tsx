@@ -2,8 +2,6 @@
 'use client';
 
 import { socialLinks } from '@/data/social-links';
-import type { SocialLink } from '@/types';
-import { Button } from '../ui/button';
 import {
   Carousel,
   CarouselContent,

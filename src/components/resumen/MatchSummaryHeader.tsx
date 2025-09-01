@@ -1,7 +1,6 @@
 
 import type { MatchStats } from '@/types';
 import Image from 'next/image';
-import { cn } from '@/lib/utils';
 
 interface MatchSummaryHeaderProps {
   match: MatchStats;

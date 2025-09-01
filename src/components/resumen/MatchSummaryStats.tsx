@@ -5,7 +5,6 @@ import type { MatchStats, GameEventType } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { cn } from '@/lib/utils';
 
 interface MatchSummaryStatsProps {
     match: MatchStats;

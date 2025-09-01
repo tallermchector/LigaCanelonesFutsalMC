@@ -8,7 +8,6 @@ import type { Post } from '@/types';
 import { formatDate } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { animationVariants } from '@/lib/animations';
 
