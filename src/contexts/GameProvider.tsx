@@ -15,7 +15,10 @@ type GameAction =
   | { type: 'RESET_TIMER' }
   | { type: 'TICK' }
   | { type: 'SELECT_PLAYER'; payload: SelectedPlayer }
-  | { type: 'ADD_EVENT'; payload: { type: GameEventType; teamId?: 'A' | 'B' } };
+  | { type: 'ADD_EVENT'; payload: { type: GameEventType; teamId?: 'A' | 'B' } }
+  | { type: 'INITIATE_SUBSTITUTION' }
+  | { type: 'CANCEL_SUBSTITUTION' };
+
 
 const initialState: GameState = {
   matchId: null,
@@ -33,6 +36,7 @@ const initialState: GameState = {
   isRunning: false,
   events: [],
   selectedPlayer: null,
+  substitutionState: null,
 };
 
 const gameReducer = (state: GameState, action: GameAction): GameState => {
@@ -47,6 +51,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         scoreA: action.payload.match.scoreA,
         scoreB: action.payload.match.scoreB,
         events: action.payload.match.events || [],
+        substitutionState: null,
       };
     case 'UPDATE_SCORE':
       if (action.payload.team === 'A') {
@@ -82,12 +87,59 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         return { ...state, isRunning: false };
       }
       return state;
-    case 'SELECT_PLAYER':
-      if (state.selectedPlayer?.playerId === action.payload?.playerId && state.selectedPlayer?.teamId === action.payload?.teamId) {
-          return { ...state, selectedPlayer: null };
-      }
-      return { ...state, selectedPlayer: action.payload };
+    case 'SELECT_PLAYER': {
+        const selected = action.payload;
+
+        if (state.substitutionState) {
+            const { playerOut } = state.substitutionState;
+
+            // Only allow selecting a different player from the same team
+            if (selected.teamId === playerOut.teamId && selected.playerId !== playerOut.playerId) {
+                const team = playerOut.teamId === 'A' ? state.teamA : state.teamB;
+                const pOut = team?.players.find(p => p.id === playerOut.playerId);
+                const pIn = team?.players.find(p => p.id === selected.playerId);
+                
+                if (!team || !pOut || !pIn) return state;
+
+                const newEvent: GameEvent = {
+                    id: `${Date.now()}-${Math.random()}`,
+                    type: 'SUBSTITUTION',
+                    teamId: playerOut.teamId,
+                    playerId: pOut.id,
+                    playerName: pOut.name,
+                    playerInId: pIn.id,
+                    playerInName: pIn.name,
+                    teamName: team.name,
+                    timestamp: state.time,
+                };
+                
+                return {
+                    ...state,
+                    events: [...state.events, newEvent],
+                    selectedPlayer: null,
+                    substitutionState: null,
+                };
+            }
+            // If the same player is selected again, or a player from another team, cancel substitution
+            return { ...state, substitutionState: null, selectedPlayer: null };
+        }
+
+        if (state.selectedPlayer?.playerId === selected.playerId && state.selectedPlayer?.teamId === selected.teamId) {
+            return { ...state, selectedPlayer: null };
+        }
+
+        return { ...state, selectedPlayer: selected };
+    }
     case 'ADD_EVENT': {
+      if (action.payload.type === 'SUBSTITUTION') {
+          if (!state.selectedPlayer) return state;
+          return {
+              ...state,
+              substitutionState: { playerOut: state.selectedPlayer },
+              selectedPlayer: null, // Clear selection to wait for player_in
+          };
+      }
+      
       let teamId = state.selectedPlayer?.teamId;
       let playerId = state.selectedPlayer?.playerId;
 
@@ -97,7 +149,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         playerId = -1; // System event, no specific player
       }
 
-      if (!teamId) return state;
+      if (!teamId || playerId === undefined) return state;
       
       const team = teamId === 'A' ? state.teamA : state.teamB;
       const player = team?.players?.find(p => p.id === playerId);
@@ -108,13 +160,13 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           id: `${Date.now()}-${Math.random()}`,
           type: action.payload.type,
           teamId,
-          playerId: playerId!,
+          playerId,
           playerName: player?.name || 'Equipo',
           teamName: team.name,
           timestamp: state.time,
       };
       
-      const newState = { ...state, events: [...state.events, newEvent] };
+      const newState = { ...state, events: [...state.events, newEvent], selectedPlayer: null };
 
       if (action.payload.type === 'GOAL') {
           return gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
@@ -128,6 +180,15 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
 
       return newState;
     }
+    case 'INITIATE_SUBSTITUTION':
+        if (!state.selectedPlayer) return state;
+        return {
+            ...state,
+            substitutionState: { playerOut: state.selectedPlayer },
+            selectedPlayer: null,
+        };
+    case 'CANCEL_SUBSTITUTION':
+        return { ...state, substitutionState: null };
     default:
       return state;
   }
@@ -140,7 +201,12 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
     try {
       if (typeof window !== 'undefined') {
         const savedState = localStorage.getItem(`futsal-match-state-${match.id}`);
-        return savedState ? JSON.parse(savedState) : null;
+        const parsedState = savedState ? JSON.parse(savedState) : null;
+        if (parsedState) {
+          // Ensure new state fields are initialized
+          parsedState.substitutionState = null;
+        }
+        return parsedState;
       }
     } catch (error) {
       console.error("Failed to read state from localStorage", error);

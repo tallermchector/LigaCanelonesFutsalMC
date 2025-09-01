@@ -1,21 +1,31 @@
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Goal, Shield, Hand, Footprints, Square, RefreshCw } from 'lucide-react';
+import { Goal, Shield, Hand, Footprints, Square, RefreshCw, XCircle } from 'lucide-react';
 import type { GameEventType } from '@/types';
 import { motion } from 'framer-motion';
 
 export function EventButtons() {
   const { state, dispatch } = useGame();
-  const { selectedPlayer, teamA, teamB } = state;
+  const { selectedPlayer, teamA, teamB, substitutionState } = state;
 
   const handleAddEvent = (type: GameEventType) => {
-    dispatch({ type: 'ADD_EVENT', payload: { type } });
+    if (type === 'SUBSTITUTION') {
+      dispatch({ type: 'INITIATE_SUBSTITUTION' });
+    } else {
+      dispatch({ type: 'ADD_EVENT', payload: { type } });
+    }
   };
-  
+
   const getPlayerInfo = () => {
+    if (substitutionState) {
+        const team = substitutionState.playerOut.teamId === 'A' ? teamA : teamB;
+        const player = team?.players?.find(p => p.id === substitutionState.playerOut.playerId);
+        return player ? `Sale: ${player.name}. Seleccione quién entra.` : 'Procesando cambio...';
+    }
     if (!selectedPlayer) return null;
     const team = selectedPlayer.teamId === 'A' ? teamA : teamB;
     const player = team?.players?.find(p => p.id === selectedPlayer.playerId);
@@ -23,6 +33,31 @@ export function EventButtons() {
   }
 
   const selectedPlayerInfo = getPlayerInfo();
+  
+  if (substitutionState) {
+    return (
+       <Card className="w-full shadow-md">
+            <CardHeader className="text-center pb-2">
+                <CardTitle className="text-lg text-primary">Realizando Cambio</CardTitle>
+                <CardDescription className="h-5 text-blue-500 font-semibold animate-pulse">
+                    {selectedPlayerInfo || 'Seleccione un jugador para que entre'}
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-center flex-wrap gap-3 pt-4">
+                 <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
+                    <Button 
+                        onClick={() => dispatch({ type: 'CANCEL_SUBSTITUTION' })}
+                        variant="destructive"
+                    >
+                      <XCircle className="mr-2 h-4 w-4" />
+                      Cancelar Cambio
+                    </Button>
+                </motion.div>
+            </CardContent>
+       </Card>
+    )
+  }
+
 
   return (
     <Card className="w-full shadow-md">

@@ -15,7 +15,7 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
   const { state, dispatch } = useGame();
   
   const team = teamId === 'A' ? state.teamA : state.teamB;
-  const { selectedPlayer } = state;
+  const { selectedPlayer, substitutionState } = state;
 
   if (!team || !team.players) return null;
 
@@ -23,6 +23,14 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
     const payload: SelectedPlayer = { teamId, playerId };
     dispatch({ type: 'SELECT_PLAYER', payload });
   };
+  
+  const isPlayerBeingSubbedOut = (playerId: number) => {
+      return substitutionState?.playerOut.teamId === teamId && substitutionState?.playerOut.playerId === playerId;
+  }
+  
+  const isSubstitutionModeForThisTeam = () => {
+      return substitutionState?.playerOut.teamId === teamId;
+  }
 
   return (
     <Card className="h-full flex flex-col">
@@ -31,20 +39,34 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
       </CardHeader>
       <CardContent className="flex-grow p-2 overflow-y-auto">
         <div className="flex flex-wrap items-start justify-center gap-4">
-            {team.players.map((player) => (
+            {team.players.map((player) => {
+              const isSelected = !!selectedPlayer &&
+                                 selectedPlayer.teamId === teamId &&
+                                 selectedPlayer.playerId === player.id;
+              
+              // A player cannot be selected for substitution if they are the one coming out
+              const isDisabled = isSubstitutionModeForThisTeam() && isPlayerBeingSubbedOut(player.id);
+              
+              let variant: 'accent' | 'outline' | 'destructive' = 'outline';
+              if (isSelected) {
+                  variant = 'accent';
+              } else if (isPlayerBeingSubbedOut(player.id)) {
+                  variant = 'destructive';
+              }
+
+              return (
               <motion.div key={player.id} whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
                 <JerseyButton
                   jerseyNumber={player.number}
                   playerName={player.name}
-                  isSelected={
-                    !!selectedPlayer &&
-                    selectedPlayer.teamId === teamId &&
-                    selectedPlayer.playerId === player.id
-                  }
-                  onClick={() => handlePlayerSelect(player.id)}
+                  isSelected={isSelected || isPlayerBeingSubbedOut(player.id)}
+                  isDisabled={isDisabled}
+                  variant={variant}
+                  onClick={() => !isDisabled && handlePlayerSelect(player.id)}
                 />
               </motion.div>
-            ))}
+              );
+            })}
           </div>
       </CardContent>
     </Card>

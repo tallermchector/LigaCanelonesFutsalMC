@@ -9,18 +9,21 @@ interface JerseyButtonProps {
   playerName: string;
   isSelected: boolean;
   onClick: () => void;
+  isDisabled?: boolean;
+  variant?: 'accent' | 'outline' | 'destructive';
 }
 
-export function JerseyButton({ jerseyNumber, playerName, isSelected, onClick }: JerseyButtonProps) {
+export function JerseyButton({ jerseyNumber, playerName, isSelected, onClick, isDisabled = false, variant = 'outline' }: JerseyButtonProps) {
   return (
     <div className="flex flex-col items-center">
       <Button
-        variant={isSelected ? 'accent' : 'outline'}
+        variant={variant}
         className={cn(
           'h-14 w-14 rounded-full text-lg font-bold flex flex-col items-center justify-center p-0 transition-all duration-200',
-          isSelected && 'ring-2 ring-offset-2 ring-accent'
+           isSelected && variant !== 'destructive' && 'ring-2 ring-offset-2 ring-accent'
         )}
         onClick={onClick}
+        disabled={isDisabled}
         aria-label={`Seleccionar jugador ${playerName}, número ${jerseyNumber}`}
         aria-pressed={isSelected}
       >

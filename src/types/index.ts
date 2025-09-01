@@ -23,8 +23,10 @@ export interface GameEvent {
   id: string;
   type: GameEventType;
   teamId: 'A' | 'B';
-  playerId: number;
+  playerId: number; // For single-player events or player_out for substitutions
   playerName: string;
+  playerInId?: number; // For substitutions
+  playerInName?: string; // For substitutions
   teamName: string;
   timestamp: number; // Time in seconds when event occurred
 }
@@ -58,7 +60,7 @@ export interface MatchStats extends FullMatch {
 export type SelectedPlayer = {
   teamId: 'A' | 'B';
   playerId: number;
-} | null;
+};
 
 export interface GameState {
   matchId: string | null;
@@ -75,7 +77,10 @@ export interface GameState {
   time: number; // in seconds
   isRunning: boolean;
   events: GameEvent[];
-  selectedPlayer: SelectedPlayer;
+  selectedPlayer: SelectedPlayer | null;
+  substitutionState: {
+      playerOut: SelectedPlayer;
+  } | null;
 }
 
 export type Post = {
