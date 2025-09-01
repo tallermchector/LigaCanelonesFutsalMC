@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -71,13 +70,6 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
                   isDisabled = true;
               }
           } 
-          // When NOT in substitution mode and game is LIVE/FINISHED...
-          else if (status !== 'SCHEDULED') {
-              // Only active players can initiate events (except cards, handled by event button disabling)
-              if (!player.isActive) {
-                 isDisabled = true;
-              }
-          }
           
           const variant = getPlayerVariant(player.id, isSelected);
 
