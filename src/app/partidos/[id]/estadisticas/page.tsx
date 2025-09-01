@@ -45,7 +45,6 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
 
   const allEvents = (match.events || []).sort((a, b) => a.timestamp - b.timestamp);
 
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -61,7 +60,11 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
 
                     <section className="mt-12">
                         <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-white">Línea de Tiempo</h2>
-                        <EventsList events={allEvents} />
+                        <EventsList 
+                          events={allEvents} 
+                          teamALogo={match.teamA.logoUrl || ''} 
+                          teamBLogo={match.teamB.logoUrl || ''}
+                        />
                     </section>
                 </div>
             </div>
