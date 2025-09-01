@@ -1,10 +1,13 @@
 
+
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { getPosts } from '@/actions/blog-actions';
 import { PostCard } from '@/components/blog/PostCard';
 import { BlogPagination } from '@/components/blog/Pagination';
 import { PageHero } from '@/components/layout/PageHero';
+import { motion } from 'framer-motion';
+import { animationVariants } from '@/lib/animations';
 
 type BlogPageProps = {
   searchParams?: {
@@ -31,7 +34,13 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         <div className="container mx-auto p-4 py-8 md:p-8">
           {posts.length > 0 || featuredPost ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                variants={animationVariants.staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.1 }}
+              >
                 {featuredPost && (
                   <div className="md:col-span-2 lg:col-span-3">
                     <PostCard post={featuredPost} isFeatured={true} />
@@ -40,7 +49,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                 {posts.map((post) => (
                   <PostCard key={post.slug} post={post} />
                 ))}
-              </div>
+              </motion.div>
 
               {totalPages > 1 && (
                   <div className="mt-12">
