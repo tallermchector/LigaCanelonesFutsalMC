@@ -12,12 +12,12 @@ import { BlogSidebar } from '@/components/blog/BlogSidebar';
 
 interface PostPageProps {
   params: {
-    single: string;
+    id: string;
   };
 }
 
 export default async function SinglePostPage({ params }: PostPageProps) {
-  const post = await getPostBySlug(params.single);
+  const post = await getPostBySlug(params.id);
 
   if (!post) {
     notFound();
