@@ -3,7 +3,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { PageHero } from '@/components/layout/PageHero';
 import { getAllMatchesFromDb, getAllTeams } from '@/actions/prisma-actions';
-import { MatchDataTable } from '@/components/gestion/MatchDataTable';
+import { MatchDataTable } from '@/components/gestion/DataTable';
 import { columns } from '@/components/gestion/Columns';
 import { CreateMatchForm } from '@/components/gestion/CreateMatchForm';
 
