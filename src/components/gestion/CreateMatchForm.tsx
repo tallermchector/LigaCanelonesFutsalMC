@@ -1,7 +1,8 @@
 
 "use client"
 
-import { useForm, zodResolver } from "@mantine/form"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import {
   Form,
@@ -56,14 +57,14 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const form = useForm({
-        initialValues: {
+    const form = useForm<CreateMatchFormValues>({
+        resolver: zodResolver(createMatchSchema),
+        defaultValues: {
             teamAId: '',
             teamBId: '',
             scheduledTime: new Date(),
             round: 1,
         },
-        validate: zodResolver(createMatchSchema),
     });
     
     async function onSubmit(values: CreateMatchFormValues) {
@@ -95,8 +96,9 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
         <Card>
             <CardContent className="pt-6">
                 <Form {...form}>
-                    <form onSubmit={form.onSubmit(onSubmit)} className="space-y-6">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         <FormField
+                            control={form.control}
                             name="teamAId"
                             render={({ field }) => (
                                 <FormItem>
@@ -117,6 +119,7 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
                         />
                         
                          <FormField
+                            control={form.control}
                             name="teamBId"
                             render={({ field }) => (
                                 <FormItem>
@@ -137,6 +140,7 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
                         />
 
                          <FormField
+                            control={form.control}
                             name="scheduledTime"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
@@ -176,6 +180,7 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
                         />
 
                          <FormField
+                            control={form.control}
                             name="round"
                             render={({ field }) => (
                                 <FormItem>
