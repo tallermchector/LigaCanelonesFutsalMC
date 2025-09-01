@@ -10,34 +10,37 @@ export function MatchSummaryHeader({ match }: MatchSummaryHeaderProps) {
     const { teamA, teamB, scoreA, scoreB } = match;
 
     return (
-        <div className="relative text-white">
-            <div className="flex justify-center items-center h-28 md:h-36 bg-black/30 rounded-lg backdrop-blur-sm px-2 sm:px-4">
-                <div className="flex-1 flex items-center justify-start gap-2 md:gap-4">
-                     <Image
+        <div className="relative text-white bg-black/30 rounded-lg backdrop-blur-sm p-4">
+            <div className="flex flex-col md:flex-row justify-around items-center text-center gap-4">
+                {/* Team A */}
+                <div className="flex items-center gap-4 w-full md:w-1/3 justify-center">
+                    <Image
                         src={teamA.logoUrl || ''}
                         alt={`Logo de ${teamA.name}`}
-                        width={80}
-                        height={80}
-                        className="w-10 h-10 sm:w-12 sm:h-12 md:w-20 md:h-20 object-contain"
+                        width={64}
+                        height={64}
+                        className="w-12 h-12 md:w-16 md:h-16 object-contain"
                     />
-                    <h2 className="text-sm sm:text-base md:text-2xl font-bold uppercase truncate">{teamA.name}</h2>
+                    <h2 className="text-lg md:text-xl font-bold uppercase flex-1 text-left">{teamA.name}</h2>
                 </div>
 
-                <div className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-center bg-white/10 px-2 py-1 sm:px-4 sm:py-2 rounded-md">
+                {/* Score */}
+                <div className="text-5xl md:text-6xl font-black tracking-tighter text-center w-full md:w-auto order-first md:order-none">
                     <span>{scoreA}</span>
-                    <span className="mx-1 sm:mx-2">-</span>
+                    <span className="mx-2">-</span>
                     <span>{scoreB}</span>
                 </div>
 
-                <div className="flex-1 flex items-center justify-end gap-2 md:gap-4">
-                     <h2 className="text-sm sm:text-base md:text-2xl font-bold uppercase truncate text-right">{teamB.name}</h2>
-                     <Image
+                {/* Team B */}
+                <div className="flex items-center gap-4 w-full md:w-1/3 justify-center flex-row-reverse md:flex-row">
+                    <Image
                         src={teamB.logoUrl || ''}
                         alt={`Logo de ${teamB.name}`}
-                        width={80}
-                        height={80}
-                        className="w-10 h-10 sm:w-12 sm:h-12 md:w-20 md:h-20 object-contain"
+                        width={64}
+                        height={64}
+                        className="w-12 h-12 md:w-16 md:h-16 object-contain"
                     />
+                    <h2 className="text-lg md:text-xl font-bold uppercase flex-1 text-right md:text-left">{teamB.name}</h2>
                 </div>
             </div>
         </div>
