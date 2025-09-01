@@ -8,6 +8,7 @@ import type { FullMatch, MatchStatus } from '@/types';
 import { notFound, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLiveMatchState } from '@/hooks/useLiveMatchState';
 
 
 function getPeriodLabel(status: MatchStatus, period: number | undefined): string {
@@ -39,20 +40,21 @@ function MatchPageSkeleton() {
 export default function MatchPage() {
     const params = useParams();
     const matchId = params.id as string;
-    const [match, setMatch] = useState<FullMatch | null>(null);
+    const [initialMatch, setInitialMatch] = useState<FullMatch | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (matchId) {
             getMatchByIdFromDb(matchId).then(data => {
                 if (data) {
-                    setMatch(data);
+                    setInitialMatch(data);
                 }
                 setLoading(false);
             });
         }
     }, [matchId]);
 
+    const liveState = useLiveMatchState(matchId, initialMatch);
 
     if (loading) {
         return (
@@ -65,13 +67,22 @@ export default function MatchPage() {
         )
     }
 
-    if (!match) {
+    if (!liveState) {
         notFound();
     }
     
-    // Simulate some live data for now
-    const liveTime = match.status === 'LIVE' ? 1200 - ((new Date().getMinutes() * 60 + new Date().getSeconds()) % 1200) : 1200;
-    const livePeriod = match.status === 'LIVE' ? (new Date().getMinutes() > 20 ? 2 : 1) : 1;
+    const {teamA, teamB, scoreA, scoreB, foulsA, foulsB, timeoutsA, timeoutsB, period, time, status} = liveState;
+
+    if(!teamA || !teamB) {
+        return (
+             <div className="flex min-h-screen flex-col bg-background">
+                <Header />
+                <main className="flex flex-1 flex-col pt-[var(--header-height)]">
+                    <MatchPageSkeleton />
+                </main>
+            </div>
+        )
+    }
 
 
     return (
@@ -84,22 +95,22 @@ export default function MatchPage() {
                 </div>
 
                 <ScoreboardHeader
-                    team1Name={match.teamA.name}
-                    team1Logo={match.teamA.logoUrl || ''}
-                    score1={match.scoreA}
-                    fouls1={match.id.charCodeAt(match.id.length-1) % 6} 
-                    timeouts1={match.id.charCodeAt(match.id.length-1) % 2}
-                    team2Name={match.teamB.name}
-                    team2Logo={match.teamB.logoUrl || ''}
-                    score2={match.scoreB}
-                    fouls2={(match.id.charCodeAt(match.id.length-1) + 1) % 6}
-                    timeouts2={(match.id.charCodeAt(match.id.length-1) + 1) % 2}
-                    timeLeft={liveTime}
-                    period={getPeriodLabel(match.status, livePeriod)}
+                    team1Name={teamA.name}
+                    team1Logo={teamA.logoUrl || ''}
+                    score1={scoreA}
+                    fouls1={foulsA} 
+                    timeouts1={timeoutsA}
+                    team2Name={teamB.name}
+                    team2Logo={teamB.logoUrl || ''}
+                    score2={scoreB}
+                    fouls2={foulsB}
+                    timeouts2={timeoutsB}
+                    timeLeft={time}
+                    period={getPeriodLabel(status, period)}
                 />
                 
                 <div className="mt-8 text-center text-muted-foreground">
-                    <p>Esta página se actualizará en tiempo real en futuras versiones.</p>
+                    <p>La información del marcador se actualiza en tiempo real desde el panel de control.</p>
                 </div>
                  <script
                     type="application/ld+json"
@@ -107,22 +118,22 @@ export default function MatchPage() {
                         __html: JSON.stringify({
                         '@context': 'https://schema.org',
                         '@type': 'SportsEvent',
-                        'name': `Partido de Futsal: ${match.teamA.name} vs ${match.teamB.name}`,
-                        'startDate': match.scheduledTime,
+                        'name': `Partido de Futsal: ${teamA.name} vs ${teamB.name}`,
+                        'startDate': initialMatch?.scheduledTime,
                         'homeTeam': {
                             '@type': 'SportsTeam',
-                            'name': match.teamA.name
+                            'name': teamA.name
                         },
                         'awayTeam': {
                             '@type': 'SportsTeam',
-                            'name': match.teamB.name
+                            'name': teamB.name
                         },
                         'location': {
                             '@type': 'Place',
                             'name': 'Gimnasio Municipal de Canelones',
                             'address': 'Canelones, Uruguay'
                         },
-                        'eventStatus': `https://schema.org/${match.status === 'LIVE' ? 'EventScheduled' : (match.status === 'FINISHED' ? 'EventCompleted' : 'EventScheduled')}`,
+                        'eventStatus': `https://schema.org/${status === 'LIVE' ? 'EventScheduled' : (status === 'FINISHED' ? 'EventCompleted' : 'EventScheduled')}`,
                         })
                     }}
                 />
