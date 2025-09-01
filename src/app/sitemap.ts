@@ -29,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7
   }));
 
-  // Páginas dinámicas de estadísticas
+  // Páginas dinámicas de estadísticas (SOLO para partidos finalizados)
   const finishedMatches = allMatches.filter(m => m.status === 'FINISHED');
   const statsRoutes = finishedMatches.map((match) => ({
     url: `${baseUrl}/partidos/${match.id}/estadisticas`,

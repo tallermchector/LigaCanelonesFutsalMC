@@ -1,5 +1,5 @@
 
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getMatchStatsFromDb } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: EstadisticasPageProps): Promi
   const { id } = params;
   const match = await getMatchStatsFromDb(id);
 
-  if (!match) {
+  if (!match || match.status !== 'FINISHED') {
     return {
       title: 'Estadísticas no encontradas',
     };
@@ -43,6 +43,10 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
 
   if (!match) {
     notFound();
+  }
+  
+  if (match.status !== 'FINISHED') {
+      redirect('/partidos');
   }
 
   const allEvents = (match.events || []).sort((a, b) => a.timestamp - b.timestamp);
