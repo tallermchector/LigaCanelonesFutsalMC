@@ -1,4 +1,5 @@
 
+'use client';
 
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -8,20 +9,32 @@ import { BlogPagination } from '@/components/blog/Pagination';
 import { PageHero } from '@/components/layout/PageHero';
 import { motion } from 'framer-motion';
 import { animationVariants } from '@/lib/animations';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import type { Post } from '@/types';
 
-type BlogPageProps = {
-  searchParams?: {
-    page?: string;
-  };
-};
-
-export default async function BlogPage({ searchParams }: BlogPageProps) {
-  const page = searchParams?.page ?? '1';
+export default function BlogPage() {
+  const searchParams = useSearchParams();
+  const page = searchParams.get('page') ?? '1';
   const currentPage = Number(page);
-  const { posts, totalPages } = await getPosts(currentPage);
+
+  const [postsData, setPostsData] = useState<{ posts: Post[], totalPages: number }>({ posts: [], totalPages: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    getPosts(currentPage).then(data => {
+      setPostsData(data);
+      setLoading(false);
+    });
+  }, [currentPage]);
+
+  const { posts, totalPages } = postsData;
 
   // Separate the first post only if we are on the first page
-  const featuredPost = currentPage === 1 && posts.length > 0 ? posts.shift() : null;
+  const featuredPost = currentPage === 1 && posts.length > 0 ? posts[0] : null;
+  const regularPosts = currentPage === 1 && posts.length > 0 ? posts.slice(1) : posts;
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -32,7 +45,14 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
           description="Las últimas novedades y análisis de la Liga Canelones Futsal."
         />
         <div className="container mx-auto p-4 py-8 md:p-8">
-          {posts.length > 0 || featuredPost ? (
+          {loading ? (
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="h-96 bg-muted rounded-lg animate-pulse md:col-span-2 lg:col-span-3"></div>
+                <div className="h-96 bg-muted rounded-lg animate-pulse"></div>
+                <div className="h-96 bg-muted rounded-lg animate-pulse"></div>
+                <div className="h-96 bg-muted rounded-lg animate-pulse"></div>
+             </div>
+          ) : posts.length > 0 || featuredPost ? (
             <>
               <motion.div 
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -46,7 +66,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                     <PostCard post={featuredPost} isFeatured={true} />
                   </div>
                 )}
-                {posts.map((post) => (
+                {regularPosts.map((post) => (
                   <PostCard key={post.slug} post={post} />
                 ))}
               </motion.div>
