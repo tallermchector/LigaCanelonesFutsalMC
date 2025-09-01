@@ -19,9 +19,8 @@ export default function Home() {
       <Header />
       <motion.main 
         className="flex-1 pt-[var(--header-height)]"
-        variants={animationVariants.fadeIn}
-        initial="hidden"
-        animate="visible"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
         <PageHero
