@@ -4,10 +4,42 @@
 import type { FullMatch } from '@/types';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tv } from 'lucide-react';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { motion } from 'framer-motion';
+
+const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+};
+
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+const TeamRow = ({ team, score }: { team: FullMatch['teamA'], score: number }) => (
+    <div className="flex items-center justify-between w-full py-2">
+        <div className="flex items-center gap-4">
+            <Image
+                src={team.logoUrl || ''}
+                alt={`Logo de ${team.name}`}
+                width={40}
+                height={40}
+                className="rounded-full aspect-square object-contain"
+            />
+            <span className="font-bold text-lg md:text-xl text-foreground uppercase">{team.name.substring(0, 3)}</span>
+        </div>
+        <div className="bg-muted px-4 py-1 rounded-md">
+            <span className="font-bold text-xl md:text-2xl text-foreground tabular-nums">{score}</span>
+        </div>
+    </div>
+);
+
 
 interface LiveMatchCardProps {
   match: FullMatch;
@@ -15,46 +47,20 @@ interface LiveMatchCardProps {
 
 export function LiveMatchCard({ match }: LiveMatchCardProps) {
   return (
-    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-      <Link href={`/banner/${match.id}`} className="block group">
-        <Card className="overflow-hidden shadow-lg">
-          <CardHeader className="p-4 bg-card-foreground/5 flex-row items-center justify-between">
-              <h3 className="font-bold text-sm truncate">{match.teamA.name} vs {match.teamB.name}</h3>
-              <motion.span
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-              >
-                <Badge variant="destructive" className="animate-pulse">
-                    <Tv className="mr-1.5 h-3 w-3" />
-                    EN VIVO
-                </Badge>
-              </motion.span>
-          </CardHeader>
-          <CardContent className="p-4 flex items-center justify-around">
-            <div className="flex flex-col items-center gap-2 text-center w-20">
-              <Image
-                src={match.teamA.logoUrl || ''}
-                alt={`Logo de ${match.teamA.name}`}
-                width={48}
-                height={48}
-                className="rounded-full aspect-square object-contain"
-              />
-              <span className="font-semibold text-xs truncate w-full">{match.teamA.name}</span>
-            </div>
-            <div className="text-3xl font-bold text-primary tabular-nums">
-              {match.scoreA} - {match.scoreB}
-            </div>
-            <div className="flex flex-col items-center gap-2 text-center w-20">
-              <Image
-                src={match.teamB.logoUrl || ''}
-                alt={`Logo de ${match.teamB.name}`}
-                width={48}
-                height={48}
-                className="rounded-full aspect-square object-contain"
-              />
-              <span className="font-semibold text-xs truncate w-full">{match.teamB.name}</span>
-            </div>
-          </CardContent>
+    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="h-full">
+      <Link href={`/partidos/${match.id}`} className="block group h-full">
+        <Card className="overflow-hidden shadow-lg h-full flex flex-col">
+            <CardContent className="p-4 flex-grow flex flex-col justify-center">
+               <TeamRow team={match.teamA} score={match.scoreA} />
+               <div className="border-b my-1 border-border"></div>
+               <TeamRow team={match.teamB} score={match.scoreB} />
+            </CardContent>
+            <CardFooter className="p-0">
+                <div className="w-full bg-slate-800 text-white flex justify-between items-center px-4 py-2">
+                    <span className="font-semibold text-sm">{formatDate(match.scheduledTime)}</span>
+                    <span className="font-mono text-lg font-bold animate-pulse">{formatTime(match.time)}</span>
+                </div>
+            </CardFooter>
         </Card>
       </Link>
     </motion.div>
