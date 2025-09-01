@@ -48,7 +48,7 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
 
       <div className="w-full text-white shadow-2xl rounded-lg overflow-hidden">
         {/* Main Score Bar */}
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center bg-primary">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center bg-accent">
           {/* Team 1 */}
           <div className="flex items-center justify-end h-16 bg-accent p-4">
             <h2 className="text-3xl font-extrabold tracking-wider">{team1Abbr}</h2>
@@ -68,15 +68,12 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
         </div>
 
         {/* Time and Period Bar */}
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center bg-background/80 backdrop-blur-sm">
+        <div className="grid grid-cols-2 items-center bg-background/80 backdrop-blur-sm text-foreground">
            <div className="text-center p-2">
-                <p className="text-xs text-muted-foreground">{period}</p>
+                <p className="text-sm text-muted-foreground uppercase tracking-widest">{period}</p>
            </div>
            <div className="text-center p-2">
             <span className="text-2xl font-bold font-orbitron">{formatTime(timeLeft)}</span>
-           </div>
-           <div className="text-center p-2">
-            {/* Can be used for other info later */}
            </div>
         </div>
       </div>
