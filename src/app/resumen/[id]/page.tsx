@@ -55,7 +55,7 @@ export default async function ResumenPage({ params }: ResumenPageProps) {
         style={{ backgroundImage: "url('/stadium-bg.jpg')" }}
       >
         <div className="bg-black/70 min-h-full">
-            <div className="container mx-auto px-4 py-8 md:py-12">
+            <div className="container mx-auto px-2 sm:px-4 py-8 md:py-12">
                 <div className="max-w-4xl mx-auto">
                     <MatchSummaryHeader match={match as MatchStats} />
                     <MatchSummaryStats match={match as MatchStats} />
