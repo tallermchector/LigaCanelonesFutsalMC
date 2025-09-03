@@ -58,7 +58,7 @@ export function DraggablePlayer({ player, x, y, color, onMove }: DraggablePlayer
         <Popover open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <PopoverTrigger asChild>
                  <div
-                    ref={drag}
+                    ref={drag as any}
                     onClick={handleClick}
                     className={cn(
                         'absolute flex h-12 w-12 md:h-14 md:w-14 cursor-move items-center justify-center rounded-full border-2 border-white/50 font-bold text-white shadow-lg transition-transform',

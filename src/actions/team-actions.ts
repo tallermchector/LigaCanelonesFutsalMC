@@ -60,7 +60,7 @@ export async function getTeamBySlug(slug: string): Promise<Team | null> {
             ...match,
             scheduledTime: match.scheduledTime.toISOString(),
             status: match.status as FullMatch['status'],
-            events: match.events.map((e: { type: string; }) => ({ ...e, type: e.type as GameEventType })),
+            events: match.events.map((e) => ({ ...e, type: e.type as GameEventType })),
         }) as unknown as FullMatch);
 
 

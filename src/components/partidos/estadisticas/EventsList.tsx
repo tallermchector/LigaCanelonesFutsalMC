@@ -122,8 +122,8 @@ export function EventsList({ events, teamA, teamB }: EventsListProps) {
           const config = eventDisplayConfig[event.type];
           if (!config) return null;
 
-          const team = event.teamId === 'A' ? teamA : teamB;
-          const isTeamA = event.teamId === 'A';
+          const team = event.teamId === teamA.id ? teamA : teamB;
+          const isTeamA = event.teamId === teamA.id;
           const time = formatTimeFromTotalSeconds(event.timestamp);
 
           return (

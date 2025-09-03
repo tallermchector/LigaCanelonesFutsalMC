@@ -1,13 +1,15 @@
 
 
 import type { ElementType } from 'react';
-import type { Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent, PlayerMatchStats as PrismaPlayerMatchStats } from '@prisma/client';
+import type { Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent, PlayerMatchStats as PrismaPlayerMatchStats, SeasonTeam as PrismaSeasonTeam } from '@prisma/client';
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED' | 'SELECTING_STARTERS';
 
 export interface Player extends PrismaPlayer {}
 
 export interface PlayerMatchStats extends PrismaPlayerMatchStats {}
+
+export interface SeasonTeam extends PrismaSeasonTeam {}
 
 export interface Team extends Omit<PrismaTeam, 'slug'> {
   slug: string;

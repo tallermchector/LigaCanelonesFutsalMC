@@ -8,10 +8,9 @@ import { PageHero } from '@/components/layout/PageHero';
 import { StandingsTable } from '@/components/posiciones/StandingsTable';
 import { PlayerRanking } from '@/components/jugadores/PlayerRanking';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { Team, SeasonTeam as SeasonTeamWithTeam, FullMatch } from '@prisma/client';
+import type { Team, SeasonTeam, FullMatch, Player } from '@/types';
 import { useEffect, useState } from 'react';
 import { getAllTeams } from '@/actions/team-actions';
-import type { Player } from '@/types';
 import { ScheduleCalendar } from '@/components/posiciones/ScheduleCalendar';
 import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 
@@ -21,7 +20,7 @@ interface PlayerWithStats extends Player {
 }
 
 export default function PosicionesPage() {
-  const [standings, setStandings] = useState<(SeasonTeamWithTeam & { team: Team })[]>([]);
+  const [standings, setStandings] = useState<(SeasonTeam & { team: Team })[]>([]);
   const [players, setPlayers] = useState<PlayerWithStats[]>([]);
   const [matches, setMatches] = useState<FullMatch[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,19 +30,19 @@ export default function PosicionesPage() {
         setLoading(true);
 
         const standingsData = await getStandings(1);
-        const typedStandings = standingsData as (SeasonTeamWithTeam & { team: Team })[];
+        const typedStandings = standingsData as (SeasonTeam & { team: Team })[];
         setStandings(typedStandings);
         
         const teamsData = await getAllTeams();
         const allPlayers = teamsData.flatMap(team =>
             team.players.map(player => ({
                 ...player,
-                team: { ...team, players: [] }, // Evita la circularidad
+                team: { ...team }, // Clonamos para asegurar el tipo correcto
                 goals: Math.floor(Math.random() * 15) // Simular goles
             }))
         );
         allPlayers.sort((a, b) => b.goals - a.goals);
-        setPlayers(allPlayers);
+        setPlayers(allPlayers as PlayerWithStats[]);
         
         const matchesData = await getAllMatchesFromDb();
         setMatches(matchesData as FullMatch[]);
