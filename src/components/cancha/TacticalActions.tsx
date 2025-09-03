@@ -3,21 +3,13 @@
 
 import { useGame } from '@/contexts/GameProvider';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer, Users, ArrowLeft } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Play, Pause, RotateCcw, Flag, Save, Minus, Plus, Timer } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 
-const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-};
-
 export function TacticalActions() {
   const { state, dispatch, handleSaveChanges } = useGame();
-  const { toast } = useToast();
   const router = useRouter();
 
   const handlePeriodChange = (delta: number) => {
@@ -41,7 +33,13 @@ export function TacticalActions() {
     if (!team) return null;
     
     return (
-        <Button size="sm" variant="outline" className="text-white border-gray-600 hover:bg-gray-700 hover:text-white" disabled={timeouts <= 0} onClick={() => handleTimeout(teamId)}>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          className="text-white border-gray-600 hover:bg-gray-700 hover:text-white disabled:opacity-40 disabled:text-white/60" 
+          disabled={timeouts <= 0} 
+          onClick={() => handleTimeout(teamId)}
+        >
             <Timer className="mr-1 md:mr-2 h-4 w-4" /> 
             <span className="hidden sm:inline">{team.name.substring(0,3)}</span>
             <span className="sm:hidden">T.M.</span>
