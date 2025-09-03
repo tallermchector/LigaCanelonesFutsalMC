@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider     = "postgresql"
@@ -5,132 +11,102 @@ datasource db {
   relationMode = "prisma"
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model Team {
-  id      Int      @id @default(autoincrement())
-  name    String   @unique
-  logoUrl String?
-  players Player[]
-  matchesA Match[] @relation("TeamA")
-  matchesB Match[] @relation("TeamB")
-  seasonStats SeasonTeam[]
-  slug    String?
-
-  @@map("teams")
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  logoUrl   String?
+  slug      String   @unique
+  players   Player[]
+  matchesA  Match[]  @relation("TeamAMatches")
+  matchesB  Match[]  @relation("TeamBMatches")
+  seasonTeams SeasonTeam[]
 }
 
 model Player {
-  id          Int      @id @default(autoincrement())
+  id          Int      @id @default(autoinvert())
   name        String
   number      Int
   position    String?
   birthDate   DateTime?
-  height      Int? // Altura en cm
-  weight      Int? // Peso en kg
+  height      Int?
+  weight      Int?
   nationality String?
   teamId      Int
   team        Team     @relation(fields: [teamId], references: [id])
-  events      GameEvent[]
-  matchStats  PlayerMatchStats[]
-
-  @@map("players")
+  stats       PlayerMatchStats[]
 }
 
-
 model Match {
-  id               Int      @id @default(autoincrement())
+  id               Int      @id @default(autoinvert())
   teamAId          Int
   teamBId          Int
-  teamA            Team     @relation("TeamA", fields: [teamAId], references: [id])
-  teamB            Team     @relation("TeamB", fields: [teamBId], references: [id])
   scheduledTime    DateTime
-  status           String   @default("SCHEDULED")
-  scoreA           Int      @default(0)
-  scoreB           Int      @default(0)
+  status           String
+  scoreA           Int
+  scoreB           Int
   round            Int?
-  period           Int      @default(1)
-  time             Int      @default(1200) // in seconds
-  isRunning        Boolean  @default(false)
-  foulsA           Int      @default(0)
-  foulsB           Int      @default(0)
-  timeoutsA        Int      @default(1)
-  timeoutsB        Int      @default(1)
+  period           Int
+  time             Int
+  isRunning        Boolean
+  foulsA           Int
+  foulsB           Int
+  timeoutsA        Int
+  timeoutsB        Int
   activePlayersA   Int[]
   activePlayersB   Int[]
   events           GameEvent[]
   playerMatchStats PlayerMatchStats[]
 
-
-  @@index([teamAId])
-  @@index([teamBId])
-  @@map("matches")
+  teamA Team @relation("TeamAMatches", fields: [teamAId], references: [id])
+  teamB Team @relation("TeamBMatches", fields: [teamBId], references: [id])
 }
 
 model GameEvent {
-  id           String    @id @default(cuid())
+  id           String      @id @default(cuid())
   matchId      Int
-  match        Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
   type         String
   timestamp    Int
   teamId       String?
   teamName     String?
   playerId     Int?
-  player       Player?   @relation(fields: [playerId], references: [id])
   playerName   String?
   playerInId   Int?
   playerInName String?
-
-  @@index([matchId])
-  @@map("game_events")
+  match        Match    @relation(fields: [matchId], references: [id])
 }
 
 model PlayerMatchStats {
-  id                  String @id @default(cuid())
+  id                  Int @id @default(autoinvert())
   matchId             Int
   playerId            Int
-  timePlayedInSeconds Int    @default(0)
-  goals               Int    @default(0)
-  assists             Int    @default(0)
-  shots               Int    @default(0)
-  foulsCommitted      Int    @default(0)
-  yellowCards         Int    @default(0)
-  redCards            Int    @default(0)
-  
-  match               Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  player              Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
-
+  timePlayedInSeconds Int @default(0)
+  match               Match @relation(fields: [matchId], references: [id])
+  player              Player @relation(fields: [playerId], references: [id])
   @@unique([matchId, playerId])
-  @@map("player_match_stats")
 }
 
-
 model Season {
-  id        Int      @id @default(autoincrement())
-  year      Int      @unique
-  name      String
-  teams     SeasonTeam[]
-  
-  @@map("seasons")
+  id    Int      @id @default(autoinvert())
+  name  String
+  year  Int
+  teams SeasonTeam[]
 }
 
 model SeasonTeam {
   seasonId      Int
   teamId        Int
   position      Int
-  points        Int   @default(0)
-  matchesPlayed Int   @default(0)
-  wins          Int   @default(0)
-  draws         Int   @default(0)
-  losses        Int   @default(0)
-  goalsFor      Int   @default(0)
-  goalsAgainst  Int   @default(0)
+  points        Int
+  gamesPlayed   Int
+  wins          Int
+  draws         Int
+  losses        Int
+  goalsFor      Int
+  goalsAgainst  Int
+  goalDifference Int
   
-  season        Season @relation(fields: [seasonId], references: [id])
-  team          Team   @relation(fields: [teamId], references: [id])
-
+  season Season @relation(fields: [seasonId], references: [id])
+  team   Team   @relation(fields: [teamId], references: [id])
+  
   @@id([seasonId, teamId])
-  @@map("season_teams")
 }

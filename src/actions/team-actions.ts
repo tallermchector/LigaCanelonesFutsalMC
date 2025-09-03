@@ -18,10 +18,7 @@ export async function getAllTeams(): Promise<Team[]> {
                 players: true, // Incluimos los jugadores para que el tipo Team sea completo
             },
         });
-        return teams.map(team => ({
-            ...team,
-            slug: team.name.toLowerCase().replace(/\s+/g, '-'),
-        }));
+        return teams as Team[];
     } catch (error) {
         console.error('Error al obtener los equipos:', error);
         return [];
@@ -31,8 +28,12 @@ export async function getAllTeams(): Promise<Team[]> {
 
 export async function getTeamBySlug(slug: string): Promise<Team | null> {
     try {
-        const teams = await getAllTeams();
-        const team = teams.find(t => t.slug === slug);
+        const team = await prisma.team.findUnique({
+            where: { slug },
+            include: {
+                players: true,
+            }
+        });
         
         if (!team) return null;
 
@@ -59,10 +60,10 @@ export async function getTeamBySlug(slug: string): Promise<Team | null> {
             scheduledTime: match.scheduledTime.toISOString(),
             status: match.status as FullMatch['status'],
             events: match.events.map(e => ({...e, type: e.type as GameEventType})),
-        }));
+        } as FullMatch));
 
 
-        return { ...team, matches: fullMatches };
+        return { ...team, matches: fullMatches } as Team;
 
     } catch (error) {
         console.error(`Error al obtener el equipo por slug: ${slug}`, error);

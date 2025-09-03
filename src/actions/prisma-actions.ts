@@ -108,7 +108,7 @@ export async function getMatchByIdFromDb(id: number): Promise<FullMatch | undefi
             scheduledTime: match.scheduledTime.toISOString(),
             status: match.status as FullMatch['status'],
             events: match.events.map(e => ({...e, type: e.type as GameEventType})),
-        };
+        } as FullMatch;
     } catch (error) {
         console.error(`Failed to fetch match ${id} from DB:`, error);
         return undefined;
@@ -129,12 +129,12 @@ export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
             },
         });
         
-        return matches.map((match): FullMatch => ({
+        return matches.map((match) => ({
             ...match,
             scheduledTime: match.scheduledTime.toISOString(),
             status: match.status as FullMatch['status'],
             events: match.events.map(e => ({...e, type: e.type as GameEventType})),
-        }));
+        }) as FullMatch);
 
     } catch (error) {
         console.error(`Failed to fetch all matches from DB:`, error);
@@ -149,7 +149,10 @@ export async function getMatchStatsFromDb(id: number): Promise<MatchStats | unde
     return undefined;
   }
     
-  const allPlayers = [...match.teamA.players, ...match.teamB.players];
+  const allPlayersWithTeam = [
+      ...match.teamA.players.map(p => ({...p, team: match.teamA})), 
+      ...match.teamB.players.map(p => ({...p, team: match.teamB}))
+  ];
 
   const getStatsForType = (eventType: GameEventType) => {
     const eventCounts = match.events!
@@ -162,10 +165,10 @@ export async function getMatchStatsFromDb(id: number): Promise<MatchStats | unde
 
     return Object.entries(eventCounts)
       .map(([playerId, count]) => {
-        const player = allPlayers.find(p => p.id === parseInt(playerId, 10));
+        const player = allPlayersWithTeam.find(p => p.id === parseInt(playerId, 10));
         return player ? { player, count } : null;
       })
-      .filter((p): p is { player: Player, count: number } => p !== null)
+      .filter((p): p is { player: Player & { team: Team }, count: number } => p !== null)
       .sort((a, b) => b.count - a.count);
   };
   
@@ -250,7 +253,7 @@ export async function createMatch(data: {
             scheduledTime: newMatch.scheduledTime.toISOString(),
             status: newMatch.status as MatchStatus,
             events: newMatch.events.map(e => ({...e, type: e.type as GameEventType}))
-        };
+        } as FullMatch;
     } catch (error) {
         console.error("Failed to create match:", error);
         throw new Error("Could not create match in the database.");

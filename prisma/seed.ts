@@ -17,6 +17,7 @@ async function main() {
         id: team.id,
         name: team.name,
         logoUrl: team.logoUrl,
+        slug: team.name.toLowerCase().replace(/\s+/g, '-'),
         players: {
           create: team.players.map(player => ({
             id: player.id,
