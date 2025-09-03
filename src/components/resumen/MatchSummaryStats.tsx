@@ -1,10 +1,14 @@
 
 'use client';
 
-import type { MatchStats, GameEventType } from '@/types';
-import { Card, CardContent } from '@/components/ui/card';
+import type { MatchStats, GameEventType, PlayerStat } from '@/types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { Hand, Target, User } from 'lucide-react';
+import { FutsalBallIcon } from '../icons';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface MatchSummaryStatsProps {
     match: MatchStats;
@@ -55,8 +59,42 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
     );
 };
 
+const StatLeaders = ({ title, icon, leaders }: { title: string, icon: React.ReactNode, leaders: PlayerStat[] }) => {
+    if (!leaders || leaders.length === 0) return null;
+
+    return (
+        <div>
+            <h3 className="flex items-center gap-2 font-bold text-lg mb-2">
+                {icon}
+                <span>{title}</span>
+            </h3>
+            <div className="space-y-2">
+                {leaders.slice(0, 3).map(({ player, count }) => (
+                     <Link key={player.id} href={`/jugadores/${player.id}`} className="block group">
+                        <Card className="bg-black/20 border border-white/10 hover:bg-white/10 transition-colors">
+                            <CardContent className="p-2 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                     <Image
+                                        src={player.team?.logoUrl || '/placeholder-player.png'}
+                                        alt={player.name}
+                                        width={24}
+                                        height={24}
+                                        className="w-6 h-6 rounded-full object-cover bg-white/20 p-0.5"
+                                    />
+                                    <span className="font-semibold text-sm group-hover:text-primary">{player.name}</span>
+                                </div>
+                                <span className="font-bold text-lg tabular-nums">{count}</span>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                ))}
+            </div>
+        </div>
+    );
+};
+
 export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
-    const { events = [], teamA, teamB } = match;
+    const { events = [], teamA, teamB, stats } = match;
 
     const getStatCount = (teamId: number, eventType: GameEventType) => {
         return events.filter(e => {
@@ -80,12 +118,22 @@ export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
     ];
     
     return (
-        <Card className="bg-black/30 backdrop-blur-sm border-white/10 text-white mt-8">
-            <CardContent className="p-4 md:p-6 space-y-4 md:space-y-5">
-                {statsData.map(stat => (
-                    <StatBar key={stat.label} {...stat} />
-                ))}
-            </CardContent>
-        </Card>
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="bg-black/30 backdrop-blur-sm border-white/10 text-white">
+                <CardHeader>
+                    <CardTitle>Estadísticas del Partido</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 md:space-y-5">
+                    {statsData.map(stat => (
+                        <StatBar key={stat.label} {...stat} />
+                    ))}
+                </CardContent>
+            </Card>
+            <div className="space-y-6">
+                <StatLeaders title="Goleadores" icon={<FutsalBallIcon />} leaders={stats.topScorers} />
+                <StatLeaders title="Asistencias" icon={<Hand />} leaders={stats.assistsLeaders} />
+                <StatLeaders title="Tiros" icon={<Target />} leaders={stats.shotsByPlayer} />
+            </div>
+        </div>
     );
 }

@@ -1,6 +1,8 @@
 import type { Player } from '@/types';
 import { CardContent } from '../ui/card';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 
 interface TeamPlayersProps {
     players: Player[];
@@ -36,7 +38,7 @@ export function TeamPlayers({ players }: TeamPlayersProps) {
                             </h3>
                             <div className="divide-y divide-border">
                                 {groupedPlayers[position].map(player => (
-                                    <div key={player.id} className="flex items-center gap-4 p-4 hover:bg-muted/30">
+                                    <Link key={player.id} href={`/jugadores/${player.id}`} className="flex items-center gap-4 p-4 hover:bg-muted/30 group">
                                         <div className="w-8 text-center font-bold text-primary text-lg">
                                             {player.number}
                                         </div>
@@ -47,10 +49,11 @@ export function TeamPlayers({ players }: TeamPlayersProps) {
                                             height={40}
                                             className="rounded-full aspect-square object-cover"
                                         />
-                                        <div className="font-medium text-foreground">
+                                        <div className="font-medium text-foreground group-hover:text-primary transition-colors">
                                             {player.name}
                                         </div>
-                                    </div>
+                                        <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                                    </Link>
                                 ))}
                             </div>
                         </div>

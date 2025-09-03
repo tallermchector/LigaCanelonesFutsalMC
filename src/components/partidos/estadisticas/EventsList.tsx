@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { animationVariants } from '@/lib/animations';
 import Image from 'next/image';
 import { FutsalBallIcon } from '@/components/icons';
+import Link from 'next/link';
 
 interface EventsListProps {
   events: GameEvent[];
@@ -37,23 +38,32 @@ const formatTimeFromTotalSeconds = (totalSeconds: number) => {
     return { period: `${period}T`, minute: `${minute}'` };
 }
 
+const PlayerLink = ({ id, name }: { id: number | null, name: string }) => {
+    if (!id) return <span className="font-semibold text-sm md:text-base text-white truncate">{name}</span>;
+    return (
+        <Link href={`/jugadores/${id}`} className="font-semibold text-sm md:text-base text-white truncate hover:underline hover:text-primary transition-colors">
+            {name}
+        </Link>
+    );
+};
+
 const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team, isTeamA: boolean }) => {
     const config = eventDisplayConfig[event.type];
     if (!config) return null;
 
     const renderEventContent = () => {
-        if (event.type === 'SUBSTITUTION' && event.playerInName) {
+        if (event.type === 'SUBSTITUTION' && event.playerInName && event.playerInId) {
             return (
                 <>
                     <p className="font-semibold text-sm md:text-base text-white truncate">{config.label}</p>
                     <div className="flex flex-col gap-1 w-full text-xs mt-1">
                         <div className="flex items-center gap-2 text-red-400">
                             <ArrowRight className="w-3 h-3 shrink-0" />
-                            <span className="truncate flex-1">{event.playerName} (Sale)</span>
+                            <Link href={`/jugadores/${event.playerId}`} className="truncate flex-1 hover:underline">{event.playerName} (Sale)</Link>
                         </div>
                         <div className="flex items-center gap-2 text-green-400">
                             <ArrowLeft className="w-3 h-3 shrink-0" />
-                            <span className="truncate flex-1">{event.playerInName} (Entra)</span>
+                            <Link href={`/jugadores/${event.playerInId}`} className="truncate flex-1 hover:underline">{event.playerInName} (Entra)</Link>
                         </div>
                     </div>
                 </>
@@ -61,7 +71,7 @@ const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team, isT
         }
         return (
             <>
-                <p className="font-semibold text-sm md:text-base text-white truncate">{event.playerName || team.name}</p>
+                <PlayerLink id={event.playerId} name={event.playerName || team.name} />
                 <p className={cn("text-xs md:text-sm", config.className)}>{config.label}</p>
             </>
         );

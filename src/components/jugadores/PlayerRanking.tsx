@@ -13,6 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 interface PlayerWithStats extends Player {
     goals: number;
@@ -24,29 +25,31 @@ interface RankingProps {
 }
 
 const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => (
-  <div className="relative mb-8 overflow-hidden rounded-xl bg-muted/50 p-8 pt-16 text-center">
-    <div
-      className="absolute inset-0 bg-cover bg-center opacity-10"
-      style={{ backgroundImage: `url(${player.team.logoUrl || ''})` }}
-    />
-    <div className="absolute top-4 left-4 text-lg font-bold text-primary">1º</div>
-    <Image
-      src={'/placeholder-player.png'}
-      alt={`Foto de ${player.name}`}
-      width={160}
-      height={160}
-      className="mx-auto mb-4 h-40 w-40 rounded-full object-cover object-top shadow-lg"
-    />
-    <h2 className="text-3xl font-black uppercase text-foreground">{player.name}</h2>
-    <div className="flex items-center justify-center gap-2 text-muted-foreground">
-        <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={16} height={16} />
-        <span className="font-semibold">{player.team.name}</span>
-    </div>
-    <div className="absolute bottom-8 right-8 text-right">
-      <div className="text-7xl font-black text-primary">{player.goals}</div>
-      <div className="text-lg font-bold uppercase text-muted-foreground">Goles</div>
-    </div>
-  </div>
+    <Link href={`/jugadores/${player.id}`} className="block group">
+        <div className="relative mb-8 overflow-hidden rounded-xl bg-muted/50 p-8 pt-16 text-center transition-shadow group-hover:shadow-lg">
+            <div
+            className="absolute inset-0 bg-cover bg-center opacity-10 transition-opacity group-hover:opacity-20"
+            style={{ backgroundImage: `url(${player.team.logoUrl || ''})` }}
+            />
+            <div className="absolute top-4 left-4 text-lg font-bold text-primary">1º</div>
+            <Image
+            src={'/placeholder-player.png'}
+            alt={`Foto de ${player.name}`}
+            width={160}
+            height={160}
+            className="mx-auto mb-4 h-40 w-40 rounded-full object-cover object-top shadow-lg transition-transform group-hover:scale-105"
+            />
+            <h2 className="text-3xl font-black uppercase text-foreground group-hover:text-primary transition-colors">{player.name}</h2>
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={16} height={16} />
+                <span className="font-semibold">{player.team.name}</span>
+            </div>
+            <div className="absolute bottom-8 right-8 text-right">
+            <div className="text-7xl font-black text-primary">{player.goals}</div>
+            <div className="text-lg font-bold uppercase text-muted-foreground">Goles</div>
+            </div>
+        </div>
+  </Link>
 );
 
 export function PlayerRanking({ players }: RankingProps) {
@@ -78,25 +81,25 @@ export function PlayerRanking({ players }: RankingProps) {
             </TableHeader>
             <TableBody>
                 {rankedList.map((player, index) => (
-                <TableRow key={player.id}>
+                <TableRow key={player.id} className="hover:bg-muted/30">
                     <TableCell className="text-center font-bold text-muted-foreground">{index + 2}º</TableCell>
                     <TableCell>
-                    <div className="flex items-center gap-4">
+                    <Link href={`/jugadores/${player.id}`} className="flex items-center gap-4 group">
                         <Image
                         src={'/placeholder-player.png'}
                         alt={`Foto de ${player.name}`}
                         width={40}
                         height={40}
-                        className="h-10 w-10 rounded-full object-cover object-top"
+                        className="h-10 w-10 rounded-full object-cover object-top transition-transform group-hover:scale-105"
                         />
                         <div>
-                        <div className="font-bold">{player.name}</div>
+                        <div className="font-bold group-hover:text-primary transition-colors">{player.name}</div>
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                              <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={14} height={14} />
                              {player.team.name}
                         </div>
                         </div>
-                    </div>
+                    </Link>
                     </TableCell>
                     <TableCell className="text-right text-2xl font-black text-primary">{player.goals}</TableCell>
                 </TableRow>
