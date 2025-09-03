@@ -6,22 +6,46 @@ import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 import { PageHero } from '@/components/layout/PageHero';
 import { StandingsTable } from '@/components/posiciones/StandingsTable';
+import { Ranking } from '@/components/posiciones/Ranking';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Team, SeasonTeam as SeasonTeamWithTeam } from '@prisma/client';
 import { useEffect, useState } from 'react';
+import { getAllTeams } from '@/actions/team-actions';
+import type { Player } from '@/types';
+
+interface PlayerWithStats extends Player {
+    goals: number;
+    team: Team;
+}
 
 export default function PosicionesPage() {
-  // Usamos un ID de temporada fijo (1) como se especificó.
   const [standings, setStandings] = useState<(SeasonTeamWithTeam & { team: Team })[]>([]);
+  const [players, setPlayers] = useState<PlayerWithStats[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getStandings(1).then(data => {
-      // Aseguramos el tipo para el componente
-      const typedStandings = data as (SeasonTeamWithTeam & { team: Team })[];
-      setStandings(typedStandings);
-      setLoading(false);
-    });
+    const fetchData = async () => {
+        setLoading(true);
+
+        const standingsData = await getStandings(1);
+        const typedStandings = standingsData as (SeasonTeamWithTeam & { team: Team })[];
+        setStandings(typedStandings);
+        
+        const teamsData = await getAllTeams();
+        const allPlayers = teamsData.flatMap(team =>
+            team.players.map(player => ({
+                ...player,
+                team: { ...team, players: [] }, // Evita la circularidad
+                goals: Math.floor(Math.random() * 15) // Simular goles
+            }))
+        );
+        allPlayers.sort((a, b) => b.goals - a.goals);
+        setPlayers(allPlayers);
+
+        setLoading(false);
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -37,13 +61,20 @@ export default function PosicionesPage() {
             <TabsList className="grid w-full grid-cols-3 mx-auto max-w-lg bg-muted/50">
               <TabsTrigger value="calendario" disabled>Calendario</TabsTrigger>
               <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
-              <TabsTrigger value="ranking" disabled>Ranking</TabsTrigger>
+              <TabsTrigger value="ranking">Ranking</TabsTrigger>
             </TabsList>
             <TabsContent value="clasificacion" className="mt-6">
                  {loading ? (
                     <div className="w-full h-96 bg-muted rounded-lg animate-pulse" />
                 ) : (
                     <StandingsTable standings={standings} />
+                )}
+            </TabsContent>
+            <TabsContent value="ranking" className="mt-6">
+                {loading ? (
+                    <div className="w-full h-96 bg-muted rounded-lg animate-pulse" />
+                ) : (
+                    <Ranking players={players} />
                 )}
             </TabsContent>
           </Tabs>
