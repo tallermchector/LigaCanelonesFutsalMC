@@ -1,13 +1,11 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { GameState, FullMatch } from '@/types';
 
 export function useLiveMatchState(matchId: number | null, initialMatchData: FullMatch | null): GameState | null {
-  const [liveState, setLiveState] = useState<GameState | null>(null);
-
-  const getInitialState = (): GameState | null => {
+  const getInitialState = useCallback((): GameState | null => {
     try {
       if (typeof window !== 'undefined' && matchId) {
         const savedState = localStorage.getItem(`futsal-match-state-${matchId}`);
@@ -44,13 +42,13 @@ export function useLiveMatchState(matchId: number | null, initialMatchData: Full
         }
     }
     return null;
-  }
-  
-  // Set initial state from localStorage or props
+  }, [matchId, initialMatchData]);
+
+  const [liveState, setLiveState] = useState<GameState | null>(getInitialState);
+
   useEffect(() => {
     setLiveState(getInitialState());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [matchId, initialMatchData]);
+  }, [initialMatchData, getInitialState]);
 
 
   useEffect(() => {
@@ -78,4 +76,3 @@ export function useLiveMatchState(matchId: number | null, initialMatchData: Full
 
   return liveState;
 }
-
