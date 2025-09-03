@@ -1,11 +1,9 @@
 
-
 'use client';
 
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker, PlayerMatchStats } from '@/types';
 import React from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { useWebSocket } from '@/hooks/useWebSocket';
 
 type GameAction =
   | { type: 'LOAD_MATCH'; payload: { match: FullMatch; state: GameState | null } }
@@ -373,7 +371,6 @@ const GameContext = React.createContext<{
 export const GameProvider: React.FC<GameProviderProps> = ({ children, match, saveMatchState, createGameEvent }) => {
   const [state, dispatch] = React.useReducer(gameReducer, initialState);
   const { toast } = useToast();
-  const { lastJsonMessage, sendMessage } = useWebSocket();
 
 
   const getInitialState = React.useCallback(() => {
@@ -406,36 +403,11 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
       try {
         localStorage.setItem(`futsal-match-state-${state.matchId}`, JSON.stringify(state));
         
-        // Broadcast state changes over WebSocket
-        const stateToBroadcast = { ...state };
-        // We don't need to send the full player list every time
-        if (stateToBroadcast.teamA?.players) {
-            delete (stateToBroadcast.teamA as Partial<typeof state.teamA>).players;
-        }
-        if (stateToBroadcast.teamB?.players) {
-            delete (stateToBroadcast.teamB as Partial<typeof state.teamB>).players;
-        }
-
-        sendMessage({ type: 'state-update', payload: stateToBroadcast });
-
       } catch (error) {
         console.error("Failed to save state to localStorage", error);
       }
     }
-  }, [state, sendMessage]);
-
-
-  // Effect to handle incoming WebSocket messages
-    React.useEffect(() => {
-        if (lastJsonMessage && lastJsonMessage.type === 'state-update') {
-            const incomingState = lastJsonMessage.payload as GameState;
-            // Avoid updating our own state if we were the sender
-            // (This simple check might need a more robust solution like a client ID)
-            if (JSON.stringify(incomingState) !== JSON.stringify(state)) {
-                 dispatch({ type: 'UPDATE_STATE_FROM_WS', payload: incomingState });
-            }
-        }
-    }, [lastJsonMessage, state]);
+  }, [state]);
 
   React.useEffect(() => {
     if(state.events.length > 0) {
@@ -503,5 +475,7 @@ export const useGame = () => {
   }
   return context;
 };
+
+    
 
     
