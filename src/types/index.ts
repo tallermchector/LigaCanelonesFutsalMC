@@ -9,6 +9,8 @@ export interface PlayerMatchStats extends PrismaPlayerMatchStats {}
 
 export interface Team extends PrismaTeam {
   players: Player[];
+  slug?: string;
+  matches?: FullMatch[];
 }
 
 export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT' | 'YELLOW_CARD' | 'RED_CARD' | 'TIMEOUT' | 'SUBSTITUTION';
