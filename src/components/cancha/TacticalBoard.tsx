@@ -7,84 +7,33 @@ import { TacticalHeader } from './TacticalHeader';
 import { ActionsToolbar } from './ActionsToolbar';
 import { DraggablePlayer } from './DraggablePlayer';
 import { useGame } from '@/contexts/GameProvider';
-import type { FullMatch, Player } from '@/types';
-import { useEffect, useState } from 'react';
-
-type PlayerPosition = { id: number; x: number; y: number };
+import type { FullMatch, PlayerPosition } from '@/types';
+import { useEffect } from 'react';
 
 export function TacticalBoard({ match }: { match: FullMatch }) {
-  const { state } = useGame();
-  const [positionsA, setPositionsA] = useState<PlayerPosition[]>([]);
-  const [positionsB, setPositionsB] = useState<PlayerPosition[]>([]);
-
+  const { state, dispatch } = useGame();
+  
   useEffect(() => {
-    const getPlayerById = (id: number, teamPlayers: Player[]): Player | undefined => {
-        return teamPlayers.find(p => p.id === id);
+    // Dispatch action to set initial positions when active players change
+    if (state.teamA && state.teamB) {
+        dispatch({ type: 'SET_INITIAL_POSITIONS' });
     }
-
-    const initPositions = (playerIds: number[], teamPlayers: Player[], team: 'A' | 'B'): PlayerPosition[] => {
-        if (!teamPlayers || playerIds.length === 0) return [];
-        
-        const goalkeeper = playerIds.map(id => getPlayerById(id, teamPlayers)).find(p => p?.position === 'Goalkeeper');
-        const fieldPlayers = playerIds.filter(id => id !== goalkeeper?.id);
-
-        const formation: PlayerPosition[] = [];
-
-        // Goalkeeper position
-        if (goalkeeper) {
-            formation.push({
-                id: goalkeeper.id,
-                x: team === 'A' ? 10 : 90,
-                y: 50,
-            });
-        }
-        
-        // 1-2-1 Diamond/Star Formation for field players
-        const formationSpots = team === 'A' ? 
-            [
-              {x: 25, y: 50}, // Defender
-              {x: 40, y: 25}, // Top Winger
-              {x: 40, y: 75}, // Bottom Winger
-              {x: 55, y: 50}  // Pivot
-            ] : 
-            [
-              {x: 75, y: 50}, // Defender
-              {x: 60, y: 25}, // Top Winger
-              {x: 60, y: 75}, // Bottom Winger
-              {x: 45, y: 50}  // Pivot
-            ];
-        
-        fieldPlayers.forEach((playerId, index) => {
-            if (index < formationSpots.length) {
-                 formation.push({
-                    id: playerId,
-                    x: formationSpots[index].x,
-                    y: formationSpots[index].y,
-                });
-            }
-        });
-
-        return formation;
-    };
-    
-    if (state.teamA) {
-        setPositionsA(initPositions(state.activePlayersA, state.teamA.players, 'A'));
-    }
-    if (state.teamB) {
-        setPositionsB(initPositions(state.activePlayersB, state.teamB.players, 'B'));
-    }
-
-  }, [state.activePlayersA, state.activePlayersB, state.teamA, state.teamB]);
+  }, [state.activePlayersA, state.activePlayersB, state.teamA, state.teamB, dispatch]);
 
 
-  const handleMovePlayer = (id: number, x: number, y: number, teamId: 'A' | 'B') => {
-    const setPositions = teamId === 'A' ? setPositionsA : setPositionsB;
-    setPositions(prev => prev.map(p => (p.id === id ? { ...p, x, y } : p)));
+  const handleMovePlayer = (id: number, x: number, y: number) => {
+    dispatch({
+        type: 'UPDATE_PLAYER_POSITION',
+        payload: { playerId: id, position: { x, y } }
+    });
   };
   
   if (!state.teamA || !state.teamB) {
       return null;
   }
+
+  const allPlayers = [...state.teamA.players, ...state.teamB.players];
+  const allActivePlayers = [...state.activePlayersA, ...state.activePlayersB];
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -98,35 +47,25 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
           ></div>
           
           <div className="relative h-full w-full">
-            {positionsA.map(pos => {
-              const player = state.teamA?.players.find(p => p.id === pos.id);
-              if (!player) return null;
-              return (
-                <DraggablePlayer
-                  key={player.id}
-                  id={player.id}
-                  number={player.number}
-                  x={pos.x}
-                  y={pos.y}
-                  color="blue"
-                  onMove={(x, y) => handleMovePlayer(player.id, x, y, 'A')}
-                />
-              );
-            })}
-             {positionsB.map(pos => {
-              const player = state.teamB?.players.find(p => p.id === pos.id);
-              if (!player) return null;
-              return (
-                <DraggablePlayer
-                  key={player.id}
-                  id={player.id}
-                  number={player.number}
-                  x={pos.x}
-                  y={pos.y}
-                  color="red"
-                   onMove={(x, y) => handleMovePlayer(player.id, x, y, 'B')}
-                />
-              );
+            {allActivePlayers.map(playerId => {
+                const player = allPlayers.find(p => p.id === playerId);
+                const position = state.playerPositions[playerId];
+
+                if (!player || !position) return null;
+
+                const isTeamA = state.teamA!.players.some(p => p.id === playerId);
+
+                return (
+                    <DraggablePlayer
+                        key={player.id}
+                        id={player.id}
+                        number={player.number}
+                        x={position.x}
+                        y={position.y}
+                        color={isTeamA ? 'blue' : 'red'}
+                        onMove={(x, y) => handleMovePlayer(player.id, x, y)}
+                    />
+                );
             })}
           </div>
         </main>

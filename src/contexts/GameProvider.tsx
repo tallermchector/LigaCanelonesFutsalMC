@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus } from '@/types';
+import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition } from '@/types';
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 
 type GameAction =
@@ -18,8 +18,9 @@ type GameAction =
   | { type: 'ADD_EVENT'; payload: { type: GameEventType; teamId?: 'A' | 'B' } }
   | { type: 'INITIATE_SUBSTITUTION' }
   | { type: 'CANCEL_SUBSTITUTION' }
-  | { type: 'TOGGLE_ACTIVE_PLAYER'; payload: { teamId: 'A' | 'B'; playerId: number } };
-
+  | { type: 'TOGGLE_ACTIVE_PLAYER'; payload: { teamId: 'A' | 'B'; playerId: number } }
+  | { type: 'SET_INITIAL_POSITIONS' }
+  | { type: 'UPDATE_PLAYER_POSITION'; payload: { playerId: number; position: PlayerPosition } };
 
 const initialState: GameState = {
   matchId: null,
@@ -40,6 +41,7 @@ const initialState: GameState = {
   substitutionState: null,
   activePlayersA: [],
   activePlayersB: [],
+  playerPositions: {},
 };
 
 const gameReducer = (state: GameState, action: GameAction): GameState => {
@@ -55,6 +57,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         scoreB: action.payload.match.scoreB,
         events: action.payload.match.events || [],
         substitutionState: null,
+        playerPositions: {},
       };
       // Ensure active players arrays exist
       if (!baseState.activePlayersA) baseState.activePlayersA = [];
@@ -229,6 +232,45 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
             [activePlayersKey]: updatedActivePlayers,
         };
     }
+    case 'SET_INITIAL_POSITIONS': {
+        if (!state.teamA || !state.teamB) return state;
+
+        const newPositions: { [playerId: number]: PlayerPosition } = {};
+
+        const setPositionsForTeam = (playerIds: number[], teamPlayers: Player[], team: 'A' | 'B') => {
+            const goalkeeper = playerIds.map(id => teamPlayers.find(p => p.id === id)).find(p => p?.position === 'Goalkeeper');
+            const fieldPlayers = playerIds.filter(id => id !== goalkeeper?.id);
+
+            if (goalkeeper) {
+                newPositions[goalkeeper.id] = { x: team === 'A' ? 10 : 90, y: 50 };
+            }
+
+            const formationSpots = team === 'A' 
+                ? [{x: 25, y: 50}, {x: 40, y: 25}, {x: 40, y: 75}, {x: 55, y: 50}] 
+                : [{x: 75, y: 50}, {x: 60, y: 25}, {x: 60, y: 75}, {x: 45, y: 50}];
+            
+            fieldPlayers.forEach((playerId, index) => {
+                if (index < formationSpots.length) {
+                    newPositions[playerId] = formationSpots[index];
+                }
+            });
+        };
+
+        setPositionsForTeam(state.activePlayersA, state.teamA.players, 'A');
+        setPositionsForTeam(state.activePlayersB, state.teamB.players, 'B');
+
+        return { ...state, playerPositions: newPositions };
+    }
+    case 'UPDATE_PLAYER_POSITION': {
+        const { playerId, position } = action.payload;
+        return {
+            ...state,
+            playerPositions: {
+                ...state.playerPositions,
+                [playerId]: position,
+            },
+        };
+    }
     default:
       return state;
   }
@@ -247,6 +289,7 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
           parsedState.substitutionState = null;
           if (!parsedState.activePlayersA) parsedState.activePlayersA = [];
           if (!parsedState.activePlayersB) parsedState.activePlayersB = [];
+          if (!parsedState.playerPositions) parsedState.playerPositions = {};
         }
         return parsedState;
       }

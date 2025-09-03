@@ -44,6 +44,11 @@ export type SelectedPlayer = {
   playerId: number;
 };
 
+export type PlayerPosition = {
+    x: number;
+    y: number;
+};
+
 export interface GameState {
   matchId: string | null;
   status: MatchStatus;
@@ -65,6 +70,7 @@ export interface GameState {
   } | null;
   activePlayersA: number[];
   activePlayersB: number[];
+  playerPositions: { [playerId: number]: PlayerPosition };
 }
 
 export type Post = {
