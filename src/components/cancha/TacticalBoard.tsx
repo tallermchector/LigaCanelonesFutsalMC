@@ -6,26 +6,45 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DraggablePlayer } from './DraggablePlayer';
 import { useGame } from '@/contexts/GameProvider';
 import type { FullMatch, PlayerPosition } from '@/types';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useDrop } from 'react-dnd';
+
+const ItemTypes = {
+  PLAYER: 'player',
+};
 
 export function TacticalBoard({ match }: { match: FullMatch }) {
   const { state, dispatch } = useGame();
+  const boardRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Dispatch action to set initial positions when active players change
-    if (state.teamA && state.teamB) {
+    if (state.teamA && state.teamB && Object.keys(state.playerPositions).length === 0) {
         dispatch({ type: 'SET_INITIAL_POSITIONS' });
     }
-  }, [state.activePlayersA, state.activePlayersB, state.teamA, state.teamB, dispatch]);
+  }, [state.activePlayersA, state.activePlayersB, state.teamA, state.teamB, dispatch, state.playerPositions]);
 
 
-  const handleMovePlayer = (id: number, x: number, y: number) => {
-    dispatch({
-        type: 'UPDATE_PLAYER_POSITION',
-        payload: { playerId: id, position: { x, y } }
-    });
-  };
-  
+  const [, drop] = useDrop(() => ({
+    accept: ItemTypes.PLAYER,
+    drop: (item: { id: number }, monitor) => {
+        if (!boardRef.current) return;
+        const boardRect = boardRef.current.getBoundingClientRect();
+        const clientOffset = monitor.getClientOffset();
+        if (!clientOffset) return;
+
+        const x = ((clientOffset.x - boardRect.left) / boardRect.width) * 100;
+        const y = ((clientOffset.y - boardRect.top) / boardRect.height) * 100;
+
+        dispatch({
+            type: 'UPDATE_PLAYER_POSITION',
+            payload: { playerId: item.id, position: { x, y } }
+        });
+
+        // This allows DraggablePlayer to know the drop coords
+        return { x, y };
+    },
+  }));
+
   if (!state.teamA || !state.teamB) {
       return null;
   }
@@ -35,8 +54,9 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
 
   return (
     <DndProvider backend={HTML5Backend}>
-        <div className="relative h-full w-full">
+        <div ref={boardRef} className="relative h-full w-full">
             <div
+                ref={drop}
                 className="absolute inset-0 bg-contain bg-center bg-no-repeat"
                 style={{ backgroundImage: "url('/cancha-futbol.png')" }}
             ></div>
@@ -53,12 +73,16 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
                     return (
                         <DraggablePlayer
                             key={player.id}
-                            id={player.id}
-                            number={player.number}
+                            player={player}
                             x={position.x}
                             y={position.y}
                             color={isTeamA ? 'blue' : 'red'}
-                            onMove={(x, y) => handleMovePlayer(player.id, x, y)}
+                            onMove={(x, y) => {
+                                dispatch({
+                                    type: 'UPDATE_PLAYER_POSITION',
+                                    payload: { playerId: player.id, position: { x, y } }
+                                });
+                            }}
                         />
                     );
                 })}

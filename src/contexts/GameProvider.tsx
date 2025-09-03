@@ -148,51 +148,36 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         return { ...state, selectedPlayer: selected };
     }
     case 'ADD_EVENT': {
-      if (action.payload.type === 'SUBSTITUTION') {
-          if (!state.selectedPlayer) return state;
-          return {
-              ...state,
-              substitutionState: { playerOut: state.selectedPlayer },
-              selectedPlayer: null, // Clear selection to wait for player_in
-          };
-      }
+      if (!state.selectedPlayer) return state;
       
-      let teamId = state.selectedPlayer?.teamId;
-      let playerId = state.selectedPlayer?.playerId;
-
-      if (action.payload.type === 'TIMEOUT') {
-        if (!action.payload.teamId) return state;
-        teamId = action.payload.teamId;
-        playerId = -1; // System event, no specific player
-      }
-
-      if (!teamId || playerId === undefined) return state;
+      const { teamId, playerId } = state.selectedPlayer;
       
       const team = teamId === 'A' ? state.teamA : state.teamB;
       const player = team?.players?.find(p => p.id === playerId);
 
-      if (!team || (playerId !== -1 && !player)) return state;
+      if (!team || !player) return state;
 
       const newEvent: GameEvent = {
           id: `${Date.now()}-${Math.random()}`,
           type: action.payload.type,
           teamId,
           playerId,
-          playerName: player?.name || 'Equipo',
+          playerName: player.name,
           teamName: team.name,
           timestamp: state.time,
       };
       
-      const newState = { ...state, events: [...state.events, newEvent], selectedPlayer: null };
+      let newState = { ...state, events: [...state.events, newEvent], selectedPlayer: null };
 
+      // Chain updates for relevant event types
       if (action.payload.type === 'GOAL') {
-          return gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
+          newState = gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
       }
       if (action.payload.type === 'FOUL') {
-          return gameReducer(newState, { type: 'UPDATE_FOULS', payload: { team: teamId, delta: 1 } });
+          newState = gameReducer(newState, { type: 'UPDATE_FOULS', payload: { team: teamId, delta: 1 } });
       }
-       if (action.payload.type === 'TIMEOUT') {
-          return gameReducer(newState, { type: 'UPDATE_TIMEOUTS', payload: { team: teamId, delta: -1 } });
+      if (action.payload.type === 'TIMEOUT') {
+          newState = gameReducer(newState, { type: 'UPDATE_TIMEOUTS', payload: { team: teamId, delta: -1 } });
       }
 
       return newState;
@@ -221,7 +206,6 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
             if (currentActivePlayers.length < 5) {
                 updatedActivePlayers = [...currentActivePlayers, playerId];
             } else {
-                // Optionally, provide feedback that the active player limit is reached
                 console.warn(`Team ${teamId} already has 5 active players.`);
                 return state;
             }
@@ -239,15 +223,20 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
 
         const setPositionsForTeam = (playerIds: number[], teamPlayers: Player[], team: 'A' | 'B') => {
             const goalkeeper = playerIds.map(id => teamPlayers.find(p => p.id === id)).find(p => p?.position === 'Goalkeeper');
-            const fieldPlayers = playerIds.filter(id => id !== goalkeeper?.id);
-
-            if (goalkeeper) {
-                newPositions[goalkeeper.id] = { x: team === 'A' ? 10 : 90, y: 50 };
+            let fieldPlayers = playerIds.filter(id => id !== goalkeeper?.id);
+            
+            // If no designated goalkeeper, pick one player to be in goal
+            if (!goalkeeper && playerIds.length > 0) {
+                const tempGoalkeeperId = playerIds[0];
+                newPositions[tempGoalkeeperId] = { x: team === 'A' ? 10 : 90, y: 50 };
+                fieldPlayers = playerIds.slice(1);
+            } else if (goalkeeper) {
+                 newPositions[goalkeeper.id] = { x: team === 'A' ? 10 : 90, y: 50 };
             }
 
             const formationSpots = team === 'A' 
-                ? [{x: 25, y: 50}, {x: 40, y: 25}, {x: 40, y: 75}, {x: 55, y: 50}] 
-                : [{x: 75, y: 50}, {x: 60, y: 25}, {x: 60, y: 75}, {x: 45, y: 50}];
+                ? [{x: 35, y: 50}, {x: 25, y: 25}, {x: 25, y: 75}, {x: 45, y: 50}] 
+                : [{x: 65, y: 50}, {x: 75, y: 25}, {x: 75, y: 75}, {x: 55, y: 50}];
             
             fieldPlayers.forEach((playerId, index) => {
                 if (index < formationSpots.length) {
