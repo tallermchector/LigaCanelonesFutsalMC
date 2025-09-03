@@ -9,11 +9,14 @@ interface TeamPlayersProps {
 }
 
 const positionTranslations: { [key: string]: string } = {
-    Goalkeeper: 'Porteros',
-    Defender: 'Defensas',
-    Winger: 'Alas',
-    Pivot: 'Pivots',
+    GOLERO: 'Porteros',
+    DEFENSA: 'Defensas',
+    ALA: 'Alas',
+    PIVOT: 'Pivots',
 };
+
+// Definir el orden de las posiciones
+const orderedPositions = ['GOLERO', 'DEFENSA', 'ALA', 'PIVOT'];
 
 export function TeamPlayers({ players }: TeamPlayersProps) {
     const groupedPlayers = players.reduce((acc, player) => {
@@ -24,8 +27,6 @@ export function TeamPlayers({ players }: TeamPlayersProps) {
         acc[position].push(player);
         return acc;
     }, {} as Record<string, Player[]>);
-
-    const orderedPositions = ['Goalkeeper', 'Defender', 'Winger', 'Pivot'];
 
     return (
         <CardContent className="p-0">
