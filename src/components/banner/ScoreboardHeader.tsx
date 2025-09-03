@@ -54,9 +54,6 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
   timeLeft,
   period,
 }) => {
-  const team1Abbr = team1Name.substring(0, 3).toUpperCase();
-  const team2Abbr = team2Name.substring(0, 3).toUpperCase();
-
   const getPeriodText = () => {
     if (period.includes('FINAL')) return 'FINAL';
     if (period.includes('PROGRAMADO')) return 'PROGRAMADO';
@@ -70,12 +67,12 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
         <FutsalBallIcon className="w-10 h-10 md:w-12 md:h-12" />
       </div>
 
-      <div className="w-full text-white shadow-2xl rounded-lg overflow-hidden flex items-stretch justify-between h-20 md:h-24">
+      <div className="w-full text-white shadow-2xl rounded-lg overflow-hidden flex items-stretch justify-between h-auto md:h-24">
         
         {/* Team 1 */}
-        <div className="flex items-center gap-2 md:gap-4 p-2 md:p-4 bg-navy-custom flex-1">
-            <Image src={team1Logo} alt={`${team1Name} logo`} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 object-contain" />
-            <h2 className="text-lg md:text-2xl font-extrabold tracking-wider">{team1Abbr}</h2>
+        <div className="flex items-center gap-2 md:gap-4 p-2 md:p-4 bg-navy-custom flex-1 min-w-0">
+            <Image src={team1Logo} alt={`${team1Name} logo`} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 object-contain flex-shrink-0" />
+            <h2 className="text-base md:text-xl font-extrabold tracking-wider leading-tight text-left flex-grow">{team1Name}</h2>
         </div>
         
         {/* Score & Time */}
@@ -89,9 +86,9 @@ export const ScoreboardHeader: React.FC<ScoreboardHeaderProps> = ({
         </div>
 
         {/* Team 2 */}
-        <div className="flex items-center gap-2 md:gap-4 p-2 md:p-4 bg-navy-custom flex-1 justify-end">
-            <h2 className="text-lg md:text-2xl font-extrabold tracking-wider">{team2Abbr}</h2>
-            <Image src={team2Logo} alt={`${team2Name} logo`} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 object-contain" />
+        <div className="flex items-center gap-2 md:gap-4 p-2 md:p-4 bg-navy-custom flex-1 justify-end min-w-0">
+            <h2 className="text-base md:text-xl font-extrabold tracking-wider leading-tight text-right flex-grow">{team2Name}</h2>
+            <Image src={team2Logo} alt={`${team2Name} logo`} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 object-contain flex-shrink-0" />
         </div>
       </div>
       
