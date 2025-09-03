@@ -28,7 +28,7 @@ const StatDisplay = ({ label, value, icon, hasPenalty }: { label: string, value:
     <div className="flex flex-col items-center gap-1 text-center text-white">
         <div className="flex items-center gap-1">
             <div className={cn('h-4 w-4', hasPenalty ? 'text-red-400' : 'text-white/70')}>{icon}</div>
-            <span className={cn('text-xl md:text-2xl font-bold', hasPenalty ? 'text-red-400' : 'text-white')}>
+            <span className={cn('text-2xl md:text-3xl font-bold', hasPenalty ? 'text-red-400' : 'text-white')}>
                 {value}
             </span>
         </div>
@@ -49,14 +49,14 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
     const leagueLogo = '/logofu.png';
 
     return (
-        <div className="font-sans w-full max-w-5xl mx-auto flex flex-col items-center px-2 py-4">
+        <div className="font-sans w-full flex flex-col items-center py-4">
             {/* Logo de la Liga */}
             <div className="relative z-20 mb-[-28px] bg-[#1a212e] p-1 rounded-full border-4 border-[#1a212e] shadow-lg">
                 <Image src={leagueLogo} alt="League Logo" width={48} height={48} className="w-10 h-10 md:w-12 md:h-12 rounded-full object-contain"/>
             </div>
 
             {/* Marcador Principal */}
-            <div className="w-full text-white shadow-2xl rounded-xl overflow-hidden flex items-stretch justify-between bg-[#1a212e]">
+            <div className="w-full text-white shadow-2xl rounded-none overflow-hidden flex items-stretch justify-between bg-[#1a212e]">
                 
                 {/* Equipo A (Local) */}
                 <div className="flex flex-col justify-between gap-2 p-2 flex-1 min-w-0 bg-[#2c3e50]">
