@@ -21,7 +21,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
     if (!team) {
         notFound();
     }
-    
+
     return (
         <div className="flex min-h-screen flex-col bg-muted/40">
             <main className="flex-1">

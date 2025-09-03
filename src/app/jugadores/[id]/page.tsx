@@ -7,12 +7,13 @@ import { PlayerStats } from '@/components/jugadores/perfil/PlayerStats';
 import { notFound } from 'next/navigation';
 
 interface PlayerPageProps {
-    params: {
+    params: Promise<{
         id: string;
-    }
+    }>
 }
 
-export default async function PlayerPage({ params }: PlayerPageProps) {
+export default async function PlayerPage(props: PlayerPageProps) {
+    const params = await props.params;
     const playerId = parseInt(params.id, 10);
     if (isNaN(playerId)) {
         notFound();

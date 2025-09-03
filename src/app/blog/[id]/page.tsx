@@ -11,12 +11,13 @@ import { Badge } from '@/components/ui/badge';
 import { BlogSidebar } from '@/components/blog/BlogSidebar';
 
 interface PostPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default async function SinglePostPage({ params }: PostPageProps) {
+export default async function SinglePostPage(props: PostPageProps) {
+  const params = await props.params;
   const post = await getPostBySlug(params.id);
 
   if (!post) {

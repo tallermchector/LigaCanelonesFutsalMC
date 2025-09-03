@@ -10,12 +10,13 @@ import type { MatchStats } from '@/types';
 
 
 interface ResumenPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export async function generateMetadata({ params }: ResumenPageProps): Promise<Metadata> {
+export async function generateMetadata(props: ResumenPageProps): Promise<Metadata> {
+  const params = await props.params;
   const id = parseInt(params.id, 10);
   if (isNaN(id)) {
       return { title: 'Resumen no encontrado' };
@@ -42,11 +43,12 @@ export async function generateMetadata({ params }: ResumenPageProps): Promise<Me
 }
 
 
-export default async function ResumenPage({ params }: ResumenPageProps) {
+export default async function ResumenPage(props: ResumenPageProps) {
+  const params = await props.params;
   const id = parseInt(params.id, 10);
-   if (isNaN(id)) {
-      notFound();
-  }
+  if (isNaN(id)) {
+     notFound();
+ }
   const match = await getMatchStatsFromDb(id);
 
   if (!match) {
