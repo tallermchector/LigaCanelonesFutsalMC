@@ -56,22 +56,21 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
     const { toast } = useToast()
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isClient, setIsClient] = useState(false)
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const form = useForm<CreateMatchFormValues>({
         resolver: zodResolver(createMatchSchema),
-        // We leave scheduledTime undefined initially to prevent hydration mismatch.
-        // It will be set on the client by the useEffect hook.
         defaultValues: {
             teamAId: '',
             teamBId: '',
+            scheduledTime: new Date(),
             round: 1,
         },
     });
-
-    // Set the default date on the client side to avoid hydration errors.
-    useEffect(() => {
-        form.setValue('scheduledTime', new Date());
-    }, [form]);
     
     async function onSubmit(values: CreateMatchFormValues) {
         setIsSubmitting(true)
@@ -96,6 +95,10 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
         } finally {
             setIsSubmitting(false)
         }
+    }
+
+    if (!isClient) {
+        return null;
     }
 
     return (
