@@ -6,6 +6,7 @@ import { useGame } from '@/contexts/GameProvider';
 import type { GameEventType, Player } from '@/types';
 import { Goal, Shield, Hand, Footprints, Square, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface ActionMenuProps {
   player: Player;
