@@ -5,11 +5,11 @@ import { PageHero } from '@/components/layout/PageHero';
 import { SeasonDataTable } from '@/components/gestion/temporadas/SeasonDataTable';
 import { columns } from '@/components/gestion/temporadas/Columns';
 import { CreateSeasonForm } from '@/components/gestion/temporadas/CreateSeasonForm';
-import { getAllSeasons, getAllTeams } from '@/actions/season-actions';
+import { getAllSeasonsWithTeams, getAllTeams } from '@/actions/season-actions';
 import { AddTeamToSeasonForm } from '@/components/gestion/temporadas/AddTeamToSeasonForm';
 
 export default async function GestionTemporadasPage() {
-    const seasons = await getAllSeasons();
+    const seasons = await getAllSeasonsWithTeams();
     const teams = await getAllTeams();
 
     return (
