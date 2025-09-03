@@ -6,16 +6,36 @@ import { useParams } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { useToast } from '@/hooks/use-toast';
 import { getMatchByIdFromDb, saveMatchState, createGameEvent } from '@/actions/prisma-actions';
-import type { FullMatch } from '@/types';
+import type { FullMatch, MatchStatus } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-import { GameProvider } from '@/contexts/GameProvider';
+import { GameProvider, useGame } from '@/contexts/GameProvider';
 import { Scoreboard } from '@/components/controles/Scoreboard';
 import { GameControls } from '@/components/controles/GameControls';
-import { EventButtons } from '@/components/controles/EventButtons';
+import { StarterSelection } from '@/components/controles/StarterSelection';
+
+
+function MatchControlContent() {
+    const { state } = useGame();
+
+    if (state.status === 'SELECTING_STARTERS') {
+        return <StarterSelection />;
+    }
+
+    return (
+        <>
+            <div className="flex-shrink-0 w-full max-w-7xl mx-auto">
+                <Scoreboard />
+            </div>
+            <div className="flex-grow pt-4 w-full max-w-7xl mx-auto">
+                <GameControls />
+            </div>
+        </>
+    );
+}
 
 function MatchControlSkeleton() {
     return (
@@ -53,6 +73,10 @@ export default function MatchControlPage() {
           }
           const fetchedMatch = await getMatchByIdFromDb(matchId);
           if (fetchedMatch) {
+            // Ensure status is what we expect
+             if (fetchedMatch.status === 'SCHEDULED') {
+              fetchedMatch.status = 'SELECTING_STARTERS';
+            }
             setMatch(fetchedMatch);
           } else {
             setError('Partido no encontrado.');
@@ -118,15 +142,7 @@ export default function MatchControlPage() {
                   </Link>
               </Button>
           </div>
-          <div className="flex-shrink-0 w-full max-w-7xl mx-auto">
-            <Scoreboard />
-          </div>
-          <div className="flex-shrink-0 pt-4 w-full max-w-7xl mx-auto">
-            <EventButtons />
-          </div>
-          <div className="flex-grow pt-4 w-full max-w-7xl mx-auto">
-            <GameControls />
-          </div>
+          <MatchControlContent />
         </main>
       </div>
     </GameProvider>
