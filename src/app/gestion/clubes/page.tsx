@@ -1,0 +1,37 @@
+
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
+import { PageHero } from '@/components/layout/PageHero';
+import { getAllTeams } from '@/actions/team-actions';
+import { ClubDataTable } from '@/components/gestion/clubes/ClubDataTable';
+import { columns }s from '@/components/gestion/clubes/Columns';
+import { CreateClubForm } from '@/components/gestion/clubes/CreateClubForm';
+
+export default async function GestionClubesPage() {
+    const teams = await getAllTeams();
+
+    return (
+        <div className="flex min-h-screen flex-col bg-background">
+            <Header />
+            <main className="flex-1 pt-[var(--header-height)]">
+                <PageHero
+                    title="Gestión de Clubes"
+                    description="Administra los equipos que participan en la liga."
+                />
+                <div className="container mx-auto p-4 py-8 md:p-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="lg:col-span-2">
+                             <h2 className="text-2xl font-bold text-primary mb-4">Lista de Clubes</h2>
+                             <ClubDataTable columns={columns} data={teams} />
+                        </div>
+                        <div>
+                             <h2 className="text-2xl font-bold text-primary mb-4">Crear Nuevo Club</h2>
+                             <CreateClubForm />
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <Footer />
+        </div>
+    );
+}
