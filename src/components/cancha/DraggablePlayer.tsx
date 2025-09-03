@@ -61,7 +61,7 @@ export function DraggablePlayer({ player, x, y, color, onMove }: DraggablePlayer
                     ref={drag}
                     onClick={handleClick}
                     className={cn(
-                        'absolute flex h-10 w-10 cursor-move items-center justify-center rounded-full border-2 border-white/50 font-bold text-white shadow-lg transition-transform',
+                        'absolute flex h-12 w-12 md:h-14 md:w-14 cursor-move items-center justify-center rounded-full border-2 border-white/50 font-bold text-white shadow-lg transition-transform',
                         color === 'blue' ? 'bg-blue-500' : 'bg-red-500',
                         isDragging ? 'opacity-50 scale-110' : 'opacity-100 scale-100'
                     )}
@@ -71,7 +71,7 @@ export function DraggablePlayer({ player, x, y, color, onMove }: DraggablePlayer
                         transform: 'translate(-50%, -50%)',
                     }}
                 >
-                    {player.number}
+                    <span className="text-lg md:text-xl">{player.number}</span>
                 </div>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-1 bg-gray-900/80 border-gray-700 text-white backdrop-blur-md">
