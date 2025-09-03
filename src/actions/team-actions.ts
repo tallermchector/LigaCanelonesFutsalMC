@@ -1,7 +1,8 @@
+
 'use server';
 
 import prisma from '@/lib/prisma';
-import type { Team } from '@/types';
+import type { FullMatch, GameEventType, Team } from '@/types';
 
 /**
  * Obtiene una lista de todos los equipos de la base de datos.
@@ -43,15 +44,25 @@ export async function getTeamBySlug(slug: string): Promise<Team | null> {
                 ]
             },
             include: {
-                teamA: true,
-                teamB: true
+                teamA: { include: { players: true } },
+                teamB: { include: { players: true } },
+                events: true,
+                playerMatchStats: true,
             },
             orderBy: {
                 scheduledTime: 'asc'
             }
         });
+        
+        const fullMatches: FullMatch[] = matches.map(match => ({
+            ...match,
+            scheduledTime: match.scheduledTime.toISOString(),
+            status: match.status as FullMatch['status'],
+            events: match.events.map(e => ({...e, type: e.type as GameEventType})),
+        }));
 
-        return { ...team, matches };
+
+        return { ...team, matches: fullMatches };
 
     } catch (error) {
         console.error(`Error al obtener el equipo por slug: ${slug}`, error);

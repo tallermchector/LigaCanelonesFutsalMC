@@ -4,7 +4,7 @@ import { Footer } from '@/components/layout/footer';
 import { PageHero } from '@/components/layout/PageHero';
 import { getAllTeams } from '@/actions/team-actions';
 import { ClubDataTable } from '@/components/gestion/clubes/ClubDataTable';
-import { columns }s from '@/components/gestion/clubes/Columns';
+import { columns } from '@/components/gestion/clubes/Columns';
 import { CreateClubForm } from '@/components/gestion/clubes/CreateClubForm';
 
 export default async function GestionClubesPage() {
