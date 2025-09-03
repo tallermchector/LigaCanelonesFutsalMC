@@ -35,11 +35,10 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
             {/* Team A Panel Toggle */}
             <Button
                 size="lg"
-                variant={visiblePanel === 'A' ? 'default' : 'outline'}
+                variant={visiblePanel === 'A' ? 'accent-blue' : 'outline'}
                 className={cn(
                   "w-32 hidden md:flex",
-                  visiblePanel !== 'A' && "border-blue-500 text-blue-400 hover:bg-blue-900/50 hover:text-blue-300",
-                  visiblePanel === 'A' && "bg-blue-600 hover:bg-blue-700"
+                  visiblePanel !== 'A' && "border-blue-500 text-blue-400 hover:bg-blue-900/50 hover:text-blue-300"
                 )}
                 onClick={() => onTogglePanel('A')}
             >
@@ -62,7 +61,7 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                         {state.isRunning ? <Pause className="mr-2 h-5 w-5"/> : <Play className="mr-2 h-5 w-5"/>}
                         {state.isRunning ? 'Pausar' : 'Iniciar'}
                     </Button>
-                    <Button variant="outline" onClick={() => dispatch({ type: 'RESET_TIMER' })} size="lg" className="text-white border-gray-600 hover:bg-gray-700 hover:text-white">
+                    <Button variant="outline" onClick={() => dispatch({ type: 'RESET_TIMER' })} size="lg" className="border-gray-600 bg-gray-800/60 text-gray-300 hover:bg-gray-700 hover:text-white">
                         <RotateCcw className="mr-2 h-5 w-5" />
                         Reiniciar
                     </Button>
@@ -89,10 +88,9 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                         </Button>
                     </div>
                     <div className="grid grid-cols-3 gap-2 w-full max-w-sm">
-                        <Button size="lg" variant={visiblePanel === 'A' ? 'default' : 'outline'} onClick={() => onTogglePanel('A')}
+                        <Button size="lg" variant={visiblePanel === 'A' ? 'accent-blue' : 'outline'} onClick={() => onTogglePanel('A')}
                             className={cn(
-                                visiblePanel !== 'A' && "border-blue-500 text-blue-400 hover:bg-blue-900/50 hover:text-blue-300",
-                                visiblePanel === 'A' && "bg-blue-600 hover:bg-blue-700"
+                                visiblePanel !== 'A' && "border-blue-500 text-blue-400 hover:bg-blue-900/50 hover:text-blue-300"
                             )}>
                            <Users className="mr-2 h-4 w-4"/> {state.teamA?.name.substring(0,3)}
                         </Button>
@@ -101,10 +99,9 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                             <span className="font-semibold text-white">P:{state.period}</span>
                             <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} className="text-white h-8 w-8 hover:bg-gray-600/50"><Plus className="h-4 w-4"/></Button>
                         </div>
-                         <Button size="lg" variant={visiblePanel === 'B' ? 'default' : 'outline'} onClick={() => onTogglePanel('B')}
+                         <Button size="lg" variant={visiblePanel === 'B' ? 'accent-red' : 'outline'} onClick={() => onTogglePanel('B')}
                             className={cn(
-                                visiblePanel !== 'B' && "border-red-500 text-red-400 hover:bg-red-900/50 hover:text-red-300",
-                                visiblePanel === 'B' && "bg-red-600 hover:bg-red-700"
+                                visiblePanel !== 'B' && "border-red-500 text-red-400 hover:bg-red-900/50 hover:text-red-300"
                             )}>
                            <Users className="mr-2 h-4 w-4"/> {state.teamB?.name.substring(0,3)}
                         </Button>
@@ -116,11 +113,10 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
             <div className="hidden md:flex items-center justify-end gap-2 w-32">
                 <Button
                     size="lg"
-                    variant={visiblePanel === 'B' ? 'default' : 'outline'}
+                    variant={visiblePanel === 'B' ? 'accent-red' : 'outline'}
                     className={cn(
                         "w-full",
-                        visiblePanel !== 'B' && "border-red-500 text-red-400 hover:bg-red-900/50 hover:text-red-300",
-                        visiblePanel === 'B' && "bg-red-600 hover:bg-red-700"
+                        visiblePanel !== 'B' && "border-red-500 text-red-400 hover:bg-red-900/50 hover:text-red-300"
                     )}
                     onClick={() => onTogglePanel('B')}
                 >
