@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer, Users, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 
 const formatTime = (seconds: number) => {
@@ -33,41 +34,51 @@ export function TacticalActions() {
     router.push('/cancha');
   }
 
+  const TimeOutButton = ({teamId}: {teamId: 'A' | 'B'}) => {
+    const team = teamId === 'A' ? state.teamA : state.teamB;
+    const timeouts = teamId === 'A' ? state.timeoutsA : state.timeoutsB;
+
+    if (!team) return null;
+    
+    return (
+        <Button size="sm" variant="outline" className="text-white border-gray-600 hover:bg-gray-700 hover:text-white" disabled={timeouts <= 0} onClick={() => handleTimeout(teamId)}>
+            <Timer className="mr-1 md:mr-2 h-4 w-4" /> 
+            <span className="hidden sm:inline">{team.name.substring(0,3)}</span>
+            <span className="sm:hidden">T.M.</span>
+            <span className="hidden sm:inline ml-1">T. Muerto</span>
+             ({timeouts})
+        </Button>
+    )
+  }
+
   return (
-    <footer className="flex items-center justify-center p-2 bg-gray-800/50 backdrop-blur-sm border-t border-gray-700">
-        <div className="flex items-center justify-between w-full max-w-4xl mx-auto">
-            {/* Team A Timeout */}
-            <Button size="sm" variant="outline" className="text-white border-gray-600 hover:bg-gray-700 hover:text-white" disabled={state.timeoutsA <= 0} onClick={() => handleTimeout('A')}>
-                <Timer className="mr-2 h-4 w-4" /> {state.teamA?.name.substring(0,3)} T. Muerto ({state.timeoutsA})
-            </Button>
+    <footer className="flex items-center justify-center p-1 md:p-2 bg-gray-800/50 backdrop-blur-sm border-t border-gray-700 flex-shrink-0">
+        <div className="flex items-center justify-between w-full max-w-5xl mx-auto gap-1">
+            <TimeOutButton teamId="A" />
             
-            {/* Main Controls */}
-            <div className="flex items-center gap-2 bg-gray-900/70 p-2 rounded-xl shadow-lg">
-                <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} aria-label="Disminuir período" className="text-white hover:bg-gray-600/50 hover:text-white"><Minus className="h-4 w-4" /></Button>
-                <div className="flex items-center gap-2 text-white">
-                    <Flag className="h-5 w-5 text-muted-foreground" />
-                    <span className="font-semibold text-lg">Período: {state.period}</span>
+            <div className="flex items-center justify-center gap-1 md:gap-2 bg-gray-900/70 p-1 md:p-2 rounded-lg md:rounded-xl shadow-lg">
+                <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} aria-label="Disminuir período" className="text-white h-8 w-8 hover:bg-gray-600/50 hover:text-white"><Minus className="h-4 w-4" /></Button>
+                <div className="flex items-center gap-1 md:gap-2 text-white text-xs md:text-base">
+                    <Flag className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                    <span className="font-semibold">P: {state.period}</span>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} aria-label="Aumentar período" className="text-white hover:bg-gray-600/50 hover:text-white"><Plus className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} aria-label="Aumentar período" className="text-white h-8 w-8 hover:bg-gray-600/50 hover:text-white"><Plus className="h-4 w-4" /></Button>
                 
-                <Button size="sm" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })} aria-label={state.isRunning ? "Pausar tiempo" : "Iniciar tiempo"} className="w-24 bg-blue-600 hover:bg-blue-700">
-                    {state.isRunning ? <Pause className="mr-2 h-5 w-5"/> : <Play className="mr-2 h-5 w-5"/>}
+                <Button size="sm" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })} aria-label={state.isRunning ? "Pausar tiempo" : "Iniciar tiempo"} className={cn("w-20 md:w-24", state.isRunning ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700")}>
+                    {state.isRunning ? <Pause className="mr-1 md:mr-2 h-4 w-4"/> : <Play className="mr-1 md:mr-2 h-4 w-4"/>}
                     {state.isRunning ? 'Pausar' : 'Iniciar'}
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => dispatch({ type: 'RESET_TIMER' })} aria-label="Reiniciar tiempo" className="text-white border-gray-600 hover:bg-gray-700 hover:text-white">
-                    <RotateCcw className="mr-2 h-5 w-5"/>
+                <Button size="sm" variant="outline" onClick={() => dispatch({ type: 'RESET_TIMER' })} aria-label="Reiniciar tiempo" className="text-white border-gray-600 hover:bg-gray-700 hover:text-white hidden sm:flex">
+                    <RotateCcw className="mr-1 md:mr-2 h-4 w-4"/>
                     Reiniciar
                 </Button>
                  <Button variant="destructive" onClick={handleSaveAndExit} size="sm">
-                    <Save className="mr-2 h-4 w-4" />
+                    <Save className="mr-1 md:mr-2 h-4 w-4" />
                     Guardar
                 </Button>
             </div>
 
-             {/* Team B Timeout */}
-            <Button size="sm" variant="outline" className="text-white border-gray-600 hover:bg-gray-700 hover:text-white" disabled={state.timeoutsB <= 0} onClick={() => handleTimeout('B')}>
-                <Timer className="mr-2 h-4 w-4" /> {state.teamB?.name.substring(0,3)} T. Muerto ({state.timeoutsB})
-            </Button>
+            <TimeOutButton teamId="B" />
         </div>
     </footer>
   );

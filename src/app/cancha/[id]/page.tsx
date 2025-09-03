@@ -13,6 +13,7 @@ import { TacticalActions } from '@/components/cancha/TacticalActions';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TeamPanel } from '@/components/controles/TeamPanel';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 function TacticalBoardSkeleton() {
@@ -82,17 +83,42 @@ export default function TacticalBoardPage() {
     return (
         <GameProvider match={match}>
             <DndProvider backend={HTML5Backend}>
-                <div className="flex h-screen w-screen flex-col bg-gray-900 text-white">
+                <div className="flex h-dvh w-screen flex-col bg-gray-900 text-white">
                     <TacticalHeader match={match} />
-                    <main className="flex-grow flex p-2 gap-2 overflow-hidden">
-                        <div className="w-64 flex-shrink-0">
+                    <main className="flex-grow flex flex-col lg:flex-row p-2 gap-2 overflow-hidden">
+                        {/* Desktop: Left Panel */}
+                        <div className="hidden lg:block w-72 flex-shrink-0">
                           <TeamPanel teamId="A" />
                         </div>
-                        <div className="flex-grow relative h-full">
+                        
+                        {/* Main Content: Board */}
+                        <div className="flex-grow relative h-full w-full">
                             <TacticalBoard match={match} />
                         </div>
-                        <div className="w-64 flex-shrink-0">
+                        
+                         {/* Desktop: Right Panel */}
+                        <div className="hidden lg:block w-72 flex-shrink-0">
                           <TeamPanel teamId="B" />
+                        </div>
+                        
+                        {/* Mobile: Tabbed Panels */}
+                        <div className="block lg:hidden flex-shrink-0 px-2 pb-2">
+                             <Tabs defaultValue="teamA" className="w-full">
+                                <TabsList className="grid w-full grid-cols-2">
+                                    <TabsTrigger value="teamA">{match.teamA.name}</TabsTrigger>
+                                    <TabsTrigger value="teamB">{match.teamB.name}</TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="teamA" className="mt-2">
+                                    <div className="h-48">
+                                        <TeamPanel teamId="A" />
+                                    </div>
+                                </TabsContent>
+                                <TabsContent value="teamB" className="mt-2">
+                                     <div className="h-48">
+                                        <TeamPanel teamId="B" />
+                                     </div>
+                                </TabsContent>
+                             </Tabs>
                         </div>
                     </main>
                     <TacticalActions />
