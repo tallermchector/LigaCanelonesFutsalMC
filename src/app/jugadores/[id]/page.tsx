@@ -1,5 +1,5 @@
 
-import { getPlayerById } from '@/actions/prisma-actions';
+import { getPlayerById } from '@/actions/player-actions';
 import { PlayerBasicInfo } from '@/components/jugadores/perfil/PlayerBasicInfo';
 import { PlayerHero } from '@/components/jugadores/perfil/PlayerHero';
 import { PlayerInfoTabs } from '@/components/jugadores/perfil/PlayerInfoTabs';

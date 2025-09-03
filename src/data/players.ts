@@ -1,6 +1,6 @@
 import type { Player } from '@/types';
 
-export const players: Player[] =[
+export const players: Player[] = [
   {
     id: 1,
     name: "Daniel Fernández",
@@ -8,9 +8,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 1,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 2,
@@ -19,9 +19,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 1,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 3,
@@ -30,9 +30,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 1,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 4,
@@ -41,9 +41,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 1,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 5,
@@ -52,9 +52,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 1,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 6,
@@ -63,9 +63,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 1,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 7,
@@ -74,9 +74,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 1,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 8,
@@ -85,9 +85,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 1,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 9,
@@ -96,9 +96,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 1,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 10,
@@ -107,9 +107,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 1,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 11,
@@ -118,9 +118,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 10,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 12,
@@ -129,9 +129,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 10,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 13,
@@ -140,9 +140,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 10,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 14,
@@ -151,9 +151,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 10,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 15,
@@ -162,9 +162,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 10,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 16,
@@ -173,9 +173,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 10,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 17,
@@ -184,9 +184,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 10,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 18,
@@ -195,9 +195,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 10,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 19,
@@ -206,9 +206,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 10,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 20,
@@ -217,9 +217,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 10,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 21,
@@ -228,9 +228,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 11,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 22,
@@ -239,9 +239,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 11,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 23,
@@ -250,9 +250,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 11,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 24,
@@ -261,9 +261,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 11,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 25,
@@ -272,9 +272,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 11,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 26,
@@ -283,9 +283,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 11,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 27,
@@ -294,9 +294,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 11,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 28,
@@ -305,9 +305,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 11,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 29,
@@ -316,9 +316,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 11,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 30,
@@ -327,9 +327,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 11,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 31,
@@ -338,9 +338,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 12,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 32,
@@ -349,9 +349,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 12,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 33,
@@ -360,9 +360,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 12,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 34,
@@ -371,9 +371,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 12,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 35,
@@ -382,9 +382,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 12,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 36,
@@ -393,9 +393,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 12,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 37,
@@ -404,9 +404,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 12,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 38,
@@ -415,9 +415,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 12,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 39,
@@ -426,9 +426,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 12,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 40,
@@ -437,9 +437,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 12,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 41,
@@ -448,9 +448,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 13,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 42,
@@ -459,9 +459,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 13,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 43,
@@ -470,9 +470,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 13,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 44,
@@ -481,9 +481,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 13,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 45,
@@ -492,9 +492,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 13,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 46,
@@ -503,9 +503,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 13,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 47,
@@ -514,9 +514,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 13,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 48,
@@ -525,9 +525,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 13,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 49,
@@ -536,9 +536,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 13,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 50,
@@ -547,9 +547,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 13,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 51,
@@ -558,9 +558,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 14,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 52,
@@ -569,9 +569,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 14,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 53,
@@ -580,9 +580,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 14,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 54,
@@ -591,9 +591,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 14,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 55,
@@ -602,9 +602,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 14,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 56,
@@ -613,9 +613,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 14,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 57,
@@ -624,9 +624,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 14,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 58,
@@ -635,9 +635,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 14,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 59,
@@ -646,9 +646,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 14,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 60,
@@ -657,9 +657,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 14,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 61,
@@ -668,9 +668,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 15,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 62,
@@ -679,9 +679,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 15,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 63,
@@ -690,9 +690,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 15,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 64,
@@ -701,9 +701,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 15,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 65,
@@ -712,9 +712,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 15,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 66,
@@ -723,9 +723,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 15,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 67,
@@ -734,9 +734,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 15,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 68,
@@ -745,9 +745,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 15,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 69,
@@ -756,9 +756,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 15,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 70,
@@ -767,9 +767,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 15,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 71,
@@ -778,9 +778,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 2,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 72,
@@ -789,9 +789,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 2,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 73,
@@ -800,9 +800,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 2,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 74,
@@ -811,9 +811,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 2,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 75,
@@ -822,9 +822,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 2,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 76,
@@ -833,9 +833,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 2,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 77,
@@ -844,9 +844,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 2,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 78,
@@ -855,9 +855,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 2,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 79,
@@ -866,9 +866,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 2,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 80,
@@ -877,9 +877,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 2,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 81,
@@ -888,9 +888,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 3,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 82,
@@ -899,9 +899,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 3,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 83,
@@ -910,9 +910,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 3,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 84,
@@ -921,9 +921,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 3,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 85,
@@ -932,9 +932,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 3,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 86,
@@ -943,9 +943,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 3,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 87,
@@ -954,9 +954,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 3,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 88,
@@ -965,9 +965,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 3,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 89,
@@ -976,9 +976,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 3,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 90,
@@ -987,9 +987,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 3,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 91,
@@ -998,9 +998,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 4,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 92,
@@ -1009,9 +1009,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 4,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 93,
@@ -1020,9 +1020,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 4,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 94,
@@ -1031,9 +1031,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 4,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 95,
@@ -1042,9 +1042,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 4,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 96,
@@ -1053,9 +1053,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 4,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 97,
@@ -1064,9 +1064,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 4,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 98,
@@ -1075,9 +1075,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 4,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 99,
@@ -1086,9 +1086,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 4,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 100,
@@ -1097,9 +1097,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 4,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 101,
@@ -1108,9 +1108,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 5,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 102,
@@ -1119,9 +1119,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 5,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 103,
@@ -1130,9 +1130,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 5,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 104,
@@ -1141,9 +1141,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 5,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 105,
@@ -1152,9 +1152,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 5,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 106,
@@ -1163,9 +1163,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 5,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 107,
@@ -1174,9 +1174,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 5,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 108,
@@ -1185,9 +1185,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 5,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 109,
@@ -1196,9 +1196,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 5,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 110,
@@ -1207,9 +1207,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 5,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 111,
@@ -1218,9 +1218,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 6,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 112,
@@ -1229,9 +1229,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 6,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 113,
@@ -1240,9 +1240,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 6,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 114,
@@ -1251,9 +1251,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 6,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 115,
@@ -1262,9 +1262,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 6,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 116,
@@ -1273,9 +1273,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 6,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 117,
@@ -1284,9 +1284,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 6,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 118,
@@ -1295,9 +1295,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 6,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 119,
@@ -1306,9 +1306,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 6,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 120,
@@ -1317,9 +1317,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 6,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 121,
@@ -1328,9 +1328,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 7,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 122,
@@ -1339,9 +1339,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 7,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 123,
@@ -1350,9 +1350,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 7,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 124,
@@ -1361,9 +1361,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 7,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 125,
@@ -1372,9 +1372,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 7,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 126,
@@ -1383,9 +1383,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 7,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 127,
@@ -1394,9 +1394,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 7,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 128,
@@ -1405,9 +1405,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 7,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 129,
@@ -1416,9 +1416,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 7,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 130,
@@ -1427,9 +1427,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 7,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 131,
@@ -1438,9 +1438,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 8,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 132,
@@ -1449,9 +1449,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 8,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 133,
@@ -1460,9 +1460,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 8,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 134,
@@ -1471,9 +1471,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 8,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 135,
@@ -1482,9 +1482,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 8,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 136,
@@ -1493,9 +1493,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 8,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 137,
@@ -1504,9 +1504,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 8,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 138,
@@ -1515,9 +1515,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 8,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 139,
@@ -1526,9 +1526,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 8,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 140,
@@ -1537,9 +1537,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 8,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 141,
@@ -1548,9 +1548,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 9,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 142,
@@ -1559,9 +1559,9 @@ export const players: Player[] =[
     position: "DEFENSA",
     teamId: 9,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 143,
@@ -1570,9 +1570,9 @@ export const players: Player[] =[
     position: "ALA",
     teamId: 9,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 144,
@@ -1581,9 +1581,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 9,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 145,
@@ -1592,9 +1592,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 9,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 146,
@@ -1603,9 +1603,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 9,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 147,
@@ -1614,9 +1614,9 @@ export const players: Player[] =[
     position: "GOLERO",
     teamId: 9,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 148,
@@ -1625,9 +1625,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 9,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   },
   {
     id: 149,
@@ -1636,9 +1636,9 @@ export const players: Player[] =[
     position: "PIVOT",
     teamId: 9,
     birthDate: null,
-    height: null,
-    weight: null,
-    nationality: null
+    height: 180,
+    weight: 75,
+    nationality: "URU"
   }
 ]
-;
+  ;
