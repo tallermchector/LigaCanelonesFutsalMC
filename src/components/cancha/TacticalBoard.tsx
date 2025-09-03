@@ -43,6 +43,13 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
     },
   }));
 
+  // Combine the drop ref with our own boardRef
+  const dropRef = (el: HTMLDivElement) => {
+    drop(el);
+    (boardRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+  };
+
+
   if (!state.teamA || !state.teamB) {
       return null;
   }
@@ -51,9 +58,8 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
   const allActivePlayers = [...state.activePlayersA, ...state.activePlayersB];
 
   return (
-    <div ref={boardRef} className="relative h-full w-full">
+    <div ref={dropRef} className="relative h-full w-full">
         <div
-            ref={drop}
             className="absolute inset-0 bg-contain bg-center bg-no-repeat"
             style={{ backgroundImage: "url('/cancha-futbol.png')" }}
         ></div>
@@ -87,3 +93,4 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
     </div>
   );
 }
+
