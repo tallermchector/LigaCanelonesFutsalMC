@@ -2,112 +2,134 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Team {
-  id           Int          @id @default(autoincrement())
-  name         String       @unique
-  slug         String       @unique
-  logoUrl      String?
-  players      Player[]
-  matchesA     Match[]      @relation("TeamAMatches")
-  matchesB     Match[]      @relation("TeamBMatches")
-  seasonStats  SeasonTeam[]
-  GameEvent    GameEvent[]
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  slug  String  @unique
+  logoUrl String?
+  
+  players Player[]
+  
+  matchesA Match[] @relation("TeamAMatches")
+  matchesB Match[] @relation("TeamBMatches")
+  
+  seasonStats SeasonTeam[]
+
+  gameEvents GameEvent[]
 }
 
 model Player {
-  id          Int                @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   number      Int
   position    String?
   birthDate   DateTime?
-  height      Int? // en cm
-  weight      Int? // en kg
+  height      Int?     // en cm
+  weight      Int?     // en kg
   nationality String?
-  team        Team               @relation(fields: [teamId], references: [id])
-  teamId      Int
-  events      GameEvent[]
-  matchStats  PlayerMatchStats[]
+
+  team   Team @relation(fields: [teamId], references: [id])
+  teamId Int
+  
+  gameEvents GameEvent[]
+  matchStats PlayerMatchStats[]
 }
 
 model Match {
-  id                Int                @id @default(autoincrement())
-  teamA             Team               @relation("TeamAMatches", fields: [teamAId], references: [id])
-  teamAId           Int
-  teamB             Team               @relation("TeamBMatches", fields: [teamBId], references: [id])
-  teamBId           Int
-  scheduledTime     DateTime
-  status            String             @default("SCHEDULED")
-  scoreA            Int
-  scoreB            Int
-  round             Int?
-  period            Int                @default(1)
-  time              Int                @default(1200) // 20 minutes in seconds
-  isRunning         Boolean            @default(false)
-  foulsA            Int                @default(0)
-  foulsB            Int                @default(0)
-  timeoutsA         Int                @default(1)
-  timeoutsB         Int                @default(1)
-  events            GameEvent[]
-  activePlayersA    Int[]
-  activePlayersB    Int[]
-  playerMatchStats  PlayerMatchStats[]
-}
+  id            Int      @id @default(autoincrement())
+  teamAId       Int
+  teamBId       Int
+  scheduledTime DateTime
+  status        String
+  scoreA        Int
+  scoreB        Int
+  round         Int?
+  period        Int
+  time          Int
+  isRunning     Boolean
 
-model PlayerMatchStats {
-  id                  Int    @id @default(autoincrement())
-  match               Match  @relation(fields: [matchId], references: [id])
-  matchId             Int
-  player              Player @relation(fields: [playerId], references: [id])
-  playerId            Int
-  timePlayedInSeconds Int    @default(0)
+  teamA         Team     @relation("TeamAMatches", fields: [teamAId], references: [id])
+  teamB         Team     @relation("TeamBMatches", fields: [teamBId], references: [id])
 
-  @@unique([matchId, playerId])
-}
+  foulsA        Int
+  foulsB        Int
+  timeoutsA     Int
+  timeoutsB     Int
+  
+  activePlayersA Int[]
+  activePlayersB Int[]
 
-model Season {
-  id    Int          @id @default(autoincrement())
-  year  Int          @unique
-  teams SeasonTeam[]
-}
+  events GameEvent[]
+  playerMatchStats PlayerMatchStats[]
 
-model SeasonTeam {
-  season     Season @relation(fields: [seasonId], references: [id])
-  seasonId   Int
-  team       Team   @relation(fields: [teamId], references: [id])
-  teamId     Int
-  position   Int
-  points     Int    @default(0)
-  played     Int    @default(0)
-  wins       Int    @default(0)
-  draws      Int    @default(0)
-  losses     Int    @default(0)
-  goalsFor   Int    @default(0)
-  goalsAgainst Int  @default(0)
-
-  @@id([seasonId, teamId])
+  @@index([teamAId])
+  @@index([teamBId])
 }
 
 model GameEvent {
-  id           String  @id @default(cuid())
+  id           Int     @id @default(autoincrement())
   type         String
   match        Match   @relation(fields: [matchId], references: [id])
   matchId      Int
-  timestamp    Int
-  teamId       String?
+  teamId       String? // 'A' or 'B'
   playerId     Int?
-  player       Player? @relation(fields: [playerId], references: [id])
+  timestamp    Int
   teamName     String?
   playerName   String?
   playerInId   Int?
   playerInName String?
-  Team         Team?   @relation(fields: [teamId_relation], references: [id])
-  teamId_relation Int? @map("teamId")
+
+  player       Player? @relation(fields: [playerId], references: [id])
+  team         Team?   @relation(fields: [teamId_relation], references: [id])
+  teamId_relation Int?    @map("teamId")
+}
+
+
+model PlayerMatchStats {
+  id                  Int    @id @default(autoincrement())
+  matchId             Int
+  playerId            Int
+  timePlayedInSeconds Int
+
+  match  Match  @relation(fields: [matchId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
+
+  @@unique([matchId, playerId])
+}
+
+
+model Season {
+  id    Int          @id @default(autoincrement())
+  name  String
+  year  Int
+  teams SeasonTeam[]
+}
+
+model SeasonTeam {
+  id         Int    @id @default(autoincrement())
+  seasonId   Int
+  teamId     Int
+  position   Int
+  played     Int
+  won        Int
+  drawn      Int
+  lost       Int
+  goalsFor   Int
+  goalsAgainst Int
+  points     Int
+  
+  season Season @relation(fields: [seasonId], references: [id])
+  team   Team   @relation(fields: [teamId], references: [id])
+
+  @@unique([seasonId, teamId])
 }
