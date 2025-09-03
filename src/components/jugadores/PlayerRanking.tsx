@@ -27,7 +27,7 @@ interface RankingProps {
 const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
     const teamSlug = player.team.name.toLowerCase().replace(/\s+/g, '-');
     return (
-    <div className="relative mb-8 overflow-hidden rounded-xl bg-muted/50 p-8 pt-16 text-center transition-shadow hover:shadow-lg group">
+    <div className="relative mb-8 overflow-hidden rounded-xl bg-muted/50 p-4 sm:p-8 sm:pt-12 text-center transition-shadow hover:shadow-lg group">
         <div
         className="absolute inset-0 bg-cover bg-center opacity-10 transition-opacity group-hover:opacity-20"
         style={{ backgroundImage: `url(${player.team.logoUrl || ''})` }}
@@ -39,17 +39,17 @@ const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
             alt={`Foto de ${player.name}`}
             width={160}
             height={160}
-            className="mx-auto mb-4 h-40 w-40 rounded-full object-cover object-top shadow-lg transition-transform group-hover:scale-105"
+            className="mx-auto mb-4 h-32 w-32 sm:h-40 sm:w-40 rounded-full object-cover object-top shadow-lg transition-transform group-hover:scale-105"
             />
-            <h2 className="text-3xl font-black uppercase text-foreground group-hover:text-primary transition-colors">{player.name}</h2>
+            <h2 className="text-2xl sm:text-3xl font-black uppercase text-foreground group-hover:text-primary transition-colors">{player.name}</h2>
         </Link>
         <Link href={`/clubes/${teamSlug}`} className="flex items-center justify-center gap-2 text-muted-foreground hover:text-primary">
             <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={16} height={16} />
-            <span className="font-semibold">{player.team.name}</span>
+            <span className="font-semibold text-sm sm:text-base">{player.team.name}</span>
         </Link>
-        <div className="absolute bottom-8 right-8 text-right">
-        <div className="text-7xl font-black text-primary">{player.goals}</div>
-        <div className="text-lg font-bold uppercase text-muted-foreground">Goles</div>
+        <div className="mt-4 sm:absolute sm:bottom-8 sm:right-8 sm:mt-0 sm:text-right">
+        <div className="text-6xl sm:text-7xl font-black text-primary">{player.goals}</div>
+        <div className="text-base sm:text-lg font-bold uppercase text-muted-foreground">Goles</div>
         </div>
     </div>
   )
