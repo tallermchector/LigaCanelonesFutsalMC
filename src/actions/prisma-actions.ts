@@ -190,6 +190,30 @@ export async function getAllTeams(): Promise<Team[]> {
     }
 }
 
+export async function getPlayerById(id: number): Promise<(Player & { team: Team }) | null> {
+    try {
+        const player = await prisma.player.findUnique({
+            where: { id },
+            include: {
+                team: true,
+            },
+        });
+
+        if (!player) {
+            return null;
+        }
+
+        // Prisma's include doesn't guarantee the nested 'players' array on the team,
+        // which our 'Team' type expects. We'll return it as-is, but with a type assertion.
+        // The page using this won't need the team's full player list anyway.
+        return player as (Player & { team: Team });
+
+    } catch (error) {
+        console.error(`Failed to fetch player with id ${id}:`, error);
+        return null;
+    }
+}
+
 export async function createMatch(data: {
     teamAId: number;
     teamBId: number;
