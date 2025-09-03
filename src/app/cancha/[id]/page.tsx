@@ -12,6 +12,7 @@ import { TacticalHeader } from '@/components/cancha/TacticalHeader';
 import { TacticalActions } from '@/components/cancha/TacticalActions';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TeamPanel } from '@/components/controles/TeamPanel';
 
 
 function TacticalBoardSkeleton() {
@@ -83,8 +84,16 @@ export default function TacticalBoardPage() {
             <DndProvider backend={HTML5Backend}>
                 <div className="flex h-screen w-screen flex-col bg-gray-900 text-white">
                     <TacticalHeader match={match} />
-                    <main className="flex-grow relative">
-                         <TacticalBoard match={match} />
+                    <main className="flex-grow flex p-2 gap-2 overflow-hidden">
+                        <div className="w-64 flex-shrink-0">
+                          <TeamPanel teamId="A" />
+                        </div>
+                        <div className="flex-grow relative h-full">
+                            <TacticalBoard match={match} />
+                        </div>
+                        <div className="w-64 flex-shrink-0">
+                          <TeamPanel teamId="B" />
+                        </div>
                     </main>
                     <TacticalActions />
                 </div>
