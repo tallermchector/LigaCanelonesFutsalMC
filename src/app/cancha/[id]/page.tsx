@@ -101,8 +101,8 @@ export default function TacticalBoardPage() {
                           <TeamPanel teamId="B" />
                         </div>
                         
-                        {/* Mobile: Tabbed Panels */}
-                        <div className="block lg:hidden flex-shrink-0 px-2 pb-2">
+                        {/* Mobile: Tabbed Panels - Hidden in landscape */}
+                        <div className="block lg:hidden landscape:hidden flex-shrink-0 px-2 pb-2">
                              <Tabs defaultValue="teamA" className="w-full">
                                 <TabsList className="grid w-full grid-cols-2">
                                     <TabsTrigger value="teamA">{match.teamA.name}</TabsTrigger>
