@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -13,14 +12,14 @@ interface ActionMenuProps {
   onAction: () => void;
 }
 
-const actionButtons: { type: GameEventType; label: string; icon: React.ReactNode; variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | null | undefined, className?: string }[] = [
-  { type: 'GOAL', label: 'Gol', icon: <Goal />, variant: 'default' },
-  { type: 'ASSIST', label: 'Asistencia', icon: <Hand />, variant: 'outline' },
-  { type: 'SHOT', label: 'Tiro', icon: <Footprints />, variant: 'outline' },
-  { type: 'FOUL', label: 'Falta', icon: <Shield />, variant: 'destructive', className: 'bg-orange-500 hover:bg-orange-600' },
-  { type: 'YELLOW_CARD', label: 'Amarilla', icon: <Square />, variant: 'default', className: 'bg-yellow-400 text-black hover:bg-yellow-500'},
+const actionButtons: { type: GameEventType; label: string; icon: React.ReactNode; variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "accent" | null | undefined, className?: string }[] = [
+  { type: 'GOAL', label: 'Gol', icon: <Goal />, variant: 'accent', className: 'bg-green-600 hover:bg-green-700 text-white' },
+  { type: 'ASSIST', label: 'Asistencia', icon: <Hand />, variant: 'outline', className: 'border-gray-500 text-gray-300 hover:bg-gray-700 hover:text-white' },
+  { type: 'SHOT', label: 'Tiro', icon: <Footprints />, variant: 'outline', className: 'border-gray-500 text-gray-300 hover:bg-gray-700 hover:text-white' },
+  { type: 'FOUL', label: 'Falta', icon: <Shield />, variant: 'accent', className: 'bg-orange-500 hover:bg-orange-600 text-white' },
+  { type: 'YELLOW_CARD', label: 'Amarilla', icon: <Square />, variant: 'accent', className: 'bg-yellow-400 text-black hover:bg-yellow-500'},
   { type: 'RED_CARD', label: 'Roja', icon: <Square />, variant: 'destructive'},
-  { type: 'SUBSTITUTION', label: 'Cambio', icon: <RefreshCw />, variant: 'outline', className: 'border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white' },
+  { type: 'SUBSTITUTION', label: 'Cambio', icon: <RefreshCw />, variant: 'accent', className: 'bg-blue-600 hover:bg-blue-700 text-white' },
 ];
 
 export function ActionMenu({ player, onAction }: ActionMenuProps) {
@@ -50,8 +49,8 @@ export function ActionMenu({ player, onAction }: ActionMenuProps) {
               className={cn("w-full justify-start text-white hover:text-white", action.className)}
               onClick={() => handleActionClick(action.type)}
             >
-              {action.icon}
-              <span className="ml-2">{action.label}</span>
+              {React.cloneElement(action.icon as React.ReactElement, { className: 'mr-2 h-4 w-4' })}
+              <span>{action.label}</span>
             </Button>
           </motion.div>
         ))}
