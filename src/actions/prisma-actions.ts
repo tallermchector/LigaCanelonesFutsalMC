@@ -39,12 +39,11 @@ export async function saveMatchState(matchId: string, state: GameState): Promise
   }
 }
 
-export async function createGameEvent(matchId: string, event: GameEvent): Promise<void> {
+export async function createGameEvent(matchId: string, event: Omit<GameEvent, 'id'>): Promise<void> {
     try {
         await prisma.gameEvent.create({
             data: {
                 matchId: matchId,
-                id: event.id,
                 type: event.type,
                 teamId: event.teamId,
                 playerId: event.playerId,

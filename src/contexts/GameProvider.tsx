@@ -326,7 +326,9 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
     if(state.events.length > 0) {
       const lastEvent = state.events[state.events.length -1];
       if (state.matchId) {
-        createGameEvent(state.matchId, lastEvent);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id, ...eventData } = lastEvent;
+        createGameEvent(state.matchId, eventData);
       }
     }
   }, [state.events, state.matchId]);
