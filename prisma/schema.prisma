@@ -1,3 +1,4 @@
+
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -7,41 +8,46 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Team {
-  id      Int     @id @default(autoincrement())
-  name    String  @unique
-  slug    String  @unique
+  id      Int      @id @default(autoincrement())
+  name    String
+  slug    String   @unique
   logoUrl String?
-
   players Player[]
 
+  // Relaciones con Match
   matchesA Match[] @relation("TeamAMatches")
   matchesB Match[] @relation("TeamBMatches")
 
-  seasonStats SeasonTeam[]
+  // Relación con GameEvent (para registrar eventos de equipo, como timeouts)
+  events GameEvent[]
 
-  gameEvents GameEvent[]
+  // Relación con Season
+  seasons SeasonTeam[]
 }
 
 model Player {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   number      Int
-  position    String?
+  position    String
   birthDate   DateTime?
-  height      Int? // en cm
-  weight      Int? // en kg
+  height      Int?
+  weight      Int?
   nationality String?
+  teamId      Int
+  team        Team     @relation(fields: [teamId], references: [id])
 
-  team   Team @relation(fields: [teamId], references: [id])
-  teamId Int
+  // Relaciones con GameEvent
+  eventsAsPlayer   GameEvent[] @relation("PlayerEvents")
+  eventsAsPlayerIn GameEvent[] @relation("PlayerInEvents")
 
-  gameEvents GameEvent[]
+  // Relación con PlayerMatchStats
   matchStats PlayerMatchStats[]
 }
 
@@ -57,45 +63,47 @@ model Match {
   period        Int
   time          Int
   isRunning     Boolean
-
-  teamA Team @relation("TeamAMatches", fields: [teamAId], references: [id])
-  teamB Team @relation("TeamBMatches", fields: [teamBId], references: [id])
-
-  foulsA    Int
-  foulsB    Int
-  timeoutsA Int
-  timeoutsB Int
-
+  foulsA        Int
+  foulsB        Int
+  timeoutsA     Int
+  timeoutsB     Int
   activePlayersA Int[]
   activePlayersB Int[]
 
-  events           GameEvent[]
-  playerMatchStats PlayerMatchStats[]
+  // Relaciones con Team
+  teamA Team @relation("TeamAMatches", fields: [teamAId], references: [id])
+  teamB Team @relation("TeamBMatches", fields: [teamBId], references: [id])
 
-  @@index([teamAId])
-  @@index([teamBId])
+  // Relación con GameEvent
+  events GameEvent[]
+
+  // Relación con PlayerMatchStats
+  playerMatchStats PlayerMatchStats[]
 }
 
+
+// Modelo para los eventos que ocurren durante un partido
 model GameEvent {
   id           Int     @id @default(autoincrement())
-  type         String
-  match        Match   @relation(fields: [matchId], references: [id])
+  teamId       Int?
   matchId      Int
   playerId     Int?
-  timestamp    Int
+  type         String // GOAL, FOUL, YELLOW_CARD, RED_CARD, etc.
+  timestamp    Int // Segundos transcurridos en el partido
   teamName     String?
   playerName   String?
   playerInId   Int?
   playerInName String?
 
-  // --- CORRECCIÓN APLICADA AQUÍ ---
-  // Se unificó la relación en un solo campo 'teamId' de tipo Int?
-  team   Team? @relation(fields: [teamId], references: [id])
-  teamId Int?
 
-  player Player? @relation(fields: [playerId], references: [id])
+  // Relaciones
+  Team         Team?   @relation(fields: [teamId], references: [id])
+  match        Match   @relation(fields: [matchId], references: [id])
+  player       Player? @relation("PlayerEvents", fields: [playerId], references: [id])
+  playerIn     Player? @relation("PlayerInEvents", fields: [playerInId], references: [id])
 }
 
+// Estadísticas de un jugador en un partido específico
 model PlayerMatchStats {
   id                  Int @id @default(autoincrement())
   matchId             Int
@@ -108,6 +116,7 @@ model PlayerMatchStats {
   @@unique([matchId, playerId])
 }
 
+// Modelo para Temporadas
 model Season {
   id    Int          @id @default(autoincrement())
   name  String
@@ -115,21 +124,22 @@ model Season {
   teams SeasonTeam[]
 }
 
+// Tabla de unión para equipos y temporadas (tabla de posiciones)
 model SeasonTeam {
-  id           Int @id @default(autoincrement())
-  seasonId     Int
-  teamId       Int
-  position     Int
-  played       Int
-  won          Int
-  drawn        Int
-  lost         Int
-  goalsFor     Int
-  goalsAgainst Int
-  points       Int
+  seasonId Int
+  teamId   Int
+  position Int
+  points   Int
+  played   Int
+  wins     Int
+  draws    Int
+  losses   Int
+  goalsFor        Int
+  goalsAgainst    Int
+  goalDifference  Int
 
   season Season @relation(fields: [seasonId], references: [id])
   team   Team   @relation(fields: [teamId], references: [id])
 
-  @@unique([seasonId, teamId])
+  @@id([seasonId, teamId])
 }
