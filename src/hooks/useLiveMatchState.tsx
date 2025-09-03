@@ -40,6 +40,7 @@ export function useLiveMatchState(matchId: number | null, initialMatchData: Full
           activePlayersA: initialMatchData.activePlayersA || [],
           activePlayersB: initialMatchData.activePlayersB || [],
           playerPositions: {},
+          playerTimeTracker: {},
         }
     }
     return null;
