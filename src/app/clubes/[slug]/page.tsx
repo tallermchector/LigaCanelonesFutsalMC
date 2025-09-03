@@ -14,9 +14,9 @@ interface ClubPageProps {
     };
 }
 
-export default async function ClubPage(props: ClubPageProps) {
-    const { params } = props;
-    const team = await getTeamBySlug(params.slug);
+export default async function ClubPage({ params }: ClubPageProps) {
+    const { slug } = params;
+    const team = await getTeamBySlug(slug);
 
     if (!team) {
         notFound();
