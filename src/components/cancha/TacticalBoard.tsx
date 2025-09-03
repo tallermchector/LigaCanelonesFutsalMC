@@ -52,11 +52,11 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
   };
 
 
-  if (!state.teamA || !state.teamB) {
+  if (!state.teamA || !state.teamB || !match.teamA?.players || !match.teamB?.players) {
       return null;
   }
 
-  const allPlayers = [...state.teamA.players, ...state.teamB.players];
+  const allPlayers = [...match.teamA.players, ...match.teamB.players];
   const allActivePlayers = [...state.activePlayersA, ...state.activePlayersB];
 
   return (

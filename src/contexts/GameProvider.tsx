@@ -5,6 +5,7 @@
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker, PlayerMatchStats } from '@/types';
 import React from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useWebSocket } from '@/hooks/useWebSocket';
 
 type GameAction =
   | { type: 'LOAD_MATCH'; payload: { match: FullMatch; state: GameState | null } }
@@ -24,7 +25,8 @@ type GameAction =
   | { type: 'SET_INITIAL_POSITIONS' }
   | { type: 'SAVE_FULL_STATE'; }
   | { type: 'UPDATE_PLAYER_POSITION'; payload: { playerId: number; position: PlayerPosition } }
-  | { type: 'UPDATE_PLAYER_TIME' };
+  | { type: 'UPDATE_PLAYER_TIME' }
+  | { type: 'UPDATE_STATE_FROM_WS'; payload: GameState };
 
 const initialState: GameState = {
   matchId: null,
@@ -340,6 +342,16 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'SAVE_FULL_STATE': {
       return state;
     }
+    case 'UPDATE_STATE_FROM_WS': {
+        // Here we merge the state from WS without overwriting the full team objects
+        const { teamA, teamB, ...wsState } = action.payload;
+        return {
+            ...state,
+            ...wsState,
+            teamA: { ...state.teamA!, ...teamA },
+            teamB: { ...state.teamB!, ...teamB }
+        };
+    }
     default:
       return state;
   }
@@ -361,6 +373,8 @@ const GameContext = React.createContext<{
 export const GameProvider: React.FC<GameProviderProps> = ({ children, match, saveMatchState, createGameEvent }) => {
   const [state, dispatch] = React.useReducer(gameReducer, initialState);
   const { toast } = useToast();
+  const { lastJsonMessage, sendMessage } = useWebSocket();
+
 
   const getInitialState = React.useCallback(() => {
     try {
@@ -391,11 +405,37 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
     if (state.matchId && typeof window !== 'undefined') {
       try {
         localStorage.setItem(`futsal-match-state-${state.matchId}`, JSON.stringify(state));
+        
+        // Broadcast state changes over WebSocket
+        const stateToBroadcast = { ...state };
+        // We don't need to send the full player list every time
+        if (stateToBroadcast.teamA?.players) {
+            delete (stateToBroadcast.teamA as Partial<typeof state.teamA>).players;
+        }
+        if (stateToBroadcast.teamB?.players) {
+            delete (stateToBroadcast.teamB as Partial<typeof state.teamB>).players;
+        }
+
+        sendMessage({ type: 'state-update', payload: stateToBroadcast });
+
       } catch (error) {
         console.error("Failed to save state to localStorage", error);
       }
     }
-  }, [state]);
+  }, [state, sendMessage]);
+
+
+  // Effect to handle incoming WebSocket messages
+    React.useEffect(() => {
+        if (lastJsonMessage && lastJsonMessage.type === 'state-update') {
+            const incomingState = lastJsonMessage.payload as GameState;
+            // Avoid updating our own state if we were the sender
+            // (This simple check might need a more robust solution like a client ID)
+            if (JSON.stringify(incomingState) !== JSON.stringify(state)) {
+                 dispatch({ type: 'UPDATE_STATE_FROM_WS', payload: incomingState });
+            }
+        }
+    }, [lastJsonMessage, state]);
 
   React.useEffect(() => {
     if(state.events.length > 0) {
