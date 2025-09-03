@@ -54,7 +54,9 @@ export function TacticalActions() {
   return (
     <footer className="flex items-center justify-center p-1 md:p-2 bg-gray-800/50 backdrop-blur-sm border-t border-gray-700 flex-shrink-0">
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto gap-1">
-            <TimeOutButton teamId="A" />
+            <div className="flex-1 flex justify-start">
+              <TimeOutButton teamId="A" />
+            </div>
             
             <div className="flex items-center justify-center gap-1 md:gap-2 bg-gray-900/70 p-1 md:p-2 rounded-lg md:rounded-xl shadow-lg">
                 <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} aria-label="Disminuir período" className="text-white h-8 w-8 hover:bg-gray-600/50 hover:text-white"><Minus className="h-4 w-4" /></Button>
@@ -77,8 +79,10 @@ export function TacticalActions() {
                     Guardar
                 </Button>
             </div>
-
-            <TimeOutButton teamId="B" />
+            
+            <div className="flex-1 flex justify-end">
+              <TimeOutButton teamId="B" />
+            </div>
         </div>
     </footer>
   );
