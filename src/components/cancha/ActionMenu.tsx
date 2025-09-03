@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import * as React from "react";
@@ -25,7 +26,7 @@ const actionButtons: { type: GameEventType; label: string; icon: React.ReactNode
 ];
 
 export function ActionMenu({ player, onAction }: ActionMenuProps) {
-  const { dispatch } = useGame();
+  const { state, dispatch } = useGame();
 
   const handleActionClick = (type: GameEventType) => {
     if (type === 'SUBSTITUTION') {

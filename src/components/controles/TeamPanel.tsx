@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -30,6 +31,20 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
 
   const handlePlayerSelect = (playerId: number) => {
     const payload: SelectedPlayer = { teamId, playerId };
+
+    // If we are in substitution mode, selecting a player here completes the sub.
+    if (substitutionState) {
+        // We can only select players from the same team as the one being subbed out.
+        if (teamId === substitutionState.playerOut.teamId) {
+            // And the player must not be the same one being subbed out.
+            if (playerId !== substitutionState.playerOut.playerId) {
+                 dispatch({ type: 'SELECT_PLAYER', payload });
+            }
+        }
+        return; // Do nothing if trying to select from the wrong team.
+    }
+
+    // Standard player selection logic for other modes.
     if (status === 'SELECTING_STARTERS') {
       dispatch({ type: 'TOGGLE_ACTIVE_PLAYER', payload });
     } else {
@@ -87,10 +102,6 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
                   // On the other team, all players are disabled.
                   isDisabled = true;
               }
-          } else if (!isSelectionMode) {
-              // Outside of selection modes, only active players can be selected for events
-              // unless it's for a card
-              // This part is tricky, let's allow selection and handle logic in EventButtons
           }
           
           const variant = getPlayerVariant(player.id, isSelected);
