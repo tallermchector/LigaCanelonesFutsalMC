@@ -14,31 +14,31 @@ datasource db {
 }
 
 model Team {
-  id      Int      @id @default(autoincrement())
-  name    String
-  slug    String   @unique
-  logoUrl String?
-  players Player[]
-  teamA   Match[]  @relation("TeamA")
-  teamB   Match[]  @relation("TeamB")
+  id        Int          @id @default(autoincrement())
+  name      String
+  slug      String       @unique
+  logoUrl   String?
+  players   Player[]
+  teamA     Match[]      @relation("TeamA")
+  teamB     Match[]      @relation("TeamB")
   // Temporada
-  seasons SeasonTeam[]
+  seasons   SeasonTeam[]
   GameEvent GameEvent[]
 }
 
 model Player {
-  id                  Int                @id @default(autoincrement())
-  name                String
-  number              Int
-  position            String?
-  birthDate           DateTime?
-  height              Int? // en cm
-  weight              Int? // en kg
-  nationality         String?
-  teamId              Int
-  team                Team               @relation(fields: [teamId], references: [id])
-  gameEvents          GameEvent[]
-  playerMatchStats    PlayerMatchStats[]
+  id               Int                @id @default(autoincrement())
+  name             String
+  number           Int
+  position         String?
+  birthDate        DateTime?
+  height           Int? // en cm
+  weight           Int? // en kg
+  nationality      String?
+  teamId           Int
+  team             Team               @relation(fields: [teamId], references: [id])
+  gameEvents       GameEvent[]
+  playerMatchStats PlayerMatchStats[]
 
   @@index([teamId])
 }
@@ -71,7 +71,7 @@ model Match {
 }
 
 model GameEvent {
-  id           String    @id @default(cuid())
+  id           String  @id @default(cuid())
   matchId      Int
   type         String
   timestamp    Int
@@ -105,11 +105,11 @@ model Season {
 }
 
 model SeasonTeam {
-  seasonId  Int
-  teamId    Int
-  position  Int
-  season    Season @relation(fields: [seasonId], references: [id])
-  team      Team   @relation(fields: [teamId], references: [id])
+  seasonId Int
+  teamId   Int
+  position Int
+  season   Season @relation(fields: [seasonId], references: [id])
+  team     Team   @relation(fields: [teamId], references: [id])
 
   @@id([seasonId, teamId])
 }
