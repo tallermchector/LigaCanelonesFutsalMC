@@ -13,7 +13,7 @@ import type { FullMatch, MatchStatus } from '@/types';
 export default function ControlesPage() {
   const [matches, setMatches] = useState<FullMatch[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<MatchStatus | 'ALL'>('LIVE');
+  const [activeTab, setActiveTab] = useState<MatchStatus | 'ALL'>('SCHEDULED');
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -51,7 +51,7 @@ export default function ControlesPage() {
             Control de Partidos
             </h1>
             <Tabs
-            defaultValue="LIVE"
+            value={activeTab}
             onValueChange={(value) => setActiveTab(value as MatchStatus)}
             aria-label="Filtrar partidos por estado"
             className="w-full sm:w-auto"

@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
-import { Calendar, Clock, Edit, BarChart2, Users, CheckCircle } from 'lucide-react';
+import { Calendar, Clock, Edit, BarChart2, Users, CheckCircle, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { updateMatchStatus } from '@/actions/prisma-actions';
@@ -28,7 +28,7 @@ const statusTextMap: Record<FullMatch['status'], string> = {
     SCHEDULED: 'Programado',
     LIVE: 'En Vivo',
     FINISHED: 'Finalizado',
-    SELECTING_STARTERS: 'Seleccionando Titulares'
+    SELECTING_STARTERS: 'Def. Titulares'
 };
 
 export function ControlMatchCard({ match }: ControlMatchCardProps) {
@@ -74,15 +74,15 @@ export function ControlMatchCard({ match }: ControlMatchCardProps) {
         return (
           <>
             <Button variant="outline" size="sm" asChild className={commonButtonClass}>
-              <Link href={`/cancha/${match.id}`}>
+               <Link href={`/controles/${match.id}`}>
                 <Users className="mr-2 h-4 w-4" />
-                Pizarra Táctica
+                Definir Titulares
               </Link>
             </Button>
             <Button variant="accent" size="sm" asChild className={commonButtonClass}>
-              <Link href={`/controles/${match.id}`}>
-                <Edit className="mr-2 h-4 w-4" />
-                Controlar
+              <Link href={`/cancha/${match.id}`}>
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                Pizarra Táctica
               </Link>
             </Button>
           </>
@@ -90,6 +90,12 @@ export function ControlMatchCard({ match }: ControlMatchCardProps) {
       case 'LIVE':
         return (
           <>
+             <Button variant="outline" size="sm" asChild className={commonButtonClass}>
+              <Link href={`/cancha/${match.id}`}>
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                Pizarra Táctica
+              </Link>
+            </Button>
             <Button variant="outline" size="sm" onClick={handleFinishMatch}>
                 <CheckCircle className="mr-2 h-4 w-4" />
                 Finalizar Partido
