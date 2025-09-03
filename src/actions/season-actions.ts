@@ -4,6 +4,7 @@
 import prisma from '@/lib/prisma';
 import type { Season, SeasonTeam, Team } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
+import { getAllTeams as getAllTeamsFromSource } from './team-actions';
 
 // Definimos un tipo más específico para el resultado que esperamos
 type StandingWithTeam = SeasonTeam & { team: Team };
@@ -72,17 +73,7 @@ export async function createSeason(name: string, year: number): Promise<Season> 
 
 // Reutilizamos la función que ya existe en team-actions.ts para no duplicar código
 export async function getAllTeams(): Promise<Team[]> {
-    try {
-        const teams = await prisma.team.findMany({
-            orderBy: {
-                name: 'asc',
-            },
-        });
-        return teams as Team[];
-    } catch (error) {
-        console.error('Error al obtener los equipos:', error);
-        return [];
-    }
+    return getAllTeamsFromSource();
 }
 
 export async function addTeamToSeason(seasonId: number, teamId: number): Promise<SeasonTeam> {
