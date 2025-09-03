@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { TacticalBoard } from '@/components/cancha/TacticalBoard';
 import { GameProvider } from '@/contexts/GameProvider';
 import { TacticalHeader } from '@/components/cancha/TacticalHeader';
-import { ActionsToolbar } from '@/components/cancha/ActionsToolbar';
+import { TacticalActions } from '@/components/cancha/TacticalActions';
 
 
 function TacticalBoardSkeleton() {
@@ -83,7 +83,7 @@ export default function TacticalBoardPage() {
                 <main className="flex-grow relative">
                      <TacticalBoard match={match} />
                 </main>
-                <ActionsToolbar />
+                <TacticalActions />
             </div>
         </GameProvider>
     );
