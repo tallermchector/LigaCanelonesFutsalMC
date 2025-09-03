@@ -1,9 +1,8 @@
-
-
 'use server';
 
 import prisma from '@/lib/prisma';
 import type { FullMatch, GameEventType, Team } from '@/types';
+import { Prisma } from '@prisma/client';
 
 /**
  * Obtiene una lista de todos los equipos de la base de datos.
@@ -26,8 +25,28 @@ export async function getAllTeams(): Promise<Team[]> {
     }
 }
 
+/**
+ * Type definition for a Team object extended with its associated matches.
+ * This is used specifically for the return type of getTeamBySlug.
+ */
+type TeamWithMatches = Team & {
+    matches: FullMatch[];
+};
 
-export async function getTeamBySlug(slug: string): Promise<Team | null> {
+/**
+ * Type definition for a Match object from Prisma, including all specified relations.
+ * This helps TypeScript correctly infer types within the `matches.map` function.
+ */
+type MatchWithAllIncludes = Prisma.MatchGetPayload<{
+    include: {
+        teamA: { include: { players: true } };
+        teamB: { include: { players: true } };
+        events: true;
+        playerMatchStats: true;
+    };
+}>;
+
+export async function getTeamBySlug(slug: string): Promise<TeamWithMatches | null> {
     try {
         const team = await prisma.team.findUnique({
             where: { slug },
@@ -35,10 +54,10 @@ export async function getTeamBySlug(slug: string): Promise<Team | null> {
                 players: true,
             }
         });
-        
+
         if (!team) return null;
 
-        const matches = await prisma.match.findMany({
+        const matches: MatchWithAllIncludes[] = await prisma.match.findMany({
             where: {
                 OR: [
                     { teamAId: team.id },
@@ -55,16 +74,18 @@ export async function getTeamBySlug(slug: string): Promise<Team | null> {
                 scheduledTime: 'asc'
             }
         });
-        
-        const fullMatches: FullMatch[] = matches.map(match => ({
+
+        const fullMatches: FullMatch[] = matches.map((match): FullMatch => ({
             ...match,
             scheduledTime: match.scheduledTime.toISOString(),
             status: match.status as FullMatch['status'],
-            events: match.events.map((e) => ({ ...e, type: e.type as GameEventType })),
-        }) as unknown as FullMatch);
+            events: match.events.map((event) => ({
+                ...event,
+                type: event.type as GameEventType,
+            })),
+        }));
 
-
-        return { ...team, matches: fullMatches } as Team;
+        return { ...team, matches: fullMatches } as TeamWithMatches;
 
     } catch (error) {
         console.error(`Error al obtener el equipo por slug: ${slug}`, error);
