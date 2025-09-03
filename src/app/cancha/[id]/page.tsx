@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -98,12 +99,11 @@ export default function TacticalBoardPage() {
             createGameEvent={createGameEvent}
         >
             <DndProvider backend={HTML5Backend}>
-                <div className="h-dvh w-screen flex flex-col bg-gray-900 text-white overflow-hidden">
-                    <div className="flex-shrink-0">
+                <div className="relative h-dvh w-screen bg-gray-900 text-white overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 z-20">
                         <TacticalHeader match={match} />
                     </div>
-                     <main className="flex-grow flex items-center justify-center p-2 relative overflow-hidden">
-                        
+                     <main className="w-full h-full flex items-center justify-center p-2 overflow-hidden">
                         <div className="w-full h-full flex items-center justify-center">
                             <TacticalBoard match={match} />
                         </div>
@@ -112,7 +112,7 @@ export default function TacticalBoardPage() {
                         {visiblePanel && (
                             <motion.div
                                 className={cn(
-                                    "absolute top-0 bottom-0 z-20 w-72 h-full p-2",
+                                    "absolute top-0 bottom-0 z-30 w-72 h-full p-2",
                                     visiblePanel === 'A' ? 'left-0' : 'right-0'
                                 )}
                                 initial={{ x: visiblePanel === 'A' ? '-100%' : '100%', opacity: 0 }}
@@ -125,7 +125,7 @@ export default function TacticalBoardPage() {
                         )}
                         </AnimatePresence>
                     </main>
-                    <div className="flex-shrink-0">
+                    <div className="absolute bottom-0 left-0 right-0 z-20">
                       <TacticalActions onTogglePanel={handleTogglePanel} visiblePanel={visiblePanel} />
                     </div>
                 </div>
