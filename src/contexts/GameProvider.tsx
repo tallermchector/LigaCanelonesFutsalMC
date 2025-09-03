@@ -398,16 +398,39 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
     dispatch({ type: 'LOAD_MATCH', payload: { match, state: getInitialState() } });
   }, [match, getInitialState]);
   
-  React.useEffect(() => {
-    if (state.matchId && typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(`futsal-match-state-${state.matchId}`, JSON.stringify(state));
-        
-      } catch (error) {
-        console.error("Failed to save state to localStorage", error);
-      }
+  const handleSaveChanges = React.useCallback(async (currentState: GameState) => {
+    if (!currentState.matchId) {
+        console.error("No match ID, cannot save state.");
+        return;
     }
-  }, [state]);
+    try {
+        const stateWithUpdatedTime = updatePlayerTimeReducer(currentState);
+        await saveMatchState(currentState.matchId, stateWithUpdatedTime);
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Error de Sincronización",
+            description: "No se pudo guardar el estado del partido en la base de datos.",
+        });
+        console.error("Failed to save match state:", error);
+    }
+  }, [toast, saveMatchState]);
+
+
+  React.useEffect(() => {
+    // Debounce state saving to avoid spamming the database
+    const handler = setTimeout(() => {
+        // Only save if the match is live or has started
+        if (state.matchId && (state.status === 'LIVE' || state.status === 'FINISHED')) {
+            handleSaveChanges(state);
+        }
+    }, 1000); // Save state 1 second after the last change
+
+    return () => {
+        clearTimeout(handler);
+    };
+  }, [state, handleSaveChanges]);
+
 
   React.useEffect(() => {
     if(state.events.length > 0) {
@@ -434,8 +457,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
       }
     };
   }, [state.isRunning, state.time]);
-
-  const handleSaveChanges = React.useCallback(async () => {
+  
+  const handleSaveAndExit = React.useCallback(async () => {
     if (!state.matchId) {
       toast({
         variant: "destructive",
@@ -445,24 +468,19 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
       return;
     }
     try {
-      const stateWithUpdatedTime = updatePlayerTimeReducer(state);
-      await saveMatchState(state.matchId, stateWithUpdatedTime);
+      await handleSaveChanges(state);
       toast({
         title: "Éxito",
         description: "El estado del partido ha sido guardado correctamente.",
       });
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error al Guardar",
-        description: "No se pudo guardar el estado del partido en la base de datos.",
-      });
-      console.error("Failed to save match state:", error);
+       console.error("Error on explicit save:", error);
     }
-  }, [state, toast, saveMatchState]);
+  }, [state, toast, handleSaveChanges]);
+
 
   return (
-    <GameContext.Provider value={{ state, dispatch, handleSaveChanges }}>
+    <GameContext.Provider value={{ state, dispatch, handleSaveChanges: handleSaveAndExit }}>
       {children}
     </GameContext.Provider>
   );
