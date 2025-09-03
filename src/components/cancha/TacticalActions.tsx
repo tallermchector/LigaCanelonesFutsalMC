@@ -41,10 +41,10 @@ export function TacticalActions() {
           onClick={() => handleTimeout(teamId)}
         >
             <Timer className="mr-1 md:mr-2 h-4 w-4" /> 
-            <span className="hidden sm:inline">{team.name.substring(0,3)}</span>
+            <span className="hidden sm:inline whitespace-nowrap">{team.name.substring(0,3)}.</span>
             <span className="sm:hidden">T.M.</span>
-            <span className="hidden sm:inline ml-1">T. Muerto</span>
-             ({timeouts})
+            <span className="hidden sm:inline ml-1 whitespace-nowrap">T. Muerto</span>
+            <span className="ml-1">({timeouts})</span>
         </Button>
     )
   }
@@ -60,7 +60,7 @@ export function TacticalActions() {
                 <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} aria-label="Disminuir período" className="text-white h-8 w-8 hover:bg-gray-600/50 hover:text-white"><Minus className="h-4 w-4" /></Button>
                 <div className="flex items-center gap-1 md:gap-2 text-white text-xs md:text-base">
                     <Flag className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
-                    <span className="font-semibold">P: {state.period}</span>
+                    <span className="font-semibold whitespace-nowrap">P: {state.period}</span>
                 </div>
                 <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} aria-label="Aumentar período" className="text-white h-8 w-8 hover:bg-gray-600/50 hover:text-white"><Plus className="h-4 w-4" /></Button>
                 
