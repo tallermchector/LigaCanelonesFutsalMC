@@ -5,7 +5,6 @@ import { useGame } from '@/contexts/GameProvider';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer, Users, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { saveMatchState } from '@/actions/prisma-actions';
 import { useRouter } from 'next/navigation';
 
 
@@ -16,7 +15,7 @@ const formatTime = (seconds: number) => {
 };
 
 export function TacticalActions() {
-  const { state, dispatch } = useGame();
+  const { state, dispatch, handleSaveChanges } = useGame();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -29,21 +28,9 @@ export function TacticalActions() {
       dispatch({ type: 'ADD_EVENT', payload: { type: 'TIMEOUT', teamId }})
   }
   
-  const handleSave = async () => {
-    try {
-        await saveMatchState(state);
-        toast({
-            title: 'Éxito',
-            description: 'El estado del partido ha sido guardado.',
-        });
-        router.push('/cancha');
-    } catch (error) {
-        toast({
-            variant: 'destructive',
-            title: 'Error al Guardar',
-            description: 'No se pudo guardar el estado del partido en la base de datos.',
-        });
-    }
+  const handleSaveAndExit = async () => {
+    await handleSaveChanges();
+    router.push('/cancha');
   }
 
   return (
@@ -71,7 +58,7 @@ export function TacticalActions() {
                     <RotateCcw className="mr-2 h-5 w-5"/>
                     Reiniciar
                 </Button>
-                 <Button variant="destructive" onClick={handleSave} size="sm">
+                 <Button variant="destructive" onClick={handleSaveAndExit} size="sm">
                     <Save className="mr-2 h-4 w-4" />
                     Guardar
                 </Button>

@@ -6,7 +6,6 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer, Users, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { saveMatchState } from '@/actions/prisma-actions';
 import { useRouter } from 'next/navigation';
 
 
@@ -17,7 +16,7 @@ const formatTime = (seconds: number) => {
 };
 
 export function ControlsPanel() {
-  const { state, dispatch } = useGame();
+  const { state, dispatch, handleSaveChanges } = useGame();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -46,21 +45,9 @@ export function ControlsPanel() {
       dispatch({ type: 'SET_STATUS', payload: 'SCHEDULED' });
   }
   
-  const handleSave = async () => {
-    try {
-        await saveMatchState(state);
-        toast({
-            title: 'Éxito',
-            description: 'El estado del partido ha sido guardado.',
-        });
-        router.push('/controles');
-    } catch (error) {
-        toast({
-            variant: 'destructive',
-            title: 'Error al Guardar',
-            description: 'No se pudo guardar el estado del partido en la base de datos.',
-        });
-    }
+  const handleSaveAndExit = async () => {
+    await handleSaveChanges();
+    router.push('/controles');
   }
   
   const isStarterSelectionMode = state.status === 'SELECTING_STARTERS';
@@ -132,7 +119,7 @@ export function ControlsPanel() {
                     <Users className="mr-2 h-4 w-4" />
                     Definir Titulares
                 </Button>
-                <Button variant="destructive" onClick={handleSave}>
+                <Button variant="destructive" onClick={handleSaveAndExit}>
                     <Save className="mr-2 h-4 w-4" />
                     Guardar y Salir
                 </Button>

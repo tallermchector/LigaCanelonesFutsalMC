@@ -2,7 +2,10 @@
 'use client';
 
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition } from '@/types';
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, ReactNode, useCallback } from 'react';
+import { createGameEvent, saveMatchState } from '@/actions/prisma-actions';
+import { useToast } from '@/hooks/use-toast';
+
 
 type GameAction =
   | { type: 'LOAD_MATCH'; payload: { match: FullMatch; state: GameState | null } }
@@ -20,6 +23,7 @@ type GameAction =
   | { type: 'CANCEL_SUBSTITUTION' }
   | { type: 'TOGGLE_ACTIVE_PLAYER'; payload: { teamId: 'A' | 'B'; playerId: number } }
   | { type: 'SET_INITIAL_POSITIONS' }
+  | { type: 'SAVE_FULL_STATE'; }
   | { type: 'UPDATE_PLAYER_POSITION'; payload: { playerId: number; position: PlayerPosition } };
 
 const initialState: GameState = {
@@ -260,14 +264,26 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
             },
         };
     }
+    case 'SAVE_FULL_STATE': {
+      // This action does not modify the state directly.
+      // It's a signal to trigger the save operation in the provider.
+      return state;
+    }
     default:
       return state;
   }
 };
 
-const GameContext = createContext<{ state: GameState; dispatch: React.Dispatch<GameAction> } | undefined>(undefined);
+const GameContext = createContext<{ 
+    state: GameState; 
+    dispatch: React.Dispatch<GameAction>;
+    handleSaveChanges: () => Promise<void>;
+} | undefined>(undefined);
 
 export const GameProvider = ({ children, match }: { children: ReactNode, match: FullMatch }) => {
+  const [state, dispatch] = useReducer(gameReducer, initialState);
+  const { toast } = useToast();
+
   const getInitialState = () => {
     try {
       if (typeof window !== 'undefined') {
@@ -288,13 +304,12 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
     return null;
   };
 
-  const [state, dispatch] = useReducer(gameReducer, initialState);
-
   useEffect(() => {
     dispatch({ type: 'LOAD_MATCH', payload: { match, state: getInitialState() } });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [match.id]);
   
+  // Persist state to localStorage on every change
   useEffect(() => {
     if (state.matchId && typeof window !== 'undefined') {
       try {
@@ -305,6 +320,17 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
     }
   }, [state]);
 
+  // Persist event to DB on change
+  useEffect(() => {
+    if(state.events.length > 0) {
+      const lastEvent = state.events[state.events.length -1];
+      if (state.matchId) {
+        createGameEvent(state.matchId, lastEvent);
+      }
+    }
+  }, [state.events, state.matchId]);
+
+  // Timer logic
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
     if (state.isRunning && state.time > 0) {
@@ -319,8 +345,33 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
     };
   }, [state.isRunning, state.time]);
 
+  const handleSaveChanges = useCallback(async () => {
+    if (!state.matchId) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se puede guardar un partido sin ID.",
+      });
+      return;
+    }
+    try {
+      await saveMatchState(state.matchId, state);
+      toast({
+        title: "Éxito",
+        description: "El estado del partido ha sido guardado correctamente.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error al Guardar",
+        description: "No se pudo guardar el estado del partido en la base de datos.",
+      });
+      console.error("Failed to save match state:", error);
+    }
+  }, [state, toast]);
+
   return (
-    <GameContext.Provider value={{ state, dispatch }}>
+    <GameContext.Provider value={{ state, dispatch, handleSaveChanges }}>
       {children}
     </GameContext.Provider>
   );

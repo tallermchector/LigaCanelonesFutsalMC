@@ -5,17 +5,17 @@ import prisma from '@/lib/prisma';
 import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, Team, Player, GameEventType } from '@/types';
 import { revalidatePath } from 'next/cache';
 
-export async function saveMatchState(state: GameState): Promise<void> {
-  if (!state.matchId || !state.teamA || !state.teamB) {
+export async function saveMatchState(matchId: string, state: GameState): Promise<void> {
+  if (!state.teamA || !state.teamB) {
     throw new Error('Invalid match state provided.');
   }
 
-  const { matchId, status, teamA, teamB, scoreA, scoreB, foulsA, foulsB, timeoutsA, timeoutsB, period, time, isRunning, events, activePlayersA, activePlayersB } = state;
+  const { status, scoreA, scoreB, foulsA, foulsB, timeoutsA, timeoutsB, period, time, isRunning, activePlayersA, activePlayersB } = state;
 
   try {
-    await prisma.match.upsert({
+    await prisma.match.update({
       where: { id: matchId },
-      update: {
+      data: {
         status: status,
         scoreA,
         scoreB,
@@ -28,60 +28,42 @@ export async function saveMatchState(state: GameState): Promise<void> {
         isRunning,
         activePlayersA,
         activePlayersB,
-        events: {
-          deleteMany: {}, // Clear existing events
-          create: events.map(event => ({
-            id: event.id,
-            type: event.type,
-            teamId: event.teamId,
-            playerId: event.playerId,
-            playerName: event.playerName,
-            playerInId: event.playerInId,
-            playerInName: event.playerInName,
-            teamName: event.teamName,
-            timestamp: event.timestamp,
-          })),
-        },
-      },
-      create: {
-        id: matchId,
-        scheduledTime: new Date(),
-        status: status,
-        teamAId: teamA.id,
-        teamBId: teamB.id,
-        scoreA,
-        scoreB,
-        foulsA,
-        foulsB,
-        timeoutsA,
-        timeoutsB,
-        period,
-        time,
-        isRunning,
-        activePlayersA,
-        activePlayersB,
-        round: 1, // Add a default round or get it from somewhere
-        events: {
-          create: events.map(event => ({
-            id: event.id,
-            type: event.type,
-            teamId: event.teamId,
-            playerId: event.playerId,
-            playerName: event.playerName,
-            playerInId: event.playerInId,
-            playerInName: event.playerInName,
-            teamName: event.teamName,
-            timestamp: event.timestamp,
-          })),
-        },
       },
     });
     console.log(`Match ${matchId} state saved successfully.`);
+    revalidatePath(`/controles/${matchId}`);
+    revalidatePath('/controles');
   } catch (error) {
     console.error(`Failed to save match state for ${matchId}:`, error);
     throw new Error('Database operation failed.');
   }
 }
+
+export async function createGameEvent(matchId: string, event: GameEvent): Promise<void> {
+    try {
+        await prisma.gameEvent.create({
+            data: {
+                matchId: matchId,
+                id: event.id,
+                type: event.type,
+                teamId: event.teamId,
+                playerId: event.playerId,
+                playerName: event.playerName,
+                playerInId: event.playerInId,
+                playerInName: event.playerInName,
+                teamName: event.teamName,
+                timestamp: event.timestamp,
+            },
+        });
+        console.log(`Event ${event.type} for match ${matchId} created successfully.`);
+        revalidatePath(`/partidos/${matchId}/estadisticas`);
+    } catch(error) {
+        console.error(`Failed to create event for match ${matchId}:`, error);
+        // We don't throw here, as it might interrupt the game flow on the client.
+        // Logging is sufficient for background persistence.
+    }
+}
+
 
 export async function getMatchByIdFromDb(id: string): Promise<FullMatch | undefined> {
     try {
@@ -230,6 +212,7 @@ export async function updateMatchStatus(matchId: string, status: MatchStatus): P
             data: { status },
         });
         revalidatePath('/gestion');
+        revalidatePath(`/controles/${matchId}`);
     } catch (error) {
         console.error(`Failed to update match ${matchId} status:`, error);
         throw new Error("Could not update match status.");
