@@ -62,7 +62,7 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
   return (
     <div
       ref={dropRef}
-      className="relative w-full max-w-full aspect-[16/9] bg-contain bg-center bg-no-repeat"
+      className="relative w-full h-full max-w-4xl bg-contain bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/cancha-futbol.png')" }}
     >
         {allActivePlayers.map(playerId => {
