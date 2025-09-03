@@ -16,7 +16,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <motion.main 
-        className="flex-1 pt-[var(--header-height)]"
+        className="flex-1"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
