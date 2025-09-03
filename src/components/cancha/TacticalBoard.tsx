@@ -60,38 +60,35 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
   const allActivePlayers = [...state.activePlayersA, ...state.activePlayersB];
 
   return (
-    <div ref={dropRef} className="relative h-full w-full">
-        <div
-            className="absolute inset-0 bg-contain bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('/cancha-futbol.png')" }}
-        ></div>
-        
-        <div className="relative h-full w-full">
-            {allActivePlayers.map(playerId => {
-                const player = allPlayers.find(p => p.id === playerId);
-                const position = state.playerPositions[playerId];
+    <div
+      ref={dropRef}
+      className="relative w-full max-w-full aspect-[16/9] bg-contain bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/cancha-futbol.png')" }}
+    >
+        {allActivePlayers.map(playerId => {
+            const player = allPlayers.find(p => p.id === playerId);
+            const position = state.playerPositions[playerId];
 
-                if (!player || !position) return null;
+            if (!player || !position) return null;
 
-                const isTeamA = state.teamA!.players.some(p => p.id === playerId);
+            const isTeamA = state.teamA!.players.some(p => p.id === playerId);
 
-                return (
-                    <DraggablePlayer
-                        key={player.id}
-                        player={player}
-                        x={position.x}
-                        y={position.y}
-                        color={isTeamA ? 'blue' : 'red'}
-                        onMove={(x, y) => {
-                            dispatch({
-                                type: 'UPDATE_PLAYER_POSITION',
-                                payload: { playerId: player.id, position: { x, y } }
-                            });
-                        }}
-                    />
-                );
-            })}
-        </div>
+            return (
+                <DraggablePlayer
+                    key={player.id}
+                    player={player}
+                    x={position.x}
+                    y={position.y}
+                    color={isTeamA ? 'blue' : 'red'}
+                    onMove={(x, y) => {
+                        dispatch({
+                            type: 'UPDATE_PLAYER_POSITION',
+                            payload: { playerId: player.id, position: { x, y } }
+                        });
+                    }}
+                />
+            );
+        })}
     </div>
   );
 }

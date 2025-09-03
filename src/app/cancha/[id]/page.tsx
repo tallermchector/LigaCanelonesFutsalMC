@@ -89,11 +89,11 @@ export default function TacticalBoardPage() {
     return (
         <GameProvider match={match}>
             <DndProvider backend={HTML5Backend}>
-                <div className="h-dvh w-screen flex flex-col bg-gray-900 text-white">
+                <div className="h-dvh w-screen flex flex-col bg-gray-900 text-white overflow-hidden">
                     <TacticalHeader match={match} />
-                    <main className="flex-grow flex p-2 gap-2 overflow-hidden relative">
+                    <main className="flex-grow flex items-center justify-center p-2 gap-2 overflow-hidden relative">
                          {/* Main Content: Board */}
-                        <div className="flex-grow flex flex-col h-full w-full relative p-4">
+                        <div className="flex-grow flex flex-col items-center justify-center h-full w-full relative p-2 sm:p-4">
                             <TacticalBoard match={match} />
                         </div>
                         
