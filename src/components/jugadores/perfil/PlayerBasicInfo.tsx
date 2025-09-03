@@ -1,17 +1,32 @@
 
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-const StatRow = ({ label, value, unit }: { label: string; value: string | number; unit?: string }) => (
-    <div className="flex items-baseline justify-between px-6 py-4">
-        <p className="text-sm font-semibold text-muted-foreground">{label}</p>
-        <p className="text-3xl font-bold text-red-500">
-            {value} <span className="text-lg text-muted-foreground">{unit}</span>
-        </p>
-    </div>
-);
+import type { Player } from '@/types';
+import { calculateAge } from '@/lib/utils';
 
 
-export function PlayerBasicInfo() {
+interface PlayerBasicInfoProps {
+    player: Player;
+}
+
+const StatRow = ({ label, value, unit }: { label: string; value: string | number; unit?: string }) => {
+    if (value === null || value === undefined) {
+        return null;
+    }
+    return (
+        <div className="flex items-baseline justify-between px-6 py-4">
+            <p className="text-sm font-semibold text-muted-foreground">{label}</p>
+            <p className="text-3xl font-bold text-red-500">
+                {value} <span className="text-lg text-muted-foreground">{unit}</span>
+            </p>
+        </div>
+    );
+}
+
+export function PlayerBasicInfo({ player }: PlayerBasicInfoProps) {
+    const age = player.birthDate ? calculateAge(new Date(player.birthDate)) : null;
+
     return (
         <Card>
             <CardHeader>
@@ -20,9 +35,9 @@ export function PlayerBasicInfo() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-0 divide-y">
-                <StatRow label="EDAD:" value={28} />
-                <StatRow label="ALTURA:" value={190} unit="CM" />
-                <StatRow label="PESO:" value={88} unit="KG" />
+                {age && <StatRow label="EDAD:" value={age} />}
+                {player.height && <StatRow label="ALTURA:" value={player.height} unit="CM" />}
+                {player.weight && <StatRow label="PESO:" value={player.weight} unit="KG" />}
             </CardContent>
         </Card>
     )

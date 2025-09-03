@@ -55,13 +55,13 @@ export function PlayerHero({ player }: PlayerHeroProps) {
 
                 <div className="mt-4 flex justify-between items-center">
                     <p className="font-semibold">{player.position}</p>
-                    <div className="flex items-center gap-2">
-                        {/* Placeholder for flag */}
-                        <div className="w-6 h-4 bg-yellow-400 rounded-sm">
-                             <div className="h-1/2 bg-red-600 rounded-t-sm"></div>
+                     {player.nationality && (
+                        <div className="flex items-center gap-2">
+                            {/* Placeholder for flag */}
+                            <div className="w-6 h-4 bg-gray-300 rounded-sm" title={`Bandera de ${player.nationality}`} />
+                            <span className="font-semibold">{player.nationality}</span>
                         </div>
-                        <span className="font-semibold">España</span>
-                    </div>
+                     )}
                 </div>
             </div>
         </header>
