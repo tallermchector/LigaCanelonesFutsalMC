@@ -1,5 +1,7 @@
+
 'use client';
 
+import * as React from "react";
 import { Button } from '@/components/ui/button';
 import { useGame } from '@/contexts/GameProvider';
 import type { GameEventType, Player } from '@/types';
