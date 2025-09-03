@@ -42,7 +42,7 @@ export function ControlsPanel() {
           });
           return;
       }
-      dispatch({ type: 'SET_STATUS', payload: 'SCHEDULED' });
+      dispatch({ type: 'SET_STATUS', payload: 'LIVE' });
   }
   
   const handleSaveAndExit = async () => {

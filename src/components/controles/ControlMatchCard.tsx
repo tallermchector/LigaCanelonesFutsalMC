@@ -73,16 +73,10 @@ export function ControlMatchCard({ match }: ControlMatchCardProps) {
       case 'SELECTING_STARTERS':
         return (
           <>
-            <Button variant="outline" size="sm" asChild className={commonButtonClass}>
+            <Button variant="accent" size="sm" asChild className={commonButtonClass}>
                <Link href={`/controles/${match.id}`}>
                 <Users className="mr-2 h-4 w-4" />
                 Definir Titulares
-              </Link>
-            </Button>
-            <Button variant="accent" size="sm" asChild className={commonButtonClass}>
-              <Link href={`/cancha/${match.id}`}>
-                <LayoutDashboard className="mr-2 h-4 w-4" />
-                Pizarra Táctica
               </Link>
             </Button>
           </>
