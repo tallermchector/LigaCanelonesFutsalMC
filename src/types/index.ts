@@ -1,3 +1,4 @@
+
 import type { ElementType } from 'react';
 import type { Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent, PlayerMatchStats as PrismaPlayerMatchStats } from '@prisma/client';
 
@@ -29,7 +30,7 @@ export interface FullMatch extends Omit<PrismaMatch, 'teamAId' | 'teamBId' | 'ev
 }
 
 export type PlayerStat = {
-  player: Player;
+  player: Player & { team: Team };
   count: number;
 };
 
