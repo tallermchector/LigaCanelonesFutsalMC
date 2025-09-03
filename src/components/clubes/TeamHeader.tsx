@@ -1,3 +1,4 @@
+
 'use client';
 import type { Team } from '@/types';
 import Image from 'next/image';
@@ -8,7 +9,7 @@ interface TeamHeaderProps {
 
 export function TeamHeader({ team }: TeamHeaderProps) {
     return (
-        <div className="bg-primary text-primary-foreground py-12">
+        <div className="bg-primary text-primary-foreground pt-12 pb-28">
             <div className="container mx-auto flex items-center gap-6">
                 <Image
                     src={team.logoUrl || '/logofu.svg'}

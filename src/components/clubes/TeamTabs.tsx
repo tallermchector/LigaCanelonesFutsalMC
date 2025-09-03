@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TeamStats } from './TeamStats';
 import { TeamPlayers } from './TeamPlayers';
@@ -11,12 +12,12 @@ interface TeamTabsProps {
 
 export function TeamTabs({ team }: TeamTabsProps) {
     return (
-        <Card className="shadow-lg">
+        <Card className="shadow-lg border-none">
             <Tabs defaultValue="schedule" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-3 bg-muted/60">
                     <TabsTrigger value="stats">Estadísticas</TabsTrigger>
                     <TabsTrigger value="players">Jugadores</TabsTrigger>
-                    <TabsTrigger value="schedule">Horarios</TabsTrigger>
+                    <TabsTrigger value="schedule">Calendario</TabsTrigger>
                 </TabsList>
                 <TabsContent value="stats">
                     <TeamStats team={team} />
