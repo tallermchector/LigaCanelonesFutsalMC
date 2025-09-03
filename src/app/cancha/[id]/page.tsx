@@ -99,11 +99,12 @@ export default function TacticalBoardPage() {
             createGameEvent={createGameEvent}
         >
             <DndProvider backend={HTML5Backend}>
-                <div className="relative h-dvh w-screen bg-gray-900 text-white overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 z-20">
+                <div className="relative h-dvh w-screen bg-gray-900 text-white flex flex-col overflow-hidden">
+                    <header className="flex-shrink-0 z-20">
                         <TacticalHeader match={match} />
-                    </div>
-                     <main className="w-full h-full flex items-center justify-center p-2 overflow-hidden">
+                    </header>
+                    
+                    <main className="flex-1 relative flex items-center justify-center p-2 overflow-hidden">
                         <div className="w-full h-full flex items-center justify-center">
                             <TacticalBoard match={match} />
                         </div>
@@ -125,9 +126,10 @@ export default function TacticalBoardPage() {
                         )}
                         </AnimatePresence>
                     </main>
-                    <div className="absolute bottom-0 left-0 right-0 z-20">
+
+                    <footer className="flex-shrink-0 z-20">
                       <TacticalActions onTogglePanel={handleTogglePanel} visiblePanel={visiblePanel} />
-                    </div>
+                    </footer>
                 </div>
             </DndProvider>
         </GameProvider>
