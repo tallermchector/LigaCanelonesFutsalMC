@@ -16,8 +16,8 @@ interface ActionMenuProps {
 
 const actionButtons: { type: GameEventType; label: string; icon: React.ReactNode; variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "accent" | null | undefined, className?: string }[] = [
   { type: 'GOAL', label: 'Gol', icon: <Goal />, variant: 'accent', className: 'bg-green-600 hover:bg-green-700 text-white' },
-  { type: 'ASSIST', label: 'Asistencia', icon: <Hand />, variant: 'outline', className: 'border-gray-500 text-gray-300 hover:bg-gray-700 hover:text-white' },
-  { type: 'SHOT', label: 'Tiro', icon: <Footprints />, variant: 'outline', className: 'border-gray-500 text-gray-300 hover:bg-gray-700 hover:text-white' },
+  { type: 'ASSIST', label: 'Asistencia', icon: <Hand />, variant: 'outline', className: 'border-gray-500 bg-gray-700 text-gray-200 hover:bg-gray-600 hover:text-white' },
+  { type: 'SHOT', label: 'Tiro', icon: <Footprints />, variant: 'outline', className: 'border-gray-500 bg-gray-700 text-gray-200 hover:bg-gray-600 hover:text-white' },
   { type: 'FOUL', label: 'Falta', icon: <Shield />, variant: 'accent', className: 'bg-orange-500 hover:bg-orange-600 text-white' },
   { type: 'YELLOW_CARD', label: 'Amarilla', icon: <Square />, variant: 'accent', className: 'bg-yellow-400 text-black hover:bg-yellow-500'},
   { type: 'RED_CARD', label: 'Roja', icon: <Square />, variant: 'destructive'},
