@@ -1,7 +1,7 @@
 'use client';
 
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker, PlayerMatchStats } from '@/types';
-import React, { createContext, useContext, useReducer, useEffect, ReactNode, useCallback } from 'react';
+import React, from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 type GameAction =
@@ -187,6 +187,14 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
                 const currentActivePlayers = state[activePlayersKey];
                 const updatedActivePlayers = currentActivePlayers.filter(id => id !== pOut.id).concat(pIn.id);
 
+                // Transfer position
+                const newPlayerPositions = { ...state.playerPositions };
+                const playerOutPosition = newPlayerPositions[pOut.id];
+                if (playerOutPosition) {
+                    newPlayerPositions[pIn.id] = playerOutPosition;
+                    delete newPlayerPositions[pOut.id];
+                }
+
                 return {
                     ...timeStateWithUpdate,
                     playerTimeTracker: newTracker,
@@ -194,6 +202,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
                     selectedPlayer: null,
                     substitutionState: null,
                     [activePlayersKey]: updatedActivePlayers,
+                    playerPositions: newPlayerPositions,
                 };
             }
             return { ...state, substitutionState: null, selectedPlayer: null };
@@ -330,23 +339,23 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
 };
 
 type GameProviderProps = {
-  children: ReactNode;
+  children: React.ReactNode;
   match: FullMatch;
   saveMatchState: (matchId: number, state: GameState) => Promise<void>;
   createGameEvent: (matchId: number, event: Omit<GameEvent, 'id' | 'matchId'>) => Promise<void>;
 }
 
-const GameContext = createContext<{ 
+const GameContext = React.createContext<{ 
     state: GameState; 
     dispatch: React.Dispatch<GameAction>;
     handleSaveChanges: () => Promise<void>;
 } | undefined>(undefined);
 
 export const GameProvider: React.FC<GameProviderProps> = ({ children, match, saveMatchState, createGameEvent }) => {
-  const [state, dispatch] = useReducer(gameReducer, initialState);
+  const [state, dispatch] = React.useReducer(gameReducer, initialState);
   const { toast } = useToast();
 
-  const getInitialState = useCallback(() => {
+  const getInitialState = React.useCallback(() => {
     try {
       if (typeof window !== 'undefined') {
         const savedState = localStorage.getItem(`futsal-match-state-${match.id}`);
@@ -367,11 +376,11 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
     return null;
   }, [match.id, match.activePlayersA, match.activePlayersB]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     dispatch({ type: 'LOAD_MATCH', payload: { match, state: getInitialState() } });
   }, [match, getInitialState]);
   
-  useEffect(() => {
+  React.useEffect(() => {
     if (state.matchId && typeof window !== 'undefined') {
       try {
         localStorage.setItem(`futsal-match-state-${state.matchId}`, JSON.stringify(state));
@@ -381,7 +390,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
     }
   }, [state]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if(state.events.length > 0) {
       const lastEvent = state.events[state.events.length -1];
       if (state.matchId && lastEvent) {
@@ -393,7 +402,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.events]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
     if (state.isRunning && state.time > 0) {
       timer = setInterval(() => {
@@ -407,7 +416,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
     };
   }, [state.isRunning, state.time]);
 
-  const handleSaveChanges = useCallback(async () => {
+  const handleSaveChanges = React.useCallback(async () => {
     if (!state.matchId) {
       toast({
         variant: "destructive",
@@ -441,7 +450,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
 };
 
 export const useGame = () => {
-  const context = useContext(GameContext);
+  const context = React.useContext(GameContext);
   if (context === undefined) {
     throw new Error('useGame must be used within a GameProvider');
   }
