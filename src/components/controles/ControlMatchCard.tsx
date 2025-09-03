@@ -70,11 +70,14 @@ export function ControlMatchCard({ match }: ControlMatchCardProps) {
     const commonButtonClass = "w-full sm:w-auto";
     switch (match.status) {
       case 'SCHEDULED':
+      case 'SELECTING_STARTERS':
         return (
           <>
-            <Button variant="outline" size="sm" className={commonButtonClass} disabled>
-              <Users className="mr-2 h-4 w-4" />
-              Convocar
+            <Button variant="outline" size="sm" asChild className={commonButtonClass}>
+              <Link href={`/cancha/${match.id}`}>
+                <Users className="mr-2 h-4 w-4" />
+                Pizarra Táctica
+              </Link>
             </Button>
             <Button variant="accent" size="sm" asChild className={commonButtonClass}>
               <Link href={`/controles/${match.id}`}>

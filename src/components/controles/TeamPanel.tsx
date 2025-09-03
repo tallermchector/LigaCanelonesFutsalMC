@@ -68,9 +68,10 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
 
   const renderPlayerButtons = (playersToRender: typeof playersWithStatus) => {
       return playersToRender.map((player) => {
-          const isSelected = !!selectedPlayer &&
+          const isSelected = (!!selectedPlayer &&
                                 selectedPlayer.teamId === teamId &&
-                                selectedPlayer.playerId === player.id;
+                                selectedPlayer.playerId === player.id) ||
+                                (isSelectionMode && activePlayers.includes(player.id));
           
           let isDisabled = false;
           // When in substitution mode...

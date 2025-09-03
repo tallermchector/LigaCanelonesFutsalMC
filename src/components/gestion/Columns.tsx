@@ -46,9 +46,15 @@ export const columns: ColumnDef<FullMatch>[] = [
     ),
     cell: ({ row }) => {
       const status = row.getValue("status") as FullMatch['status'];
+      const statusTextMap: Record<FullMatch['status'], string> = {
+          SCHEDULED: 'Programado',
+          LIVE: 'En Vivo',
+          FINISHED: 'Finalizado',
+          SELECTING_STARTERS: 'Def. Titulares'
+      };
       return (
         <Badge variant={statusVariantMap[status]}>
-            {status}
+            {statusTextMap[status]}
         </Badge>
       )
     },

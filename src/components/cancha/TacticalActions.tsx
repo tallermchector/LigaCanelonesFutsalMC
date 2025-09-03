@@ -25,7 +25,7 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
     
   const handleSaveAndExit = async () => {
     await handleSaveChanges();
-    router.push('/controles');
+    router.push('/cancha');
   }
 
   return (

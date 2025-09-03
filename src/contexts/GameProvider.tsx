@@ -60,6 +60,8 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         scoreA: action.payload.match.scoreA,
         scoreB: action.payload.match.scoreB,
         events: action.payload.match.events || [],
+        activePlayersA: action.payload.match.activePlayersA || [],
+        activePlayersB: action.payload.match.activePlayersB || [],
         substitutionState: null,
         playerPositions: {},
       };
@@ -293,8 +295,8 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
         if (parsedState) {
           // Ensure new state fields are initialized
           parsedState.substitutionState = null;
-          if (!parsedState.activePlayersA) parsedState.activePlayersA = [];
-          if (!parsedState.activePlayersB) parsedState.activePlayersB = [];
+          if (!parsedState.activePlayersA) parsedState.activePlayersA = match.activePlayersA || [];
+          if (!parsedState.activePlayersB) parsedState.activePlayersB = match.activePlayersB || [];
           if (!parsedState.playerPositions) parsedState.playerPositions = {};
         }
         return parsedState;
@@ -325,7 +327,7 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
   useEffect(() => {
     if(state.events.length > 0) {
       const lastEvent = state.events[state.events.length -1];
-      if (state.matchId) {
+      if (state.matchId && lastEvent) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id, ...eventData } = lastEvent;
         createGameEvent(state.matchId, eventData);
