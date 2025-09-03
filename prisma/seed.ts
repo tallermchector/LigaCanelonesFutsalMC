@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { futsalTeams } from '../src/data/teams';
+import { players } from '../src/data/players';
 
 const prisma = new PrismaClient();
 
@@ -11,28 +12,37 @@ async function main() {
   await prisma.team.deleteMany();
   console.log('Cleared previous data.');
 
+  // Seed Teams
   for (const team of futsalTeams) {
-    const createdTeam = await prisma.team.create({
+    await prisma.team.create({
       data: {
         id: team.id,
         name: team.name,
         logoUrl: team.logoUrl,
-        slug: team.name.toLowerCase().replace(/\s+/g, '-'),
-        players: {
-          create: team.players.map(player => ({
-            id: player.id,
-            name: player.name,
-            number: player.number,
-            position: player.position,
-          })),
-        },
-      },
-      include: {
-        players: true,
+        slug: team.slug,
       },
     });
-    console.log(`Created team with id: ${createdTeam.id} and ${createdTeam.players.length} players`);
+    console.log(`Created team: ${team.name}`);
   }
+
+  // Seed Players
+  for (const player of players) {
+    await prisma.player.create({
+      data: {
+        id: player.id,
+        name: player.name,
+        number: player.number,
+        position: player.position,
+        birthDate: player.birthDate,
+        height: player.height,
+        weight: player.weight,
+        nationality: player.nationality,
+        teamId: player.teamId,
+      },
+    });
+  }
+  console.log(`Created ${players.length} players.`);
+
   console.log(`Seeding finished.`);
 }
 
