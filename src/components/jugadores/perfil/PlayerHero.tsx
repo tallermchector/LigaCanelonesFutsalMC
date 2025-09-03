@@ -1,10 +1,11 @@
-
 'use client';
 
 import Image from 'next/image';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { Player, Team } from '@/types';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 interface PlayerHeroProps {
     player: Player & { team: Team };
@@ -14,54 +15,51 @@ export function PlayerHero({ player }: PlayerHeroProps) {
     const router = useRouter();
 
     return (
-        <header className="relative bg-red-600 text-white">
-            {/* Header Bar */}
-            <div className="container mx-auto flex h-16 items-center justify-between">
-                <button onClick={() => router.back()} className="p-2">
-                    <ArrowLeft className="h-6 w-6" />
-                </button>
-                <h1 className="text-lg font-bold">{player.name}</h1>
-                <div className="w-8"></div> {/* Spacer */}
-            </div>
+        <header className="relative overflow-hidden bg-primary/5 pt-4 pb-8 md:pt-8 md:pb-12">
+            <div className="container mx-auto relative z-10">
+                <Button onClick={() => router.back()} variant="outline" className="mb-4 bg-background/50 backdrop-blur-sm">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Volver
+                </Button>
 
-            {/* Player Info Section */}
-            <div className="container mx-auto pb-6 pt-4">
-                <div className="relative h-64 text-center">
-                    <Image
-                        src={'/placeholder-player.png'} // Placeholder image
-                        alt={`Foto de ${player.name}`}
-                        fill
-                        className="object-contain object-bottom"
-                    />
-                    {/* Background shapes could go here as absolute elements */}
-                </div>
-
-                <div className="flex items-end gap-4 mt-4">
-                    <span className="text-6xl font-black text-white/50">{player.number}</span>
-                    <div>
-                        <h2 className="text-3xl font-bold uppercase">{player.name}</h2>
-                        <div className="flex items-center gap-2 text-sm font-medium text-white/80">
+                <div className="grid md:grid-cols-2 items-center gap-8">
+                    {/* Player Info */}
+                    <div className="text-center md:text-left">
+                        <span className="text-8xl md:text-9xl font-black text-primary/10 select-none">
+                            {player.number}
+                        </span>
+                        <h1 className="text-4xl md:text-5xl font-bold uppercase text-primary -mt-10 md:-mt-14">
+                            {player.name}
+                        </h1>
+                        <p className="text-lg font-semibold text-muted-foreground mt-1">{player.position}</p>
+                        
+                        <Link href={`/clubes/${player.team.slug}`} className="inline-flex items-center gap-2 mt-4 group">
                             <Image
                                 src={player.team.logoUrl || ''}
                                 alt={`Logo de ${player.team.name}`}
-                                width={20}
-                                height={20}
-                                className="object-contain"
+                                width={28}
+                                height={28}
+                                className="w-7 h-7 object-contain transition-transform group-hover:scale-110"
                             />
-                            <span>{player.team.name}</span>
-                        </div>
+                            <span className="font-bold text-foreground group-hover:text-primary transition-colors">{player.team.name}</span>
+                        </Link>
                     </div>
-                </div>
 
-                <div className="mt-4 flex justify-between items-center">
-                    <p className="font-semibold">{player.position}</p>
-                     {player.nationality && (
-                        <div className="flex items-center gap-2">
-                            {/* Placeholder for flag */}
-                            <div className="w-6 h-4 bg-gray-300 rounded-sm" title={`Bandera de ${player.nationality}`} />
-                            <span className="font-semibold">{player.nationality}</span>
-                        </div>
-                     )}
+                    {/* Player Image */}
+                    <div className="relative h-80 md:h-96">
+                        <Image
+                            src={'/placeholder-player.png'}
+                            alt={`Foto de ${player.name}`}
+                            fill
+                            className="object-contain object-bottom drop-shadow-[0_20px_15px_rgba(0,0,0,0.2)]"
+                        />
+                         <Image
+                            src={player.team.logoUrl || ''}
+                            alt=""
+                            fill
+                            className="object-contain object-center opacity-5 scale-150 z-[-1]"
+                        />
+                    </div>
                 </div>
             </div>
         </header>
