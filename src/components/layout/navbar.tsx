@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
+import Image from 'next/image'
 
 const navigation = [
   { name: 'Inicio', href: '/' },
@@ -38,9 +39,7 @@ export default function Navbar() {
             <Link href="/" className="group flex items-center space-x-3">
               <div className="relative">
                 <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-red-600 via-red-700 to-red-800 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                  <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                  </svg>
+                  <Image src="/logofu.png" alt="Liga Futsal Logo" width={32} height={32} />
                 </div>
                 <div className="absolute -inset-0.5 bg-gradient-to-br from-red-600 to-red-800 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
               </div>
