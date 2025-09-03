@@ -17,7 +17,8 @@ interface EstadisticasPageProps {
 }
 
 export async function generateMetadata({ params }: EstadisticasPageProps): Promise<Metadata> {
-  const id = parseInt(params.id, 10);
+  const resolvedParams = await params;
+  const id = parseInt(resolvedParams.id, 10);
   if (isNaN(id)) {
     return { title: 'Estadísticas no encontradas' };
   }
@@ -43,7 +44,8 @@ export async function generateMetadata({ params }: EstadisticasPageProps): Promi
 }
 
 export default async function EstadisticasPage({ params }: EstadisticasPageProps) {
-  const id = parseInt(params.id, 10);
+  const resolvedParams = await params;
+  const id = parseInt(resolvedParams.id, 10);
   if (isNaN(id)) {
       notFound();
   }
