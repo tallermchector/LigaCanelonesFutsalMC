@@ -9,6 +9,7 @@ import { notFound, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLiveMatchState } from '@/hooks/useLiveMatchState';
+import { PlayByPlayFeed } from '@/components/partidos/PlayByPlayFeed';
 
 
 function getPeriodLabel(status: MatchStatus, period: number | undefined): string {
@@ -77,7 +78,7 @@ export default function MatchPage() {
         notFound();
     }
     
-    const {teamA, teamB, scoreA, scoreB, foulsA, foulsB, timeoutsA, timeoutsB, period, time, status} = liveState;
+    const {teamA, teamB, scoreA, scoreB, foulsA, foulsB, timeoutsA, timeoutsB, period, time, status, events} = liveState;
 
     if(!teamA || !teamB) {
         return (
@@ -114,10 +115,11 @@ export default function MatchPage() {
                     timeLeft={time}
                     period={getPeriodLabel(status, period)}
                 />
-                
-                <div className="mt-8 text-center text-muted-foreground">
-                    <p>La información del marcador se actualiza en tiempo real desde el panel de control.</p>
+
+                <div className="mt-8 w-full max-w-4xl">
+                    <PlayByPlayFeed events={events} />
                 </div>
+
                  <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{
