@@ -1,9 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { Play, Timer } from 'lucide-react';
+import { Play, Timer, Shield } from 'lucide-react';
 import { useGame } from '@/contexts/GameProvider';
 import type { FullMatch, MatchStatus } from '@/types';
+import { cn } from '@/lib/utils';
 
 function formatTime(seconds: number) {
   const minutes = Math.floor(seconds / 60);
@@ -17,16 +18,25 @@ function getPeriodLabel(status: MatchStatus, period: number) {
     return `${period}T`;
 }
 
-const TimeoutIndicator = ({ count }: { count: number }) => (
-    <div className="hidden sm:flex items-center gap-1 text-xs font-semibold text-muted-foreground bg-gray-700/50 px-2 py-1 rounded-md">
-        <Timer className="h-3 w-3" />
-        <span>T.M: {count}</span>
+const TeamStats = ({ timeouts, fouls }: { timeouts: number, fouls: number }) => (
+    <div className="hidden sm:flex items-center gap-3 mt-1">
+        <div className="flex items-center gap-1 text-xs font-semibold text-muted-foreground bg-gray-700/50 px-2 py-1 rounded-md">
+            <Timer className="h-3 w-3" />
+            <span>T.M: {timeouts}</span>
+        </div>
+         <div className={cn(
+             "flex items-center gap-1 text-xs font-semibold text-muted-foreground bg-gray-700/50 px-2 py-1 rounded-md",
+             fouls >= 6 && "text-destructive"
+         )}>
+            <Shield className="h-3 w-3" />
+            <span>Faltas: {fouls}</span>
+        </div>
     </div>
 );
 
 export function TacticalHeader({ match }: { match: FullMatch }) {
   const { state } = useGame();
-  const { teamA, teamB, scoreA, scoreB, time, period, status, isRunning, timeoutsA, timeoutsB } = state;
+  const { teamA, teamB, scoreA, scoreB, time, period, status, isRunning, timeoutsA, timeoutsB, foulsA, foulsB } = state;
 
   if (!teamA || !teamB) {
     return null; // or a skeleton
@@ -40,7 +50,7 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
         <div className="flex flex-col items-start">
             <span className="hidden sm:block text-sm md:text-lg font-bold truncate">{teamA.name}</span>
             <span className="block sm:hidden text-lg font-bold">{teamA.name.substring(0, 3)}</span>
-            <TimeoutIndicator count={timeoutsA} />
+            <TeamStats timeouts={timeoutsA} fouls={foulsA} />
         </div>
       </div>
 
@@ -62,7 +72,7 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
         <div className="flex flex-col items-end">
             <span className="hidden sm:block text-sm md:text-lg font-bold truncate">{teamB.name}</span>
             <span className="block sm:hidden text-lg font-bold">{teamB.name.substring(0, 3)}</span>
-            <TimeoutIndicator count={timeoutsB} />
+            <TeamStats timeouts={timeoutsB} fouls={foulsB} />
         </div>
         <Image src={teamB.logoUrl || ''} alt={teamB.name} width={48} height={48} className="h-8 w-8 md:h-12 md:w-12"/>
       </div>
