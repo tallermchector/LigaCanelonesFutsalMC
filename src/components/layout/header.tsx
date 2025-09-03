@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown, BarChartHorizontal, PenSquare, LayoutDashboard, Trophy, Users } from 'lucide-react';
+import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown, BarChartHorizontal, PenSquare, LayoutDashboard, Trophy, Users, Info } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -38,14 +38,17 @@ export function Header() {
 
   const navLinks = [
     { href: '/', label: 'Inicio', icon: <Home /> },
-    { href: '/partidos', label: 'Partidos', icon: <CalendarDays /> },
-    { href: '/clubes', label: 'Clubes', icon: <Shield /> },
-    { href: '/jugadores', label: 'Jugadores', icon: <Users /> },
-    { href: '/posiciones', label: 'Posiciones', icon: <Trophy /> },
     { href: '/blog', label: 'Noticias', icon: <Newspaper /> },
     { href: '/resumen', label: 'Resumen', icon: <BarChartHorizontal /> },
   ];
   
+  const infoLinks = [
+    { href: '/partidos', label: 'Partidos', icon: <CalendarDays /> },
+    { href: '/clubes', label: 'Clubes', icon: <Shield /> },
+    { href: '/jugadores', label: 'Jugadores', icon: <Users /> },
+    { href: '/posiciones', label: 'Posiciones', icon: <Trophy /> },
+  ];
+
   const adminLinks = [
       { href: '/gestion', label: 'Gestión de Partidos', icon: <PenSquare /> },
       { href: '/controles', label: 'Control de Partidos', icon: <Settings /> },
@@ -104,6 +107,36 @@ export function Header() {
                     </Link>
                 </Button>
                 ))}
+                 <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className={cn(
+                    "relative text-sm font-medium transition-colors",
+                    infoLinks.some(link => pathname.startsWith(link.href)) ? 'text-primary' : 'text-foreground/80 hover:text-primary'
+                    )}>
+                       <div className="group">
+                        <span className="flex items-center gap-2">
+                            <Info className="h-4 w-4" />
+                            Información
+                            <ChevronDown className="h-4 w-4" />
+                        </span>
+                        <span className={cn(
+                             "absolute bottom-0 left-0 h-0.5 bg-primary w-full transform scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100",
+                             infoLinks.some(link => pathname.startsWith(link.href)) ? 'scale-x-100' : 'scale-x-0'
+                        )} />
+                       </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    {infoLinks.map((link) => (
+                        <DropdownMenuItem key={link.href} asChild>
+                          <Link href={link.href}>
+                            {React.cloneElement(link.icon, { className: 'mr-2 h-4 w-4' })}
+                            <span>{link.label}</span>
+                          </Link>
+                        </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
             </nav>
             <div className="hidden md:block">
                 <DropdownMenu>
@@ -156,6 +189,33 @@ export function Header() {
                             </Link>
                         </SheetClose>
                         ))}
+                         <Accordion type="single" collapsible className="w-full">
+                            <AccordionItem value="info-links" className="border-b-0">
+                                <AccordionTrigger className={cn("flex items-center gap-4 px-4 py-3 text-base rounded-md font-medium hover:no-underline",
+                                 infoLinks.some(link => pathname.startsWith(link.href)) ? 'bg-primary/10 text-primary' : 'text-foreground/80 hover:bg-muted'
+                                )}>
+                                    <Info className="h-5 w-5" />
+                                    <span className="flex-1 text-left">Información</span>
+                                </AccordionTrigger>
+                                <AccordionContent className="pb-0 pl-8">
+                                    <nav className="flex flex-col gap-1 py-2">
+                                        {infoLinks.map((link) => (
+                                        <SheetClose asChild key={`${link.href}-${link.label}-mobile`}>
+                                            <Link
+                                            href={link.href}
+                                            className={cn("flex items-center gap-4 px-4 py-3 text-base rounded-md font-medium",
+                                                pathname.startsWith(link.href) ? 'bg-primary/10 text-primary' : 'text-foreground/80 hover:bg-muted'
+                                            )}
+                                            >
+                                            {React.cloneElement(link.icon, { className: 'h-5 w-5' })}
+                                            {link.label}
+                                            </Link>
+                                        </SheetClose>
+                                        ))}
+                                    </nav>
+                                </AccordionContent>
+                            </AccordionItem>
+                         </Accordion>
                     </nav>
                 </div>
                  <div className="p-4 border-t">
