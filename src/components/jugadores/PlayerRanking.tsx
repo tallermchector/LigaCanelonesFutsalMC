@@ -89,16 +89,18 @@ export function PlayerRanking({ players }: RankingProps) {
                         <TableRow key={player.id} className="hover:bg-muted/30">
                             <TableCell className="text-center font-bold text-muted-foreground">{index + 2}º</TableCell>
                             <TableCell>
-                            <Link href={`/jugadores/${player.id}`} className="flex items-center gap-4 group">
-                                <Image
-                                src={'/placeholder-player.png'}
-                                alt={`Foto de ${player.name}`}
-                                width={40}
-                                height={40}
-                                className="h-10 w-10 rounded-full object-cover object-top transition-transform group-hover:scale-105"
-                                />
+                            <div className="flex items-center gap-4 group">
+                                <Link href={`/jugadores/${player.id}`}>
+                                    <Image
+                                    src={'/placeholder-player.png'}
+                                    alt={`Foto de ${player.name}`}
+                                    width={40}
+                                    height={40}
+                                    className="h-10 w-10 rounded-full object-cover object-top transition-transform group-hover:scale-105"
+                                    />
+                                </Link>
                                 <div>
-                                <div className="font-bold group-hover:text-primary transition-colors">{player.name}</div>
+                                <Link href={`/jugadores/${player.id}`} className="font-bold group-hover:text-primary transition-colors">{player.name}</Link>
                                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                                     <Link href={`/clubes/${teamSlug}`} className="flex items-center gap-1.5 hover:text-primary transition-colors">
                                         <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={14} height={14} />
@@ -106,7 +108,7 @@ export function PlayerRanking({ players }: RankingProps) {
                                     </Link>
                                 </div>
                                 </div>
-                            </Link>
+                            </div>
                             </TableCell>
                             <TableCell className="text-right text-2xl font-black text-primary">{player.goals}</TableCell>
                         </TableRow>
