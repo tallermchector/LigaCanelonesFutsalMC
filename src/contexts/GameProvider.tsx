@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker, PlayerMatchStats } from '@/types';
@@ -198,7 +199,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
                 return {
                     ...timeStateWithUpdate,
                     playerTimeTracker: newTracker,
-                    events: [...state.events, {...newEvent, id: Date.now(), matchId: state.matchId}],
+                    events: [...state.events, {...newEvent, id: Date.now().toString(), matchId: state.matchId}],
                     selectedPlayer: null,
                     substitutionState: null,
                     [activePlayersKey]: updatedActivePlayers,
@@ -231,9 +232,11 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           playerName: player.name,
           teamName: team.name,
           timestamp: state.time,
+          playerInId: null,
+          playerInName: null,
       };
       
-      let newState = { ...state, events: [...state.events, {...newEvent, id: Date.now(), matchId: state.matchId}], selectedPlayer: null };
+      let newState: GameState = { ...state, events: [...state.events, {...newEvent, id: Date.now().toString(), matchId: state.matchId}], selectedPlayer: null };
 
       if (action.payload.type === 'GOAL') {
           newState = gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
@@ -456,3 +459,5 @@ export const useGame = () => {
   }
   return context;
 };
+
+    
