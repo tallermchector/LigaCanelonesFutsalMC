@@ -10,7 +10,6 @@ export interface PlayerMatchStats extends PrismaPlayerMatchStats {}
 
 export interface Team extends PrismaTeam {
   players: Player[];
-  slug?: string;
   matches?: FullMatch[];
 }
 
