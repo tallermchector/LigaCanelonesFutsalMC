@@ -3,14 +3,23 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Settings, PenSquare, Tv, LayoutDashboard, ChevronDown, Shield } from 'lucide-react'
 import Image from 'next/image'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
 
 const navigation = [
   { name: 'Inicio', href: '/' },
   { name: 'Partidos', href: '/partidos' },
   { name: 'Noticias', href: '/noticias' },
   { name: 'Resumen', href: '/resumen' },
+]
+
+const adminLinks = [
+    { href: '/gestion', label: 'Gestión de Partidos', icon: <PenSquare /> },
+    { href: '/controles', label: 'Control de Partidos', icon: <Settings /> },
+    { href: '/banner', label: 'Marcador en Vivo', icon: <Tv /> },
+    { href: '/cancha', label: 'Pizarra Táctica', icon: <LayoutDashboard /> },
 ]
 
 export default function Navbar() {
@@ -56,7 +65,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:space-x-1">
+          <div className="hidden md:flex md:items-center md:space-x-1">
             {navigation.map((item, index) => (
               <Link
                 key={item.name}
@@ -69,13 +78,25 @@ export default function Navbar() {
                 <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 transition-all duration-300 group-hover:w-full group-hover:left-0"></div>
               </Link>
             ))}
-            <Link
-              href="/admin"
-              className="relative px-4 py-2 ml-4 text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 group"
-            >
-              <span className="relative z-10">Admin</span>
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-red-700 to-red-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="ml-4">
+                  <Shield className="mr-2 h-4 w-4" />
+                  Admin
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {adminLinks.map((link) => (
+                    <DropdownMenuItem key={link.href} asChild>
+                      <Link href={link.href}>
+                        {link.icon}
+                        <span>{link.label}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Mobile menu button */}
@@ -126,13 +147,19 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
-            <Link
-              href="/admin"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-lg px-4 py-3 mt-4 text-base font-medium text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 transition-all duration-300 shadow-lg"
-            >
-              Admin
-            </Link>
+             <div className="mt-4 border-t pt-4">
+                {adminLinks.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 transition-all duration-300"
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
           </div>
         </div>
       </nav>
