@@ -67,3 +67,33 @@ This project is a comprehensive management system for amateur futsal tournaments
     ```
 
     The application should now be running at [http://localhost:9002](http://localhost:9002).
+
+## Available Scripts
+
+- `bun dev`: Runs the application in development mode with Turbopack.
+- `bun build`: Builds the application for production.
+- `bun start`: Starts the production server.
+- `bun lint`: Lints the code using ESLint.
+- `bun typecheck`: Checks for TypeScript errors.
+- `bun db:seed`: Seeds the database with initial data.
+- `bun genkit:dev`: Starts the Genkit development server.
+- `bun genkit:watch`: Starts the Genkit development server with watch mode.
+
+## Project Structure
+
+The project follows a standard Next.js `src` directory structure:
+
+- `src/app`: Contains the pages of the application.
+- `src/components`: Contains the React components.
+- `src/lib`: Contains utility functions.
+- `src/actions`: Contains server-side actions.
+- `src/types`: Contains TypeScript type definitions.
+- `src/hooks`: Contains React hooks.
+- `src/data`: Contains static data.
+- `src/contexts`: Contains React contexts.
+- `prisma`: Contains the database schema and related files.
+- `public`: Contains static assets like images and fonts.
+
+## Contributing
+
+Contributions are welcome! Please feel free to open an issue or submit a pull request.

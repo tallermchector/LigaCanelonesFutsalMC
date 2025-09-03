@@ -5,6 +5,15 @@ import prisma from '@/lib/prisma';
 import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, Team, Player, GameEventType, PlayerTimeTracker } from '@/types';
 import { revalidatePath } from 'next/cache';
 
+/**
+ * Saves the current state of a match to the database.
+ * This includes updating the match details and player statistics in a transaction.
+ *
+ * @param {number} matchId - The ID of the match to save the state for.
+ * @param {GameState} state - The current state of the match.
+ * @returns {Promise<void>} A promise that resolves when the state has been saved.
+ * @throws {Error} If the provided match state is invalid or if the database operation fails.
+ */
 export async function saveMatchState(matchId: number, state: GameState): Promise<void> {
   if (!state.teamA || !state.teamB) {
     throw new Error('Invalid match state provided.');
@@ -63,6 +72,13 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
   }
 }
 
+/**
+ * Creates a new game event and saves it to the database.
+ *
+ * @param {number} matchId - The ID of the match the event belongs to.
+ * @param {Omit<GameEvent, 'id' | 'matchId'>} event - The game event to create.
+ * @returns {Promise<void>} A promise that resolves when the event has been created.
+ */
 export async function createGameEvent(matchId: number, event: Omit<GameEvent, 'id' | 'matchId'>): Promise<void> {
     try {
         await prisma.gameEvent.create({
@@ -88,6 +104,12 @@ export async function createGameEvent(matchId: number, event: Omit<GameEvent, 'i
 }
 
 
+/**
+ * Retrieves a single match by its ID from the database.
+ *
+ * @param {number} id - The ID of the match to retrieve.
+ * @returns {Promise<FullMatch | undefined>} A promise that resolves to the full match object, or undefined if not found.
+ */
 export async function getMatchByIdFromDb(id: number): Promise<FullMatch | undefined> {
     try {
         const match = await prisma.match.findUnique({
@@ -116,6 +138,11 @@ export async function getMatchByIdFromDb(id: number): Promise<FullMatch | undefi
     }
 }
 
+/**
+ * Retrieves all matches from the database.
+ *
+ * @returns {Promise<FullMatch[]>} A promise that resolves to an array of all matches.
+ */
 export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
     try {
         const matches = await prisma.match.findMany({
@@ -144,6 +171,12 @@ export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
 }
 
 
+/**
+ * Retrieves the statistics for a specific match from the database.
+ *
+ * @param {number} id - The ID of the match to retrieve statistics for.
+ * @returns {Promise<MatchStats | undefined>} A promise that resolves to the match statistics, or undefined if the match is not found.
+ */
 export async function getMatchStatsFromDb(id: number): Promise<MatchStats | undefined> {
   const match = await getMatchByIdFromDb(id);
   if (!match || !match.events) {
@@ -184,6 +217,17 @@ export async function getMatchStatsFromDb(id: number): Promise<MatchStats | unde
   };
 }
 
+/**
+ * Creates a new match in the database.
+ *
+ * @param {object} data - The data for the new match.
+ * @param {number} data.teamAId - The ID of team A.
+ * @param {number} data.teamBId - The ID of team B.
+ * @param {Date} data.scheduledTime - The scheduled time of the match.
+ * @param {number} data.round - The round number of the match.
+ * @returns {Promise<FullMatch>} A promise that resolves to the newly created match.
+ * @throws {Error} If the match could not be created in the database.
+ */
 export async function createMatch(data: {
     teamAId: number;
     teamBId: number;
@@ -227,6 +271,14 @@ export async function createMatch(data: {
     }
 }
 
+/**
+ * Updates the status of a match in the database.
+ *
+ * @param {number} matchId - The ID of the match to update.
+ * @param {MatchStatus} status - The new status of the match.
+ * @returns {Promise<void>} A promise that resolves when the match status has been updated.
+ * @throws {Error} If the match status could not be updated.
+ */
 export async function updateMatchStatus(matchId: number, status: MatchStatus): Promise<void> {
     try {
         await prisma.match.update({

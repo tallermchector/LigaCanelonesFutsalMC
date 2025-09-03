@@ -1,6 +1,14 @@
 
 import { Variants } from 'framer-motion';
 
+/**
+ * A collection of animation variants for use with Framer Motion.
+ * These variants can be applied to `motion` components to create consistent animations.
+ *
+ * @property {Variants} fadeIn - A simple fade-in animation.
+ * @property {Variants} slideInUp - An animation that slides the element in from the bottom while fading in.
+ * @property {Variants} staggerContainer - A container variant used to stagger the animation of its children.
+ */
 export const animationVariants: { [key: string]: Variants } = {
   fadeIn: {
     hidden: { opacity: 0 },
