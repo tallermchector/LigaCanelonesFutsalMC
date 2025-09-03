@@ -82,7 +82,7 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                             {state.isRunning ? <Pause className="mr-2 h-5 w-5"/> : <Play className="mr-2 h-5 w-5"/>}
                             {state.isRunning ? 'Pausar' : 'Iniciar'}
                         </Button>
-                        <Button variant="destructive" onClick={handleSaveAndExit} size="lg">
+                        <Button variant="destructive" onClick={async () => await handleSaveAndExit()} size="lg">
                             <Save className="mr-2 h-5 w-5" />
                             Guardar
                         </Button>
@@ -124,7 +124,7 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                 </Button>
             </div>
             <div className="hidden md:flex items-center justify-end gap-2 w-32">
-                 <Button variant="destructive" onClick={handleSaveAndExit} size="lg" className="w-full">
+                 <Button variant="destructive" onClick={async () => await handleSaveAndExit()} size="lg" className="w-full">
                     <Save className="mr-2 h-5 w-5" />
                     Guardar
                 </Button>
@@ -133,3 +133,4 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
     </footer>
   );
 }
+
