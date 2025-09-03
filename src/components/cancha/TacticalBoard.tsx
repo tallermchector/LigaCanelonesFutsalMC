@@ -7,7 +7,7 @@ import { TacticalHeader } from './TacticalHeader';
 import { ActionsToolbar } from './ActionsToolbar';
 import { DraggablePlayer } from './DraggablePlayer';
 import { useGame } from '@/contexts/GameProvider';
-import type { FullMatch } from '@/types';
+import type { FullMatch, Player } from '@/types';
 import { useEffect, useState } from 'react';
 
 type PlayerPosition = { id: number; x: number; y: number };
@@ -18,17 +18,53 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
   const [positionsB, setPositionsB] = useState<PlayerPosition[]>([]);
 
   useEffect(() => {
-    // Initialize positions when active players change
-    const initPositions = (players: number[], team: 'A' | 'B') => {
-        return players.map((playerId, index) => ({
-            id: playerId,
-            x: team === 'A' ? 20 + (index * 15) : 80 - (index * 15),
-            y: 50
-        }));
+    const getPlayerById = (id: number, teamPlayers: Player[]): Player | undefined => {
+        return teamPlayers.find(p => p.id === id);
+    }
+
+    const initPositions = (playerIds: number[], teamPlayers: Player[], team: 'A' | 'B'): PlayerPosition[] => {
+        if (!teamPlayers || playerIds.length === 0) return [];
+        
+        const goalkeeper = playerIds.map(id => getPlayerById(id, teamPlayers)).find(p => p?.position === 'Goalkeeper');
+        const fieldPlayers = playerIds.filter(id => id !== goalkeeper?.id);
+
+        const formation: PlayerPosition[] = [];
+
+        // Goalkeeper position
+        if (goalkeeper) {
+            formation.push({
+                id: goalkeeper.id,
+                x: team === 'A' ? 10 : 90,
+                y: 50,
+            });
+        }
+        
+        // 1-2-1 Formation for field players
+        const formationSpots = team === 'A' ? 
+            [{x: 25, y: 50}, {x: 40, y: 30}, {x: 40, y: 70}, {x: 55, y: 50}] : // Team A (left)
+            [{x: 75, y: 50}, {x: 60, y: 30}, {x: 60, y: 70}, {x: 45, y: 50}];   // Team B (right)
+        
+        fieldPlayers.forEach((playerId, index) => {
+            if (index < formationSpots.length) {
+                 formation.push({
+                    id: playerId,
+                    x: formationSpots[index].x,
+                    y: formationSpots[index].y,
+                });
+            }
+        });
+
+        return formation;
     };
-    setPositionsA(initPositions(state.activePlayersA, 'A'));
-    setPositionsB(initPositions(state.activePlayersB, 'B'));
-  }, [state.activePlayersA, state.activePlayersB]);
+    
+    if (state.teamA) {
+        setPositionsA(initPositions(state.activePlayersA, state.teamA.players, 'A'));
+    }
+    if (state.teamB) {
+        setPositionsB(initPositions(state.activePlayersB, state.teamB.players, 'B'));
+    }
+
+  }, [state.activePlayersA, state.activePlayersB, state.teamA, state.teamB]);
 
 
   const handleMovePlayer = (id: number, x: number, y: number, teamId: 'A' | 'B') => {
