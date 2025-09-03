@@ -116,7 +116,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'SET_PERIOD':
       return { ...state, period: action.payload, time: initialState.time, isRunning: false };
     case 'SET_STATUS':
-        return { ...state, status: action.payload };
+        return { ...state, status: action.payload, isRunning: action.payload !== 'FINISHED' && state.isRunning };
     case 'TOGGLE_TIMER':
       const nextIsRunning = !state.isRunning;
       const updatedTimeState = updatePlayerTimeReducer(state);
@@ -143,7 +143,10 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         return { ...state, time: state.time - 1 };
       }
        if (state.isRunning && state.time === 0) {
-        return { ...state, isRunning: false };
+          if (state.period === 2) {
+              return { ...state, isRunning: false, status: 'FINISHED' };
+          }
+          return { ...state, isRunning: false };
       }
       return state;
     case 'SELECT_PLAYER': {
