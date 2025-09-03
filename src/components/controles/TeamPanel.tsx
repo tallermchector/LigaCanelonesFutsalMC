@@ -8,6 +8,7 @@ import type { SelectedPlayer } from '@/types';
 import { motion } from 'framer-motion';
 import { Shirt } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { usePathname } from 'next/navigation';
 
 
 interface TeamPanelProps {
@@ -16,12 +17,15 @@ interface TeamPanelProps {
 
 export function TeamPanel({ teamId }: TeamPanelProps) {
   const { state, dispatch } = useGame();
+  const pathname = usePathname();
   
   const team = teamId === 'A' ? state.teamA : state.teamB;
   const { selectedPlayer, substitutionState, status } = state;
   const activePlayers = teamId === 'A' ? state.activePlayersA : state.activePlayersB;
 
   if (!team || !team.players) return null;
+
+  const isCanchaPage = pathname.includes('/cancha/');
 
   const handlePlayerSelect = (playerId: number) => {
     const payload: SelectedPlayer = { teamId, playerId };
@@ -114,17 +118,19 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
           ) : (
             <>
               {/* Starters */}
-              <div>
-                  <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Titulares</h3>
-                  <div className="flex flex-wrap items-start justify-center gap-4">
-                      {starters.length > 0 ? renderPlayerButtons(starters) : <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares definidos.</p>}
-                  </div>
-              </div>
+              {!isCanchaPage && (
+                <div>
+                    <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Titulares</h3>
+                    <div className="flex flex-wrap items-start justify-center gap-4">
+                        {starters.length > 0 ? renderPlayerButtons(starters) : <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares definidos.</p>}
+                    </div>
+                </div>
+              )}
               
               {/* Substitutes */}
               {!substitutionState && (
-                <div className="mt-4">
-                    <Separator className="my-2" />
+                <div className={!isCanchaPage ? "mt-4" : ""}>
+                    {!isCanchaPage && <Separator className="my-2" />}
                     <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Suplentes</h3>
                     <div className="flex flex-wrap items-start justify-center gap-4">
                         {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes disponibles.</p>}
