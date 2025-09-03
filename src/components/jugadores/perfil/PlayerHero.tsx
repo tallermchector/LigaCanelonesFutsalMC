@@ -24,11 +24,11 @@ export function PlayerHero({ player }: PlayerHeroProps) {
 
                 <div className="grid md:grid-cols-2 items-center gap-8">
                     {/* Player Info */}
-                    <div className="text-center md:text-left">
-                        <span className="text-8xl md:text-9xl font-black text-primary/10 select-none">
+                    <div className="relative text-center md:text-left">
+                        <span className="absolute -top-10 -left-4 text-[12rem] font-black text-primary/5 select-none opacity-50 z-[-1]">
                             {player.number}
                         </span>
-                        <h1 className="text-4xl md:text-5xl font-bold uppercase text-primary -mt-10 md:-mt-14">
+                        <h1 className="text-4xl md:text-5xl font-bold uppercase text-primary">
                             {player.name}
                         </h1>
                         <p className="text-lg font-semibold text-muted-foreground mt-1">{player.position}</p>
@@ -54,10 +54,10 @@ export function PlayerHero({ player }: PlayerHeroProps) {
                             className="object-contain object-bottom drop-shadow-[0_20px_15px_rgba(0,0,0,0.2)]"
                         />
                          <Image
-                            src={player.team.logoUrl || ''}
-                            alt=""
+                            src={'/logofu.png'}
+                            alt="Logo de la Liga"
                             fill
-                            className="object-contain object-center opacity-5 scale-150 z-[-1]"
+                            className="object-contain object-center opacity-5 scale-150 z-[-2]"
                         />
                     </div>
                 </div>
