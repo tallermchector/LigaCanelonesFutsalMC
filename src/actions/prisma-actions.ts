@@ -1,3 +1,4 @@
+
 'use server';
 
 import prisma from '@/lib/prisma';
@@ -186,7 +187,7 @@ export async function getMatchStatsFromDb(id: number): Promise<MatchStats | unde
 
 export async function getAllTeams(): Promise<Team[]> {
     try {
-        return await prisma.team.findMany({ include: { players: true } });
+        return await prisma.team.findMany({ include: { players: true } }) as Team[];
     } catch (error) {
         console.error("Failed to fetch teams:", error);
         return [];

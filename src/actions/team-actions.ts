@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import prisma from '@/lib/prisma';
@@ -60,7 +61,7 @@ export async function getTeamBySlug(slug: string): Promise<Team | null> {
             scheduledTime: match.scheduledTime.toISOString(),
             status: match.status as FullMatch['status'],
             events: match.events.map(e => ({...e, type: e.type as GameEventType})),
-        } as FullMatch));
+        }) as FullMatch);
 
 
         return { ...team, matches: fullMatches } as Team;
