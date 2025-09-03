@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -26,7 +27,9 @@ export function ControlsPanel() {
   };
   
   const handleTimeout = (teamId: 'A' | 'B') => {
-      dispatch({ type: 'ADD_EVENT', payload: { type: 'TIMEOUT', teamId }})
+      const team = teamId === 'A' ? state.teamA : state.teamB;
+      if (!team) return;
+      dispatch({ type: 'ADD_EVENT', payload: { type: 'TIMEOUT', teamId: team.id }})
   }
   
   const handleSaveAndExit = async () => {
