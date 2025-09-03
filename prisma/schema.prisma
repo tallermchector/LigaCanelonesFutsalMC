@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,102 +11,103 @@ datasource db {
 }
 
 model Team {
-  id        Int          @id @default(autoincrement())
-  name      String
-  slug      String       @unique
-  logoUrl   String?
-  players   Player[]
-  teamA     Match[]      @relation("TeamA")
-  teamB     Match[]      @relation("TeamB")
-  // Temporada
-  seasons   SeasonTeam[]
-  GameEvent GameEvent[]
+  id           Int          @id @default(autoincrement())
+  name         String       @unique
+  slug         String       @unique
+  logoUrl      String?
+  players      Player[]
+  matchesA     Match[]      @relation("TeamAMatches")
+  matchesB     Match[]      @relation("TeamBMatches")
+  seasonStats  SeasonTeam[]
+  GameEvent    GameEvent[]
 }
 
 model Player {
-  id               Int                @id @default(autoincrement())
-  name             String
-  number           Int
-  position         String?
-  birthDate        DateTime?
-  height           Int? // en cm
-  weight           Int? // en kg
-  nationality      String?
-  teamId           Int
-  team             Team               @relation(fields: [teamId], references: [id])
-  gameEvents       GameEvent[]
-  playerMatchStats PlayerMatchStats[]
-
-  @@index([teamId])
+  id          Int                @id @default(autoincrement())
+  name        String
+  number      Int
+  position    String?
+  birthDate   DateTime?
+  height      Int? // en cm
+  weight      Int? // en kg
+  nationality String?
+  team        Team               @relation(fields: [teamId], references: [id])
+  teamId      Int
+  events      GameEvent[]
+  matchStats  PlayerMatchStats[]
 }
 
 model Match {
-  id               Int                @id @default(autoincrement())
-  teamAId          Int
-  teamBId          Int
-  scheduledTime    DateTime
-  status           String
-  scoreA           Int
-  scoreB           Int
-  round            Int?
-  period           Int
-  time             Int
-  isRunning        Boolean
-  foulsA           Int
-  foulsB           Int
-  timeoutsA        Int
-  timeoutsB        Int
-  activePlayersA   Int[]
-  activePlayersB   Int[]
-  teamA            Team               @relation("TeamA", fields: [teamAId], references: [id])
-  teamB            Team               @relation("TeamB", fields: [teamBId], references: [id])
-  events           GameEvent[]
-  playerMatchStats PlayerMatchStats[]
-
-  @@index([teamAId])
-  @@index([teamBId])
-}
-
-model GameEvent {
-  id           String  @id @default(cuid())
-  matchId      Int
-  type         String
-  timestamp    Int
-  teamId       Int?
-  playerId     Int?
-  playerName   String?
-  teamName     String?
-  playerInId   Int?
-  playerInName String?
-  match        Match   @relation(fields: [matchId], references: [id])
-  player       Player? @relation(fields: [playerId], references: [id])
-  Team         Team?   @relation(fields: [teamId], references: [id])
+  id                Int                @id @default(autoincrement())
+  teamA             Team               @relation("TeamAMatches", fields: [teamAId], references: [id])
+  teamAId           Int
+  teamB             Team               @relation("TeamBMatches", fields: [teamBId], references: [id])
+  teamBId           Int
+  scheduledTime     DateTime
+  status            String             @default("SCHEDULED")
+  scoreA            Int
+  scoreB            Int
+  round             Int?
+  period            Int                @default(1)
+  time              Int                @default(1200) // 20 minutes in seconds
+  isRunning         Boolean            @default(false)
+  foulsA            Int                @default(0)
+  foulsB            Int                @default(0)
+  timeoutsA         Int                @default(1)
+  timeoutsB         Int                @default(1)
+  events            GameEvent[]
+  activePlayersA    Int[]
+  activePlayersB    Int[]
+  playerMatchStats  PlayerMatchStats[]
 }
 
 model PlayerMatchStats {
   id                  Int    @id @default(autoincrement())
+  match               Match  @relation(fields: [matchId], references: [id])
   matchId             Int
+  player              Player @relation(fields: [playerId], references: [id])
   playerId            Int
   timePlayedInSeconds Int    @default(0)
-  match               Match  @relation(fields: [matchId], references: [id])
-  player              Player @relation(fields: [playerId], references: [id])
 
   @@unique([matchId, playerId])
 }
 
 model Season {
   id    Int          @id @default(autoincrement())
-  name  String
-  year  Int
+  year  Int          @unique
   teams SeasonTeam[]
 }
 
 model SeasonTeam {
-  seasonId Int
-  teamId   Int
-  position Int
-  season   Season @relation(fields: [seasonId], references: [id])
-  team     Team   @relation(fields: [teamId], references: [id])
+  season     Season @relation(fields: [seasonId], references: [id])
+  seasonId   Int
+  team       Team   @relation(fields: [teamId], references: [id])
+  teamId     Int
+  position   Int
+  points     Int    @default(0)
+  played     Int    @default(0)
+  wins       Int    @default(0)
+  draws      Int    @default(0)
+  losses     Int    @default(0)
+  goalsFor   Int    @default(0)
+  goalsAgainst Int  @default(0)
 
   @@id([seasonId, teamId])
+}
+
+model GameEvent {
+  id           String  @id @default(cuid())
+  type         String
+  match        Match   @relation(fields: [matchId], references: [id])
+  matchId      Int
+  timestamp    Int
+  teamId       String?
+  playerId     Int?
+  player       Player? @relation(fields: [playerId], references: [id])
+  teamName     String?
+  playerName   String?
+  playerInId   Int?
+  playerInName String?
+  Team         Team?   @relation(fields: [teamId_relation], references: [id])
+  teamId_relation Int? @map("teamId")
 }
