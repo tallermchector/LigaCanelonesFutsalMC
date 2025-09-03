@@ -43,7 +43,11 @@ export async function getAllSeasonsWithTeams(): Promise<(Season & { teams: Seaso
     try {
         return await prisma.season.findMany({
             include: {
-                teams: true,
+                teams: {
+                  include: {
+                    team: true
+                  }
+                }
             },
             orderBy: {
                 year: 'desc',
@@ -71,49 +75,54 @@ export async function createSeason(name: string, year: number): Promise<Season> 
     }
 }
 
-// Reutilizamos la función que ya existe en team-actions.ts para no duplicar código
-export async function getAllTeams(): Promise<Team[]> {
-    return getAllTeamsFromSource();
-}
-
-export async function addTeamToSeason(seasonId: number, teamId: number): Promise<SeasonTeam> {
+export async function addTeamsToSeason(seasonId: number, teamIds: number[]): Promise<void> {
     try {
-        // Verificar si el equipo ya está en la temporada
-        const existingEntry = await prisma.seasonTeam.findUnique({
+        const existingTeams = await prisma.seasonTeam.findMany({
             where: {
-                seasonId_teamId: {
-                    seasonId,
-                    teamId,
-                },
+                seasonId,
+                teamId: { in: teamIds },
+            },
+            select: {
+                teamId: true,
             },
         });
 
-        if (existingEntry) {
-            throw new Error('El equipo ya está registrado en esta temporada.');
+        const existingTeamIds = new Set(existingTeams.map(t => t.teamId));
+        const newTeamIds = teamIds.filter(id => !existingTeamIds.has(id));
+
+        if (newTeamIds.length === 0) {
+            throw new Error('Todos los equipos seleccionados ya están en esta temporada.');
         }
 
-        const newSeasonTeam = await prisma.seasonTeam.create({
-            data: {
-                seasonId,
-                teamId,
-                position: 0,
-                points: 0,
-                played: 0,
-                wins: 0,
-                draws: 0,
-                losses: 0,
-                goalsFor: 0,
-                goalsAgainst: 0,
-                goalDifference: 0,
-            },
+        const dataToCreate = newTeamIds.map(teamId => ({
+            seasonId,
+            teamId,
+            position: 0,
+            points: 0,
+            played: 0,
+            wins: 0,
+            draws: 0,
+            losses: 0,
+            goalsFor: 0,
+            goalsAgainst: 0,
+            goalDifference: 0,
+        }));
+
+        await prisma.seasonTeam.createMany({
+            data: dataToCreate,
         });
+
         revalidatePath('/gestion/temporadas');
-        return newSeasonTeam;
     } catch (error) {
-        console.error('Error al añadir equipo a la temporada:', error);
+        console.error('Error al añadir equipos a la temporada:', error);
         if (error instanceof Error) {
             throw error;
         }
-        throw new Error('No se pudo añadir el equipo a la temporada.');
+        throw new Error('No se pudo añadir los equipos a la temporada.');
     }
+}
+
+// Reutilizamos la función que ya existe en team-actions.ts para no duplicar código
+export async function getAllTeams(): Promise<Team[]> {
+    return getAllTeamsFromSource();
 }
