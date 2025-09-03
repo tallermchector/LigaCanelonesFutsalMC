@@ -13,9 +13,10 @@ function formatTime(seconds: number) {
 }
 
 function getPeriodLabel(status: MatchStatus, period: number) {
-    if (status === 'FINISHED') return 'FIN';
-    if (status === 'SCHEDULED') return 'PRO';
-    return `${period}T`;
+    if (status === 'FINISHED') return 'FINAL';
+    if (status === 'SCHEDULED') return 'PROGRAMADO';
+    if (period === 2) return 'SEGUNDO TIEMPO';
+    return 'PRIMER TIEMPO';
 }
 
 const TeamStats = ({ timeouts, fouls }: { timeouts: number, fouls: number }) => (
@@ -48,8 +49,8 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
       <div className="flex items-center gap-2 md:gap-4 w-1/3 justify-start">
         <Image src={teamA.logoUrl || ''} alt={teamA.name} width={48} height={48} className="h-8 w-8 md:h-12 md:w-12"/>
         <div className="flex flex-col items-start">
-            <span className="hidden sm:block text-sm md:text-lg font-bold truncate">{teamA.name}</span>
-            <span className="block sm:hidden text-lg font-bold">{teamA.name.substring(0, 3)}</span>
+            <span className="hidden sm:block text-sm md:text-lg font-bold truncate text-blue-400">{teamA.name}</span>
+            <span className="block sm:hidden text-lg font-bold text-blue-400">{teamA.name.substring(0, 3)}</span>
             <TeamStats timeouts={timeoutsA} fouls={foulsA} />
         </div>
       </div>
@@ -57,12 +58,12 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
       {/* Score and Time */}
       <div className="flex items-center justify-center gap-2 md:gap-4 flex-1">
         <span className="text-2xl md:text-4xl font-bold">{scoreA}</span>
-        <div className="flex flex-col items-center justify-center text-lg md:text-xl font-mono bg-black/30 px-2 py-1 rounded-lg leading-tight">
-          <div className='flex items-center gap-1'>
-            {!isRunning && <Play className="h-4 w-4 text-green-500" />}
+        <div className="flex flex-col items-center justify-center text-lg md:text-xl font-mono bg-black/30 px-3 py-1.5 rounded-lg leading-tight">
+          <div className='flex items-center gap-2 text-2xl md:text-4xl'>
+            {!isRunning && <Play className="h-5 w-5 md:h-6 md:w-6 text-green-500" />}
             <span>{formatTime(time)}</span>
           </div>
-          <span className="text-xs font-semibold">{getPeriodLabel(status, period)}</span>
+          <span className="text-xs font-semibold uppercase tracking-wider">{getPeriodLabel(status, period)}</span>
         </div>
         <span className="text-2xl md:text-4xl font-bold">{scoreB}</span>
       </div>
@@ -70,8 +71,8 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
       {/* Team B */}
       <div className="flex items-center justify-end gap-2 md:gap-4 w-1/3">
         <div className="flex flex-col items-end">
-            <span className="hidden sm:block text-sm md:text-lg font-bold truncate">{teamB.name}</span>
-            <span className="block sm:hidden text-lg font-bold">{teamB.name.substring(0, 3)}</span>
+            <span className="hidden sm:block text-sm md:text-lg font-bold truncate text-red-400">{teamB.name}</span>
+            <span className="block sm:hidden text-lg font-bold text-red-400">{teamB.name.substring(0, 3)}</span>
             <TeamStats timeouts={timeoutsB} fouls={foulsB} />
         </div>
         <Image src={teamB.logoUrl || ''} alt={teamB.name} width={48} height={48} className="h-8 w-8 md:h-12 md:w-12"/>
