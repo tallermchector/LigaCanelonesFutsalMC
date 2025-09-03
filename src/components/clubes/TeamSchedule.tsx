@@ -1,26 +1,59 @@
+
 import type { FullMatch } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Fragment } from 'react';
+import { cn } from '@/lib/utils';
 
 interface TeamScheduleProps {
     matches: FullMatch[];
 }
 
+// Helper to group matches by date string
+const groupMatchesByDate = (matches: FullMatch[]) => {
+    return matches.reduce((acc, match) => {
+        const date = new Date(match.scheduledTime);
+        const dateString = date.toLocaleDateString('es-UY', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        if (!acc[dateString]) {
+            acc[dateString] = [];
+        }
+        acc[dateString].push(match);
+        return acc;
+    }, {} as Record<string, FullMatch[]>);
+};
+
 export function TeamSchedule({ matches }: TeamScheduleProps) {
-    if (!matches.length) {
+    if (!matches || !matches.length) {
         return (
             <CardContent className="p-6 text-center text-muted-foreground">
                 No hay partidos programados.
             </CardContent>
         );
     }
+
+    const groupedMatches = groupMatchesByDate(matches);
     
     return (
         <CardContent className="p-0">
             <div className="divide-y divide-border">
-                {matches.map(match => (
-                    <MatchItem key={match.id} match={match} />
+                {Object.entries(groupedMatches).map(([date, dateMatches]) => (
+                    <Fragment key={date}>
+                        <h3 className="bg-muted/50 px-4 py-2 text-sm font-semibold text-center uppercase tracking-wider text-muted-foreground">
+                            {date}
+                        </h3>
+                        <div className="divide-y divide-border">
+                            {dateMatches.map(match => (
+                                <MatchItem key={match.id} match={match} />
+                            ))}
+                        </div>
+                    </Fragment>
                 ))}
             </div>
         </CardContent>
@@ -32,62 +65,79 @@ function MatchItem({ match }: { match: FullMatch }) {
     const date = new Date(scheduledTime);
 
     const renderScoreOrTime = () => {
-        if (status === 'FINISHED') {
-            return (
-                <div className="text-center">
-                    <p className="text-2xl font-bold">{scoreA} - {scoreB}</p>
-                    <p className="text-xs text-red-500 font-semibold">FINAL</p>
-                </div>
-            );
+        switch(status) {
+            case 'FINISHED':
+                return (
+                    <div className="text-center">
+                        <p className="text-xs text-muted-foreground">FINAL</p>
+                        <p className="text-3xl font-bold tabular-nums">{scoreA} - {scoreB}</p>
+                        <Link href={`/resumen/${match.id}`} className="text-xs font-semibold text-primary hover:underline">
+                            RESUMEN
+                        </Link>
+                    </div>
+                );
+            case 'LIVE':
+                 return (
+                    <div className="text-center">
+                        <p className="text-xs font-semibold text-destructive animate-pulse">EN VIVO</p>
+                        <p className="text-3xl font-bold tabular-nums">{scoreA} - {scoreB}</p>
+                        <Link href={`/partidos/${match.id}`} className="text-xs font-semibold text-primary hover:underline">
+                            SEGUIR
+                        </Link>
+                    </div>
+                );
+            case 'SCHEDULED':
+            default:
+                if (date > new Date()) {
+                     return (
+                        <div className="text-center">
+                            <p className="text-lg font-bold">{date.toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' })}</p>
+                            <p className="text-xs text-muted-foreground">hs.</p>
+                            <Link href={`/partidos/${match.id}`} className="text-xs font-semibold text-primary hover:underline">
+                                VER PREVIA
+                            </Link>
+                        </div>
+                    );
+                }
+                return (
+                     <div className="text-center">
+                        <p className="text-lg font-bold">- -</p>
+                        <p className="text-xs text-muted-foreground mt-4">PENDIENTE</p>
+                    </div>
+                );
         }
-        if (status === 'LIVE') {
-            return (
-                <div className="text-center">
-                    <p className="text-2xl font-bold animate-pulse">{scoreA} - {scoreB}</p>
-                    <p className="text-xs text-green-500 font-semibold">EN VIVO</p>
-                </div>
-            );
-        }
-        return (
-            <div className="text-center">
-                <p className="text-lg font-bold">{date.toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' })}</p>
-                <p className="text-xs text-muted-foreground">hs.</p>
-            </div>
-        )
     }
 
     return (
          <div className="p-4 hover:bg-muted/50">
-            <p className="text-xs text-center text-muted-foreground mb-2 font-semibold">
-                {date.toLocaleDateString('es-UY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-            </p>
             <div className="grid grid-cols-3 items-center gap-4">
-                <TeamDisplay team={teamA} />
+                <TeamDisplay team={teamA} alignment="right" />
                 {renderScoreOrTime()}
                 <TeamDisplay team={teamB} alignment="left" />
             </div>
-            {(status === 'FINISHED' || status === 'LIVE') && (
-                <div className="text-center mt-2">
-                    <Link href={`/resumen/${match.id}`} className="text-sm font-semibold text-primary hover:underline">
-                        Ver Resumen
-                    </Link>
-                </div>
-            )}
         </div>
     )
 }
 
 function TeamDisplay({ team, alignment = "right" }: { team: FullMatch['teamA'], alignment?: "left" | "right" }) {
     return (
-        <div className={`flex items-center gap-4 ${alignment === 'right' ? 'flex-row-reverse justify-end' : 'flex-row justify-start'}`}>
+        <div className={cn(
+            "flex flex-col items-center gap-2 text-center",
+            alignment === 'right' ? 'md:flex-row-reverse' : 'md:flex-row'
+        )}>
             <Image
                 src={team.logoUrl || '/logofu.svg'}
                 alt={`Logo de ${team.name}`}
-                width={40}
-                height={40}
-                className="aspect-square object-contain"
+                width={56}
+                height={56}
+                className="w-14 h-14 aspect-square object-contain"
             />
-            <span className={`font-semibold text-sm md:text-base ${alignment === 'right' ? 'text-right' : 'text-left'}`}>{team.name}</span>
+            <span className={cn(
+                "font-semibold text-sm md:text-base text-foreground",
+                 alignment === 'right' ? 'md:text-right' : 'md:text-left'
+            )}>
+                {team.name}
+            </span>
         </div>
     )
 }
