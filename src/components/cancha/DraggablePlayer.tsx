@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useDrag } from 'react-dnd';
@@ -7,8 +6,7 @@ import { useGame } from '@/contexts/GameProvider';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ActionMenu } from './ActionMenu';
 import type { Player } from '@/types';
-import { useState }
-from 'react';
+import { useState } from 'react';
 
 const ItemTypes = {
   PLAYER: 'player',
