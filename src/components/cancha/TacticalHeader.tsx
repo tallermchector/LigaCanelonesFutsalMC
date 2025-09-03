@@ -28,7 +28,7 @@ const StatDisplay = ({ label, value, icon, hasPenalty }: { label: string, value:
     <div className="flex flex-col items-center gap-1 text-center text-white">
         <div className="flex items-center gap-1">
             <div className={cn('h-4 w-4', hasPenalty ? 'text-red-400' : 'text-white/70')}>{icon}</div>
-            <span className={cn('text-base md:text-lg font-bold', hasPenalty ? 'text-red-400' : 'text-white')}>
+            <span className={cn('text-xl md:text-2xl font-bold', hasPenalty ? 'text-red-400' : 'text-white')}>
                 {value}
             </span>
         </div>
