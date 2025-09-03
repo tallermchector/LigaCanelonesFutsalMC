@@ -5,44 +5,42 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider     = "postgresql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Team {
   id      Int      @id @default(autoincrement())
   name    String
-  logoUrl String?
   slug    String   @unique
+  logoUrl String?
   players Player[]
-
-  matchesA Match[] @relation("TeamAMatches")
-  matchesB Match[] @relation("TeamBMatches")
-
-  seasonTeams SeasonTeam[]
-
-  gameEvents GameEvent[]
+  teamA   Match[]  @relation("TeamA")
+  teamB   Match[]  @relation("TeamB")
+  // Temporada
+  seasons SeasonTeam[]
+  GameEvent GameEvent[]
 }
 
 model Player {
-  id          Int                @id @default(autoincrement())
-  name        String
-  number      Int
-  position    String?
-  birthDate   DateTime?
-  height      Int? // in cm
-  weight      Int? // in kg
-  nationality String?
-  teamId      Int
-  team        Team               @relation(fields: [teamId], references: [id])
-  events      GameEvent[]
-  matchStats  PlayerMatchStats[]
+  id                  Int                @id @default(autoincrement())
+  name                String
+  number              Int
+  position            String?
+  birthDate           DateTime?
+  height              Int? // en cm
+  weight              Int? // en kg
+  nationality         String?
+  teamId              Int
+  team                Team               @relation(fields: [teamId], references: [id])
+  gameEvents          GameEvent[]
+  playerMatchStats    PlayerMatchStats[]
+
+  @@index([teamId])
 }
 
 model Match {
@@ -55,39 +53,44 @@ model Match {
   scoreB           Int
   round            Int?
   period           Int
+  time             Int
+  isRunning        Boolean
   foulsA           Int
   foulsB           Int
   timeoutsA        Int
   timeoutsB        Int
-  isRunning        Boolean
   activePlayersA   Int[]
   activePlayersB   Int[]
-  teamA            Team               @relation("TeamAMatches", fields: [teamAId], references: [id])
-  teamB            Team               @relation("TeamBMatches", fields: [teamBId], references: [id])
+  teamA            Team               @relation("TeamA", fields: [teamAId], references: [id])
+  teamB            Team               @relation("TeamB", fields: [teamBId], references: [id])
   events           GameEvent[]
   playerMatchStats PlayerMatchStats[]
+
+  @@index([teamAId])
+  @@index([teamBId])
 }
 
 model GameEvent {
-  id           String     @id @default(cuid())
-  type         String
+  id           String    @id @default(cuid())
   matchId      Int
-  teamId       String?
-  playerId     Int?
+  type         String
   timestamp    Int
-  teamName     String?
+  teamId       Int?
+  playerId     Int?
   playerName   String?
+  teamName     String?
   playerInId   Int?
   playerInName String?
-  match        Match      @relation(fields: [matchId], references: [id])
-  player       Player?    @relation(fields: [playerId], references: [id])
+  match        Match   @relation(fields: [matchId], references: [id])
+  player       Player? @relation(fields: [playerId], references: [id])
+  Team         Team?   @relation(fields: [teamId], references: [id])
 }
 
 model PlayerMatchStats {
   id                  Int    @id @default(autoincrement())
   matchId             Int
   playerId            Int
-  timePlayedInSeconds Int
+  timePlayedInSeconds Int    @default(0)
   match               Match  @relation(fields: [matchId], references: [id])
   player              Player @relation(fields: [playerId], references: [id])
 
@@ -105,14 +108,6 @@ model SeasonTeam {
   seasonId  Int
   teamId    Int
   position  Int
-  points    Int
-  played    Int
-  won       Int
-  drawn     Int
-  lost      Int
-  goalsFor  Int
-  goalsAg   Int
-  goalDiff  Int
   season    Season @relation(fields: [seasonId], references: [id])
   team      Team   @relation(fields: [teamId], references: [id])
 
