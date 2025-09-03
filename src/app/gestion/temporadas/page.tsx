@@ -21,12 +21,14 @@ export default async function GestionTemporadasPage() {
                     description="Administra las temporadas de la liga, los equipos participantes y sus posiciones."
                 />
                  <div className="container mx-auto p-4 py-8 md:p-8">
-                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div className="lg:col-span-2">
+                     <div className="flex flex-col lg:flex-row gap-8">
+                        <div className="flex-grow lg:w-2/3">
                              <h2 className="text-2xl font-bold text-primary mb-4">Lista de Temporadas</h2>
-                             <SeasonDataTable columns={columns} data={seasons} />
+                             <div className="overflow-x-auto">
+                                <SeasonDataTable columns={columns} data={seasons} />
+                             </div>
                         </div>
-                        <div className="space-y-8">
+                        <div className="flex-shrink-0 lg:w-1/3 space-y-8">
                             <div>
                                 <h2 className="text-2xl font-bold text-primary mb-4">Crear Nueva Temporada</h2>
                                 <CreateSeasonForm />
