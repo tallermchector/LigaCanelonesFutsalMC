@@ -1,8 +1,7 @@
-
 'use client';
 
 import Image from 'next/image';
-import { Play } from 'lucide-react';
+import { Play, Timer } from 'lucide-react';
 import { useGame } from '@/contexts/GameProvider';
 import type { FullMatch, MatchStatus } from '@/types';
 
@@ -18,9 +17,16 @@ function getPeriodLabel(status: MatchStatus, period: number) {
     return `${period}T`;
 }
 
+const TimeoutIndicator = ({ count }: { count: number }) => (
+    <div className="hidden sm:flex items-center gap-1 text-xs font-semibold text-muted-foreground bg-gray-700/50 px-2 py-1 rounded-md">
+        <Timer className="h-3 w-3" />
+        <span>T.M: {count}</span>
+    </div>
+);
+
 export function TacticalHeader({ match }: { match: FullMatch }) {
   const { state } = useGame();
-  const { teamA, teamB, scoreA, scoreB, time, period, status, isRunning } = state;
+  const { teamA, teamB, scoreA, scoreB, time, period, status, isRunning, timeoutsA, timeoutsB } = state;
 
   if (!teamA || !teamB) {
     return null; // or a skeleton
@@ -31,8 +37,11 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
       {/* Team A */}
       <div className="flex items-center gap-2 md:gap-4 w-1/3 justify-start">
         <Image src={teamA.logoUrl || ''} alt={teamA.name} width={48} height={48} className="h-8 w-8 md:h-12 md:w-12"/>
-        <span className="hidden sm:block text-sm md:text-lg font-bold truncate">{teamA.name}</span>
-         <span className="block sm:hidden text-lg font-bold">{teamA.name.substring(0, 3)}</span>
+        <div className="flex flex-col items-start">
+            <span className="hidden sm:block text-sm md:text-lg font-bold truncate">{teamA.name}</span>
+            <span className="block sm:hidden text-lg font-bold">{teamA.name.substring(0, 3)}</span>
+            <TimeoutIndicator count={timeoutsA} />
+        </div>
       </div>
 
       {/* Score and Time */}
@@ -50,8 +59,11 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
 
       {/* Team B */}
       <div className="flex items-center justify-end gap-2 md:gap-4 w-1/3">
-        <span className="hidden sm:block text-sm md:text-lg font-bold truncate">{teamB.name}</span>
-        <span className="block sm:hidden text-lg font-bold">{teamB.name.substring(0, 3)}</span>
+        <div className="flex flex-col items-end">
+            <span className="hidden sm:block text-sm md:text-lg font-bold truncate">{teamB.name}</span>
+            <span className="block sm:hidden text-lg font-bold">{teamB.name.substring(0, 3)}</span>
+            <TimeoutIndicator count={timeoutsB} />
+        </div>
         <Image src={teamB.logoUrl || ''} alt={teamB.name} width={48} height={48} className="h-8 w-8 md:h-12 md:w-12"/>
       </div>
     </header>
