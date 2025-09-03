@@ -68,7 +68,7 @@ const updatePlayerTimeReducer = (state: GameState): GameState => {
     return { ...state, playerTimeTracker: newTracker };
 };
 
-const gameReducer = (state: GameState, action: GameAction): GameState => {
+const createGameReducer = (createGameEvent: (matchId: number, event: Omit<GameEvent, 'id' | 'matchId'>) => Promise<void>) => (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
     case 'LOAD_MATCH': {
       let baseState = action.payload.state || {
@@ -188,6 +188,8 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
                     timestamp: state.time,
                 };
                 
+                 if(state.matchId) createGameEvent(state.matchId, newEvent);
+                
                 const activePlayersKey = playerOut.teamId === 'A' ? 'activePlayersA' : 'activePlayersB';
                 const currentActivePlayers = state[activePlayersKey];
                 const updatedActivePlayers = currentActivePlayers.filter(id => id !== pOut.id).concat(pIn.id);
@@ -240,17 +242,20 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           playerInName: null,
       };
       
+      // Save to DB immediately
+      if(state.matchId) createGameEvent(state.matchId, newEvent);
+      
       let newState: GameState = { ...state, events: [...state.events, {...newEvent, id: Date.now().toString(), matchId: state.matchId}], selectedPlayer: null };
 
       if (action.payload.type === 'GOAL') {
-          newState = gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
+          newState = createGameReducer(createGameEvent)(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
       }
       if (action.payload.type === 'FOUL') {
-          newState = gameReducer(newState, { type: 'UPDATE_FOULS', payload: { team: teamId, delta: 1 } });
+          newState = createGameReducer(createGameEvent)(newState, { type: 'UPDATE_FOULS', payload: { team: teamId, delta: 1 } });
       }
       if (action.payload.type === 'TIMEOUT') {
           const timeoutTeamId = action.payload.teamId || teamId;
-          newState = gameReducer(newState, { type: 'UPDATE_TIMEOUTS', payload: { team: timeoutTeamId, delta: -1 } });
+          newState = createGameReducer(createGameEvent)(newState, { type: 'UPDATE_TIMEOUTS', payload: { team: timeoutTeamId, delta: -1 } });
       }
 
       return newState;
@@ -369,7 +374,7 @@ const GameContext = React.createContext<{
 } | undefined>(undefined);
 
 export const GameProvider: React.FC<GameProviderProps> = ({ children, match, saveMatchState, createGameEvent }) => {
-  const [state, dispatch] = React.useReducer(gameReducer, initialState);
+  const [state, dispatch] = React.useReducer(createGameReducer(createGameEvent), initialState);
   const { toast } = useToast();
 
 
@@ -433,18 +438,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
 
 
   React.useEffect(() => {
-    if(state.events.length > 0) {
-      const lastEvent = state.events[state.events.length -1];
-      if (state.matchId && lastEvent) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { id, matchId, ...eventData } = lastEvent;
-        createGameEvent(state.matchId, eventData);
-      }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.events]);
-
-  React.useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
     if (state.isRunning && state.time > 0) {
       timer = setInterval(() => {
@@ -493,7 +486,3 @@ export const useGame = () => {
   }
   return context;
 };
-
-    
-
-    
