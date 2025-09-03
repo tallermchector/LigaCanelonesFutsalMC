@@ -19,7 +19,7 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
     if (state.teamA && state.teamB && Object.keys(state.playerPositions).length === 0) {
         dispatch({ type: 'SET_INITIAL_POSITIONS' });
     }
-  }, [state.activePlayersA, state.activePlayersB, state.teamA, state.teamB, dispatch, state.playerPositions]);
+  }, [state.activePlayersA, state.activePlayersB, state.teamA, state.teamB, dispatch]);
 
 
   const [, drop] = useDrop(() => ({
@@ -44,9 +44,11 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
   }));
 
   // Combine the drop ref with our own boardRef
-  const dropRef = (el: HTMLDivElement) => {
-    drop(el);
-    (boardRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+  const dropRef = (el: HTMLDivElement | null) => {
+    if (el) {
+      drop(el);
+      (boardRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+    }
   };
 
 
@@ -93,4 +95,3 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
     </div>
   );
 }
-
