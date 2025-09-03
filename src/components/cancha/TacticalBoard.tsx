@@ -41,8 +41,8 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
         
         // 1-2-1 Formation for field players
         const formationSpots = team === 'A' ? 
-            [{x: 25, y: 50}, {x: 40, y: 30}, {x: 40, y: 70}, {x: 55, y: 50}] : // Team A (left)
-            [{x: 75, y: 50}, {x: 60, y: 30}, {x: 60, y: 70}, {x: 45, y: 50}];   // Team B (right)
+            [{x: 25, y: 50}, {x: 40, y: 25}, {x: 40, y: 75}, {x: 55, y: 50}] : // Team A (left)
+            [{x: 75, y: 50}, {x: 60, y: 25}, {x: 60, y: 75}, {x: 45, y: 50}];   // Team B (right)
         
         fieldPlayers.forEach((playerId, index) => {
             if (index < formationSpots.length) {

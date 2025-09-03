@@ -53,4 +53,3 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
     </header>
   );
 }
-
