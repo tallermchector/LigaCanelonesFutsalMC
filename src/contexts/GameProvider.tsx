@@ -1,7 +1,7 @@
 'use client';
 
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker, PlayerMatchStats } from '@/types';
-import React, from 'react';
+import React from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 type GameAction =
