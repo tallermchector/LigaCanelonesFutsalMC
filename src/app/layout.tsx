@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${roboto.variable} ${orbitron.variable}`}>
+    <html lang="es" className={`${roboto.variable} ${orbitron.variable}`} suppressHydrationWarning={true}>
       <head>
         <meta charSet="utf-8" />
         <title>Liga Canelones Futsal - Pasión por el Fútbol Sala</title>
