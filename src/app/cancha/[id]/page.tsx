@@ -85,43 +85,31 @@ export default function TacticalBoardPage() {
             <DndProvider backend={HTML5Backend}>
                 <div className="flex h-dvh w-screen flex-col bg-gray-900 text-white">
                     <TacticalHeader match={match} />
-                    <main className="flex-grow flex flex-col lg:flex-row p-2 gap-2 overflow-hidden">
+                    <main className="flex-grow flex flex-col md:flex-row p-2 gap-2 overflow-hidden">
                         {/* Desktop: Left Panel */}
-                        <div className="hidden lg:block w-72 flex-shrink-0">
+                        <div className="hidden md:block w-72 flex-shrink-0">
                           <TeamPanel teamId="A" />
                         </div>
                         
-                        {/* Main Content: Board */}
-                        <div className="flex-grow relative h-full w-full">
-                            <TacticalBoard match={match} />
+                        {/* Main Content: Board & Mobile Actions */}
+                        <div className="flex-grow flex flex-col h-full w-full relative">
+                            <div className="flex-grow relative h-full w-full">
+                                <TacticalBoard match={match} />
+                            </div>
+                            <div className="md:hidden flex-shrink-0 mt-2">
+                                <TacticalActions />
+                            </div>
                         </div>
                         
                          {/* Desktop: Right Panel */}
-                        <div className="hidden lg:block w-72 flex-shrink-0">
+                        <div className="hidden md:block w-72 flex-shrink-0">
                           <TeamPanel teamId="B" />
                         </div>
-                        
-                        {/* Mobile: Tabbed Panels - Hidden entirely on this page */}
-                        <div className="hidden">
-                             <Tabs defaultValue="teamA" className="w-full">
-                                <TabsList className="grid w-full grid-cols-2">
-                                    <TabsTrigger value="teamA">{match.teamA.name}</TabsTrigger>
-                                    <TabsTrigger value="teamB">{match.teamB.name}</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value="teamA" className="mt-2">
-                                    <div className="h-48">
-                                        <TeamPanel teamId="A" />
-                                    </div>
-                                </TabsContent>
-                                <TabsContent value="teamB" className="mt-2">
-                                     <div className="h-48">
-                                        <TeamPanel teamId="B" />
-                                     </div>
-                                </TabsContent>
-                             </Tabs>
-                        </div>
+
                     </main>
-                    <TacticalActions />
+                    <div className="hidden md:block flex-shrink-0">
+                      <TacticalActions />
+                    </div>
                 </div>
             </DndProvider>
         </GameProvider>

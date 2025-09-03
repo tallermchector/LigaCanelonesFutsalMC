@@ -1,0 +1,102 @@
+[
+  {
+    "id": "match-1756711145960",
+    "scheduledTime": "2025-09-01T07:18:54.782Z",
+    "status": "SCHEDULED",
+    "teamAId": 1,
+    "teamBId": 10,
+    "scoreA": 0,
+    "scoreB": 0,
+    "foulsA": 0,
+    "foulsB": 0,
+    "timeoutsA": 1,
+    "timeoutsB": 1,
+    "period": 1,
+    "time": 1200,
+    "isRunning": false,
+    "round": 1,
+    "activePlayersA": [],
+    "activePlayersB": []
+  },
+  {
+    "id": "match-1756711161543",
+    "scheduledTime": "2025-09-01T07:19:14.278Z",
+    "status": "SCHEDULED",
+    "teamAId": 13,
+    "teamBId": 14,
+    "scoreA": 0,
+    "scoreB": 0,
+    "foulsA": 0,
+    "foulsB": 0,
+    "timeoutsA": 1,
+    "timeoutsB": 1,
+    "period": 1,
+    "time": 1200,
+    "isRunning": false,
+    "round": 1,
+    "activePlayersA": [],
+    "activePlayersB": []
+  },
+  {
+    "id": "match-1756711153834",
+    "scheduledTime": "2025-09-01T07:19:07.315Z",
+    "status": "LIVE",
+    "teamAId": 11,
+    "teamBId": 12,
+    "scoreA": 1,
+    "scoreB": 0,
+    "foulsA": 0,
+    "foulsB": 0,
+    "timeoutsA": 0,
+    "timeoutsB": 0,
+    "period": 1,
+    "time": 901,
+    "isRunning": true,
+    "round": 1,
+    "activePlayersA": [
+      22,
+      23,
+      25,
+      26,
+      28
+    ],
+    "activePlayersB": [
+      31,
+      32,
+      33,
+      35,
+      36
+    ]
+  },
+  {
+    "id": "match-1756907349479",
+    "scheduledTime": "2025-09-03T13:48:56.670Z",
+    "status": "SCHEDULED",
+    "teamAId": 15,
+    "teamBId": 2,
+    "scoreA": 0,
+    "scoreB": 0,
+    "foulsA": 0,
+    "foulsB": 0,
+    "timeoutsA": 0,
+    "timeoutsB": 0,
+    "period": 1,
+    "time": 1200,
+    "isRunning": false,
+    "round": 1,
+    "activePlayersA": [
+      65,
+      62,
+      63,
+      66,
+      69
+    ],
+    "activePlayersB": [
+      77,
+      78,
+      79,
+      76,
+      74
+    ]
+  }
+]

@@ -1,0 +1,1045 @@
+[
+  {
+    "id": 1,
+    "name": "Daniel Fernández",
+    "number": 27,
+    "position": "Winger",
+    "teamId": 1
+  },
+  {
+    "id": 2,
+    "name": "Javier Gómez",
+    "number": 2,
+    "position": "Defender",
+    "teamId": 1
+  },
+  {
+    "id": 3,
+    "name": "Fernando Ruiz",
+    "number": 73,
+    "position": "Winger",
+    "teamId": 1
+  },
+  {
+    "id": 4,
+    "name": "Sergio Hernández",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 1
+  },
+  {
+    "id": 5,
+    "name": "Pablo Díaz",
+    "number": 15,
+    "position": "Pivot",
+    "teamId": 1
+  },
+  {
+    "id": 6,
+    "name": "Luis Martínez",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 1
+  },
+  {
+    "id": 7,
+    "name": "Pablo Ruiz",
+    "number": 97,
+    "position": "Winger",
+    "teamId": 1
+  },
+  {
+    "id": 8,
+    "name": "Andrés García",
+    "number": 61,
+    "position": "Pivot",
+    "teamId": 1
+  },
+  {
+    "id": 9,
+    "name": "Matías López",
+    "number": 58,
+    "position": "Winger",
+    "teamId": 1
+  },
+  {
+    "id": 10,
+    "name": "Matías Sánchez",
+    "number": 98,
+    "position": "Defender",
+    "teamId": 1
+  },
+  {
+    "id": 11,
+    "name": "Juan Martín",
+    "number": 37,
+    "position": "Winger",
+    "teamId": 10
+  },
+  {
+    "id": 12,
+    "name": "Diego Fernández",
+    "number": 21,
+    "position": "Winger",
+    "teamId": 10
+  },
+  {
+    "id": 13,
+    "name": "Diego García",
+    "number": 75,
+    "position": "Winger",
+    "teamId": 10
+  },
+  {
+    "id": 14,
+    "name": "Juan Jiménez",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 10
+  },
+  {
+    "id": 15,
+    "name": "Pablo Martín",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 10
+  },
+  {
+    "id": 16,
+    "name": "Pablo Gómez",
+    "number": 14,
+    "position": "Winger",
+    "teamId": 10
+  },
+  {
+    "id": 17,
+    "name": "Nicolás González",
+    "number": 49,
+    "position": "Pivot",
+    "teamId": 10
+  },
+  {
+    "id": 18,
+    "name": "Javier García",
+    "number": 66,
+    "position": "Pivot",
+    "teamId": 10
+  },
+  {
+    "id": 19,
+    "name": "Miguel Martín",
+    "number": 90,
+    "position": "Defender",
+    "teamId": 10
+  },
+  {
+    "id": 20,
+    "name": "Daniel García",
+    "number": 20,
+    "position": "Winger",
+    "teamId": 10
+  },
+  {
+    "id": 21,
+    "name": "Miguel González",
+    "number": 49,
+    "position": "Defender",
+    "teamId": 11
+  },
+  {
+    "id": 22,
+    "name": "Fernando Martínez",
+    "number": 67,
+    "position": "Pivot",
+    "teamId": 11
+  },
+  {
+    "id": 23,
+    "name": "Andrés Rodríguez",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 11
+  },
+  {
+    "id": 24,
+    "name": "Sergio Fernández",
+    "number": 52,
+    "position": "Pivot",
+    "teamId": 11
+  },
+  {
+    "id": 25,
+    "name": "Matías Sánchez",
+    "number": 97,
+    "position": "Pivot",
+    "teamId": 11
+  },
+  {
+    "id": 26,
+    "name": "Pablo Sánchez",
+    "number": 68,
+    "position": "Defender",
+    "teamId": 11
+  },
+  {
+    "id": 27,
+    "name": "Nicolás Fernández",
+    "number": 93,
+    "position": "Winger",
+    "teamId": 11
+  },
+  {
+    "id": 28,
+    "name": "David García",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 11
+  },
+  {
+    "id": 29,
+    "name": "Matías Rodríguez",
+    "number": 31,
+    "position": "Winger",
+    "teamId": 11
+  },
+  {
+    "id": 30,
+    "name": "Daniel Ruiz",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 11
+  },
+  {
+    "id": 31,
+    "name": "José Jiménez",
+    "number": 96,
+    "position": "Defender",
+    "teamId": 12
+  },
+  {
+    "id": 32,
+    "name": "Andrés Jiménez",
+    "number": 23,
+    "position": "Defender",
+    "teamId": 12
+  },
+  {
+    "id": 33,
+    "name": "Sergio Jiménez",
+    "number": 66,
+    "position": "Defender",
+    "teamId": 12
+  },
+  {
+    "id": 34,
+    "name": "Carlos Ruiz",
+    "number": 8,
+    "position": "Defender",
+    "teamId": 12
+  },
+  {
+    "id": 35,
+    "name": "Javier Ruiz",
+    "number": 72,
+    "position": "Defender",
+    "teamId": 12
+  },
+  {
+    "id": 36,
+    "name": "Diego Jiménez",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 12
+  },
+  {
+    "id": 37,
+    "name": "Miguel López",
+    "number": 69,
+    "position": "Winger",
+    "teamId": 12
+  },
+  {
+    "id": 38,
+    "name": "Miguel González",
+    "number": 19,
+    "position": "Pivot",
+    "teamId": 12
+  },
+  {
+    "id": 39,
+    "name": "Carlos Díaz",
+    "number": 83,
+    "position": "Winger",
+    "teamId": 12
+  },
+  {
+    "id": 40,
+    "name": "Juan Moreno",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 12
+  },
+  {
+    "id": 41,
+    "name": "Nicolás Jiménez",
+    "number": 49,
+    "position": "Defender",
+    "teamId": 13
+  },
+  {
+    "id": 42,
+    "name": "Carlos Fernández",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 13
+  },
+  {
+    "id": 43,
+    "name": "Miguel García",
+    "number": 95,
+    "position": "Pivot",
+    "teamId": 13
+  },
+  {
+    "id": 44,
+    "name": "Diego Martín",
+    "number": 31,
+    "position": "Winger",
+    "teamId": 13
+  },
+  {
+    "id": 45,
+    "name": "Pablo Díaz",
+    "number": 68,
+    "position": "Pivot",
+    "teamId": 13
+  },
+  {
+    "id": 46,
+    "name": "Daniel Ruiz",
+    "number": 60,
+    "position": "Winger",
+    "teamId": 13
+  },
+  {
+    "id": 47,
+    "name": "David Fernández",
+    "number": 77,
+    "position": "Pivot",
+    "teamId": 13
+  },
+  {
+    "id": 48,
+    "name": "Miguel Hernández",
+    "number": 89,
+    "position": "Winger",
+    "teamId": 13
+  },
+  {
+    "id": 49,
+    "name": "Andrés Pérez",
+    "number": 19,
+    "position": "Defender",
+    "teamId": 13
+  },
+  {
+    "id": 50,
+    "name": "Javier López",
+    "number": 54,
+    "position": "Winger",
+    "teamId": 13
+  },
+  {
+    "id": 51,
+    "name": "Sergio García",
+    "number": 71,
+    "position": "Pivot",
+    "teamId": 14
+  },
+  {
+    "id": 52,
+    "name": "Nicolás Hernández",
+    "number": 34,
+    "position": "Defender",
+    "teamId": 14
+  },
+  {
+    "id": 53,
+    "name": "Luis Sánchez",
+    "number": 11,
+    "position": "Winger",
+    "teamId": 14
+  },
+  {
+    "id": 54,
+    "name": "Carlos Hernández",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 14
+  },
+  {
+    "id": 55,
+    "name": "Luis Díaz",
+    "number": 48,
+    "position": "Pivot",
+    "teamId": 14
+  },
+  {
+    "id": 56,
+    "name": "José Díaz",
+    "number": 35,
+    "position": "Pivot",
+    "teamId": 14
+  },
+  {
+    "id": 57,
+    "name": "Nicolás García",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 14
+  },
+  {
+    "id": 58,
+    "name": "Luis Martín",
+    "number": 18,
+    "position": "Winger",
+    "teamId": 14
+  },
+  {
+    "id": 59,
+    "name": "Pablo Pérez",
+    "number": 43,
+    "position": "Winger",
+    "teamId": 14
+  },
+  {
+    "id": 60,
+    "name": "Nicolás Moreno",
+    "number": 17,
+    "position": "Winger",
+    "teamId": 14
+  },
+  {
+    "id": 61,
+    "name": "Diego Díaz",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 15
+  },
+  {
+    "id": 62,
+    "name": "Diego Jiménez",
+    "number": 62,
+    "position": "Defender",
+    "teamId": 15
+  },
+  {
+    "id": 63,
+    "name": "Juan Jiménez",
+    "number": 47,
+    "position": "Winger",
+    "teamId": 15
+  },
+  {
+    "id": 64,
+    "name": "Javier Rodríguez",
+    "number": 84,
+    "position": "Defender",
+    "teamId": 15
+  },
+  {
+    "id": 65,
+    "name": "Pablo García",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 15
+  },
+  {
+    "id": 66,
+    "name": "Diego Fernández",
+    "number": 89,
+    "position": "Winger",
+    "teamId": 15
+  },
+  {
+    "id": 67,
+    "name": "Daniel Jiménez",
+    "number": 41,
+    "position": "Defender",
+    "teamId": 15
+  },
+  {
+    "id": 68,
+    "name": "Sergio Moreno",
+    "number": 85,
+    "position": "Defender",
+    "teamId": 15
+  },
+  {
+    "id": 69,
+    "name": "Fernando López",
+    "number": 39,
+    "position": "Pivot",
+    "teamId": 15
+  },
+  {
+    "id": 70,
+    "name": "Diego López",
+    "number": 11,
+    "position": "Pivot",
+    "teamId": 15
+  },
+  {
+    "id": 71,
+    "name": "Miguel Gómez",
+    "number": 8,
+    "position": "Defender",
+    "teamId": 2
+  },
+  {
+    "id": 72,
+    "name": "Diego Ruiz",
+    "number": 67,
+    "position": "Winger",
+    "teamId": 2
+  },
+  {
+    "id": 73,
+    "name": "Pablo Martín",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 2
+  },
+  {
+    "id": 74,
+    "name": "Juan Pérez",
+    "number": 73,
+    "position": "Defender",
+    "teamId": 2
+  },
+  {
+    "id": 75,
+    "name": "Miguel Pérez",
+    "number": 93,
+    "position": "Winger",
+    "teamId": 2
+  },
+  {
+    "id": 76,
+    "name": "Diego García",
+    "number": 56,
+    "position": "Pivot",
+    "teamId": 2
+  },
+  {
+    "id": 77,
+    "name": "Daniel López",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 2
+  },
+  {
+    "id": 78,
+    "name": "Diego Jiménez",
+    "number": 57,
+    "position": "Defender",
+    "teamId": 2
+  },
+  {
+    "id": 79,
+    "name": "Fernando Jiménez",
+    "number": 96,
+    "position": "Defender",
+    "teamId": 2
+  },
+  {
+    "id": 80,
+    "name": "Sergio Ruiz",
+    "number": 93,
+    "position": "Pivot",
+    "teamId": 2
+  },
+  {
+    "id": 81,
+    "name": "Nicolás Gómez",
+    "number": 71,
+    "position": "Winger",
+    "teamId": 3
+  },
+  {
+    "id": 82,
+    "name": "José Díaz",
+    "number": 96,
+    "position": "Defender",
+    "teamId": 3
+  },
+  {
+    "id": 83,
+    "name": "Matías Moreno",
+    "number": 44,
+    "position": "Winger",
+    "teamId": 3
+  },
+  {
+    "id": 84,
+    "name": "Miguel Martín",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 3
+  },
+  {
+    "id": 85,
+    "name": "Andrés Jiménez",
+    "number": 27,
+    "position": "Pivot",
+    "teamId": 3
+  },
+  {
+    "id": 86,
+    "name": "David Ruiz",
+    "number": 88,
+    "position": "Pivot",
+    "teamId": 3
+  },
+  {
+    "id": 87,
+    "name": "Fernando Martín",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 3
+  },
+  {
+    "id": 88,
+    "name": "Javier Jiménez",
+    "number": 97,
+    "position": "Winger",
+    "teamId": 3
+  },
+  {
+    "id": 89,
+    "name": "Matías Ruiz",
+    "number": 31,
+    "position": "Pivot",
+    "teamId": 3
+  },
+  {
+    "id": 90,
+    "name": "David Gómez",
+    "number": 68,
+    "position": "Pivot",
+    "teamId": 3
+  },
+  {
+    "id": 91,
+    "name": "David Pérez",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 4
+  },
+  {
+    "id": 92,
+    "name": "José Hernández",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 4
+  },
+  {
+    "id": 93,
+    "name": "José Díaz",
+    "number": 25,
+    "position": "Winger",
+    "teamId": 4
+  },
+  {
+    "id": 94,
+    "name": "Javier Díaz",
+    "number": 3,
+    "position": "Winger",
+    "teamId": 4
+  },
+  {
+    "id": 95,
+    "name": "Sergio González",
+    "number": 6,
+    "position": "Pivot",
+    "teamId": 4
+  },
+  {
+    "id": 96,
+    "name": "Fernando Martín",
+    "number": 13,
+    "position": "Winger",
+    "teamId": 4
+  },
+  {
+    "id": 97,
+    "name": "Sergio García",
+    "number": 71,
+    "position": "Winger",
+    "teamId": 4
+  },
+  {
+    "id": 98,
+    "name": "Miguel Moreno",
+    "number": 84,
+    "position": "Winger",
+    "teamId": 4
+  },
+  {
+    "id": 99,
+    "name": "Luis Martín",
+    "number": 66,
+    "position": "Defender",
+    "teamId": 4
+  },
+  {
+    "id": 100,
+    "name": "Javier Hernández",
+    "number": 76,
+    "position": "Winger",
+    "teamId": 4
+  },
+  {
+    "id": 101,
+    "name": "Nicolás Martínez",
+    "number": 99,
+    "position": "Pivot",
+    "teamId": 5
+  },
+  {
+    "id": 102,
+    "name": "Diego Martín",
+    "number": 88,
+    "position": "Defender",
+    "teamId": 5
+  },
+  {
+    "id": 103,
+    "name": "Juan Rodríguez",
+    "number": 62,
+    "position": "Winger",
+    "teamId": 5
+  },
+  {
+    "id": 104,
+    "name": "Pablo López",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 5
+  },
+  {
+    "id": 105,
+    "name": "Fernando Martín",
+    "number": 82,
+    "position": "Pivot",
+    "teamId": 5
+  },
+  {
+    "id": 106,
+    "name": "Luis Díaz",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 5
+  },
+  {
+    "id": 107,
+    "name": "José Díaz",
+    "number": 28,
+    "position": "Defender",
+    "teamId": 5
+  },
+  {
+    "id": 108,
+    "name": "Andrés Jiménez",
+    "number": 70,
+    "position": "Pivot",
+    "teamId": 5
+  },
+  {
+    "id": 109,
+    "name": "José Fernández",
+    "number": 59,
+    "position": "Winger",
+    "teamId": 5
+  },
+  {
+    "id": 110,
+    "name": "Sergio López",
+    "number": 39,
+    "position": "Pivot",
+    "teamId": 5
+  },
+  {
+    "id": 111,
+    "name": "David Jiménez",
+    "number": 74,
+    "position": "Pivot",
+    "teamId": 6
+  },
+  {
+    "id": 112,
+    "name": "Nicolás López",
+    "number": 44,
+    "position": "Pivot",
+    "teamId": 6
+  },
+  {
+    "id": 113,
+    "name": "Luis Martín",
+    "number": 72,
+    "position": "Pivot",
+    "teamId": 6
+  },
+  {
+    "id": 114,
+    "name": "David Hernández",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 6
+  },
+  {
+    "id": 115,
+    "name": "Andrés Pérez",
+    "number": 67,
+    "position": "Pivot",
+    "teamId": 6
+  },
+  {
+    "id": 116,
+    "name": "Sergio Jiménez",
+    "number": 14,
+    "position": "Defender",
+    "teamId": 6
+  },
+  {
+    "id": 117,
+    "name": "Pablo López",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 6
+  },
+  {
+    "id": 118,
+    "name": "Fernando González",
+    "number": 2,
+    "position": "Pivot",
+    "teamId": 6
+  },
+  {
+    "id": 119,
+    "name": "Javier Hernández",
+    "number": 81,
+    "position": "Winger",
+    "teamId": 6
+  },
+  {
+    "id": 120,
+    "name": "Sergio Díaz",
+    "number": 86,
+    "position": "Winger",
+    "teamId": 6
+  },
+  {
+    "id": 121,
+    "name": "Javier González",
+    "number": 62,
+    "position": "Winger",
+    "teamId": 7
+  },
+  {
+    "id": 122,
+    "name": "Nicolás Moreno",
+    "number": 33,
+    "position": "Winger",
+    "teamId": 7
+  },
+  {
+    "id": 123,
+    "name": "Fernando Díaz",
+    "number": 65,
+    "position": "Defender",
+    "teamId": 7
+  },
+  {
+    "id": 124,
+    "name": "Carlos Jiménez",
+    "number": 66,
+    "position": "Winger",
+    "teamId": 7
+  },
+  {
+    "id": 125,
+    "name": "Carlos Ruiz",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 7
+  },
+  {
+    "id": 126,
+    "name": "Diego Martín",
+    "number": 54,
+    "position": "Winger",
+    "teamId": 7
+  },
+  {
+    "id": 127,
+    "name": "Luis López",
+    "number": 75,
+    "position": "Pivot",
+    "teamId": 7
+  },
+  {
+    "id": 128,
+    "name": "Juan Moreno",
+    "number": 88,
+    "position": "Pivot",
+    "teamId": 7
+  },
+  {
+    "id": 129,
+    "name": "Pablo Ruiz",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 7
+  },
+  {
+    "id": 130,
+    "name": "Luis García",
+    "number": 9,
+    "position": "Pivot",
+    "teamId": 7
+  },
+  {
+    "id": 131,
+    "name": "Nicolás González",
+    "number": 79,
+    "position": "Winger",
+    "teamId": 8
+  },
+  {
+    "id": 132,
+    "name": "José Martín",
+    "number": 20,
+    "position": "Pivot",
+    "teamId": 8
+  },
+  {
+    "id": 133,
+    "name": "Matías García",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 8
+  },
+  {
+    "id": 134,
+    "name": "Daniel López",
+    "number": 80,
+    "position": "Pivot",
+    "teamId": 8
+  },
+  {
+    "id": 135,
+    "name": "Fernando Moreno",
+    "number": 28,
+    "position": "Pivot",
+    "teamId": 8
+  },
+  {
+    "id": 136,
+    "name": "Nicolás Hernández",
+    "number": 47,
+    "position": "Winger",
+    "teamId": 8
+  },
+  {
+    "id": 137,
+    "name": "Sergio Fernández",
+    "number": 54,
+    "position": "Pivot",
+    "teamId": 8
+  },
+  {
+    "id": 138,
+    "name": "Juan Sánchez",
+    "number": 96,
+    "position": "Winger",
+    "teamId": 8
+  },
+  {
+    "id": 139,
+    "name": "Fernando Hernández",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 8
+  },
+  {
+    "id": 140,
+    "name": "Diego Sánchez",
+    "number": 61,
+    "position": "Pivot",
+    "teamId": 8
+  },
+  {
+    "id": 141,
+    "name": "Pablo Fernández",
+    "number": 20,
+    "position": "Winger",
+    "teamId": 9
+  },
+  {
+    "id": 142,
+    "name": "Matías Sánchez",
+    "number": 40,
+    "position": "Defender",
+    "teamId": 9
+  },
+  {
+    "id": 143,
+    "name": "Juan Fernández",
+    "number": 4,
+    "position": "Winger",
+    "teamId": 9
+  },
+  {
+    "id": 144,
+    "name": "Matías Díaz",
+    "number": 51,
+    "position": "Pivot",
+    "teamId": 9
+  },
+  {
+    "id": 145,
+    "name": "Pablo González",
+    "number": 88,
+    "position": "Pivot",
+    "teamId": 9
+  },
+  {
+    "id": 146,
+    "name": "Fernando Rodríguez",
+    "number": 12,
+    "position": "Goalkeeper",
+    "teamId": 9
+  },
+  {
+    "id": 147,
+    "name": "Javier Jiménez",
+    "number": 1,
+    "position": "Goalkeeper",
+    "teamId": 9
+  },
+  {
+    "id": 148,
+    "name": "Juan Rodríguez",
+    "number": 18,
+    "position": "Pivot",
+    "teamId": 9
+  },
+  {
+    "id": 149,
+    "name": "Fernando Martínez",
+    "number": 91,
+    "position": "Pivot",
+    "teamId": 9
+  }
+]
