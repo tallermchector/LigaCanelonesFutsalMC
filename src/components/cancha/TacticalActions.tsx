@@ -33,7 +33,7 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
 
   return (
     <footer className="flex-shrink-0 border-t border-gray-700 bg-gray-800/50 p-2 backdrop-blur-sm">
-        <div className="mx-auto flex w-full max-w-5xl flex-row items-center justify-between gap-2">
+        <div className="mx-auto flex w-full flex-row items-center justify-between gap-2">
             
             {/* Team A Panel Toggle */}
             <Button
@@ -86,7 +86,7 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                             {state.isRunning ? <Pause className="mr-2 h-5 w-5"/> : <Play className="mr-2 h-5 w-5"/>}
                             {state.isRunning ? 'Pausar' : 'Iniciar'}
                         </Button>
-                        <Button variant="destructive" onClick={async () => await handleFinishMatch()} size="lg" disabled={!isMatchLive}>
+                        <Button variant="destructive" onClick={handleFinishMatch} size="lg" disabled={!isMatchLive}>
                             <CheckCircle className="mr-2 h-5 w-5" />
                             Finalizar
                         </Button>
@@ -128,7 +128,7 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                 </Button>
             </div>
             <div className="hidden md:flex items-center justify-end gap-2 w-32">
-                 <Button variant="destructive" onClick={async () => await handleFinishMatch()} size="lg" className="w-full" disabled={!isMatchLive}>
+                 <Button variant="destructive" onClick={handleFinishMatch} size="lg" className="w-full" disabled={!isMatchLive}>
                     <CheckCircle className="mr-2 h-5 w-5" />
                     Finalizar
                 </Button>
