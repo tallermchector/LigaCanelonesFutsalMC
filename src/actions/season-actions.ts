@@ -13,11 +13,6 @@ type StandingWithTeam = SeasonTeam & { team: Team };
  */
 export async function getStandings(seasonId: number): Promise<StandingWithTeam[]> {
     try {
-        // Aseguramos que el cliente de Prisma tenga el modelo `seasonTeam`
-        if (!prisma.seasonTeam) {
-            throw new Error("El modelo 'SeasonTeam' no se encuentra en el cliente de Prisma. Revisa tu schema.prisma y regenera el cliente.");
-        }
-
         const standings = await prisma.seasonTeam.findMany({
             where: {
                 seasonId: seasonId,
