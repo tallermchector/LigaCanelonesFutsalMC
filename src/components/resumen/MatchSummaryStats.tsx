@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { MatchStats, GameEventType, PlayerStat } from '@/types';
+import type { MatchStats, GameEventType, PlayerStat, Team } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
@@ -59,35 +59,55 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
     );
 };
 
-const StatLeaders = ({ title, icon, leaders }: { title: string, icon: React.ReactNode, leaders: PlayerStat[] }) => {
+const PlayerStatItem = ({ player, count }: { player: PlayerStat['player'], count: PlayerStat['count'] }) => {
+    if (!player.team) return null;
+    const teamSlug = player.team.name.toLowerCase().replace(/\s+/g, '-');
+    return (
+        <Card className="bg-black/20 border border-white/10 hover:bg-white/10 transition-colors">
+            <CardContent className="p-2 flex items-center justify-between">
+                <div className="flex items-center gap-2 overflow-hidden">
+                     <Link href={`/clubes/${teamSlug}`} className="shrink-0">
+                        <Image
+                            src={player.team?.logoUrl || '/placeholder-player.png'}
+                            alt={player.name}
+                            width={24}
+                            height={24}
+                            className="w-6 h-6 rounded-full object-cover bg-white/20 p-0.5"
+                        />
+                     </Link>
+                     <Link href={`/jugadores/${player.id}`} className="font-semibold text-sm hover:text-primary truncate">
+                        {player.name}
+                     </Link>
+                </div>
+                <span className="font-bold text-lg tabular-nums shrink-0">{count}</span>
+            </CardContent>
+        </Card>
+    )
+}
+
+const StatLeaders = ({ title, icon, leaders, teamA, teamB }: { title: string, icon: React.ReactNode, leaders: PlayerStat[], teamA: Team, teamB: Team }) => {
     if (!leaders || leaders.length === 0) return null;
+    
+    const teamALeaders = leaders.filter(l => l.player.teamId === teamA.id).slice(0, 3);
+    const teamBLeaders = leaders.filter(l => l.player.teamId === teamB.id).slice(0, 3);
 
     return (
         <div>
-            <h3 className="flex items-center gap-2 font-bold text-lg mb-2">
+            <h3 className="flex items-center justify-center gap-2 font-bold text-lg mb-4 text-center">
                 {icon}
                 <span>{title}</span>
             </h3>
-            <div className="space-y-2">
-                {leaders.slice(0, 3).map(({ player, count }) => (
-                     <Link key={player.id} href={`/jugadores/${player.id}`} className="block group">
-                        <Card className="bg-black/20 border border-white/10 hover:bg-white/10 transition-colors">
-                            <CardContent className="p-2 flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                     <Image
-                                        src={player.team?.logoUrl || '/placeholder-player.png'}
-                                        alt={player.name}
-                                        width={24}
-                                        height={24}
-                                        className="w-6 h-6 rounded-full object-cover bg-white/20 p-0.5"
-                                    />
-                                    <span className="font-semibold text-sm group-hover:text-primary">{player.name}</span>
-                                </div>
-                                <span className="font-bold text-lg tabular-nums">{count}</span>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                ))}
+            <div className="grid grid-cols-2 gap-4">
+                 <div className="space-y-2">
+                     {teamALeaders.map(({ player, count }) => (
+                         <PlayerStatItem key={player.id} player={player} count={count} />
+                     ))}
+                 </div>
+                 <div className="space-y-2">
+                      {teamBLeaders.map(({ player, count }) => (
+                         <PlayerStatItem key={player.id} player={player} count={count} />
+                     ))}
+                 </div>
             </div>
         </div>
     );
@@ -98,23 +118,18 @@ export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
 
     const getStatCount = (teamId: number, eventType: GameEventType) => {
         return events.filter(e => {
-            const playerTeam = teamA.players.some(p => p.id === e.playerId) ? 'A' : 'B';
-            const targetTeamId = teamA.id === teamId ? 'A' : 'B';
-            return playerTeam === targetTeamId && e.type === eventType;
+            const playerTeam = match.teamA.players.some(p => p.id === e.playerId) ? match.teamA.id : match.teamB.id;
+            return playerTeam === teamId && e.type === eventType;
         }).length;
     };
     
-    const getTeamId = (team: 'A' | 'B') => {
-        return team === 'A' ? match.teamA.id : match.teamB.id;
-    }
-
     const statsData = [
         { label: 'Goles', valueA: match.scoreA, valueB: match.scoreB },
-        { label: 'Asistencias', valueA: getStatCount(getTeamId('A'), 'ASSIST'), valueB: getStatCount(getTeamId('B'), 'ASSIST') },
-        { label: 'Tiros al Arco', valueA: getStatCount(getTeamId('A'), 'SHOT'), valueB: getStatCount(getTeamId('B'), 'SHOT') },
-        { label: 'Faltas', valueA: getStatCount(getTeamId('A'), 'FOUL'), valueB: getStatCount(getTeamId('B'), 'FOUL') },
-        { label: 'Tarjetas Amarillas', valueA: getStatCount(getTeamId('A'), 'YELLOW_CARD'), valueB: getStatCount(getTeamId('B'), 'YELLOW_CARD') },
-        { label: 'Tarjetas Rojas', valueA: getStatCount(getTeamId('A'), 'RED_CARD'), valueB: getStatCount(getTeamId('B'), 'RED_CARD') },
+        { label: 'Asistencias', valueA: getStatCount(teamA.id, 'ASSIST'), valueB: getStatCount(teamB.id, 'ASSIST') },
+        { label: 'Tiros al Arco', valueA: getStatCount(teamA.id, 'SHOT'), valueB: getStatCount(teamB.id, 'SHOT') },
+        { label: 'Faltas', valueA: getStatCount(teamA.id, 'FOUL'), valueB: getStatCount(teamB.id, 'FOUL') },
+        { label: 'Tarjetas Amarillas', valueA: getStatCount(teamA.id, 'YELLOW_CARD'), valueB: getStatCount(teamB.id, 'YELLOW_CARD') },
+        { label: 'Tarjetas Rojas', valueA: getStatCount(teamA.id, 'RED_CARD'), valueB: getStatCount(teamB.id, 'RED_CARD') },
     ];
     
     return (
@@ -129,10 +144,9 @@ export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
                     ))}
                 </CardContent>
             </Card>
-            <div className="space-y-6">
-                <StatLeaders title="Goleadores" icon={<FutsalBallIcon />} leaders={stats.topScorers} />
-                <StatLeaders title="Asistencias" icon={<Hand />} leaders={stats.assistsLeaders} />
-                <StatLeaders title="Tiros" icon={<Target />} leaders={stats.shotsByPlayer} />
+            <div className="space-y-6 text-white">
+                <StatLeaders title="Goleadores" icon={<FutsalBallIcon />} leaders={stats.topScorers} teamA={teamA} teamB={teamB} />
+                <StatLeaders title="Asistencias" icon={<Hand />} leaders={stats.assistsLeaders} teamA={teamA} teamB={teamB} />
             </div>
         </div>
     );

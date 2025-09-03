@@ -1,5 +1,6 @@
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import type { MatchStats } from '@/types';
 
@@ -42,16 +43,16 @@ export function ScoreSummary({ match }: ScoreSummaryProps) {
       <CardContent className="p-4 md:p-6">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-4 text-center">
           {/* Team A */}
-          <div className="flex flex-col md:flex-row items-center justify-end gap-2 md:gap-4">
-            <h2 className="text-base md:text-2xl font-bold text-right truncate">{teamA.name}</h2>
+          <Link href={`/clubes/${teamA.slug}`} className="flex flex-col md:flex-row items-center justify-end gap-2 md:gap-4 group">
+            <h2 className="text-base md:text-2xl font-bold text-right truncate group-hover:text-primary transition-colors">{teamA.name}</h2>
             <Image
               src={teamA.logoUrl || ''}
               alt={`Logo de ${teamA.name}`}
               width={80}
               height={80}
-              className="w-12 h-12 md:w-20 md:h-20 rounded-full aspect-square object-contain"
+              className="w-12 h-12 md:w-20 md:h-20 rounded-full aspect-square object-contain transition-transform group-hover:scale-105"
             />
-          </div>
+          </Link>
 
           {/* Score */}
           <div className="flex flex-col items-center justify-center h-full">
@@ -64,16 +65,16 @@ export function ScoreSummary({ match }: ScoreSummaryProps) {
           </div>
 
           {/* Team B */}
-          <div className="flex flex-col-reverse md:flex-row items-center justify-start gap-2 md:gap-4">
+          <Link href={`/clubes/${teamB.slug}`} className="flex flex-col-reverse md:flex-row items-center justify-start gap-2 md:gap-4 group">
              <Image
               src={teamB.logoUrl || ''}
               alt={`Logo de ${teamB.name}`}
               width={80}
               height={80}
-              className="w-12 h-12 md:w-20 md:h-20 rounded-full aspect-square object-contain"
+              className="w-12 h-12 md:w-20 md:h-20 rounded-full aspect-square object-contain transition-transform group-hover:scale-105"
             />
-            <h2 className="text-base md:text-2xl font-bold text-left truncate">{teamB.name}</h2>
-          </div>
+            <h2 className="text-base md:text-2xl font-bold text-left truncate group-hover:text-primary transition-colors">{teamB.name}</h2>
+          </Link>
         </div>
       </CardContent>
     </Card>

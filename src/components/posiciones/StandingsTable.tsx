@@ -14,6 +14,7 @@ import {
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { ArrowDown, ArrowUp, Minus } from 'lucide-react';
+import Link from 'next/link';
 
 interface StandingsTableProps {
   // El tipo debe incluir la relación con el equipo
@@ -59,7 +60,9 @@ export function StandingsTable({ standings }: StandingsTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {standings.map((entry, index) => (
+            {standings.map((entry, index) => {
+              const teamSlug = entry.team.name.toLowerCase().replace(/\s+/g, '-');
+              return (
               <TableRow key={entry.teamId} className="hover:bg-muted/30">
                 <TableCell className="font-bold text-center text-muted-foreground">
                     <div className="flex items-center justify-center gap-2">
@@ -69,16 +72,16 @@ export function StandingsTable({ standings }: StandingsTableProps) {
                     </div>
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-3">
+                  <Link href={`/clubes/${teamSlug}`} className="flex items-center gap-3 group">
                     <Image
                       src={entry.team.logoUrl || '/logofu.svg'}
                       alt={`Logo de ${entry.team.name}`}
                       width={28}
                       height={28}
-                      className="aspect-square object-contain"
+                      className="aspect-square object-contain transition-transform group-hover:scale-110"
                     />
-                    <span className="font-semibold text-foreground truncate">{entry.team.name}</span>
-                  </div>
+                    <span className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">{entry.team.name}</span>
+                  </Link>
                 </TableCell>
                 {/* Placeholders para estadísticas */}
                 <TableCell className="text-center font-bold text-lg text-primary tabular-nums">0</TableCell>
@@ -90,7 +93,7 @@ export function StandingsTable({ standings }: StandingsTableProps) {
                 <TableCell className="text-center text-muted-foreground tabular-nums">0</TableCell>
                 <TableCell className="text-center text-muted-foreground tabular-nums">0</TableCell>
               </TableRow>
-            ))}
+            )})}
           </TableBody>
         </Table>
       </div>
