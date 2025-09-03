@@ -5,8 +5,8 @@ import prisma from '@/lib/prisma';
 import type { Player, Team } from '@/types';
 
 /**
- * Obtiene una lista de todos los jugadores de la base de datos, incluyendo su equipo.
- * @returns Una promesa que se resuelve en un array de objetos Player con su equipo.
+ * Retrieves a list of all players from the database, including their team.
+ * @returns {Promise<(Player & { team: Team })[]>} A promise that resolves to an array of Player objects with their team.
  */
 export async function getAllPlayers(): Promise<(Player & { team: Team })[]> {
     try {
@@ -26,9 +26,9 @@ export async function getAllPlayers(): Promise<(Player & { team: Team })[]> {
 }
 
 /**
- * Obtiene un jugador específico por su ID.
- * @param id - El ID del jugador a obtener.
- * @returns Una promesa que se resuelve en el objeto del jugador con su equipo, o null si no se encuentra.
+ * Retrieves a specific player by their ID.
+ * @param {number} id - The ID of the player to retrieve.
+ * @returns {Promise<(Player & { team: Team }) | null>} A promise that resolves to the player object with their team, or null if not found.
  */
 export async function getPlayerById(id: number): Promise<(Player & { team: Team }) | null> {
     try {

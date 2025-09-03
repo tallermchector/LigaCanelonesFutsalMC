@@ -10,9 +10,9 @@ import { getAllTeams as getAllTeamsFromSource } from './team-actions';
 type StandingWithTeam = SeasonTeam & { team: Team };
 
 /**
- * Obtiene la tabla de posiciones para una temporada específica.
- * @param seasonId - El ID de la temporada para la que se obtendrá la tabla.
- * @returns Una promesa que se resuelve en un array con los datos de la tabla de posiciones.
+ * Retrieves the standings for a specific season.
+ * @param {number} seasonId - The ID of the season to retrieve the standings for.
+ * @returns {Promise<StandingWithTeam[]>} A promise that resolves to an array with the standings data.
  */
 export async function getStandings(seasonId: number): Promise<StandingWithTeam[]> {
     try {
@@ -39,6 +39,10 @@ export async function getStandings(seasonId: number): Promise<StandingWithTeam[]
 }
 
 
+/**
+ * Retrieves all seasons from the database, including the teams associated with each season.
+ * @returns {Promise<(Season & { teams: SeasonTeam[] })[]>} A promise that resolves to an array of seasons with their teams.
+ */
 export async function getAllSeasonsWithTeams(): Promise<(Season & { teams: SeasonTeam[] })[]> {
     try {
         return await prisma.season.findMany({
@@ -59,6 +63,13 @@ export async function getAllSeasonsWithTeams(): Promise<(Season & { teams: Seaso
     }
 }
 
+/**
+ * Creates a new season in the database.
+ * @param {string} name - The name of the season.
+ * @param {number} year - The year of the season.
+ * @returns {Promise<Season>} A promise that resolves to the newly created season.
+ * @throws {Error} If the season could not be created.
+ */
 export async function createSeason(name: string, year: number): Promise<Season> {
     try {
         const season = await prisma.season.create({
@@ -75,6 +86,14 @@ export async function createSeason(name: string, year: number): Promise<Season> 
     }
 }
 
+/**
+ * Adds a list of teams to a specific season.
+ * It checks for existing teams to avoid duplicates.
+ * @param {number} seasonId - The ID of the season to add teams to.
+ * @param {number[]} teamIds - An array of team IDs to add to the season.
+ * @returns {Promise<void>} A promise that resolves when the teams have been added.
+ * @throws {Error} If the teams are already in the season or if the operation fails.
+ */
 export async function addTeamsToSeason(seasonId: number, teamIds: number[]): Promise<void> {
     try {
         const existingTeams = await prisma.seasonTeam.findMany({
@@ -122,7 +141,11 @@ export async function addTeamsToSeason(seasonId: number, teamIds: number[]): Pro
     }
 }
 
-// Reutilizamos la función que ya existe en team-actions.ts para no duplicar código
+/**
+ * Retrieves all teams from the database.
+ * This function is a re-export from `team-actions.ts` to avoid code duplication.
+ * @returns {Promise<Team[]>} A promise that resolves to an array of all teams.
+ */
 export async function getAllTeams(): Promise<Team[]> {
     return getAllTeamsFromSource();
 }

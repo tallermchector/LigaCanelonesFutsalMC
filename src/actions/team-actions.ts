@@ -8,16 +8,22 @@ import { Prisma } from '@prisma/client';
 // Define Prisma include options as constants for better type safety, reusability, and readability.
 
 // Include definition for a Team object with its associated players.
+/**
+ * Prisma include options to fetch a team with its associated players.
+ */
 const teamIncludePlayers = {
     players: true,
 } satisfies Prisma.TeamInclude; // 'satisfies' ensures the object conforms to Prisma.TeamInclude while retaining literal types.
 
 // Derived Prisma type for a Team including its players, using the include constant.
+/**
+ * Represents a team with its associated players, derived from Prisma types.
+ */
 type TeamWithPlayers = Prisma.TeamGetPayload<{ include: typeof teamIncludePlayers }>;
 
 /**
- * Obtiene una lista de todos los equipos de la base de datos.
- * @returns Una promesa que se resuelve en un array de objetos Team.
+ * Retrieves a list of all teams from the database.
+ * @returns {Promise<Team[]>} A promise that resolves to an array of Team objects.
  */
 export async function getAllTeams(): Promise<Team[]> {
     try {
@@ -38,6 +44,10 @@ export async function getAllTeams(): Promise<Team[]> {
 }
 
 // Include definition for a Match object with all its necessary relations.
+/**
+ * Prisma include options to fetch a match with all its necessary relations,
+ * including both teams with their players, events, and player match stats.
+ */
 const matchIncludeOptions = {
     teamA: { include: teamIncludePlayers }, // Reusing the team players include
     teamB: { include: teamIncludePlayers }, // Reusing the team players include
@@ -46,6 +56,9 @@ const matchIncludeOptions = {
 } satisfies Prisma.MatchInclude;
 
 // Derived Prisma type for a Match including all specified relations, crucial for type correctness.
+/**
+ * Represents a match with all its relations included, derived from Prisma types.
+ */
 type MatchWithAllIncludes = Prisma.MatchGetPayload<{ include: typeof matchIncludeOptions }>;
 
 /**
@@ -56,6 +69,11 @@ type TeamWithMatches = TeamWithPlayers & {
     matches: FullMatch[];
 };
 
+/**
+ * Retrieves a single team by its slug, including all its players and matches.
+ * @param {string} slug - The slug of the team to retrieve.
+ * @returns {Promise<TeamWithMatches | null>} A promise that resolves to the team object with its matches, or null if not found.
+ */
 export async function getTeamBySlug(slug: string): Promise<TeamWithMatches | null> {
     try {
         const team = await prisma.team.findUnique({
