@@ -10,6 +10,8 @@ import { TacticalBoard } from '@/components/cancha/TacticalBoard';
 import { GameProvider } from '@/contexts/GameProvider';
 import { TacticalHeader } from '@/components/cancha/TacticalHeader';
 import { TacticalActions } from '@/components/cancha/TacticalActions';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 
 function TacticalBoardSkeleton() {
@@ -78,13 +80,15 @@ export default function TacticalBoardPage() {
 
     return (
         <GameProvider match={match}>
-            <div className="flex h-screen w-screen flex-col bg-gray-900 text-white">
-                <TacticalHeader match={match} />
-                <main className="flex-grow relative">
-                     <TacticalBoard match={match} />
-                </main>
-                <TacticalActions />
-            </div>
+            <DndProvider backend={HTML5Backend}>
+                <div className="flex h-screen w-screen flex-col bg-gray-900 text-white">
+                    <TacticalHeader match={match} />
+                    <main className="flex-grow relative">
+                         <TacticalBoard match={match} />
+                    </main>
+                    <TacticalActions />
+                </div>
+            </DndProvider>
         </GameProvider>
     );
 }
