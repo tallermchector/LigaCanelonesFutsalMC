@@ -11,7 +11,8 @@ interface MatchPageProps {
 }
 
 export default async function MatchPage({ params }: MatchPageProps) {
-    const matchId = parseInt(params.id, 10);
+    const resolvedParams = await params;
+    const matchId = parseInt(resolvedParams.id, 10);
     if (isNaN(matchId)) {
         notFound();
     }
