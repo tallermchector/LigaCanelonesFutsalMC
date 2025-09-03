@@ -1,3 +1,4 @@
+
 'use client'
 
 import Link from 'next/link'
@@ -38,10 +39,10 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="group flex items-center space-x-3">
               <div className="relative">
-                <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-red-600 via-red-700 to-red-800 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                   <Image src="/logofu.png" alt="Liga Futsal Logo" width={32} height={32} />
                 </div>
-                <div className="absolute -inset-0.5 bg-gradient-to-br from-red-600 to-red-800 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent group-hover:from-red-700 group-hover:via-red-600 group-hover:to-red-700 transition-all duration-300">
