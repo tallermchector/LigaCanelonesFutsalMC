@@ -1,40 +1,57 @@
 
+'use client';
+
 import { getAllTeams } from '@/actions/team-actions';
-import { PlayerCard } from '@/components/jugadores/PlayerCard';
 import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 import { PageHero } from '@/components/layout/PageHero';
-import type { Player, Team } from '@/types';
+import { PlayerRanking } from '@/components/jugadores/PlayerRanking';
+import type { Team, Player } from '@/types';
+import { useEffect, useState } from 'react';
 
-interface PlayerWithTeam extends Player {
+interface PlayerWithStats extends Player {
+    goals: number;
     team: Team;
 }
 
-export default async function JugadoresPage() {
-  const teams: Team[] = await getAllTeams();
-  
-  // Aplanamos la lista de jugadores y añadimos la referencia del equipo a cada jugador
-  const allPlayers: PlayerWithTeam[] = teams.flatMap(team => 
-    team.players.map(player => ({
-      ...player,
-      team: { ...team, players: [] } // Evitamos la referencia circular completa
-    }))
-  );
+export default function JugadoresPage() {
+  const [players, setPlayers] = useState<PlayerWithStats[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+        setLoading(true);
+        const teamsData = await getAllTeams();
+        const allPlayers = teamsData.flatMap(team =>
+            team.players.map(player => ({
+                ...player,
+                team: { ...team, players: [] }, // Evita la circularidad
+                goals: Math.floor(Math.random() * 15) // Simular goles
+            }))
+        );
+        allPlayers.sort((a, b) => b.goals - a.goals);
+        setPlayers(allPlayers);
+        setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1 pt-[var(--header-height)]">
         <PageHero
-          title="Jugadores de la Liga"
-          description="Descubre a las estrellas y talentos de todos los equipos."
+          title="Ranking de Jugadores"
+          description="Descubre a las estrellas y talentos destacados de la liga."
         />
         <div className="container mx-auto flex-1 p-4 py-8 md:p-8">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-            {allPlayers.map((player) => (
-              <PlayerCard key={player.id} player={player} />
-            ))}
-          </div>
+           {loading ? (
+              <div className="w-full h-96 bg-muted rounded-lg animate-pulse" />
+          ) : (
+              <PlayerRanking players={players} />
+          )}
         </div>
       </main>
       <Footer />

@@ -49,7 +49,7 @@ const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => (
   </div>
 );
 
-export function Ranking({ players }: RankingProps) {
+export function PlayerRanking({ players }: RankingProps) {
   if (players.length === 0) {
     return <Card><CardContent className="p-8 text-center text-muted-foreground">No hay datos de ranking disponibles.</CardContent></Card>;
   }
@@ -107,4 +107,3 @@ export function Ranking({ players }: RankingProps) {
     </div>
   );
 }
-

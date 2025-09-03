@@ -6,7 +6,7 @@ import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 import { PageHero } from '@/components/layout/PageHero';
 import { StandingsTable } from '@/components/posiciones/StandingsTable';
-import { Ranking } from '@/components/posiciones/Ranking';
+import { PlayerRanking } from '@/components/jugadores/PlayerRanking';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Team, SeasonTeam as SeasonTeamWithTeam, FullMatch } from '@prisma/client';
 import { useEffect, useState } from 'react';
@@ -87,7 +87,7 @@ export default function PosicionesPage() {
                 {loading ? (
                     <div className="w-full h-96 bg-muted rounded-lg animate-pulse" />
                 ) : (
-                    <Ranking players={players} />
+                    <PlayerRanking players={players} />
                 )}
             </TabsContent>
           </Tabs>
