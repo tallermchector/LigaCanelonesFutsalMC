@@ -52,7 +52,7 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
         {/* Team 1 */}
         <div className="flex items-center gap-2 md:gap-4 p-2 md:p-4 flex-1 min-w-0">
             <Image src={teamA.logoUrl || ''} alt={`${teamA.name} logo`} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 object-contain flex-shrink-0" />
-            <h2 className="text-base md:text-xl font-extrabold tracking-wider leading-tight text-left flex-grow">{teamA.name}</h2>
+            <h2 className="text-sm sm:text-base md:text-xl font-extrabold tracking-wider leading-tight text-left flex-grow">{teamA.name}</h2>
         </div>
         
         {/* Score & Time */}
@@ -67,7 +67,7 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
 
         {/* Team 2 */}
         <div className="flex items-center gap-2 md:gap-4 p-2 md:p-4 flex-1 justify-end min-w-0">
-            <h2 className="text-base md:text-xl font-extrabold tracking-wider leading-tight text-right flex-grow">{teamB.name}</h2>
+            <h2 className="text-sm sm:text-base md:text-xl font-extrabold tracking-wider leading-tight text-right flex-grow">{teamB.name}</h2>
             <Image src={teamB.logoUrl || ''} alt={`${teamB.name} logo`} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 object-contain flex-shrink-0" />
         </div>
       </div>
