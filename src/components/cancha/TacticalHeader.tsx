@@ -28,7 +28,7 @@ const StatDisplay = ({ label, value, icon, hasPenalty }: { label: string, value:
     <div className="flex flex-col items-center gap-1 text-center text-white">
         <div className="flex items-center gap-1">
             <div className={cn('h-4 w-4', hasPenalty ? 'text-red-400' : 'text-white/70')}>{icon}</div>
-            <span className={cn('text-2xl md:text-3xl font-bold', hasPenalty ? 'text-red-400' : 'text-white')}>
+            <span className={cn('text-xl md:text-2xl font-bold', hasPenalty ? 'text-red-400' : 'text-white')}>
                 {value}
             </span>
         </div>
@@ -49,10 +49,10 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
     const leagueLogo = '/logofu.png';
 
     return (
-        <div className="font-sans w-full flex flex-col items-center py-4">
+        <div className="font-sans w-full flex flex-col items-center pt-2">
             {/* Logo de la Liga */}
-            <div className="relative z-20 mb-[-28px] bg-[#1a212e] p-1 rounded-full border-4 border-[#1a212e] shadow-lg">
-                <Image src={leagueLogo} alt="League Logo" width={48} height={48} className="w-10 h-10 md:w-12 md:h-12 rounded-full object-contain"/>
+            <div className="relative z-20 mb-[-24px] bg-[#1a212e] p-1 rounded-full border-4 border-[#1a212e] shadow-lg">
+                <Image src={leagueLogo} alt="League Logo" width={40} height={40} className="w-8 h-8 md:w-10 md:h-10 rounded-full object-contain"/>
             </div>
 
             {/* Marcador Principal */}
@@ -60,10 +60,10 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
                 
                 {/* Equipo A (Local) */}
                 <div className="flex flex-col justify-between gap-2 p-2 flex-1 min-w-0 bg-[#2c3e50]">
-                    <h2 className="text-sm sm:text-base md:text-lg font-extrabold tracking-wider uppercase leading-tight text-center truncate">{teamA.name}</h2>
+                    <h2 className="text-sm md:text-base font-extrabold tracking-wider uppercase leading-tight text-center truncate">{teamA.name}</h2>
                     <div className="flex items-center justify-around">
-                        <Image src={teamA.logoUrl || ''} alt={`${teamA.name} logo`} width={64} height={64} className="w-12 h-12 md:w-16 md:h-16 object-contain flex-shrink-0" />
-                        <div className="text-5xl md:text-7xl font-orbitron font-black">{scoreA}</div>
+                        <Image src={teamA.logoUrl || ''} alt={`${teamA.name} logo`} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 object-contain flex-shrink-0" />
+                        <div className="text-4xl md:text-6xl font-orbitron font-black">{scoreA}</div>
                     </div>
                      <div className="flex items-center justify-around pt-1 border-t border-white/10">
                         <StatDisplay label="Faltas" value={foulsA} icon={<ShieldOff />} hasPenalty={foulsA >= 6} />
@@ -73,17 +73,17 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
                 
                 {/* Centro: Tiempo y Período */}
                 <div className="flex-shrink-0 flex flex-col items-center justify-center bg-transparent text-xl md:text-3xl font-black px-2 md:px-4 py-2">
-                    <span className="text-4xl md:text-5xl font-bold font-orbitron">{formatTime(time)}</span>
-                    <div className="my-2 border-b-2 border-white/20 w-full"></div>
+                    <span className="text-3xl md:text-4xl font-bold font-orbitron">{formatTime(time)}</span>
+                    <div className="my-1 border-b-2 border-white/20 w-full"></div>
                     <span className="text-xs md:text-sm font-semibold uppercase tracking-widest">{getPeriodLabel(status, period)}</span>
                 </div>
 
                 {/* Equipo B (Visitante) */}
                  <div className="flex flex-col justify-between gap-2 p-2 flex-1 min-w-0 bg-[#c0392b]">
-                    <h2 className="text-sm sm:text-base md:text-lg font-extrabold tracking-wider uppercase leading-tight text-center truncate">{teamB.name}</h2>
+                    <h2 className="text-sm md:text-base font-extrabold tracking-wider uppercase leading-tight text-center truncate">{teamB.name}</h2>
                     <div className="flex items-center justify-around">
-                         <div className="text-5xl md:text-7xl font-orbitron font-black">{scoreB}</div>
-                        <Image src={teamB.logoUrl || ''} alt={`${teamB.name} logo`} width={64} height={64} className="w-12 h-12 md:w-16 md:h-16 object-contain flex-shrink-0" />
+                         <div className="text-4xl md:text-6xl font-orbitron font-black">{scoreB}</div>
+                        <Image src={teamB.logoUrl || ''} alt={`${teamB.name} logo`} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 object-contain flex-shrink-0" />
                     </div>
                      <div className="flex items-center justify-around pt-1 border-t border-white/10">
                         <StatDisplay label="T.M." value={timeoutsB} icon={<Timer className="text-green-400" />} />

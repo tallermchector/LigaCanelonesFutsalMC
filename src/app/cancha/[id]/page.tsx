@@ -102,9 +102,9 @@ export default function TacticalBoardPage() {
                     <div className="flex-shrink-0">
                         <TacticalHeader match={match} />
                     </div>
-                    <main className="flex-grow flex items-center justify-center p-2 gap-2 overflow-hidden relative">
-                         {/* Main Content: Board */}
-                        <div className="flex-grow flex flex-col items-center justify-center h-full w-full relative p-2 sm:p-4">
+                     <main className="flex-grow flex items-center justify-center p-2 relative overflow-hidden">
+                        
+                        <div className="w-full h-full flex items-center justify-center">
                             <TacticalBoard match={match} />
                         </div>
                         
