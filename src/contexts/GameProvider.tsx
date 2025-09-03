@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker, PlayerMatchStats } from '@/types';
@@ -196,8 +197,8 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
                 const playerOutPosition = newPlayerPositions[pOut.id];
                 if (playerOutPosition) {
                     newPlayerPositions[pIn.id] = playerOutPosition;
-                    delete newPlayerPositions[pOut.id];
                 }
+                delete newPlayerPositions[pOut.id];
 
                 return {
                     ...timeStateWithUpdate,
