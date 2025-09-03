@@ -116,10 +116,9 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
                 const pOut = team?.players.find(p => p.id === playerOut.playerId);
                 const pIn = team?.players.find(p => p.id === selected.playerId);
                 
-                if (!team || !pOut || !pIn) return state;
+                if (!team || !pOut || !pIn || !state.matchId) return state;
 
-                const newEvent: GameEvent = {
-                    id: `${Date.now()}-${Math.random()}`,
+                const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
                     type: 'SUBSTITUTION',
                     teamId: playerOut.teamId,
                     playerId: pOut.id,
@@ -137,7 +136,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
 
                 return {
                     ...state,
-                    events: [...state.events, newEvent],
+                    events: [...state.events, {...newEvent, id: `${Date.now()}-${Math.random()}`, matchId: state.matchId}],
                     selectedPlayer: null,
                     substitutionState: null,
                     [activePlayersKey]: updatedActivePlayers,
@@ -154,7 +153,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         return { ...state, selectedPlayer: selected };
     }
     case 'ADD_EVENT': {
-      if (!state.selectedPlayer) return state;
+      if (!state.selectedPlayer || !state.matchId) return state;
       
       const { teamId, playerId } = state.selectedPlayer;
       
@@ -163,8 +162,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
 
       if (!team || !player) return state;
 
-      const newEvent: GameEvent = {
-          id: `${Date.now()}-${Math.random()}`,
+      const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
           type: action.payload.type,
           teamId,
           playerId,
@@ -173,7 +171,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           timestamp: state.time,
       };
       
-      let newState = { ...state, events: [...state.events, newEvent], selectedPlayer: null };
+      let newState = { ...state, events: [...state.events, {...newEvent, id: `${Date.now()}-${Math.random()}`, matchId: state.matchId}], selectedPlayer: null };
 
       // Chain updates for relevant event types
       if (action.payload.type === 'GOAL') {
@@ -329,7 +327,7 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
       const lastEvent = state.events[state.events.length -1];
       if (state.matchId && lastEvent) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { id, ...eventData } = lastEvent;
+        const { id, matchId, ...eventData } = lastEvent;
         createGameEvent(state.matchId, eventData);
       }
     }

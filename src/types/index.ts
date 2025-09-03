@@ -12,7 +12,7 @@ export interface Team extends PrismaTeam {
 
 export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT' | 'YELLOW_CARD' | 'RED_CARD' | 'TIMEOUT' | 'SUBSTITUTION';
 
-export interface GameEvent extends Omit<PrismaGameEvent, 'matchId' | 'type'> {
+export interface GameEvent extends Omit<PrismaGameEvent, 'type'> {
     type: GameEventType;
 }
 
@@ -21,7 +21,7 @@ export interface FullMatch extends Omit<PrismaMatch, 'teamAId' | 'teamBId' | 'ev
   status: MatchStatus;
   teamA: Team;
   teamB: Team;
-  events?: GameEvent[];
+  events: GameEvent[];
 }
 
 export type PlayerStat = {

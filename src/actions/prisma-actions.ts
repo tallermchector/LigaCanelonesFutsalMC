@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import prisma from '@/lib/prisma';
@@ -39,7 +40,7 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
   }
 }
 
-export async function createGameEvent(matchId: number, event: Omit<GameEvent, 'id'>): Promise<void> {
+export async function createGameEvent(matchId: number, event: Omit<GameEvent, 'id' | 'matchId'>): Promise<void> {
     try {
         await prisma.gameEvent.create({
             data: {
@@ -97,6 +98,7 @@ export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
             include: {
                 teamA: { include: { players: true } },
                 teamB: { include: { players: true } },
+                events: true,
             },
              orderBy: {
                 scheduledTime: 'desc',
@@ -107,6 +109,7 @@ export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
             ...match,
             scheduledTime: match.scheduledTime.toISOString(),
             status: match.status as FullMatch['status'],
+            events: match.events.map(e => ({...e, type: e.type as GameEventType})),
         }));
 
     } catch (error) {
@@ -189,13 +192,15 @@ export async function createMatch(data: {
             include: {
                 teamA: { include: { players: true } },
                 teamB: { include: { players: true } },
+                events: true,
             },
         });
         revalidatePath('/gestion');
         return {
             ...newMatch,
             scheduledTime: newMatch.scheduledTime.toISOString(),
-            status: newMatch.status as MatchStatus
+            status: newMatch.status as MatchStatus,
+            events: newMatch.events.map(e => ({...e, type: e.type as GameEventType}))
         };
     } catch (error) {
         console.error("Failed to create match:", error);
