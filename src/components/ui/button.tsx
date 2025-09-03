@@ -22,6 +22,10 @@ const buttonVariants = cva(
         accent: "bg-accent text-accent-foreground hover:bg-accent/90",
         'accent-blue': "bg-blue-600 text-white hover:bg-blue-700",
         'accent-red': "bg-red-600 text-white hover:bg-red-700",
+        'cancha-active': "bg-white/20 border-white/40 text-white hover:bg-white/30",
+        'cancha-inactive': "bg-black/30 border-white/20 text-white/70 hover:bg-black/50 hover:text-white",
+        'cancha-blue-selected': "bg-blue-500 border-blue-300 text-white ring-2 ring-offset-2 ring-blue-400 ring-offset-gray-800",
+        'cancha-red-selected': "bg-red-500 border-red-300 text-white ring-2 ring-offset-2 ring-red-400 ring-offset-gray-800",
       },
       size: {
         default: "h-10 px-4 py-2",

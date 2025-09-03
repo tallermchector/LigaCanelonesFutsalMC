@@ -43,6 +43,14 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
   
   const getPlayerVariant = (playerId: number, isSelected: boolean) => {
       const isActive = activePlayers.includes(playerId);
+
+      if (isCanchaPage) {
+          if (isPlayerBeingSubbedOut(playerId)) return 'destructive';
+          if (isSelected) return teamId === 'A' ? 'cancha-blue-selected' : 'cancha-red-selected';
+          if (isActive) return 'cancha-active';
+          return 'cancha-inactive';
+      }
+      
       const accentColorClass = teamId === 'A' ? 'accent-blue' : 'accent-red';
 
       if (isPlayerBeingSubbedOut(playerId)) return 'destructive';
