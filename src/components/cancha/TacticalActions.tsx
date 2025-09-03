@@ -36,7 +36,11 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
             <Button
                 size="lg"
                 variant={visiblePanel === 'A' ? 'default' : 'outline'}
-                className="w-32 hidden md:flex"
+                className={cn(
+                  "w-32 hidden md:flex",
+                  visiblePanel !== 'A' && "border-blue-500 text-blue-400 hover:bg-blue-900/50 hover:text-blue-300",
+                  visiblePanel === 'A' && "bg-blue-600 hover:bg-blue-700"
+                )}
                 onClick={() => onTogglePanel('A')}
             >
                 <Users className="mr-2 h-5 w-5"/> {state.teamA?.name.substring(0,3)}
@@ -52,7 +56,7 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                         aria-label={state.isRunning ? "Pausar tiempo" : "Iniciar tiempo"}
                         className={cn(
                             "w-32",
-                            state.isRunning ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"
+                            state.isRunning ? "bg-red-600 hover:bg-red-700" : "bg-gray-600 hover:bg-gray-700"
                         )}
                     >
                         {state.isRunning ? <Pause className="mr-2 h-5 w-5"/> : <Play className="mr-2 h-5 w-5"/>}
@@ -75,7 +79,7 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                 {/* Mobile Controls */}
                 <div className="md:hidden w-full flex flex-col gap-2 items-center">
                     <div className="grid grid-cols-2 gap-2 w-full max-w-sm">
-                        <Button size="lg" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })} className={cn(state.isRunning ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700')}>
+                        <Button size="lg" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })} className={cn(state.isRunning ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-600 hover:bg-gray-700')}>
                             {state.isRunning ? <Pause className="mr-2 h-5 w-5"/> : <Play className="mr-2 h-5 w-5"/>}
                             {state.isRunning ? 'Pausar' : 'Iniciar'}
                         </Button>
@@ -84,23 +88,25 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                             Guardar
                         </Button>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 w-full max-w-sm">
-                        <div className="flex items-center justify-around gap-1 rounded-lg bg-gray-900/70 p-1 shadow-lg">
+                    <div className="grid grid-cols-3 gap-2 w-full max-w-sm">
+                        <Button size="lg" variant={visiblePanel === 'A' ? 'default' : 'outline'} onClick={() => onTogglePanel('A')}
+                            className={cn(
+                                visiblePanel !== 'A' && "border-blue-500 text-blue-400 hover:bg-blue-900/50 hover:text-blue-300",
+                                visiblePanel === 'A' && "bg-blue-600 hover:bg-blue-700"
+                            )}>
+                           <Users className="mr-2 h-4 w-4"/> {state.teamA?.name.substring(0,3)}
+                        </Button>
+                        <div className="flex items-center justify-around gap-1 rounded-lg bg-gray-900/70 shadow-lg col-span-1">
                             <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} className="text-white h-8 w-8 hover:bg-gray-600/50"><Minus className="h-4 w-4"/></Button>
-                            <span className="font-semibold text-white">P: {state.period}</span>
+                            <span className="font-semibold text-white">P:{state.period}</span>
                             <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} className="text-white h-8 w-8 hover:bg-gray-600/50"><Plus className="h-4 w-4"/></Button>
                         </div>
-                         <Button variant="outline" onClick={() => dispatch({ type: 'RESET_TIMER' })} size="lg" className="text-white border-gray-600 hover:bg-gray-700">
-                            <RotateCcw className="mr-2 h-5 w-5" />
-                            Reiniciar
-                        </Button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 w-full max-w-sm">
-                         <Button size="lg" variant={visiblePanel === 'A' ? 'default' : 'outline'} onClick={() => onTogglePanel('A')}>
-                           <Users className="mr-2 h-5 w-5"/> {state.teamA?.name.substring(0,3)}
-                        </Button>
-                        <Button size="lg" variant={visiblePanel === 'B' ? 'default' : 'outline'} onClick={() => onTogglePanel('B')}>
-                           <Users className="mr-2 h-5 w-5"/> {state.teamB?.name.substring(0,3)}
+                         <Button size="lg" variant={visiblePanel === 'B' ? 'default' : 'outline'} onClick={() => onTogglePanel('B')}
+                            className={cn(
+                                visiblePanel !== 'B' && "border-red-500 text-red-400 hover:bg-red-900/50 hover:text-red-300",
+                                visiblePanel === 'B' && "bg-red-600 hover:bg-red-700"
+                            )}>
+                           <Users className="mr-2 h-4 w-4"/> {state.teamB?.name.substring(0,3)}
                         </Button>
                     </div>
                 </div>
@@ -111,7 +117,11 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                 <Button
                     size="lg"
                     variant={visiblePanel === 'B' ? 'default' : 'outline'}
-                    className="w-full"
+                    className={cn(
+                        "w-full",
+                        visiblePanel !== 'B' && "border-red-500 text-red-400 hover:bg-red-900/50 hover:text-red-300",
+                        visiblePanel === 'B' && "bg-red-600 hover:bg-red-700"
+                    )}
                     onClick={() => onTogglePanel('B')}
                 >
                     <Users className="mr-2 h-5 w-5"/> {state.teamB?.name.substring(0,3)}

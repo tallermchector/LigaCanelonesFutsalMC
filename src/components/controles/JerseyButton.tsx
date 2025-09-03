@@ -13,7 +13,7 @@ interface JerseyButtonProps {
   isActive: boolean;
   onClick: () => void;
   isDisabled?: boolean;
-  variant?: 'default' | 'accent' | 'outline' | 'destructive';
+  variant?: 'default' | 'accent' | 'accent-blue' | 'accent-red' | 'outline' | 'destructive';
 }
 
 export function JerseyButton({ jerseyNumber, playerName, isSelected, isActive, onClick, isDisabled = false, variant = 'outline' }: JerseyButtonProps) {
@@ -23,7 +23,9 @@ export function JerseyButton({ jerseyNumber, playerName, isSelected, isActive, o
         variant={variant}
         className={cn(
           'relative h-14 w-14 rounded-full text-lg font-bold flex flex-col items-center justify-center p-0 transition-all duration-200',
-           isSelected && variant !== 'destructive' && 'ring-2 ring-offset-2 ring-accent'
+           isSelected && variant !== 'destructive' && 'ring-2 ring-offset-2 ring-current',
+           variant === 'accent-blue' && 'ring-blue-400',
+           variant === 'accent-red' && 'ring-red-400'
         )}
         onClick={onClick}
         disabled={isDisabled}

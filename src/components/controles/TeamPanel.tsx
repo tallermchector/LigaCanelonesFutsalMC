@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { Shirt } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 
 interface TeamPanelProps {
@@ -42,9 +43,10 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
   
   const getPlayerVariant = (playerId: number, isSelected: boolean) => {
       const isActive = activePlayers.includes(playerId);
-      
+      const accentColorClass = teamId === 'A' ? 'accent-blue' : 'accent-red';
+
       if (isPlayerBeingSubbedOut(playerId)) return 'destructive';
-      if (isSelected) return 'accent';
+      if (isSelected) return teamId === 'A' ? 'accent-blue' : 'accent-red';
       if (isActive) return 'default';
       
       return 'outline';
@@ -102,9 +104,9 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
 
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className={cn("h-full flex flex-col", isCanchaPage && "bg-gray-800/90 border-gray-700 text-white")}>
       <CardHeader className="flex-shrink-0">
-        <CardTitle className="text-center text-primary">{team.name}</CardTitle>
+        <CardTitle className={cn("text-center text-primary", isCanchaPage && (teamId === 'A' ? "text-blue-400" : "text-red-400"))}>{team.name}</CardTitle>
         <div className="text-center text-sm text-muted-foreground font-semibold flex items-center justify-center gap-2">
             <Shirt className="h-4 w-4" />
             <span>Activos: {activePlayers.length} / 5</span>
@@ -131,7 +133,7 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
               {!substitutionState && (
                 <div className={!isCanchaPage ? "mt-4" : ""}>
                     {!isCanchaPage && <Separator className="my-2" />}
-                    <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Suplentes</h3>
+                    <h3 className={cn("px-2 mb-2 text-sm font-semibold", isCanchaPage ? "text-gray-400" : "text-muted-foreground")}>Suplentes</h3>
                     <div className="flex flex-wrap items-start justify-center gap-4">
                         {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes disponibles.</p>}
                     </div>
