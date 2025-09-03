@@ -1,6 +1,6 @@
 'use client';
 
-import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker } from '@/types';
+import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker, PlayerMatchStats } from '@/types';
 import React, { createContext, useContext, useReducer, useEffect, ReactNode, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -84,7 +84,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       };
       
       const timeTracker: PlayerTimeTracker = {};
-       action.payload.match.playerMatchStats?.forEach(stat => {
+       (action.payload.match.playerMatchStats as PlayerMatchStats[])?.forEach(stat => {
           timeTracker[stat.playerId] = {
               startTime: state.time,
               totalTime: stat.timePlayedInSeconds,
@@ -131,7 +131,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
                 newTracker[id] = { startTime: updatedTimeState.time, totalTime: 0 };
             }
         });
-        return { ...updatedTimeState, isRunning: true, playerTimeTracker: newTracker, status: state.status === 'SCHEDULED' ? 'LIVE' : state.status };
+        return { ...updatedTimeState, isRunning: true, playerTimeTracker: newTracker, status: state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS' ? 'LIVE' : state.status };
       }
 
       return { ...updatedTimeState, isRunning: false };
@@ -190,7 +190,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
                 return {
                     ...timeStateWithUpdate,
                     playerTimeTracker: newTracker,
-                    events: [...state.events, {...newEvent, id: `${Date.now()}-${Math.random()}`, matchId: state.matchId}],
+                    events: [...state.events, {...newEvent, id: Date.now(), matchId: state.matchId}],
                     selectedPlayer: null,
                     substitutionState: null,
                     [activePlayersKey]: updatedActivePlayers,
@@ -224,7 +224,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           timestamp: state.time,
       };
       
-      let newState = { ...state, events: [...state.events, {...newEvent, id: `${Date.now()}-${Math.random()}`, matchId: state.matchId}], selectedPlayer: null };
+      let newState = { ...state, events: [...state.events, {...newEvent, id: Date.now(), matchId: state.matchId}], selectedPlayer: null };
 
       if (action.payload.type === 'GOAL') {
           newState = gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
@@ -282,17 +282,19 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
             const goalkeeper = playerIds.map(id => teamPlayers.find(p => p.id === id)).find(p => p?.position === 'Goalkeeper');
             let fieldPlayers = playerIds.filter(id => id !== goalkeeper?.id);
             
-            if (!goalkeeper && playerIds.length > 0) {
+            if (goalkeeper) {
+                 newPositions[goalkeeper.id] = { x: team === 'A' ? 8 : 92, y: 50 };
+            } else if (playerIds.length > 0) {
+                // If no designated GK, assign the first player as GK
                 const tempGoalkeeperId = playerIds[0];
-                newPositions[tempGoalkeeperId] = { x: team === 'A' ? 10 : 90, y: 50 };
+                newPositions[tempGoalkeeperId] = { x: team === 'A' ? 8 : 92, y: 50 };
                 fieldPlayers = playerIds.slice(1);
-            } else if (goalkeeper) {
-                 newPositions[goalkeeper.id] = { x: team === 'A' ? 10 : 90, y: 50 };
             }
 
+            // 1-2-1 Formation
             const formationSpots = team === 'A' 
-                ? [{x: 35, y: 50}, {x: 25, y: 25}, {x: 25, y: 75}, {x: 45, y: 50}] 
-                : [{x: 65, y: 50}, {x: 75, y: 25}, {x: 75, y: 75}, {x: 55, y: 50}];
+                ? [{x: 25, y: 50}, {x: 40, y: 25}, {x: 40, y: 75}, {x: 30, y: 50}] // Defender, Top Winger, Bottom Winger, Pivot
+                : [{x: 75, y: 50}, {x: 60, y: 25}, {x: 60, y: 75}, {x: 70, y: 50}]; // Defender, Top Winger, Bottom Winger, Pivot
             
             fieldPlayers.forEach((playerId, index) => {
                 if (index < formationSpots.length) {
@@ -389,7 +391,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.events, state.matchId]);
+  }, [state.events]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
