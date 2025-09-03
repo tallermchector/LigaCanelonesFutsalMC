@@ -39,13 +39,13 @@ function MatchPageSkeleton() {
 
 export default function MatchPage() {
     const params = useParams();
-    const matchId = params.id as string;
+    const matchIdStr = params.id as string;
     const [initialMatch, setInitialMatch] = useState<FullMatch | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (matchId) {
-            const numericId = parseInt(matchId, 10);
+        if (matchIdStr) {
+            const numericId = parseInt(matchIdStr, 10);
             if(isNaN(numericId)) {
                 setLoading(false);
                 return;
@@ -57,10 +57,10 @@ export default function MatchPage() {
                 setLoading(false);
             });
         }
-    }, [matchId]);
+    }, [matchIdStr]);
 
-    const numericMatchId = parseInt(matchId, 10);
-    const liveState = useLiveMatchState(isNaN(numericMatchId) ? 0 : numericMatchId, initialMatch);
+    const numericMatchId = parseInt(matchIdStr, 10);
+    const liveState = useLiveMatchState(isNaN(numericMatchId) ? null : numericMatchId, initialMatch);
 
     if (loading) {
         return (

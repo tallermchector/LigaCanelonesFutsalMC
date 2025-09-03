@@ -4,12 +4,12 @@
 import { useState, useEffect } from 'react';
 import type { GameState, FullMatch } from '@/types';
 
-export function useLiveMatchState(matchId: number, initialMatchData: FullMatch | null): GameState | null {
+export function useLiveMatchState(matchId: number | null, initialMatchData: FullMatch | null): GameState | null {
   const [liveState, setLiveState] = useState<GameState | null>(null);
 
   const getInitialState = (): GameState | null => {
     try {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && matchId) {
         const savedState = localStorage.getItem(`futsal-match-state-${matchId}`);
         if (savedState) {
             return JSON.parse(savedState) as GameState;

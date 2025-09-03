@@ -33,19 +33,21 @@ function BannerPageSkeleton() {
 
 export default function BannerPage() {
     const params = useParams();
-    const matchId = params.id as string;
+    const matchId = parseInt(params.id as string, 10);
     
     const [initialMatch, setInitialMatch] = useState<FullMatch | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (matchId) {
+        if (matchId && !isNaN(matchId)) {
             getMatchByIdFromDb(matchId).then(data => {
                 if (data) {
                     setInitialMatch(data);
                 }
                 setLoading(false);
             });
+        } else {
+            setLoading(false);
         }
     }, [matchId]);
 
