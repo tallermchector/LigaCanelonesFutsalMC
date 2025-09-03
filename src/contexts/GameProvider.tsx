@@ -181,7 +181,8 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           newState = gameReducer(newState, { type: 'UPDATE_FOULS', payload: { team: teamId, delta: 1 } });
       }
       if (action.payload.type === 'TIMEOUT') {
-          newState = gameReducer(newState, { type: 'UPDATE_TIMEOUTS', payload: { team: teamId, delta: -1 } });
+          const timeoutTeamId = action.payload.teamId || teamId;
+          newState = gameReducer(newState, { type: 'UPDATE_TIMEOUTS', payload: { team: timeoutTeamId, delta: -1 } });
       }
 
       return newState;
