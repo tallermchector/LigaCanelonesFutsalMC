@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { useToast } from '@/hooks/use-toast';
-import { getMatchByIdFromDb } from '@/actions/prisma-actions';
+import { getMatchByIdFromDb, saveMatchState, createGameEvent } from '@/actions/prisma-actions';
 import type { FullMatch } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -102,7 +102,11 @@ export default function MatchControlPage() {
   if (!match) return null;
 
   return (
-    <GameProvider match={match}>
+    <GameProvider 
+        match={match} 
+        saveMatchState={saveMatchState}
+        createGameEvent={createGameEvent}
+    >
       <div className="flex flex-col h-screen bg-background text-foreground">
         <Header />
         <main className="container mx-auto px-4 py-4 flex-grow flex flex-col h-main-content pt-[var(--header-height)]">

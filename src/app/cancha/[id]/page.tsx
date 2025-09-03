@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, notFound } from 'next/navigation';
-import { getMatchByIdFromDb } from '@/actions/prisma-actions';
+import { getMatchByIdFromDb, saveMatchState, createGameEvent } from '@/actions/prisma-actions';
 import type { FullMatch } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TacticalBoard } from '@/components/cancha/TacticalBoard';
@@ -92,7 +92,11 @@ export default function TacticalBoardPage() {
     }
 
     return (
-        <GameProvider match={match}>
+        <GameProvider 
+            match={match}
+            saveMatchState={saveMatchState}
+            createGameEvent={createGameEvent}
+        >
             <DndProvider backend={HTML5Backend}>
                 <div className="h-dvh w-screen flex flex-col bg-gray-900 text-white overflow-hidden">
                     <TacticalHeader match={match} />

@@ -3,7 +3,6 @@
 
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition } from '@/types';
 import React, { createContext, useContext, useReducer, useEffect, ReactNode, useCallback } from 'react';
-import { createGameEvent, saveMatchState } from '@/actions/prisma-actions';
 import { useToast } from '@/hooks/use-toast';
 
 
@@ -275,17 +274,24 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
   }
 };
 
+type GameProviderProps = {
+  children: ReactNode;
+  match: FullMatch;
+  saveMatchState: (matchId: number, state: GameState) => Promise<void>;
+  createGameEvent: (matchId: number, event: Omit<GameEvent, 'id' | 'matchId'>) => Promise<void>;
+}
+
 const GameContext = createContext<{ 
     state: GameState; 
     dispatch: React.Dispatch<GameAction>;
     handleSaveChanges: () => Promise<void>;
 } | undefined>(undefined);
 
-export const GameProvider = ({ children, match }: { children: ReactNode, match: FullMatch }) => {
+export const GameProvider: React.FC<GameProviderProps> = ({ children, match, saveMatchState, createGameEvent }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
   const { toast } = useToast();
 
-  const getInitialState = () => {
+  const getInitialState = useCallback(() => {
     try {
       if (typeof window !== 'undefined') {
         const savedState = localStorage.getItem(`futsal-match-state-${match.id}`);
@@ -303,12 +309,11 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
       console.error("Failed to read state from localStorage", error);
     }
     return null;
-  };
+  }, [match.id, match.activePlayersA, match.activePlayersB]);
 
   useEffect(() => {
     dispatch({ type: 'LOAD_MATCH', payload: { match, state: getInitialState() } });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [match.id]);
+  }, [match, getInitialState]);
   
   // Persist state to localStorage on every change
   useEffect(() => {
@@ -331,6 +336,7 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
         createGameEvent(state.matchId, eventData);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.events, state.matchId]);
 
   // Timer logic
@@ -371,7 +377,7 @@ export const GameProvider = ({ children, match }: { children: ReactNode, match: 
       });
       console.error("Failed to save match state:", error);
     }
-  }, [state, toast]);
+  }, [state, toast, saveMatchState]);
 
   return (
     <GameContext.Provider value={{ state, dispatch, handleSaveChanges }}>
