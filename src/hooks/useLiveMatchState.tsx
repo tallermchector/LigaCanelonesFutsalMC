@@ -27,15 +27,19 @@ export function useLiveMatchState(matchId: string, initialMatchData: FullMatch |
           teamB: initialMatchData.teamB,
           scoreA: initialMatchData.scoreA,
           scoreB: initialMatchData.scoreB,
-          foulsA: 0,
-          foulsB: 0,
-          timeoutsA: 1,
-          timeoutsB: 1,
-          period: 1,
-          time: 1200,
-          isRunning: false,
+          foulsA: initialMatchData.foulsA,
+          foulsB: initialMatchData.foulsB,
+          timeoutsA: initialMatchData.timeoutsA,
+          timeoutsB: initialMatchData.timeoutsB,
+          period: initialMatchData.period,
+          time: initialMatchData.time,
+          isRunning: initialMatchData.isRunning,
           events: initialMatchData.events || [],
           selectedPlayer: null,
+          substitutionState: null,
+          activePlayersA: initialMatchData.activePlayersA || [],
+          activePlayersB: initialMatchData.activePlayersB || [],
+          playerPositions: {},
         }
     }
     return null;
@@ -73,3 +77,4 @@ export function useLiveMatchState(matchId: string, initialMatchData: FullMatch |
 
   return liveState;
 }
+
