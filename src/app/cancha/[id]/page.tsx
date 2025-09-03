@@ -13,7 +13,8 @@ import { TacticalActions } from '@/components/cancha/TacticalActions';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TeamPanel } from '@/components/controles/TeamPanel';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 
 function TacticalBoardSkeleton() {
@@ -58,6 +59,7 @@ export default function TacticalBoardPage() {
     
     const [match, setMatch] = useState<FullMatch | null>(null);
     const [loading, setLoading] = useState(true);
+    const [visiblePanel, setVisiblePanel] = useState<'A' | 'B' | null>(null);
 
     useEffect(() => {
         if (matchId) {
@@ -79,36 +81,41 @@ export default function TacticalBoardPage() {
     if (!match) {
         return notFound();
     }
+    
+    const handleTogglePanel = (panel: 'A' | 'B') => {
+        setVisiblePanel(current => current === panel ? null : panel);
+    }
 
     return (
         <GameProvider match={match}>
             <DndProvider backend={HTML5Backend}>
-                <div className="flex h-dvh w-screen flex-col bg-gray-900 text-white">
+                <div className="h-dvh w-screen flex flex-col bg-gray-900 text-white">
                     <TacticalHeader match={match} />
-                    <main className="flex-grow flex flex-col md:flex-row p-2 gap-2 overflow-hidden">
-                        {/* Desktop: Left Panel */}
-                        <div className="hidden md:block w-72 flex-shrink-0">
-                          <TeamPanel teamId="A" />
+                    <main className="flex-grow flex p-2 gap-2 overflow-hidden relative">
+                         {/* Main Content: Board */}
+                        <div className="flex-grow flex flex-col h-full w-full relative p-4">
+                            <TacticalBoard match={match} />
                         </div>
                         
-                        {/* Main Content: Board & Mobile Actions */}
-                        <div className="flex-grow flex flex-col h-full w-full relative">
-                            <div className="flex-grow relative h-full w-full">
-                                <TacticalBoard match={match} />
-                            </div>
-                            <div className="md:hidden flex-shrink-0 mt-2">
-                                <TacticalActions />
-                            </div>
-                        </div>
-                        
-                         {/* Desktop: Right Panel */}
-                        <div className="hidden md:block w-72 flex-shrink-0">
-                          <TeamPanel teamId="B" />
-                        </div>
-
+                        <AnimatePresence>
+                        {visiblePanel && (
+                            <motion.div
+                                className={cn(
+                                    "absolute top-0 bottom-0 z-20 w-72 h-full p-2",
+                                    visiblePanel === 'A' ? 'left-0' : 'right-0'
+                                )}
+                                initial={{ x: visiblePanel === 'A' ? '-100%' : '100%', opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: visiblePanel === 'A' ? '-100%' : '100%', opacity: 0 }}
+                                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                            >
+                                <TeamPanel teamId={visiblePanel} />
+                            </motion.div>
+                        )}
+                        </AnimatePresence>
                     </main>
-                    <div className="hidden md:block flex-shrink-0">
-                      <TacticalActions />
+                    <div className="flex-shrink-0">
+                      <TacticalActions onTogglePanel={handleTogglePanel} visiblePanel={visiblePanel} />
                     </div>
                 </div>
             </DndProvider>
