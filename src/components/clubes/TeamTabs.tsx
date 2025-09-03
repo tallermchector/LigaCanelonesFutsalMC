@@ -23,7 +23,7 @@ export function TeamTabs({ team }: TeamTabsProps) {
                     <TeamStats team={team} />
                 </TabsContent>
                 <TabsContent value="players">
-                    <TeamPlayers players={team.players} />
+                    <TeamPlayers players={team.players || []} />
                 </TabsContent>
                 <TabsContent value="schedule">
                     <TeamSchedule matches={team.matches || []} />
