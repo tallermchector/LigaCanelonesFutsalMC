@@ -2,17 +2,20 @@
 import { MetadataRoute } from 'next';
 import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 import { getPosts } from '@/actions/blog-actions';
+import { getAllTeams } from '@/actions/team-actions';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://ligacanelonesfutsalmc.netlify.app';
 
-  // Páginas estáticas
+  // Páginas estáticas públicas
   const staticRoutes = [
     '', 
     '/partidos', 
     '/blog',
-    '/controles',
-    '/banner'
+    '/clubes',
+    '/jugadores',
+    '/posiciones',
+    '/resumen'
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
@@ -47,10 +50,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
   }));
 
+  // Páginas de clubes
+  const allTeams = await getAllTeams();
+  const clubRoutes = allTeams.map(team => ({
+    url: `${baseUrl}/clubes/${team.slug}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.6
+  }));
+
+
   return [
     ...staticRoutes,
     ...matchRoutes,
     ...statsRoutes,
-    ...blogPostRoutes
+    ...blogPostRoutes,
+    ...clubRoutes
   ];
 }
