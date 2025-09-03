@@ -1,9 +1,7 @@
-
-
 'use server';
 
 import prisma from '@/lib/prisma';
-import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, Team, Player, GameEventType } from '@/types';
+import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, Team, Player, GameEventType, PlayerTimeTracker } from '@/types';
 import { revalidatePath } from 'next/cache';
 
 export async function saveMatchState(matchId: number, state: GameState): Promise<void> {
@@ -11,26 +9,50 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
     throw new Error('Invalid match state provided.');
   }
 
-  const { status, scoreA, scoreB, foulsA, foulsB, timeoutsA, timeoutsB, period, time, isRunning, activePlayersA, activePlayersB } = state;
+  const { status, scoreA, scoreB, foulsA, foulsB, timeoutsA, timeoutsB, period, time, isRunning, activePlayersA, activePlayersB, playerTimeTracker } = state;
 
   try {
-    await prisma.match.update({
-      where: { id: matchId },
-      data: {
-        status: status,
-        scoreA,
-        scoreB,
-        foulsA,
-        foulsB,
-        timeoutsA,
-        timeoutsB,
-        period,
-        time,
-        isRunning,
-        activePlayersA,
-        activePlayersB,
-      },
-    });
+    const txs: any[] = [
+      prisma.match.update({
+        where: { id: matchId },
+        data: {
+          status,
+          scoreA,
+          scoreB,
+          foulsA,
+          foulsB,
+          timeoutsA,
+          timeoutsB,
+          period,
+          time,
+          isRunning,
+          activePlayersA,
+          activePlayersB,
+        },
+      })
+    ];
+
+    if (playerTimeTracker) {
+        for (const playerIdStr in playerTimeTracker) {
+            const playerId = parseInt(playerIdStr, 10);
+            const stats = playerTimeTracker[playerId];
+
+            txs.push(
+                prisma.playerMatchStats.upsert({
+                    where: { matchId_playerId: { matchId, playerId } },
+                    update: { timePlayedInSeconds: stats.totalTime },
+                    create: {
+                        matchId,
+                        playerId,
+                        timePlayedInSeconds: stats.totalTime,
+                    },
+                })
+            );
+        }
+    }
+
+    await prisma.$transaction(txs);
+
     console.log(`Match ${matchId} state saved successfully.`);
     revalidatePath(`/controles/${matchId}`);
     revalidatePath('/controles');
@@ -73,6 +95,7 @@ export async function getMatchByIdFromDb(id: number): Promise<FullMatch | undefi
                 teamA: { include: { players: true } },
                 teamB: { include: { players: true } },
                 events: true,
+                playerMatchStats: true,
             },
         });
 
@@ -99,6 +122,7 @@ export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
                 teamA: { include: { players: true } },
                 teamB: { include: { players: true } },
                 events: true,
+                playerMatchStats: true,
             },
              orderBy: {
                 scheduledTime: 'desc',
@@ -193,6 +217,7 @@ export async function createMatch(data: {
                 teamA: { include: { players: true } },
                 teamB: { include: { players: true } },
                 events: true,
+                playerMatchStats: true,
             },
         });
         revalidatePath('/gestion');

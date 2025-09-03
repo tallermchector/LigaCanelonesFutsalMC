@@ -4,9 +4,11 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Team {
@@ -14,54 +16,77 @@ model Team {
   name    String
   logoUrl String?
   players Player[]
-  matchesA Match[] @relation("TeamA")
-  matchesB Match[] @relation("TeamB")
+  teamA   Match[]  @relation("TeamAMatches")
+  teamB   Match[]  @relation("TeamBMatches")
 }
 
 model Player {
-  id       Int     @id @default(autoincrement())
-  name     String
-  number   Int
-  position String
-  team     Team    @relation(fields: [teamId], references: [id])
-  teamId   Int
-  events   GameEvent[]
+  id              Int                @id @default(autoincrement())
+  name            String
+  number          Int
+  position        String
+  teamId          Int
+  team            Team               @relation(fields: [teamId], references: [id])
+  events          GameEvent[]
+  playerMatchStats PlayerMatchStats[]
+
+  @@index([teamId])
 }
 
 model Match {
-  id              Int      @id @default(autoincrement())
+  id              Int                @id @default(autoincrement())
   scheduledTime   DateTime
-  status          String   @default("SCHEDULED")
-  teamA           Team     @relation("TeamA", fields: [teamAId], references: [id])
+  status          String             @default("SCHEDULED")
   teamAId         Int
-  teamB           Team     @relation("TeamB", fields: [teamBId], references: [id])
   teamBId         Int
-  scoreA          Int      @default(0)
-  scoreB          Int      @default(0)
-  foulsA          Int      @default(0)
-  foulsB          Int      @default(0)
-  timeoutsA       Int      @default(1)
-  timeoutsB       Int      @default(1)
-  period          Int      @default(1)
-  time            Int      @default(1200) // 20 minutes in seconds
-  isRunning       Boolean  @default(false)
+  teamA           Team               @relation("TeamAMatches", fields: [teamAId], references: [id])
+  teamB           Team               @relation("TeamBMatches", fields: [teamBId], references: [id])
+  scoreA          Int                @default(0)
+  scoreB          Int                @default(0)
+  foulsA          Int                @default(0)
+  foulsB          Int                @default(0)
+  timeoutsA       Int                @default(1)
+  timeoutsB       Int                @default(1)
+  period          Int                @default(1)
+  time            Int                @default(1200) // in seconds
+  isRunning       Boolean            @default(false)
+  round           Int
   events          GameEvent[]
-  round           Int      @default(1)
   activePlayersA  Int[]
   activePlayersB  Int[]
+  playerMatchStats PlayerMatchStats[]
+
+  @@index([teamAId])
+  @@index([teamBId])
 }
 
 model GameEvent {
-  id            String  @id @default(cuid())
-  match         Match   @relation(fields: [matchId], references: [id])
-  matchId       Int
-  type          String
-  teamId        String?
-  playerId      Int?
-  player        Player? @relation(fields: [playerId], references: [id])
-  playerName    String?
-  playerInId    Int?
-  playerInName  String?
-  teamName      String?
-  timestamp     Int
+  id           String @id @default(cuid())
+  matchId      Int
+  match        Match  @relation(fields: [matchId], references: [id])
+  type         String
+  teamId       String
+  playerId     Int?
+  player       Player? @relation(fields: [playerId], references: [id])
+  playerName   String?
+  playerInId   Int?
+  playerInName String?
+  teamName     String
+  timestamp    Int
+
+  @@index([matchId])
+  @@index([playerId])
+}
+
+model PlayerMatchStats {
+  id                Int    @id @default(autoincrement())
+  matchId           Int
+  match             Match  @relation(fields: [matchId], references: [id])
+  playerId          Int
+  player            Player @relation(fields: [playerId], references: [id])
+  timePlayedInSeconds Int    @default(0)
+
+  @@unique([matchId, playerId])
+  @@index([matchId])
+  @@index([playerId])
 }

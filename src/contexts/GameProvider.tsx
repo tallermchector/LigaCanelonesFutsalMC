@@ -1,10 +1,8 @@
-
 'use client';
 
-import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition } from '@/types';
+import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker } from '@/types';
 import React, { createContext, useContext, useReducer, useEffect, ReactNode, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
-
 
 type GameAction =
   | { type: 'LOAD_MATCH'; payload: { match: FullMatch; state: GameState | null } }
@@ -23,7 +21,8 @@ type GameAction =
   | { type: 'TOGGLE_ACTIVE_PLAYER'; payload: { teamId: 'A' | 'B'; playerId: number } }
   | { type: 'SET_INITIAL_POSITIONS' }
   | { type: 'SAVE_FULL_STATE'; }
-  | { type: 'UPDATE_PLAYER_POSITION'; payload: { playerId: number; position: PlayerPosition } };
+  | { type: 'UPDATE_PLAYER_POSITION'; payload: { playerId: number; position: PlayerPosition } }
+  | { type: 'UPDATE_PLAYER_TIME' };
 
 const initialState: GameState = {
   matchId: null,
@@ -45,12 +44,32 @@ const initialState: GameState = {
   activePlayersA: [],
   activePlayersB: [],
   playerPositions: {},
+  playerTimeTracker: {},
+};
+
+// Helper function to update player times
+const updatePlayerTimeReducer = (state: GameState): GameState => {
+    if (!state.isRunning) return state;
+
+    const newTracker = { ...state.playerTimeTracker };
+    const allActivePlayers = [...state.activePlayersA, ...state.activePlayersB];
+
+    allActivePlayers.forEach(playerId => {
+        const playerTracker = newTracker[playerId];
+        if (playerTracker) {
+            const timePlayed = playerTracker.startTime - state.time;
+            playerTracker.totalTime += timePlayed;
+            playerTracker.startTime = state.time; // Reset start time for next interval
+        }
+    });
+
+    return { ...state, playerTimeTracker: newTracker };
 };
 
 const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
     case 'LOAD_MATCH': {
-      const baseState = action.payload.state || {
+      let baseState = action.payload.state || {
         ...initialState,
         matchId: action.payload.match.id,
         status: action.payload.match.status,
@@ -61,10 +80,19 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         events: action.payload.match.events || [],
         activePlayersA: action.payload.match.activePlayersA || [],
         activePlayersB: action.payload.match.activePlayersB || [],
-        substitutionState: null,
         playerPositions: {},
       };
-      // Ensure active players arrays exist
+      
+      const timeTracker: PlayerTimeTracker = {};
+       action.payload.match.playerMatchStats?.forEach(stat => {
+          timeTracker[stat.playerId] = {
+              startTime: state.time,
+              totalTime: stat.timePlayedInSeconds,
+          };
+       });
+
+       baseState = { ...baseState, playerTimeTracker: timeTracker, substitutionState: null };
+       
       if (!baseState.activePlayersA) baseState.activePlayersA = [];
       if (!baseState.activePlayersB) baseState.activePlayersB = [];
       return baseState;
@@ -89,10 +117,24 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'SET_STATUS':
         return { ...state, status: action.payload };
     case 'TOGGLE_TIMER':
-      if (state.status === 'SCHEDULED' && !state.isRunning) {
-        return { ...state, isRunning: true, status: 'LIVE' };
+      const nextIsRunning = !state.isRunning;
+      const updatedTimeState = updatePlayerTimeReducer(state);
+
+      if(nextIsRunning) {
+        // When starting, set startTime for all active players
+        const newTracker = { ...updatedTimeState.playerTimeTracker };
+        const allActivePlayers = [...state.activePlayersA, ...state.activePlayersB];
+        allActivePlayers.forEach(id => {
+            if (newTracker[id]) {
+                newTracker[id].startTime = updatedTimeState.time;
+            } else {
+                newTracker[id] = { startTime: updatedTimeState.time, totalTime: 0 };
+            }
+        });
+        return { ...updatedTimeState, isRunning: true, playerTimeTracker: newTracker, status: state.status === 'SCHEDULED' ? 'LIVE' : state.status };
       }
-      return { ...state, isRunning: !state.isRunning };
+
+      return { ...updatedTimeState, isRunning: false };
     case 'RESET_TIMER':
       return { ...state, time: initialState.time, isRunning: false };
     case 'TICK':
@@ -109,14 +151,27 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         if (state.substitutionState) {
             const { playerOut } = state.substitutionState;
 
-            // Only allow selecting a different player from the same team
             if (selected.teamId === playerOut.teamId && selected.playerId !== playerOut.playerId) {
                 const team = playerOut.teamId === 'A' ? state.teamA : state.teamB;
                 const pOut = team?.players.find(p => p.id === playerOut.playerId);
                 const pIn = team?.players.find(p => p.id === selected.playerId);
                 
                 if (!team || !pOut || !pIn || !state.matchId) return state;
+                
+                const timeStateWithUpdate = updatePlayerTimeReducer(state);
+                const newTracker = {...timeStateWithUpdate.playerTimeTracker};
+                
+                // Finalize time for player leaving
+                const pOutTracker = newTracker[pOut.id];
+                if(pOutTracker) {
+                    const timePlayed = pOutTracker.startTime - timeStateWithUpdate.time;
+                    pOutTracker.totalTime += timePlayed;
+                }
 
+                // Initialize time for player entering
+                newTracker[pIn.id] = newTracker[pIn.id] || { startTime: timeStateWithUpdate.time, totalTime: 0 };
+                newTracker[pIn.id].startTime = timeStateWithUpdate.time;
+                
                 const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
                     type: 'SUBSTITUTION',
                     teamId: playerOut.teamId,
@@ -128,20 +183,19 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
                     timestamp: state.time,
                 };
                 
-                 // Update active players list
                 const activePlayersKey = playerOut.teamId === 'A' ? 'activePlayersA' : 'activePlayersB';
                 const currentActivePlayers = state[activePlayersKey];
                 const updatedActivePlayers = currentActivePlayers.filter(id => id !== pOut.id).concat(pIn.id);
 
                 return {
-                    ...state,
+                    ...timeStateWithUpdate,
+                    playerTimeTracker: newTracker,
                     events: [...state.events, {...newEvent, id: `${Date.now()}-${Math.random()}`, matchId: state.matchId}],
                     selectedPlayer: null,
                     substitutionState: null,
                     [activePlayersKey]: updatedActivePlayers,
                 };
             }
-            // If the same player is selected again, or a player from another team, cancel substitution
             return { ...state, substitutionState: null, selectedPlayer: null };
         }
 
@@ -172,7 +226,6 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       
       let newState = { ...state, events: [...state.events, {...newEvent, id: `${Date.now()}-${Math.random()}`, matchId: state.matchId}], selectedPlayer: null };
 
-      // Chain updates for relevant event types
       if (action.payload.type === 'GOAL') {
           newState = gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team: teamId, delta: 1 } });
       }
@@ -229,7 +282,6 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
             const goalkeeper = playerIds.map(id => teamPlayers.find(p => p.id === id)).find(p => p?.position === 'Goalkeeper');
             let fieldPlayers = playerIds.filter(id => id !== goalkeeper?.id);
             
-            // If no designated goalkeeper, pick one player to be in goal
             if (!goalkeeper && playerIds.length > 0) {
                 const tempGoalkeeperId = playerIds[0];
                 newPositions[tempGoalkeeperId] = { x: team === 'A' ? 10 : 90, y: 50 };
@@ -264,9 +316,10 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
             },
         };
     }
+    case 'UPDATE_PLAYER_TIME': {
+        return updatePlayerTimeReducer(state);
+    }
     case 'SAVE_FULL_STATE': {
-      // This action does not modify the state directly.
-      // It's a signal to trigger the save operation in the provider.
       return state;
     }
     default:
@@ -302,6 +355,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
           if (!parsedState.activePlayersA) parsedState.activePlayersA = match.activePlayersA || [];
           if (!parsedState.activePlayersB) parsedState.activePlayersB = match.activePlayersB || [];
           if (!parsedState.playerPositions) parsedState.playerPositions = {};
+          if (!parsedState.playerTimeTracker) parsedState.playerTimeTracker = {};
         }
         return parsedState;
       }
@@ -315,7 +369,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
     dispatch({ type: 'LOAD_MATCH', payload: { match, state: getInitialState() } });
   }, [match, getInitialState]);
   
-  // Persist state to localStorage on every change
   useEffect(() => {
     if (state.matchId && typeof window !== 'undefined') {
       try {
@@ -326,7 +379,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
     }
   }, [state]);
 
-  // Persist event to DB on change
   useEffect(() => {
     if(state.events.length > 0) {
       const lastEvent = state.events[state.events.length -1];
@@ -339,7 +391,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.events, state.matchId]);
 
-  // Timer logic
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
     if (state.isRunning && state.time > 0) {
@@ -364,7 +415,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
       return;
     }
     try {
-      await saveMatchState(state.matchId, state);
+      const stateWithUpdatedTime = updatePlayerTimeReducer(state);
+      await saveMatchState(state.matchId, stateWithUpdatedTime);
       toast({
         title: "Éxito",
         description: "El estado del partido ha sido guardado correctamente.",

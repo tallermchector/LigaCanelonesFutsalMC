@@ -1,10 +1,11 @@
-
 import type { ElementType } from 'react';
-import type { Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent } from '@prisma/client';
+import type { Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent, PlayerMatchStats as PrismaPlayerMatchStats } from '@prisma/client';
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED' | 'SELECTING_STARTERS';
 
 export interface Player extends PrismaPlayer {}
+
+export interface PlayerMatchStats extends PrismaPlayerMatchStats {}
 
 export interface Team extends PrismaTeam {
   players: Player[];
@@ -22,6 +23,7 @@ export interface FullMatch extends Omit<PrismaMatch, 'teamAId' | 'teamBId' | 'ev
   teamA: Team;
   teamB: Team;
   events: GameEvent[];
+  playerMatchStats: PlayerMatchStats[];
 }
 
 export type PlayerStat = {
@@ -49,6 +51,13 @@ export type PlayerPosition = {
     y: number;
 };
 
+export type PlayerTimeTracker = {
+    [playerId: number]: {
+        startTime: number; // Game clock time when player entered
+        totalTime: number; // Accumulated time in seconds
+    };
+};
+
 export interface GameState {
   matchId: number | null;
   status: MatchStatus;
@@ -71,6 +80,7 @@ export interface GameState {
   activePlayersA: number[];
   activePlayersB: number[];
   playerPositions: { [playerId: number]: PlayerPosition };
+  playerTimeTracker: PlayerTimeTracker;
 }
 
 export type Post = {
