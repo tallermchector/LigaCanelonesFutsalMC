@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown, BarChartHorizontal, PenSquare, LayoutDashboard } from 'lucide-react';
+import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown, BarChartHorizontal, PenSquare, LayoutDashboard, Trophy, Users } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -39,6 +39,9 @@ export function Header() {
   const navLinks = [
     { href: '/', label: 'Inicio', icon: <Home /> },
     { href: '/partidos', label: 'Partidos', icon: <CalendarDays /> },
+    { href: '/clubes', label: 'Clubes', icon: <Shield /> },
+    { href: '/jugadores', label: 'Jugadores', icon: <Users /> },
+    { href: '/posiciones', label: 'Posiciones', icon: <Trophy /> },
     { href: '/blog', label: 'Noticias', icon: <Newspaper /> },
     { href: '/resumen', label: 'Resumen', icon: <BarChartHorizontal /> },
   ];
