@@ -8,6 +8,8 @@ import type { FullMatch } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TacticalBoard } from '@/components/cancha/TacticalBoard';
 import { GameProvider } from '@/contexts/GameProvider';
+import { TacticalHeader } from '@/components/cancha/TacticalHeader';
+import { ActionsToolbar } from '@/components/cancha/ActionsToolbar';
 
 
 function TacticalBoardSkeleton() {
@@ -76,8 +78,13 @@ export default function TacticalBoardPage() {
 
     return (
         <GameProvider match={match}>
-            <TacticalBoard match={match} />
+            <div className="flex h-screen w-screen flex-col bg-gray-900 text-white">
+                <TacticalHeader match={match} />
+                <main className="flex-grow relative">
+                     <TacticalBoard match={match} />
+                </main>
+                <ActionsToolbar />
+            </div>
         </GameProvider>
     );
 }
-
