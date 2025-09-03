@@ -12,8 +12,7 @@ interface PlayerPageProps {
     }
 }
 
-export default async function PlayerPage(props: PlayerPageProps) {
-    const { params } = props;
+export default async function PlayerPage({ params }: PlayerPageProps) {
     const playerId = parseInt(params.id, 10);
     if (isNaN(playerId)) {
         notFound();
