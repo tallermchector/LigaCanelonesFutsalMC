@@ -46,7 +46,12 @@ export default function MatchControlPage() {
         setLoading(true);
         setError(null);
         try {
-          const fetchedMatch = await getMatchByIdFromDb(id);
+          const matchId = parseInt(id, 10);
+          if (isNaN(matchId)) {
+            setError('ID de partido inválido.');
+            return;
+          }
+          const fetchedMatch = await getMatchByIdFromDb(matchId);
           if (fetchedMatch) {
             setMatch(fetchedMatch);
           } else {

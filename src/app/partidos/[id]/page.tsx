@@ -45,7 +45,12 @@ export default function MatchPage() {
 
     useEffect(() => {
         if (matchId) {
-            getMatchByIdFromDb(matchId).then(data => {
+            const numericId = parseInt(matchId, 10);
+            if(isNaN(numericId)) {
+                setLoading(false);
+                return;
+            }
+            getMatchByIdFromDb(numericId).then(data => {
                 if (data) {
                     setInitialMatch(data);
                 }
@@ -54,7 +59,8 @@ export default function MatchPage() {
         }
     }, [matchId]);
 
-    const liveState = useLiveMatchState(matchId, initialMatch);
+    const numericMatchId = parseInt(matchId, 10);
+    const liveState = useLiveMatchState(isNaN(numericMatchId) ? 0 : numericMatchId, initialMatch);
 
     if (loading) {
         return (

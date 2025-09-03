@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma';
 import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, Team, Player, GameEventType } from '@/types';
 import { revalidatePath } from 'next/cache';
 
-export async function saveMatchState(matchId: string, state: GameState): Promise<void> {
+export async function saveMatchState(matchId: number, state: GameState): Promise<void> {
   if (!state.teamA || !state.teamB) {
     throw new Error('Invalid match state provided.');
   }
@@ -39,7 +39,7 @@ export async function saveMatchState(matchId: string, state: GameState): Promise
   }
 }
 
-export async function createGameEvent(matchId: string, event: Omit<GameEvent, 'id'>): Promise<void> {
+export async function createGameEvent(matchId: number, event: Omit<GameEvent, 'id'>): Promise<void> {
     try {
         await prisma.gameEvent.create({
             data: {
@@ -64,7 +64,7 @@ export async function createGameEvent(matchId: string, event: Omit<GameEvent, 'i
 }
 
 
-export async function getMatchByIdFromDb(id: string): Promise<FullMatch | undefined> {
+export async function getMatchByIdFromDb(id: number): Promise<FullMatch | undefined> {
     try {
         const match = await prisma.match.findUnique({
             where: { id },
@@ -116,7 +116,7 @@ export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
 }
 
 
-export async function getMatchStatsFromDb(id: string): Promise<MatchStats | undefined> {
+export async function getMatchStatsFromDb(id: number): Promise<MatchStats | undefined> {
   const match = await getMatchByIdFromDb(id);
   if (!match || !match.events) {
     return undefined;
@@ -173,7 +173,6 @@ export async function createMatch(data: {
         const newMatch = await prisma.match.create({
             data: {
                 ...data,
-                id: `match-${Date.now()}`, // Simple unique ID
                 status: 'SCHEDULED',
                 scoreA: 0,
                 scoreB: 0,
@@ -204,7 +203,7 @@ export async function createMatch(data: {
     }
 }
 
-export async function updateMatchStatus(matchId: string, status: MatchStatus): Promise<void> {
+export async function updateMatchStatus(matchId: number, status: MatchStatus): Promise<void> {
     try {
         await prisma.match.update({
             where: { id: matchId },

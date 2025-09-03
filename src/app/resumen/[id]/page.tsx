@@ -16,7 +16,10 @@ interface ResumenPageProps {
 }
 
 export async function generateMetadata({ params }: ResumenPageProps): Promise<Metadata> {
-  const { id } = params;
+  const id = parseInt(params.id, 10);
+  if (isNaN(id)) {
+      return { title: 'Resumen no encontrado' };
+  }
   const match = await getMatchStatsFromDb(id);
 
   if (!match) {
@@ -40,7 +43,10 @@ export async function generateMetadata({ params }: ResumenPageProps): Promise<Me
 
 
 export default async function ResumenPage({ params }: ResumenPageProps) {
-  const { id } = params;
+  const id = parseInt(params.id, 10);
+   if (isNaN(id)) {
+      notFound();
+  }
   const match = await getMatchStatsFromDb(id);
 
   if (!match) {

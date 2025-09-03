@@ -50,7 +50,7 @@ export type PlayerPosition = {
 };
 
 export interface GameState {
-  matchId: string | null;
+  matchId: number | null;
   status: MatchStatus;
   teamA: Team | null;
   teamB: Team | null;

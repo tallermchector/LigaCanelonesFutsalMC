@@ -63,7 +63,12 @@ export default function TacticalBoardPage() {
 
     useEffect(() => {
         if (matchId) {
-            getMatchByIdFromDb(matchId).then(data => {
+            const numericId = parseInt(matchId, 10);
+            if (isNaN(numericId)) {
+                setLoading(false);
+                return;
+            }
+            getMatchByIdFromDb(numericId).then(data => {
                 if (data) {
                     setMatch(data);
                 }

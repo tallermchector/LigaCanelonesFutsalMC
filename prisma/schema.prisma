@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Team {
@@ -15,8 +15,8 @@ model Team {
   name    String
   logoUrl String?
   players Player[]
-  homeMatches Match[] @relation("TeamAHomeMatches")
-  awayMatches Match[] @relation("TeamBAwayMatches")
+  matchesA Match[] @relation("TeamA")
+  matchesB Match[] @relation("TeamB")
 }
 
 model Player {
@@ -27,48 +27,42 @@ model Player {
   team     Team    @relation(fields: [teamId], references: [id])
   teamId   Int
   events   GameEvent[]
-
-  @@index([teamId])
 }
 
 model Match {
-  id             String    @id @default(cuid())
-  scheduledTime  DateTime
-  status         String
-  teamA          Team      @relation("TeamAHomeMatches", fields: [teamAId], references: [id])
-  teamAId        Int
-  teamB          Team      @relation("TeamBAwayMatches", fields: [teamBId], references: [id])
-  teamBId        Int
-  scoreA         Int
-  scoreB         Int
-  foulsA         Int
-  foulsB         Int
-  timeoutsA      Int
-  timeoutsB      Int
-  period         Int
-  time           Int
-  isRunning      Boolean
-  round          Int
-  activePlayersA Int[]
-  activePlayersB Int[]
-  events         GameEvent[]
-
-  @@index([teamAId])
-  @@index([teamBId])
-  @@index([status])
+  id              Int      @id @default(autoincrement())
+  scheduledTime   DateTime
+  status          String   @default("SCHEDULED")
+  teamA           Team     @relation("TeamA", fields: [teamAId], references: [id])
+  teamAId         Int
+  teamB           Team     @relation("TeamB", fields: [teamBId], references: [id])
+  teamBId         Int
+  scoreA          Int      @default(0)
+  scoreB          Int      @default(0)
+  foulsA          Int      @default(0)
+  foulsB          Int      @default(0)
+  timeoutsA       Int      @default(1)
+  timeoutsB       Int      @default(1)
+  period          Int      @default(1)
+  time            Int      @default(1200) // 20 minutes in seconds
+  isRunning       Boolean  @default(false)
+  events          GameEvent[]
+  round           Int      @default(1)
+  activePlayersA  Int[]
+  activePlayersB  Int[]
 }
 
 model GameEvent {
   id            String  @id @default(cuid())
   match         Match   @relation(fields: [matchId], references: [id])
-  matchId       String
+  matchId       Int
   type          String
-  teamId        String
+  teamId        String?
   playerId      Int?
+  player        Player? @relation(fields: [playerId], references: [id])
   playerName    String?
   playerInId    Int?
   playerInName  String?
-  teamName      String
+  teamName      String?
   timestamp     Int
-  player        Player? @relation(fields: [playerId], references: [id])
 }
