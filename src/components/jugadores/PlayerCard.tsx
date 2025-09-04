@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { Player, Team } from '@/types';
@@ -17,6 +16,10 @@ interface PlayerCardProps {
 }
 
 export function PlayerCard({ player }: PlayerCardProps) {
+  // Selecciona una imagen de avatar aleatoria
+  const avatarNumber = (player.id % 3) + 1;
+  const avatarUrl = `/avatar/${avatarNumber}.png`;
+
   return (
     <motion.div
       whileHover={{ y: -5, scale: 1.02 }}
@@ -26,15 +29,20 @@ export function PlayerCard({ player }: PlayerCardProps) {
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
       <Link href={`/jugadores/${player.id}`} className="block h-full group">
-        <Card className="flex flex-col h-full overflow-hidden shadow-lg transition-all duration-300 group-hover:shadow-primary/20 bg-card">
-          <div className="relative w-full aspect-[4/5] overflow-hidden">
+        <Card className="flex flex-col h-full overflow-hidden shadow-lg transition-all duration-300 group-hover:shadow-primary/20 bg-card relative">
+           <div 
+                className="absolute inset-0 bg-cover bg-center opacity-30 z-0"
+                style={{ backgroundImage: `url('/banner_youtube.jpg')` }}
+            ></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent z-10"></div>
+          
+          <div className="relative w-full aspect-[4/5] overflow-hidden z-20">
             <Image
-              src={'/placeholder-player.png'}
+              src={avatarUrl}
               alt={`Foto de ${player.name}`}
               fill
-              className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              className="object-contain object-bottom drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
             <div className="absolute top-2 right-2 p-2">
                  <span className="text-5xl font-black text-white/80 drop-shadow-lg" style={{ WebkitTextStroke: '1px rgba(0,0,0,0.2)' }}>
                     {player.number}
@@ -45,7 +53,7 @@ export function PlayerCard({ player }: PlayerCardProps) {
                 <p className="text-sm text-white/90 font-medium drop-shadow-sm">{player.position}</p>
             </div>
           </div>
-          <CardContent className="p-3 bg-muted/50 flex items-center justify-between">
+          <CardContent className="p-3 bg-background/50 flex items-center justify-between z-20 backdrop-blur-sm border-t border-white/10">
              <div className="flex items-center gap-2">
                 <Image
                     src={player.team.logoUrl || ''}
@@ -54,7 +62,7 @@ export function PlayerCard({ player }: PlayerCardProps) {
                     height={24}
                     className="w-6 h-6 object-contain"
                 />
-                <span className="text-sm font-semibold text-muted-foreground group-hover:text-foreground transition-colors">{player.team.name}</span>
+                <span className="text-sm font-semibold text-white/80 group-hover:text-white transition-colors">{player.team.name}</span>
             </div>
           </CardContent>
         </Card>
