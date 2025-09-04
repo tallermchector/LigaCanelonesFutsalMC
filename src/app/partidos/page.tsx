@@ -11,8 +11,15 @@ import { Calendar, Clock, BarChart2, Tv } from 'lucide-react';
 import type { FullMatch, MatchStatus } from '@/types';
 import { PageHero } from '@/components/layout/PageHero';
 import { Footer } from '@/components/layout/footer';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 function MatchCard({ match }: { match: FullMatch }) {
     const scheduledDateTime = new Date(match.scheduledTime);
@@ -113,7 +120,44 @@ function MatchCard({ match }: { match: FullMatch }) {
     );
 }
 
-function MatchList({ matches }: { matches: FullMatch[] }) {
+const RoundFilter = ({ rounds, selectedRound, onSelectRound }: { rounds: number[], selectedRound: number | 'all', onSelectRound: (round: number | 'all') => void }) => {
+    if (rounds.length <= 1) return null;
+
+    return (
+        <Carousel
+            opts={{ align: "start", containScroll: "trimSnaps" }}
+            className="w-full max-w-lg mx-auto mb-8"
+        >
+            <CarouselContent className="-ml-2">
+                 <CarouselItem className="pl-2 basis-auto">
+                    <Button
+                        variant={selectedRound === 'all' ? 'default' : 'outline'}
+                        onClick={() => onSelectRound('all')}
+                    >
+                        Todas
+                    </Button>
+                </CarouselItem>
+                {rounds.map(round => (
+                    <CarouselItem key={round} className="pl-2 basis-auto">
+                    <Button
+                        variant={selectedRound === round ? 'default' : 'outline'}
+                        onClick={() => onSelectRound(round)}
+                        className="w-full"
+                    >
+                        Jornada {round}
+                    </Button>
+                    </CarouselItem>
+                ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden sm:flex" />
+            <CarouselNext className="hidden sm:flex" />
+      </Carousel>
+    )
+}
+
+function MatchList({ matches, rounds, selectedRound, onSelectRound, showRoundFilter }: { matches: FullMatch[], rounds: number[], selectedRound: number | 'all', onSelectRound: (round: number | 'all') => void, showRoundFilter?: boolean }) {
+    const filteredMatches = selectedRound === 'all' ? matches : matches.filter(m => m.round === selectedRound);
+
     if (matches.length === 0) {
         return (
             <div className="flex h-40 flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted/50 text-center">
@@ -122,11 +166,14 @@ function MatchList({ matches }: { matches: FullMatch[] }) {
         );
     }
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {matches.map(match => (
-                <MatchCard key={match.id} match={match} />
-            ))}
-        </div>
+        <>
+            {showRoundFilter && <RoundFilter rounds={rounds} selectedRound={selectedRound} onSelectRound={onSelectRound} />}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredMatches.map(match => (
+                    <MatchCard key={match.id} match={match} />
+                ))}
+            </div>
+        </>
     );
 }
 
@@ -134,6 +181,7 @@ function MatchList({ matches }: { matches: FullMatch[] }) {
 export default function PartidosPage() {
   const [allMatches, setAllMatches] = useState<FullMatch[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedRound, setSelectedRound] = useState<number | 'all'>('all');
 
   useEffect(() => {
     getAllMatchesFromDb().then(data => {
@@ -142,9 +190,20 @@ export default function PartidosPage() {
     });
   }, []);
 
-  const scheduled = allMatches.filter(m => m.status === 'SCHEDULED');
-  const live = allMatches.filter(m => m.status === 'LIVE');
-  const finished = allMatches.filter(m => m.status === 'FINISHED');
+  const scheduled = useMemo(() => allMatches.filter(m => m.status === 'SCHEDULED'), [allMatches]);
+  const live = useMemo(() => allMatches.filter(m => m.status === 'LIVE'), [allMatches]);
+  const finished = useMemo(() => allMatches.filter(m => m.status === 'FINISHED'), [allMatches]);
+  
+  const scheduledRounds = useMemo(() => {
+    const rounds = new Set(scheduled.map(m => m.round).filter((r): r is number => r !== null));
+    return Array.from(rounds).sort((a,b) => a - b);
+  }, [scheduled]);
+
+  const finishedRounds = useMemo(() => {
+    const rounds = new Set(finished.map(m => m.round).filter((r): r is number => r !== null));
+    return Array.from(rounds).sort((a,b) => a - b);
+  }, [finished]);
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -155,20 +214,37 @@ export default function PartidosPage() {
           description="Consulta los próximos encuentros, los resultados de partidos finalizados y sigue la acción en vivo."
         />
         <div className="container mx-auto flex-1 p-4 py-8 md:p-8">
-            <Tabs defaultValue="live" className="w-full">
+            <Tabs defaultValue="live" className="w-full" onValueChange={() => setSelectedRound('all')}>
             <TabsList className="grid w-full grid-cols-3 mx-auto max-w-md">
                 <TabsTrigger value="scheduled">Programados</TabsTrigger>
                 <TabsTrigger value="live">En Vivo</TabsTrigger>
                 <TabsTrigger value="finished">Finalizados</TabsTrigger>
             </TabsList>
             <TabsContent value="scheduled" className="mt-6">
-                <MatchList matches={scheduled} />
+                <MatchList 
+                    matches={scheduled} 
+                    rounds={scheduledRounds}
+                    selectedRound={selectedRound}
+                    onSelectRound={setSelectedRound}
+                    showRoundFilter
+                />
             </TabsContent>
             <TabsContent value="live" className="mt-6">
-                <MatchList matches={live} />
+                <MatchList 
+                    matches={live} 
+                    rounds={[]}
+                    selectedRound={selectedRound}
+                    onSelectRound={setSelectedRound}
+                />
             </TabsContent>
             <TabsContent value="finished" className="mt-6">
-                <MatchList matches={finished} />
+                <MatchList 
+                    matches={finished} 
+                    rounds={finishedRounds}
+                    selectedRound={selectedRound}
+                    onSelectRound={setSelectedRound}
+                    showRoundFilter
+                />
             </TabsContent>
             </Tabs>
         </div>
@@ -177,3 +253,5 @@ export default function PartidosPage() {
     </div>
   );
 }
+
+    
