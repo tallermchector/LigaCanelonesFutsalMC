@@ -88,21 +88,13 @@ function MatchItem({ match }: { match: FullMatch }) {
                 );
             case 'SCHEDULED':
             default:
-                if (date > new Date()) {
-                     return (
-                        <div className="text-center">
-                            <p className="text-lg font-bold">{date.toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' })}</p>
-                            <p className="text-xs text-muted-foreground">hs.</p>
-                            <Link href={`/partidos/${match.id}`} className="text-xs font-semibold text-primary hover:underline">
-                                VER PREVIA
-                            </Link>
-                        </div>
-                    );
-                }
                 return (
-                     <div className="text-center">
-                        <p className="text-lg font-bold">- -</p>
-                        <p className="text-xs text-muted-foreground mt-4">PENDIENTE</p>
+                    <div className="text-center">
+                        <p className="text-lg font-bold">{date.toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' })}</p>
+                        <p className="text-xs text-muted-foreground">hs.</p>
+                        <Link href={`/partidos/${match.id}`} className="text-xs font-semibold text-primary hover:underline">
+                            VER PREVIA
+                        </Link>
                     </div>
                 );
         }
