@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Player, Team } from '@/types';
@@ -50,8 +51,8 @@ const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
             <div className="flex-grow text-center md:text-left">
                 <h2 className="text-3xl sm:text-5xl font-black uppercase text-white drop-shadow-lg group-hover:text-primary transition-colors">{player.name}</h2>
                 <Link href={`/clubes/${teamSlug}`} className="flex items-center justify-center md:justify-start gap-3 text-white/80 hover:text-white mt-2">
-                    <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={24} height={24} />
-                    <span className="font-semibold text-lg">{player.team.name}</span>
+                    <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={28} height={28} />
+                    <span className="font-semibold text-xl">{player.team.name}</span>
                 </Link>
             </div>
 
