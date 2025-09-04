@@ -6,9 +6,6 @@ import prisma from '@/lib/prisma';
 import type { Match, Team, Player, GameEvent } from '@prisma/client';
 import type { MatchStatus } from '@/types';
 
-
-export type { Team, Player, GameEvent };
-
 export type FullMatch = Match & {
   teamA: Team & { players: Player[] };
   teamB: Team & { players: Player[] };
