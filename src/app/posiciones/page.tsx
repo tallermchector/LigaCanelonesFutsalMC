@@ -1,10 +1,8 @@
-
 'use client';
 
 import { getStandings } from '@/actions/season-actions';
 import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
-import { PageHero } from '@/components/layout/PageHero';
 import { StandingsTable } from '@/components/posiciones/StandingsTable';
 import { PlayerRanking } from '@/components/jugadores/PlayerRanking';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -13,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { getAllTeams } from '@/actions/team-actions';
 import { ScheduleCalendar } from '@/components/posiciones/ScheduleCalendar';
 import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { Trophy } from 'lucide-react';
 
 interface PlayerWithStats extends Player {
     goals: number;
@@ -57,11 +56,13 @@ export default function PosicionesPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1 pt-[var(--header-height)]">
-        <PageHero
-          title="Tabla de Posiciones"
-          description="Sigue la clasificación de los equipos a lo largo de la temporada."
-        />
         <div className="container mx-auto flex-1 p-4 py-8 md:p-8">
+            <div className="max-w-7xl mx-auto">
+                  <div className="text-left mb-12">
+                     <Trophy className="h-12 w-12 text-primary" />
+                     <h1 className="text-4xl font-bold font-orbitron mt-4">Clasificación y Estadísticas</h1>
+                     <p className="text-muted-foreground mt-2">Analiza el rendimiento de los equipos y jugadores de la liga.</p>
+                 </div>
           <Tabs defaultValue="clasificacion" className="w-full">
             <TabsList className="grid w-full grid-cols-3 mx-auto max-w-lg bg-muted/50">
               <TabsTrigger value="calendario">Calendario</TabsTrigger>
@@ -90,6 +91,7 @@ export default function PosicionesPage() {
                 )}
             </TabsContent>
           </Tabs>
+          </div>
         </div>
       </main>
       <Footer />
