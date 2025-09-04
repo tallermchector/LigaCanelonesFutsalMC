@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { Player, Team } from '@/types';
@@ -30,32 +29,35 @@ const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
     const avatarUrl = `/avatar/${avatarNumber}.png`;
     
     return (
-    <div className="relative mb-8 overflow-hidden rounded-xl p-4 sm:p-8 sm:pt-12 text-center transition-shadow hover:shadow-lg group text-white">
+    <div className="relative mb-8 overflow-hidden rounded-xl p-4 sm:p-6 transition-shadow hover:shadow-lg group text-white">
         <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
         style={{ backgroundImage: `url('/banner_youtube.jpg')` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/70 to-transparent"></div>
         
-        <div className="relative z-10">
-            <div className="absolute top-0 left-0 text-lg font-bold text-primary-foreground drop-shadow-md">1º</div>
-            <Link href={`/jugadores/${player.id}`} className="block">
+        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+            <div className="relative w-48 h-48 md:w-56 md:h-56 flex-shrink-0">
+                <div className="absolute top-0 left-0 text-2xl font-bold bg-primary text-primary-foreground px-3 py-1 rounded-br-lg rounded-tl-lg z-10">1º</div>
                 <Image
-                src={avatarUrl}
-                alt={`Foto de ${player.name}`}
-                width={160}
-                height={160}
-                className="mx-auto mb-4 h-32 w-32 sm:h-40 sm:w-40 rounded-full object-contain object-bottom drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] transition-transform group-hover:scale-105"
+                    src={avatarUrl}
+                    alt={`Foto de ${player.name}`}
+                    fill
+                    className="object-contain object-bottom drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] transition-transform group-hover:scale-105"
                 />
-                <h2 className="text-2xl sm:text-3xl font-black uppercase text-white drop-shadow-lg group-hover:text-primary transition-colors">{player.name}</h2>
-            </Link>
-            <Link href={`/clubes/${teamSlug}`} className="flex items-center justify-center gap-2 text-white/80 hover:text-primary">
-                <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={16} height={16} />
-                <span className="font-semibold text-sm sm:text-base">{player.team.name}</span>
-            </Link>
-            <div className="mt-4 sm:absolute sm:bottom-0 sm:right-4 sm:mt-0 sm:text-right">
-                <div className="text-6xl sm:text-7xl font-black text-primary drop-shadow-lg">{player.goals}</div>
-                <div className="text-base sm:text-lg font-bold uppercase text-white/80">Goles</div>
+            </div>
+
+            <div className="flex-grow text-center md:text-left">
+                <h2 className="text-3xl sm:text-5xl font-black uppercase text-white drop-shadow-lg group-hover:text-primary transition-colors">{player.name}</h2>
+                <Link href={`/clubes/${teamSlug}`} className="flex items-center justify-center md:justify-start gap-3 text-white/80 hover:text-white mt-2">
+                    <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={24} height={24} />
+                    <span className="font-semibold text-lg">{player.team.name}</span>
+                </Link>
+            </div>
+
+            <div className="md:ml-auto text-center md:text-right">
+                <div className="text-7xl sm:text-8xl font-black text-primary drop-shadow-lg">{player.goals}</div>
+                <div className="text-lg font-bold uppercase text-white/80 tracking-widest">Goles</div>
             </div>
         </div>
     </div>
