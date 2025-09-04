@@ -3,7 +3,7 @@
 
 import prisma from '@/lib/prisma';
 import type { FullMatch, GameEventType, Team } from '@/types';
-import { Prisma } from '@prisma/client';
+import { Prisma, type GameEvent } from '@prisma/client';
 
 const teamIncludePlayers = {
     players: true,
@@ -48,7 +48,7 @@ export async function getTeamBySlug(slug: string): Promise<TeamWithMatches | nul
             return null;
         }
 
-        const matches = await prisma.match.findMany({
+        const matches = (await prisma.match.findMany({
             where: {
                 OR: [
                     { teamAId: team.id },
@@ -59,7 +59,7 @@ export async function getTeamBySlug(slug: string): Promise<TeamWithMatches | nul
             orderBy: {
                 scheduledTime: 'asc'
             }
-        });
+        })) as (Prisma.MatchGetPayload<{ include: typeof matchIncludeOptions }>)[]
 
         const fullMatches: FullMatch[] = matches.map((match) => {
             if (!match.teamA || !match.teamB) {
@@ -71,7 +71,7 @@ export async function getTeamBySlug(slug: string): Promise<TeamWithMatches | nul
                 status: match.status as FullMatch['status'],
                 teamA: match.teamA as Team,
                 teamB: match.teamB as Team,
-                events: match.events.map((event) => ({
+                events: match.events.map((event: GameEvent) => ({
                     ...event,
                     type: event.type as GameEventType,
                 })),
