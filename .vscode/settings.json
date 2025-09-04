@@ -1,4 +1,5 @@
 {
     "npm.scriptRunner": "bun",
-    "npm.packageManager": "bun"
+    "npm.packageManager": "bun",
+    "google.validationAgent.optOut": true
 }
