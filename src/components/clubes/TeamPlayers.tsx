@@ -38,24 +38,28 @@ export function TeamPlayers({ players }: TeamPlayersProps) {
                                 {positionTranslations[position] || position}
                             </h3>
                             <div className="divide-y divide-border">
-                                {groupedPlayers[position].map(player => (
-                                    <Link key={player.id} href={`/jugadores/${player.id}`} className="flex items-center gap-4 p-4 hover:bg-muted/30 group">
-                                        <div className="w-8 text-center font-bold text-primary text-lg">
-                                            {player.number}
-                                        </div>
-                                        <Image
-                                            src={'/placeholder-player.png'}
-                                            alt={`Foto de ${player.name}`}
-                                            width={40}
-                                            height={40}
-                                            className="rounded-full aspect-square object-cover"
-                                        />
-                                        <div className="font-medium text-foreground group-hover:text-primary transition-colors">
-                                            {player.name}
-                                        </div>
-                                        <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
-                                    </Link>
-                                ))}
+                                {groupedPlayers[position].map(player => {
+                                    const avatarNumber = (player.id % 3) + 1;
+                                    const avatarUrl = `/avatar/${avatarNumber}.png`;
+                                    return (
+                                        <Link key={player.id} href={`/jugadores/${player.id}`} className="flex items-center gap-4 p-4 hover:bg-muted/30 group">
+                                            <div className="w-8 text-center font-bold text-primary text-lg">
+                                                {player.number}
+                                            </div>
+                                            <Image
+                                                src={avatarUrl}
+                                                alt={`Foto de ${player.name}`}
+                                                width={40}
+                                                height={40}
+                                                className="rounded-full aspect-square object-cover"
+                                            />
+                                            <div className="font-medium text-foreground group-hover:text-primary transition-colors">
+                                                {player.name}
+                                            </div>
+                                            <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                                        </Link>
+                                    );
+                                })}
                             </div>
                         </div>
                     )
