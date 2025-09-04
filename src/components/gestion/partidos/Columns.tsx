@@ -4,7 +4,7 @@
 import type { FullMatch } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
-import { DataTableColumnHeader } from "./DataTableColumnHeader"
+import { DataTableColumnHeader } from "../DataTableColumnHeader"
 import { DataTableRowActions } from "./DataTableRowActions"
 
 const statusVariantMap: Record<FullMatch['status'], 'default' | 'destructive' | 'secondary'> = {

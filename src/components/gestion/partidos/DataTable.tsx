@@ -26,7 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { DataTablePagination } from "./DataTablePagination"
+import { DataTablePagination } from "../DataTablePagination"
 import { DataTableToolbar } from "./DataTableToolbar"
 
 interface DataTableProps<TData, TValue> {

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 
-import { DataTableFacetedFilter } from "./DataTableFacetedFilter"
+import { DataTableFacetedFilter } from "../DataTableFacetedFilter"
 import { matchStatuses } from "@/data/matchData"
 
 interface DataTableToolbarProps<TData> {
