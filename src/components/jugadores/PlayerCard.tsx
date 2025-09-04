@@ -1,9 +1,10 @@
+
 'use client';
 
 import type { Player, Team } from '@/types';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 
 // Asumimos que el tipo Player ahora puede incluir la información del equipo
@@ -20,32 +21,41 @@ export function PlayerCard({ player }: PlayerCardProps) {
     <motion.div
       whileHover={{ y: -5 }}
       className="h-full"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
       <Link href={`/jugadores/${player.id}`} className="block h-full group">
-        <Card className="flex flex-col h-full overflow-hidden shadow-lg transition-all duration-300 group-hover:shadow-primary/20">
-          <CardHeader className="p-0 relative aspect-square">
+        <Card className="flex flex-col h-full overflow-hidden shadow-lg transition-all duration-300 group-hover:shadow-primary/20 bg-background">
+          <div className="relative w-full aspect-[4/5] overflow-hidden">
             <Image
               src={'/placeholder-player.png'} // Usamos un placeholder ya que imageUrl no está en el tipo
               alt={`Foto de ${player.name}`}
               fill
-              className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+              className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-black/80 to-transparent" />
-             <div className="absolute bottom-2 left-4 text-white">
-                <CardTitle className="text-lg font-bold">{player.name}</CardTitle>
-                <CardDescription className="text-white/80">{player.position}</CardDescription>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            <div className="absolute top-0 right-0 p-4 text-right">
+                 <span className="text-5xl font-black text-white drop-shadow-lg" style={{ WebkitTextStroke: '1px rgba(0,0,0,0.3)' }}>
+                    {player.number}
+                </span>
             </div>
-             <Image
-                src={player.team.logoUrl || ''}
-                alt={`Logo de ${player.team.name}`}
-                width={40}
-                height={40}
-                className="absolute top-2 right-2 bg-white/80 rounded-full p-1"
-             />
-          </CardHeader>
-          <CardContent className="p-4 bg-muted/50 text-sm text-muted-foreground">
-             <p>Equipo: <span className="font-semibold text-foreground">{player.team.name}</span></p>
-             <p>Número: <span className="font-semibold text-foreground">{player.number}</span></p>
+             <div className="absolute bottom-0 left-0 p-4 text-white">
+                <h3 className="text-xl font-bold leading-tight">{player.name}</h3>
+                <p className="text-sm text-white/80 font-medium">{player.position}</p>
+            </div>
+          </div>
+          <CardContent className="p-4 bg-muted/50 flex items-center justify-between">
+             <div className="flex items-center gap-2">
+                <Image
+                    src={player.team.logoUrl || ''}
+                    alt={`Logo de ${player.team.name}`}
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 object-contain"
+                />
+                <span className="text-sm font-semibold text-foreground">{player.team.name}</span>
+            </div>
           </CardContent>
         </Card>
       </Link>
