@@ -33,42 +33,44 @@ export function PlayerHero({ player }: PlayerHeroProps) {
                  </div>
             </div>
             
-            <div className="container mx-auto pt-24 pb-8 relative z-10">
-                <div className="relative h-80 md:h-96 w-full max-w-sm mx-auto">
-                    <Image
-                        src={'/avatar/3.png'}
-                        alt={`Foto de ${player.name}`}
-                        fill
-                        className="object-contain object-bottom drop-shadow-[0_20px_15px_rgba(0,0,0,0.2)]"
-                    />
-                </div>
-                
-                 <div className="mt-[-4rem] text-center md:text-left text-white">
-                    <div className="flex items-end gap-4">
-                        <span className="text-5xl font-bold text-white/20">{player.number}</span>
-                        <h2 className="text-4xl font-extrabold uppercase">{player.name}</h2>
+            <div className="container mx-auto pt-16 pb-8 relative z-10">
+                 <div className="relative flex flex-col md:flex-row items-center justify-center md:justify-between">
+                    <div className="absolute -left-10 -top-10 md:left-0 md:top-0 text-[12rem] md:text-[18rem] font-black text-white/5 opacity-50 z-0 select-none pointer-events-none">
+                        {player.number}
                     </div>
 
-                     <div className="mt-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <Link href={`/clubes/${player.team.slug}`} className="inline-flex items-center gap-2 group justify-center md:justify-start">
-                            <Image
-                                src={player.team.logoUrl || ''}
-                                alt={`Logo de ${player.team.name}`}
-                                width={28}
-                                height={28}
-                                className="w-7 h-7 object-contain transition-transform group-hover:scale-110 bg-white/20 rounded-full p-1"
-                            />
-                            <span className="font-bold text-white/90 group-hover:text-primary transition-colors">{player.team.name}</span>
-                        </Link>
+                    <div className="order-2 md:order-1 text-center md:text-left mt-4 md:mt-0 relative z-10">
+                        <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase text-white drop-shadow-lg">{player.name}</h2>
+                        
+                         <div className="mt-4 flex flex-col md:flex-row items-center justify-center md:justify-start gap-x-6 gap-y-2 text-lg">
+                            <Link href={`/clubes/${player.team.slug}`} className="inline-flex items-center gap-2 group">
+                                <Image
+                                    src={player.team.logoUrl || ''}
+                                    alt={`Logo de ${player.team.name}`}
+                                    width={28}
+                                    height={28}
+                                    className="w-7 h-7 object-contain transition-transform group-hover:scale-110 bg-white/20 rounded-full p-1"
+                                />
+                                <span className="font-bold text-white/90 group-hover:text-primary transition-colors">{player.team.name}</span>
+                            </Link>
 
-                        <div className="flex items-center justify-center md:justify-end gap-4">
-                            <span className="font-semibold">{player.position}</span>
-                            <div className="flex items-center gap-2">
-                                <Image src="/bandera_uruguay.svg" alt="Bandera de Uruguay" width={24} height={16} />
-                                <span className="font-semibold text-white/80">{player.nationality}</span>
+                            <div className="flex items-center gap-4 text-white/80">
+                                <span className="font-semibold">{player.position}</span>
+                                <div className="flex items-center gap-2">
+                                    <Image src="/bandera_uruguay.svg" alt="Bandera de Uruguay" width={24} height={16} />
+                                    <span className="font-semibold">{player.nationality}</span>
+                                </div>
                             </div>
                         </div>
-                     </div>
+                    </div>
+                     <div className="relative order-1 md:order-2 h-80 w-80 md:h-96 md:w-96 flex-shrink-0 z-10">
+                        <Image
+                            src={'/avatar/3.png'}
+                            alt={`Foto de ${player.name}`}
+                            fill
+                            className="object-contain object-bottom drop-shadow-[0_20px_15px_rgba(0,0,0,0.4)]"
+                        />
+                    </div>
                  </div>
             </div>
         </header>
