@@ -11,7 +11,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { ArrowRight, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { createSeasonAndTeams } from '@/ai/flows/generate-season-flow';
+import { createSeasonAndTeamsAction } from '@/actions/genkit-actions';
 
 interface TeamSelectionProps {
   allTeams: Team[];
@@ -54,7 +54,7 @@ export function TeamSelection({ allTeams, isDisabled, season, onTeamsConfirmed }
           return;
       }
       try {
-          await createSeasonAndTeams({
+          await createSeasonAndTeamsAction({
               seasonId: season.id,
               teams: selectedTeams.map(({id, name}) => ({id, name})),
           });

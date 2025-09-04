@@ -6,7 +6,7 @@ import type { Season, Team } from '@/types';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { generateFixtureForSeason } from '@/ai/flows/generate-season-flow';
+import { generateFixtureForSeasonAction } from '@/actions/genkit-actions';
 import { CalendarCheck, Loader2 } from 'lucide-react';
 import {
   AlertDialog,
@@ -39,7 +39,7 @@ export function FixtureGeneration({ isDisabled, season, selectedTeams }: Fixture
     
     setIsGenerating(true);
     try {
-      const result = await generateFixtureForSeason({
+      const result = await generateFixtureForSeasonAction({
         seasonId: season.id,
         teams: selectedTeams.map(({ id, name }) => ({ id, name })),
       });
