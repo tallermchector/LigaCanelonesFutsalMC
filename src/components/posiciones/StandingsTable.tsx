@@ -83,15 +83,14 @@ export function StandingsTable({ standings }: StandingsTableProps) {
                     <span className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">{entry.team.name}</span>
                   </Link>
                 </TableCell>
-                {/* Placeholders para estadísticas */}
-                <TableCell className="text-center font-bold text-lg text-primary tabular-nums">0</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">0</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">0</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">0</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">0</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">0</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">0</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">0</TableCell>
+                <TableCell className="text-center font-bold text-lg text-primary tabular-nums">{entry.points}</TableCell>
+                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.played}</TableCell>
+                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.wins}</TableCell>
+                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.draws}</TableCell>
+                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.losses}</TableCell>
+                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalsFor}</TableCell>
+                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalsAgainst}</TableCell>
+                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalDifference}</TableCell>
               </TableRow>
             )})}
           </TableBody>
