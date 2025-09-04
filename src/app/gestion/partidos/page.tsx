@@ -7,6 +7,7 @@ import { getAllTeams } from '@/actions/team-actions';
 import { MatchDataTable } from '@/components/gestion/partidos/DataTable';
 import { columns } from '@/components/gestion/partidos/Columns';
 import { CreateMatchForm } from '@/components/gestion/partidos/CreateMatchForm';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function GestionPartidosPage() {
     const matches = await getAllMatchesFromDb();
@@ -21,14 +22,26 @@ export default async function GestionPartidosPage() {
                     description="Crea, visualiza y administra todos los partidos de la liga."
                 />
                 <div className="container mx-auto p-4 py-8 md:p-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                         <div className="lg:col-span-2">
-                             <h2 className="text-2xl font-bold text-primary mb-4">Lista de Partidos</h2>
-                             <MatchDataTable columns={columns} data={matches} />
+                             <Card>
+                                <CardHeader>
+                                    <CardTitle>Lista de Partidos</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <MatchDataTable columns={columns} data={matches} />
+                                </CardContent>
+                            </Card>
                         </div>
                         <div>
-                             <h2 className="text-2xl font-bold text-primary mb-4">Crear Nuevo Partido</h2>
-                             <CreateMatchForm teams={teams} />
+                             <Card>
+                                <CardHeader>
+                                    <CardTitle>Crear Nuevo Partido</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <CreateMatchForm teams={teams} />
+                                </CardContent>
+                            </Card>
                         </div>
                     </div>
                 </div>

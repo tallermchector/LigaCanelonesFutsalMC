@@ -6,6 +6,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { DataTableColumnHeader } from "../DataTableColumnHeader"
 import { DataTableRowActions } from "./DataTableRowActions"
+import Image from "next/image"
 
 const statusVariantMap: Record<FullMatch['status'], 'default' | 'destructive' | 'secondary'> = {
   SCHEDULED: 'secondary',
@@ -23,7 +24,19 @@ export const columns: ColumnDef<FullMatch>[] = [
     cell: ({ row }) => {
       const teamA = row.original.teamA;
       const teamB = row.original.teamB;
-      return <div className="font-medium">{teamA.name} vs {teamB.name}</div>
+      return (
+        <div className="flex flex-col gap-2 md:flex-row md:items-center">
+            <div className="flex items-center gap-2 font-medium">
+                <Image src={teamA.logoUrl || '/logofu.svg'} alt={teamA.name} width={24} height={24} className="rounded-full" />
+                <span>{teamA.name}</span>
+            </div>
+            <span className="text-muted-foreground text-xs md:text-sm px-1">vs</span>
+             <div className="flex items-center gap-2 font-medium">
+                <Image src={teamB.logoUrl || '/logofu.svg'} alt={teamB.name} width={24} height={24} className="rounded-full" />
+                <span>{teamB.name}</span>
+            </div>
+        </div>
+      )
     },
     enableSorting: false,
     enableHiding: false,

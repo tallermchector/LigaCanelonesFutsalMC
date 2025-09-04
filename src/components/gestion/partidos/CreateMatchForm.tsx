@@ -23,7 +23,6 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Card, CardContent } from "@/components/ui/card"
 import { CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
@@ -37,9 +36,10 @@ import { useRouter } from "next/navigation"
 const createMatchSchema = z.object({
   teamAId: z.string().min(1, "Debe seleccionar el equipo local"),
   teamBId: z.string().min(1, "Debe seleccionar el equipo visitante"),
-  scheduledTime: z.date({
-    required_error: "Debe seleccionar una fecha y hora.",
+  scheduledDate: z.date({
+    required_error: "Debe seleccionar una fecha.",
   }),
+  scheduledTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Formato de hora inválido (HH:mm)."),
   round: z.coerce.number().min(1, "La jornada debe ser al menos 1"),
 }).refine(data => data.teamAId !== data.teamBId, {
     message: "Los equipos no pueden ser los mismos",
@@ -67,25 +67,33 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
         defaultValues: {
             teamAId: '',
             teamBId: '',
-            scheduledTime: new Date(),
+            scheduledDate: new Date(),
+            scheduledTime: '19:00',
             round: 1,
         },
     });
     
+    const teamAId = form.watch("teamAId");
+
     async function onSubmit(values: CreateMatchFormValues) {
         setIsSubmitting(true)
         try {
+            const [hours, minutes] = values.scheduledTime.split(':').map(Number);
+            const combinedDateTime = new Date(values.scheduledDate);
+            combinedDateTime.setHours(hours, minutes);
+
             await createMatch({
-                ...values,
                 teamAId: parseInt(values.teamAId),
                 teamBId: parseInt(values.teamBId),
+                scheduledTime: combinedDateTime,
+                round: values.round,
             })
             toast({
                 title: "Partido Creado",
                 description: "El nuevo partido ha sido programado exitosamente.",
             })
-            form.reset({ round: 1, teamAId: '', teamBId: '', scheduledTime: new Date() })
-            router.refresh() // Re-fetch server-side props
+            form.reset({ round: 1, teamAId: '', teamBId: '', scheduledDate: new Date(), scheduledTime: '19:00' })
+            router.refresh()
         } catch (error) {
              toast({
                 variant: "destructive",
@@ -102,58 +110,57 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
     }
 
     return (
-        <Card>
-            <CardContent className="pt-6">
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                    control={form.control}
+                    name="teamAId"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Equipo Local</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                    <SelectTrigger><SelectValue placeholder="Seleccione un equipo" /></SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {teams.map(team => (
+                                        <SelectItem key={team.id} value={String(team.id)}>{team.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                
+                    <FormField
+                    control={form.control}
+                    name="teamBId"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Equipo Visitante</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value} disabled={!teamAId}>
+                                <FormControl>
+                                    <SelectTrigger><SelectValue placeholder="Seleccione un equipo" /></SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {teams.filter(team => String(team.id) !== teamAId).map(team => (
+                                        <SelectItem key={team.id} value={String(team.id)}>{team.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                    <div className="grid grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
-                            name="teamAId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Equipo Local</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger><SelectValue placeholder="Seleccione un equipo" /></SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {teams.map(team => (
-                                                <SelectItem key={team.id} value={String(team.id)}>{team.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        
-                         <FormField
-                            control={form.control}
-                            name="teamBId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Equipo Visitante</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger><SelectValue placeholder="Seleccione un equipo" /></SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {teams.map(team => (
-                                                <SelectItem key={team.id} value={String(team.id)}>{team.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                         <FormField
-                            control={form.control}
-                            name="scheduledTime"
+                            name="scheduledDate"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                    <FormLabel>Fecha y Hora</FormLabel>
+                                    <FormLabel>Fecha</FormLabel>
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <FormControl>
@@ -165,7 +172,7 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
                                                     )}
                                                 >
                                                     {field.value ? (
-                                                        format(field.value, "PPP HH:mm", { locale: es })
+                                                        format(field.value, "PPP", { locale: es })
                                                     ) : (
                                                         <span>Seleccione una fecha</span>
                                                     )}
@@ -178,7 +185,7 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={(date) => date < new Date()}
+                                                disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -187,27 +194,39 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
                                 </FormItem>
                             )}
                         />
-
                          <FormField
                             control={form.control}
-                            name="round"
+                            name="scheduledTime"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Jornada</FormLabel>
+                                    <FormLabel>Hora</FormLabel>
                                     <FormControl>
-                                        <Input type="number" placeholder="Número de jornada" {...field} />
+                                        <Input type="time" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        
-                        <Button type="submit" disabled={isSubmitting} className="w-full">
-                            {isSubmitting ? 'Creando...' : 'Crear Partido'}
-                        </Button>
-                    </form>
-                </Form>
-            </CardContent>
-        </Card>
+                    </div>
+
+                    <FormField
+                    control={form.control}
+                    name="round"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Jornada</FormLabel>
+                            <FormControl>
+                                <Input type="number" placeholder="Número de jornada" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                
+                <Button type="submit" disabled={isSubmitting} className="w-full">
+                    {isSubmitting ? 'Creando...' : 'Crear Partido'}
+                </Button>
+            </form>
+        </Form>
     )
 }
