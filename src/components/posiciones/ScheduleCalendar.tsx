@@ -86,13 +86,13 @@ export function ScheduleCalendar({ matches }: ScheduleCalendarProps) {
         <CarouselNext className="hidden sm:flex" />
       </Carousel>
       
-      <div className="space-y-6">
+      <div className="space-y-8">
         {Object.entries(matchesByDate).map(([date, dateMatches]) => (
           <div key={date}>
-            <h3 className="bg-muted/50 px-4 py-2 text-sm font-semibold text-center uppercase tracking-wider text-muted-foreground rounded-t-lg">
+            <h3 className="bg-gradient-to-r from-primary/10 via-background to-primary/10 px-4 py-2 text-sm font-bold text-center uppercase tracking-widest text-primary border-y border-primary/20">
               {date}
             </h3>
-            <div className="divide-y divide-border border-x border-b rounded-b-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               {dateMatches.map(match => (
                 <MatchItem key={match.id} match={match} />
               ))}
@@ -110,39 +110,45 @@ function MatchItem({ match }: { match: FullMatch }) {
   const date = new Date(scheduledTime);
 
   return (
-    <div className="p-4 hover:bg-muted/50">
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-center">
-        <TeamDisplay team={teamA} />
-        
-        <div>
-          <div className="text-xl md:text-3xl font-bold">
-            {date.toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' })}
-          </div>
-          <Link href={`/partidos/${match.id}`} className="text-xs font-semibold text-primary hover:underline mt-1 block">
-            VER PREVIA
-          </Link>
-          <FutsalBallIcon className="w-5 h-5 mx-auto mt-2 text-muted-foreground" />
-        </div>
-        
-        <TeamDisplay team={teamB} />
-      </div>
-    </div>
+    <Link href={`/partidos/${match.id}`} className="block group">
+        <Card className="overflow-hidden transition-all duration-300 ease-in-out group-hover:shadow-lg group-hover:border-primary/50 group-hover:-translate-y-1">
+            <CardContent className="p-4">
+                <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
+                    <span>Jornada {match.round}</span>
+                     <span>
+                        {date.toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' })} hs.
+                    </span>
+                </div>
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                    <TeamDisplay team={teamA} alignment="left"/>
+                    <div className="text-muted-foreground font-bold text-xl">VS</div>
+                    <TeamDisplay team={teamB} alignment="right"/>
+                </div>
+            </CardContent>
+        </Card>
+    </Link>
   );
 }
 
-function TeamDisplay({ team }: { team: Team }) {
+function TeamDisplay({ team, alignment }: { team: Team, alignment: 'left' | 'right' }) {
   return (
-    <Link href={`/clubes/${team.slug}`} className="flex flex-col items-center gap-2 group">
+     <div className={cn(
+        "flex flex-col md:flex-row items-center gap-3",
+        alignment === 'right' && 'md:flex-row-reverse'
+     )}>
       <Image
         src={team.logoUrl || '/logofu.svg'}
         alt={`Logo de ${team.name}`}
-        width={72}
-        height={72}
-        className="w-14 h-14 md:w-16 md:h-16 aspect-square object-contain transition-transform group-hover:scale-110"
+        width={48}
+        height={48}
+        className="w-10 h-10 md:w-12 md:h-12 aspect-square object-contain transition-transform group-hover:scale-110"
       />
-      <span className="font-semibold text-sm md:text-base text-foreground group-hover:text-primary truncate w-full">
+      <span className={cn(
+          "font-bold text-sm md:text-base text-foreground group-hover:text-primary transition-colors text-center",
+           alignment === 'left' ? 'md:text-left' : 'md:text-right'
+      )}>
         {team.name}
       </span>
-    </Link>
+    </div>
   );
 }
