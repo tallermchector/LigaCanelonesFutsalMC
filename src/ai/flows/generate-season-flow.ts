@@ -11,19 +11,11 @@ import { ai } from '@/ai/genkit';
 import prisma from '@/lib/prisma';
 import { generateFixture } from '@/actions/match-actions';
 import { z } from 'zod';
+import type { CreateSeasonAndTeamsInput, GenerateFixtureForSeasonInput } from '@/actions/genkit-actions';
+import { CreateSeasonAndTeamsInputSchema, GenerateFixtureForSeasonInputSchema } from '@/actions/genkit-actions';
 
-const TeamInputSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-});
 
 // --- Flow to create season and teams ---
-
-const CreateSeasonAndTeamsInputSchema = z.object({
-    seasonId: z.number(),
-    teams: z.array(TeamInputSchema),
-});
-type CreateSeasonAndTeamsInput = z.infer<typeof CreateSeasonAndTeamsInputSchema>;
 
 export async function createSeasonAndTeams(input: CreateSeasonAndTeamsInput) {
     return createSeasonAndTeamsFlow(input);
@@ -57,13 +49,6 @@ const createSeasonAndTeamsFlow = ai.defineFlow(
 
 
 // --- Flow to generate fixture for an existing season ---
-
-const GenerateFixtureForSeasonInputSchema = z.object({
-  seasonId: z.number(),
-  teams: z.array(TeamInputSchema),
-});
-
-type GenerateFixtureForSeasonInput = z.infer<typeof GenerateFixtureForSeasonInputSchema>;
 
 export async function generateFixtureForSeason(input: GenerateFixtureForSeasonInput) {
   return generateFixtureForSeasonFlow(input);

@@ -5,10 +5,31 @@ import {
   createSeasonAndTeams,
   generateFixtureForSeason,
 } from '@/ai/flows/generate-season-flow';
-import type {
-  CreateSeasonAndTeamsInput,
-  GenerateFixtureForSeasonInput,
-} from '@/ai/flows/generate-season-flow';
+import { z } from 'zod';
+
+// --- Shared Schemas and Types ---
+
+const TeamInputSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
+
+export const CreateSeasonAndTeamsInputSchema = z.object({
+  seasonId: z.number(),
+  teams: z.array(TeamInputSchema),
+});
+export type CreateSeasonAndTeamsInput = z.infer<
+  typeof CreateSeasonAndTeamsInputSchema
+>;
+
+export const GenerateFixtureForSeasonInputSchema = z.object({
+  seasonId: z.number(),
+  teams: z.array(TeamInputSchema),
+});
+export type GenerateFixtureForSeasonInput = z.infer<
+  typeof GenerateFixtureForSeasonInputSchema
+>;
+
 
 /**
  * Server action to create a season and associate teams with it.
