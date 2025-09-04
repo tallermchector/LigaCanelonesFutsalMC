@@ -35,7 +35,6 @@ export async function getAllTeams(): Promise<Team[]> {
         });
 
         // Assuming 'Team' from '@/types' is structurally compatible with TeamWithPlayers.
-        // If there are specific differences, a mapping function would be needed here.
         return teams as Team[];
     } catch (error) {
         console.error('Error al obtener los equipos:', error);
@@ -55,15 +54,9 @@ const matchIncludeOptions = {
     playerMatchStats: true,
 } satisfies Prisma.MatchInclude;
 
-// Derived Prisma type for a Match including all specified relations, crucial for type correctness.
-/**
- * Represents a match with all its relations included, derived from Prisma types.
- */
-type MatchWithAllIncludes = Prisma.MatchGetPayload<{ include: typeof matchIncludeOptions }>;
 
 /**
  * Type definition for a Team object extended with its associated matches.
- * This combines the Prisma-derived Team type with the external FullMatch type.
  */
 type TeamWithMatches = TeamWithPlayers & {
     matches: FullMatch[];
@@ -85,9 +78,9 @@ export async function getTeamBySlug(slug: string): Promise<TeamWithMatches | nul
             return null;
         }
 
-        // Fetch matches, ensuring all relations are included and correctly typed.
-        // The type for 'matches' is correctly inferred as MatchWithAllIncludes[] due to 'include' constant.
-        const matches: MatchWithAllIncludes[] = await prisma.match.findMany({
+        // Fetch matches, letting TypeScript infer the type from the result.
+        // This avoids conflicts with derived Prisma types.
+        const matches = await prisma.match.findMany({
             where: {
                 OR: [
                     { teamAId: team.id },
@@ -100,25 +93,21 @@ export async function getTeamBySlug(slug: string): Promise<TeamWithMatches | nul
             }
         });
 
-        // Map the Prisma-returned match objects to the 'FullMatch' type, performing necessary transformations.
-        const fullMatches: FullMatch[] = matches.map((match): FullMatch => ({
-            ...match,
-            // Convert 'scheduledTime' from Date object to ISO string as required by 'FullMatch'.
-            scheduledTime: match.scheduledTime.toISOString(),
-            // Assert 'status' string to the specific union/enum type defined in FullMatch['status'].
-            status: match.status as FullMatch['status'],
-            // Map event objects, asserting 'type' string to 'GameEventType'.
-            events: match.events.map((event) => ({
-                ...event,
-                type: event.type as GameEventType,
-            })),
-            // Other fields like id, scoreA, scoreB, teamA, teamB, playerMatchStats etc. are compatible directly.
-        }));
+        // Explicitly map the Prisma match object to our custom FullMatch type.
+        const fullMatches: FullMatch[] = matches.map((match) => {
+            return {
+                ...match,
+                scheduledTime: match.scheduledTime.toISOString(),
+                status: match.status as FullMatch['status'],
+                events: match.events.map((event: { type: string; }) => ({
+                    ...event,
+                    type: event.type as GameEventType,
+                })),
+            } as FullMatch;
+        });
 
         // Combine the fetched team data with the transformed matches.
-        // The final result is asserted to TeamWithMatches, which is a union of
-        // the Prisma-derived team type and the array of FullMatch objects.
-        return { ...team, matches: fullMatches } as TeamWithMatches;
+        return { ...team, matches: fullMatches };
 
     } catch (error) {
         console.error(`Error al obtener el equipo por slug: ${slug}`, error);
