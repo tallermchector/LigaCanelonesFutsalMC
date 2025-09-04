@@ -43,7 +43,7 @@ export function PlayerHero({ player }: PlayerHeroProps) {
                     />
                 </div>
                 
-                 <div className="mt-4 text-center md:text-left text-white">
+                 <div className="mt-[-4rem] text-center md:text-left text-white">
                     <div className="flex items-end gap-4">
                         <span className="text-5xl font-bold text-white/20">{player.number}</span>
                         <h2 className="text-4xl font-extrabold uppercase">{player.name}</h2>
