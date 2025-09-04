@@ -1,3 +1,4 @@
+
 'use client';
 
 import { getStandings } from '@/actions/season-actions';
