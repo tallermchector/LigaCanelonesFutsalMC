@@ -64,7 +64,7 @@ export function PlayerHero({ player }: PlayerHeroProps) {
                         <div className="flex items-center justify-center md:justify-end gap-4">
                             <span className="font-semibold">{player.position}</span>
                             <div className="flex items-center gap-2">
-                                <Image src="/flags/uy.svg" alt="Bandera de Uruguay" width={24} height={16} />
+                                <Image src="/bandera_uruguay.svg" alt="Bandera de Uruguay" width={24} height={16} />
                                 <span className="font-semibold text-white/80">{player.nationality}</span>
                             </div>
                         </div>
