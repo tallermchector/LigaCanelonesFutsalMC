@@ -1,8 +1,9 @@
+
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
-import { CalendarDays, Shield, Users, Trophy, ListChecks } from 'lucide-react';
+import { CalendarDays, Shield, Users, Trophy, ListChecks, Wrench } from 'lucide-react';
 import prisma from '@/lib/prisma';
 import { type Season } from '@prisma/client';
 
@@ -32,6 +33,12 @@ export default async function GestionLigaPage() {
             description: 'Configura las temporadas, participantes y tablas de posiciones.',
             href: '/gestion/temporadas',
             icon: Trophy,
+        },
+        {
+            title: 'Configurar Nueva Temporada',
+            description: 'Asistente para crear una nueva temporada, añadir equipos y generar el fixture.',
+            href: '/gestion/configuracion',
+            icon: Wrench,
         }
     ];
 
