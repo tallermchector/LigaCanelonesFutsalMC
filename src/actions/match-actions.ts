@@ -7,7 +7,7 @@ import type { Match, Team, Player, GameEvent } from '@prisma/client';
 import type { MatchStatus } from '@/types';
 
 
-export type { Match, Team, Player, GameEvent };
+export type { Team, Player, GameEvent };
 
 export type FullMatch = Match & {
   teamA: Team & { players: Player[] };
@@ -330,7 +330,7 @@ export async function generateFixture(seasonId: number, teamIds: number[]): Prom
       teamAId: match.teamBId,
       teamBId: match.teamAId,
       scheduledTime: new Date(matchDate.getTime() + index * 1000),
-      round: (match.round || 0) + numRounds,
+      round: (match.round ?? 0) + numRounds,
     };
   });
 
