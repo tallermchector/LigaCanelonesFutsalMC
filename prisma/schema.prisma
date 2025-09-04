@@ -1,4 +1,3 @@
-
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -32,7 +31,7 @@ model Team {
 }
 
 model Player {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   number      Int
   position    String
@@ -41,7 +40,7 @@ model Player {
   weight      Int?
   nationality String?
   teamId      Int
-  team        Team     @relation(fields: [teamId], references: [id])
+  team        Team      @relation(fields: [teamId], references: [id])
 
   // Relaciones con GameEvent
   eventsAsPlayer   GameEvent[] @relation("PlayerEvents")
@@ -52,21 +51,21 @@ model Player {
 }
 
 model Match {
-  id            Int      @id @default(autoincrement())
-  teamAId       Int
-  teamBId       Int
-  scheduledTime DateTime
-  status        String
-  scoreA        Int
-  scoreB        Int
-  round         Int?
-  period        Int
-  time          Int
-  isRunning     Boolean
-  foulsA        Int
-  foulsB        Int
-  timeoutsA     Int
-  timeoutsB     Int
+  id             Int      @id @default(autoincrement())
+  teamAId        Int
+  teamBId        Int
+  scheduledTime  DateTime
+  status         String
+  scoreA         Int
+  scoreB         Int
+  round          Int?
+  period         Int
+  time           Int
+  isRunning      Boolean
+  foulsA         Int
+  foulsB         Int
+  timeoutsA      Int
+  timeoutsB      Int
   activePlayersA Int[]
   activePlayersB Int[]
 
@@ -81,7 +80,6 @@ model Match {
   playerMatchStats PlayerMatchStats[]
 }
 
-
 // Modelo para los eventos que ocurren durante un partido
 model GameEvent {
   id           Int     @id @default(autoincrement())
@@ -95,12 +93,11 @@ model GameEvent {
   playerInId   Int?
   playerInName String?
 
-
   // Relaciones
-  Team         Team?   @relation(fields: [teamId], references: [id])
-  match        Match   @relation(fields: [matchId], references: [id])
-  player       Player? @relation("PlayerEvents", fields: [playerId], references: [id])
-  playerIn     Player? @relation("PlayerInEvents", fields: [playerInId], references: [id])
+  Team     Team?   @relation(fields: [teamId], references: [id])
+  match    Match   @relation(fields: [matchId], references: [id])
+  player   Player? @relation("PlayerEvents", fields: [playerId], references: [id])
+  playerIn Player? @relation("PlayerInEvents", fields: [playerInId], references: [id])
 }
 
 // Estadísticas de un jugador en un partido específico
@@ -126,17 +123,17 @@ model Season {
 
 // Tabla de unión para equipos y temporadas (tabla de posiciones)
 model SeasonTeam {
-  seasonId Int
-  teamId   Int
-  position Int
-  points   Int
-  played   Int
-  wins     Int
-  draws    Int
-  losses   Int
-  goalsFor        Int
-  goalsAgainst    Int
-  goalDifference  Int
+  seasonId       Int
+  teamId         Int
+  position       Int
+  points         Int
+  played         Int
+  wins           Int
+  draws          Int
+  losses         Int
+  goalsFor       Int
+  goalsAgainst   Int
+  goalDifference Int
 
   season Season @relation(fields: [seasonId], references: [id])
   team   Team   @relation(fields: [teamId], references: [id])

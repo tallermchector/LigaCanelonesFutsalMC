@@ -198,7 +198,7 @@ export async function getMatchStats(matchId: string): Promise<MatchStats | null>
   const statsB = { shots: 0, shotsOnTarget: 0 };
   const playerStats: Record<number, { goals: number, assists: number }> = {};
 
-  const gameEvents: GameEventWithTeamAndPlayer[] = events.map(event => ({...event, team: event.teamId === matchData.teamAId ? matchData.teamA : matchData.teamB }));
+  const gameEvents: GameEventWithTeamAndPlayer[] = events.map((event: { teamId: any; }) => ({...event, team: event.teamId === matchData.teamAId ? matchData.teamA : matchData.teamB }));
 
 
   gameEvents.forEach((event: GameEventWithTeamAndPlayer) => {
