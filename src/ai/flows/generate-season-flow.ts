@@ -3,15 +3,14 @@
 /**
  * @fileOverview Flow para generar una temporada completa, incluyendo equipos y fixture.
  * 
- * - generateSeason - Crea una temporada, asocia equipos y genera el calendario de partidos.
+ * - createSeasonAndTeams - Asocia equipos a una temporada.
+ * - generateFixtureForSeason - Genera el calendario de partidos para una temporada.
  */
 
 import { ai } from '@/ai/genkit';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import { generateFixture } from '@/actions/match-actions';
 import { z } from 'zod';
-import type { Team } from '@prisma/client';
-
 
 const TeamInputSchema = z.object({
   id: z.number(),
@@ -42,6 +41,14 @@ const createSeasonAndTeamsFlow = ai.defineFlow(
                 seasonId: input.seasonId,
                 teamId: team.id,
                 position: index + 1, 
+                points: 0,
+                played: 0,
+                wins: 0,
+                draws: 0,
+                losses: 0,
+                goalsFor: 0,
+                goalsAgainst: 0,
+                goalDifference: 0,
             })),
             skipDuplicates: true,
         });
