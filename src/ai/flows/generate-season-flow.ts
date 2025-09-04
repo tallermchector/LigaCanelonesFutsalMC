@@ -12,7 +12,22 @@ import prisma from '@/lib/prisma';
 import { generateFixture } from '@/actions/match-actions';
 import { z } from 'zod';
 import type { CreateSeasonAndTeamsInput, GenerateFixtureForSeasonInput } from '@/actions/genkit-actions';
-import { CreateSeasonAndTeamsInputSchema, GenerateFixtureForSeasonInputSchema } from '@/actions/genkit-actions';
+
+// Schemas duplicated here to avoid cross-importing from client-facing server actions
+const TeamInputSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
+
+const CreateSeasonAndTeamsInputSchema = z.object({
+  seasonId: z.number(),
+  teams: z.array(TeamInputSchema),
+});
+
+const GenerateFixtureForSeasonInputSchema = z.object({
+  seasonId: z.number(),
+  teams: z.array(TeamInputSchema),
+});
 
 
 // --- Flow to create season and teams ---
