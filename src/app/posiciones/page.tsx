@@ -13,45 +13,46 @@ import { getAllTeams } from '@/actions/team-actions';
 import { ScheduleCalendar } from '@/components/posiciones/ScheduleCalendar';
 import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 import { Trophy } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 interface PlayerWithStats extends Player {
     goals: number;
     team: Team;
 }
 
+const TabSkeleton = () => <Skeleton className="w-full h-96 bg-muted rounded-lg" />;
+
 export default function PosicionesPage() {
-  const [standings, setStandings] = useState<(SeasonTeam & { team: Team })[]>([]);
-  const [players, setPlayers] = useState<PlayerWithStats[]>([]);
-  const [matches, setMatches] = useState<FullMatch[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [standings, setStandings] = useState<(SeasonTeam & { team: Team })[] | null>(null);
+  const [players, setPlayers] = useState<PlayerWithStats[] | null>(null);
+  const [matches, setMatches] = useState<FullMatch[] | null>(null);
+  const [activeTab, setActiveTab] = useState('clasificacion');
 
   useEffect(() => {
-    const fetchData = async () => {
-        setLoading(true);
-
+    const fetchDataForTab = async () => {
+      if (activeTab === 'clasificacion' && !standings) {
         const standingsData = await getStandings(1);
-        const typedStandings = standingsData as (SeasonTeam & { team: Team })[];
-        setStandings(typedStandings);
-        
+        setStandings(standingsData as (SeasonTeam & { team: Team })[]);
+      } else if (activeTab === 'ranking' && !players) {
         const teamsData = await getAllTeams();
         const allPlayers = teamsData.flatMap(team =>
             team.players.map(player => ({
                 ...player,
-                team: { ...team }, // Clonamos para asegurar el tipo correcto
-                goals: Math.floor(Math.random() * 15) // Simular goles
+                team: { ...team }, 
+                goals: Math.floor(Math.random() * 15) 
             }))
         );
         allPlayers.sort((a, b) => b.goals - a.goals);
         setPlayers(allPlayers as PlayerWithStats[]);
-        
+      } else if (activeTab === 'calendario' && !matches) {
         const matchesData = await getAllMatchesFromDb();
         setMatches(matchesData as FullMatch[]);
-
-        setLoading(false);
+      }
     };
 
-    fetchData();
-  }, []);
+    fetchDataForTab();
+  }, [activeTab, standings, players, matches]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -64,32 +65,20 @@ export default function PosicionesPage() {
                      <h1 className="text-4xl font-bold font-orbitron mt-4">Clasificación y Estadísticas</h1>
                      <p className="text-muted-foreground mt-2">Analiza el rendimiento de los equipos y jugadores de la liga.</p>
                  </div>
-          <Tabs defaultValue="clasificacion" className="w-full">
+          <Tabs defaultValue="clasificacion" value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3 mx-auto max-w-lg bg-muted/50">
               <TabsTrigger value="calendario">Calendario</TabsTrigger>
               <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
               <TabsTrigger value="ranking">Ranking</TabsTrigger>
             </TabsList>
             <TabsContent value="calendario" className="mt-6">
-                 {loading ? (
-                    <div className="w-full h-96 bg-muted rounded-lg animate-pulse" />
-                ) : (
-                    <ScheduleCalendar matches={matches} />
-                )}
+                 {!matches ? <TabSkeleton /> : <ScheduleCalendar matches={matches} />}
             </TabsContent>
             <TabsContent value="clasificacion" className="mt-6">
-                 {loading ? (
-                    <div className="w-full h-96 bg-muted rounded-lg animate-pulse" />
-                ) : (
-                    <StandingsTable standings={standings} />
-                )}
+                 {!standings ? <TabSkeleton /> : <StandingsTable standings={standings} />}
             </TabsContent>
             <TabsContent value="ranking" className="mt-6">
-                {loading ? (
-                    <div className="w-full h-96 bg-muted rounded-lg animate-pulse" />
-                ) : (
-                    <PlayerRanking players={players} />
-                )}
+                {!players ? <TabSkeleton /> : <PlayerRanking players={players} />}
             </TabsContent>
           </Tabs>
           </div>

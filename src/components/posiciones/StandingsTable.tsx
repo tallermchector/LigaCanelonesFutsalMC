@@ -55,13 +55,13 @@ export function StandingsTable({ standings }: StandingsTableProps) {
               <TableHead className="font-bold">Equipo</TableHead>
               <TableHead className="w-16 text-center font-bold text-primary">PTS</TableHead>
               {STAT_COLUMNS.map(col => (
-                <TableHead key={col} className="w-12 text-center font-bold">{col}</TableHead>
+                <TableHead key={col} className="w-12 text-center font-bold text-muted-foreground">{col}</TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
             {standings.map((entry, index) => {
-              const teamSlug = entry.team.name.toLowerCase().replace(/\s+/g, '-');
+              const teamSlug = entry.team.slug || entry.team.name.toLowerCase().replace(/\s+/g, '-');
               return (
               <TableRow key={entry.teamId} className="hover:bg-muted/30">
                 <TableCell className="font-bold text-center text-muted-foreground">

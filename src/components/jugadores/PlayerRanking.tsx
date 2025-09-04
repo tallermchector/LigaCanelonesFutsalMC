@@ -25,7 +25,7 @@ interface RankingProps {
 }
 
 const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
-    const teamSlug = player.team.name.toLowerCase().replace(/\s+/g, '-');
+    const teamSlug = player.team.slug || player.team.name.toLowerCase().replace(/\s+/g, '-');
     const avatarNumber = (player.id % 3) + 1;
     const avatarUrl = `/avatar/${avatarNumber}.png`;
     
@@ -94,7 +94,7 @@ export function PlayerRanking({ players }: RankingProps) {
             </TableHeader>
             <TableBody>
                 {rankedList.map((player, index) => {
-                    const teamSlug = player.team.name.toLowerCase().replace(/\s+/g, '-');
+                    const teamSlug = player.team.slug || player.team.name.toLowerCase().replace(/\s+/g, '-');
                     const avatarNumber = (player.id % 3) + 1;
                     const avatarUrl = `/avatar/${avatarNumber}.png`;
                     return (
