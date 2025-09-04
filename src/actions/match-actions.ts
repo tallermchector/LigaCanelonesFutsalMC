@@ -6,12 +6,11 @@ import type { Match, Team, Player, GameEvent } from '@prisma/client';
 import type { MatchStatus } from '@/types';
 
 
-export type { Match, Team, Player, MatchStatus, GameEvent, PlayerPosition, MatchPlayer };
+export type { Match, Team, Player, GameEvent };
 
 export type FullMatch = Match & {
   teamA: Team & { players: Player[] };
   teamB: Team & { players: Player[] };
-  matchPlayers: MatchPlayer[];
 };
 
 export type LiveMatch = Match & {
@@ -128,7 +127,6 @@ export async function getNextMatches(): Promise<FullMatch[]> {
         include: {
             teamA: { include: { players: true } },
             teamB: { include: { players: true } },
-            matchPlayers: true,
         },
         orderBy: {
             scheduledTime: 'asc'
@@ -153,7 +151,6 @@ export async function getMatchData(matchId: string): Promise<FullMatch | null> {
           players: true,
         }
       },
-      matchPlayers: true,
     }
   });
 
@@ -166,7 +163,6 @@ export async function getAllMatches(seasonId?: number): Promise<FullMatch[]> {
     include: {
         teamA: { include: { players: true } },
         teamB: { include: { players: true } },
-        matchPlayers: true,
     },
     orderBy: {
       scheduledTime: 'asc'
@@ -278,7 +274,7 @@ export async function generateFixture(seasonId: number, teamIds: number[]): Prom
 
   const numTeams = teams.length;
   const numRounds = numTeams - 1;
-  const matchesToCreate = [];
+  const matchesToCreate: Omit<Match, 'id' | 'createdAt' | 'updatedAt'>[] = [];
   const baseDate = new Date();
   baseDate.setDate(baseDate.getDate() + 7);
   baseDate.setUTCHours(19, 15, 0, 0);
@@ -295,7 +291,7 @@ export async function generateFixture(seasonId: number, teamIds: number[]): Prom
           teamBId,
           scheduledTime: new Date(matchDate),
           round: round + 1,
-          status: 'SCHEDULED' as MatchStatus,
+          status: 'SCHEDULED',
           scoreA: 0,
           scoreB: 0,
           period: 1,
@@ -347,24 +343,6 @@ export async function generateFixture(seasonId: number, teamIds: number[]): Prom
 }
 
 
-export async function savePlayerRoster(matchId: string, teamId: number, playerIds: number[]): Promise<void> {
-    await prisma.matchPlayer.deleteMany({
-        where: {
-            matchId: parseInt(matchId),
-            teamId: teamId,
-        },
-    });
-    const data = playerIds.map(playerId => ({
-        matchId: parseInt(matchId),
-        playerId,
-        teamId,
-    }));
-
-    await prisma.matchPlayer.createMany({
-        data,
-    });
-}
-
 export async function getMatchdays(seasonId: number): Promise<Matchday[]> {
   const seasonTeams = await prisma.seasonTeam.findMany({ where: { seasonId } });
   const numTeams = seasonTeams.length;
@@ -394,9 +372,4 @@ export async function getMatchdays(seasonId: number): Promise<Matchday[]> {
 
   return matchdays;
 }
-
-// Dummy types for compilation, since they are not in prisma schema anymore
-export type MatchPlayer = {};
-export type PlayerPosition = {};
-
     
