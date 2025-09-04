@@ -26,8 +26,8 @@ export default async function ClubPage({ params }: ClubPageProps) {
         <div className="flex min-h-screen flex-col bg-muted/40">
             <main className="flex-1">
                 <TeamHeader team={team as Team} />
-                <div className="container mx-auto -mt-24 pb-12">
-                     <Button asChild variant="outline" className="mb-4 bg-background">
+                <div className="container mx-auto max-w-6xl -mt-16 pb-12">
+                     <Button asChild variant="outline" className="mb-4 bg-background/80 backdrop-blur-sm">
                         <Link href="/clubes">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Volver a Clubes
