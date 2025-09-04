@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import prisma from '@/lib/prisma';
@@ -329,7 +330,7 @@ export async function generateFixture(seasonId: number, teamIds: number[]): Prom
       teamAId: match.teamBId,
       teamBId: match.teamAId,
       scheduledTime: new Date(matchDate.getTime() + index * 1000),
-      round: match.round + numRounds,
+      round: (match.round || 0) + numRounds,
     };
   });
 
