@@ -35,10 +35,10 @@ const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
         className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
         style={{ backgroundImage: `url('/banner_youtube.jpg')` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/70 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent"></div>
         
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
-            <div className="relative w-48 h-48 md:w-56 md:h-56 flex-shrink-0">
+             <div className="relative w-48 h-64 md:w-56 md:h-72 flex-shrink-0">
                 <div className="absolute top-0 left-0 text-2xl font-bold bg-primary text-primary-foreground px-3 py-1 rounded-br-lg rounded-tl-lg z-10">1º</div>
                 <Image
                     src={avatarUrl}
@@ -49,15 +49,15 @@ const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
             </div>
 
             <div className="flex-grow text-center md:text-left">
-                <h2 className="text-3xl sm:text-5xl font-black uppercase text-white drop-shadow-lg group-hover:text-primary transition-colors">{player.name}</h2>
-                <Link href={`/clubes/${teamSlug}`} className="flex items-center justify-center md:justify-start gap-3 text-white/80 hover:text-white mt-2">
-                    <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={28} height={28} />
-                    <span className="font-semibold text-xl">{player.team.name}</span>
+                <h2 className="text-4xl sm:text-6xl font-black uppercase text-white drop-shadow-lg group-hover:text-primary-foreground transition-colors">{player.name}</h2>
+                <Link href={`/clubes/${teamSlug}`} className="flex items-center justify-center md:justify-start gap-3 text-white/90 hover:text-white mt-2 group/team">
+                    <Image src={player.team.logoUrl || ''} alt={`Logo de ${player.team.name}`} width={28} height={28} className="w-8 h-8 transition-transform group-hover/team:scale-110"/>
+                    <span className="font-semibold text-2xl group-hover/team:underline">{player.team.name}</span>
                 </Link>
             </div>
 
             <div className="md:ml-auto text-center md:text-right">
-                <div className="text-7xl sm:text-8xl font-black text-primary drop-shadow-lg">{player.goals}</div>
+                <div className="text-7xl sm:text-8xl font-black text-accent drop-shadow-lg">{player.goals}</div>
                 <div className="text-lg font-bold uppercase text-white/80 tracking-widest">Goles</div>
             </div>
         </div>
