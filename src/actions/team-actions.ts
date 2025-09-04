@@ -78,8 +78,7 @@ export async function getTeamBySlug(slug: string): Promise<TeamWithMatches | nul
             return null;
         }
 
-        // Fetch matches, letting TypeScript infer the type from the result.
-        // This avoids conflicts with derived Prisma types.
+        // Fetch matches with all relations included to prevent type errors.
         const matches = await prisma.match.findMany({
             where: {
                 OR: [
@@ -87,24 +86,28 @@ export async function getTeamBySlug(slug: string): Promise<TeamWithMatches | nul
                     { teamBId: team.id }
                 ]
             },
-            include: matchIncludeOptions, // Use the defined include constant
+            include: {
+                teamA: { include: { players: true } },
+                teamB: { include: { players: true } },
+                events: true,
+                playerMatchStats: true,
+            },
             orderBy: {
                 scheduledTime: 'asc'
             }
         });
 
         // Explicitly map the Prisma match object to our custom FullMatch type.
-        const fullMatches: FullMatch[] = matches.map((match) => {
-            return {
-                ...match,
-                scheduledTime: match.scheduledTime.toISOString(),
-                status: match.status as FullMatch['status'],
-                events: match.events.map((event: { type: string; }) => ({
-                    ...event,
-                    type: event.type as GameEventType,
-                })),
-            } as FullMatch;
-        });
+        const fullMatches: FullMatch[] = matches.map((match) => ({
+            ...match,
+            scheduledTime: match.scheduledTime.toISOString(),
+            status: match.status as FullMatch['status'],
+            events: match.events.map((event) => ({
+                ...event,
+                type: event.type as GameEventType,
+            })),
+            playerMatchStats: match.playerMatchStats,
+        })) as unknown as FullMatch[];
 
         // Combine the fetched team data with the transformed matches.
         return { ...team, matches: fullMatches };
