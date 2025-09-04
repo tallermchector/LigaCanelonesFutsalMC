@@ -9,7 +9,7 @@ export function PlayerInfoTabs() {
     const [activeTab, setActiveTab] = useState('Resumen');
 
     return (
-        <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-md">
+        <div className="sticky top-16 z-10 bg-white dark:bg-gray-800 shadow-md">
             <div className="container mx-auto flex">
                 {tabs.map((tab) => (
                     <button
