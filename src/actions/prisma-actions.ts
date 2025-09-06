@@ -53,11 +53,14 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
             txs.push(
                 prisma.playerMatchStats.upsert({
                     where: { matchId_playerId: { matchId, playerId } },
-                    update: { timePlayedInSeconds: stats.totalTime },
+                    update: { 
+                        timePlayedInSeconds: stats.totalTime,
+                        teamId: teamId, 
+                    },
                     create: {
                         matchId,
                         playerId,
-                        teamId: teamId, // Add the teamId here
+                        teamId: teamId,
                         timePlayedInSeconds: stats.totalTime,
                     },
                 })
