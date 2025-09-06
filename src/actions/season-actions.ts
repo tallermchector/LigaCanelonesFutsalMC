@@ -71,19 +71,14 @@ export async function getAllSeasonsWithTeams(): Promise<(Season & { teams: Seaso
  * @throws {Error} If the season could not be created.
  */
 export async function createSeason(name: string, year: number): Promise<Season> {
-    try {
-        const season = await prisma.season.create({
-            data: {
-                name,
-                year,
-            },
-        });
-        revalidatePath('/gestion/temporadas');
-        return season;
-    } catch (error) {
-        console.error('Error al crear la temporada:', error);
-        throw new Error('No se pudo crear la temporada.');
-    }
+    const season = await prisma.season.create({
+        data: {
+            name,
+            year,
+        },
+    });
+    revalidatePath('/gestion/temporadas');
+    return season;
 }
 
 /**
@@ -95,51 +90,44 @@ export async function createSeason(name: string, year: number): Promise<Season> 
  * @throws {Error} If the teams are already in the season or if the operation fails.
  */
 export async function addTeamsToSeason(seasonId: number, teamIds: number[]): Promise<void> {
-    try {
-        const existingTeams = await prisma.seasonTeam.findMany({
-            where: {
-                seasonId,
-                teamId: { in: teamIds },
-            },
-            select: {
-                teamId: true,
-            },
-        });
-
-        const existingTeamIds = new Set(existingTeams.map(t => t.teamId));
-        const newTeamIds = teamIds.filter(id => !existingTeamIds.has(id));
-
-        if (newTeamIds.length === 0) {
-            throw new Error('Todos los equipos seleccionados ya están en esta temporada.');
-        }
-
-        const dataToCreate = newTeamIds.map(teamId => ({
+    const existingTeams = await prisma.seasonTeam.findMany({
+        where: {
             seasonId,
-            teamId,
-            position: 0,
-            points: 0,
-            played: 0,
-            wins: 0,
-            draws: 0,
-            losses: 0,
-            goalsFor: 0,
-            goalsAgainst: 0,
-            goalDifference: 0,
-        }));
+            teamId: { in: teamIds },
+        },
+        select: {
+            teamId: true,
+        },
+    });
 
-        await prisma.seasonTeam.createMany({
-            data: dataToCreate,
-        });
+    const existingTeamIds = new Set(existingTeams.map(t => t.teamId));
+    const newTeamIds = teamIds.filter(id => !existingTeamIds.has(id));
 
-        revalidatePath('/gestion/temporadas');
-    } catch (error) {
-        console.error('Error al añadir equipos a la temporada:', error);
-        if (error instanceof Error) {
-            throw error;
-        }
-        throw new Error('No se pudo añadir los equipos a la temporada.');
+    if (newTeamIds.length === 0) {
+        throw new Error('Todos los equipos seleccionados ya están en esta temporada.');
     }
+
+    const dataToCreate = newTeamIds.map(teamId => ({
+        seasonId,
+        teamId,
+        position: 0,
+        points: 0,
+        played: 0,
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        goalDifference: 0,
+    }));
+
+    await prisma.seasonTeam.createMany({
+        data: dataToCreate,
+    });
+
+    revalidatePath('/gestion/temporadas');
 }
+
 
 /**
  * Retrieves all teams from the database.
