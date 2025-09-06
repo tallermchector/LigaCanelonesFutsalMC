@@ -114,26 +114,24 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                 </div>
             </div>
             
-            {/* Team B Panel Toggle and Save Button */}
-            <div className="hidden md:flex items-center justify-end gap-2 w-32">
-                <Button
+            {/* Right Side Controls */}
+            <div className="hidden md:flex items-center justify-end gap-2">
+                 <Button
                     size="lg"
                     variant={visiblePanel === 'B' ? 'accent-red' : 'outline'}
                     className={cn(
-                        "w-full",
+                        "w-32",
                         visiblePanel !== 'B' && "border-red-500 text-red-400 hover:bg-red-900/50 hover:text-red-300"
                     )}
                     onClick={() => onTogglePanel('B')}
                 >
                     <Users className="mr-2 h-5 w-5"/> {state.teamB?.name.substring(0,3)}
                 </Button>
-            </div>
-             <div className="hidden md:flex items-center justify-end gap-2 w-64">
-                <Button variant="secondary" onClick={handleSaveChanges} size="lg" className="w-full" disabled={!isMatchLive}>
+                <Button variant="secondary" onClick={handleSaveChanges} size="lg" className="w-32" disabled={!isMatchLive}>
                     <Save className="mr-2 h-5 w-5" />
                     Guardar
                 </Button>
-                 <Button variant="destructive" onClick={handleFinishMatch} size="lg" className="w-full" disabled={!isMatchLive}>
+                 <Button variant="destructive" onClick={handleFinishMatch} size="lg" className="w-32" disabled={!isMatchLive}>
                     <CheckCircle className="mr-2 h-5 w-5" />
                     Finalizar
                 </Button>
