@@ -7,15 +7,11 @@ import { useParams, notFound } from 'next/navigation';
 import { getMatchById, saveMatchState, createGameEvent } from '@/actions/match-actions';
 import type { FullMatch } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { TacticalBoard } from '@/components/cancha/TacticalBoard';
 import { GameProvider } from '@/contexts/GameProvider';
-import { TacticalHeader } from '@/components/cancha/TacticalHeader';
-import { TacticalActions } from '@/components/cancha/TacticalActions';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { TeamPanel } from '@/components/controles/TeamPanel';
-import { AnimatePresence, motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { TacticalHeader } from '@/components/cancha/TacticalHeader';
+import { PlayerColumn } from '@/components/cancha/PlayerColumn';
 
 
 function TacticalBoardSkeleton() {
@@ -42,13 +38,6 @@ function TacticalBoardSkeleton() {
             <div className="flex-grow flex items-center justify-center p-4 relative">
                 <Skeleton className="w-full h-full max-w-4xl max-h-[70vh]"/>
             </div>
-
-            {/* Toolbar Skeleton */}
-            <div className="flex justify-center items-center p-4 border-t border-gray-700">
-                <div className="flex items-center gap-4 bg-gray-700 p-2 rounded-lg">
-                    {Array.from({length: 7}).map((_, i) => <Skeleton key={i} className="h-10 w-10" />)}
-                </div>
-            </div>
         </div>
     );
 }
@@ -60,7 +49,6 @@ export default function TacticalBoardPage() {
     
     const [match, setMatch] = useState<FullMatch | null>(null);
     const [loading, setLoading] = useState(true);
-    const [visiblePanel, setVisiblePanel] = useState<'A' | 'B' | null>(null);
 
     useEffect(() => {
         if (matchId) {
@@ -88,10 +76,6 @@ export default function TacticalBoardPage() {
         return notFound();
     }
     
-    const handleTogglePanel = (panel: 'A' | 'B') => {
-        setVisiblePanel(current => current === panel ? null : panel);
-    }
-
     return (
         <GameProvider 
             match={match}
@@ -104,32 +88,11 @@ export default function TacticalBoardPage() {
                         <TacticalHeader match={match} />
                     </header>
                     
-                    <main className="flex-1 relative flex items-center justify-center p-2 overflow-hidden">
-                        <div className="w-full h-full flex items-center justify-center">
-                            <TacticalBoard match={match} />
-                        </div>
-                        
-                        <AnimatePresence>
-                        {visiblePanel && (
-                            <motion.div
-                                className={cn(
-                                    "absolute top-0 bottom-0 z-30 w-72 h-full p-2",
-                                    visiblePanel === 'A' ? 'left-0' : 'right-0'
-                                )}
-                                initial={{ x: visiblePanel === 'A' ? '-100%' : '100%', opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: visiblePanel === 'A' ? '-100%' : '100%', opacity: 0 }}
-                                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                            >
-                                <TeamPanel teamId={visiblePanel} />
-                            </motion.div>
-                        )}
-                        </AnimatePresence>
+                    <main className="flex-1 container mx-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                       <PlayerColumn teamId="A" />
+                       <PlayerColumn teamId="B" />
                     </main>
 
-                    <footer className="flex-shrink-0 z-20">
-                      <TacticalActions onTogglePanel={handleTogglePanel} visiblePanel={visiblePanel} />
-                    </footer>
                 </div>
             </DndProvider>
         </GameProvider>
