@@ -1,4 +1,6 @@
 
+"use client"
+
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -25,12 +27,12 @@ export function DataTablePagination<TData>({
 }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-sm text-muted-foreground">
+      <div className="flex-1 text-xs sm:text-sm text-muted-foreground">
         {table.getFilteredSelectedRowModel().rows.length} de{" "}
         {table.getFilteredRowModel().rows.length} fila(s) seleccionadas.
       </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
-        <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2 sm:space-x-6 lg:space-x-8">
+        <div className="hidden sm:flex items-center space-x-2">
           <p className="text-sm font-medium">Filas por página</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
@@ -50,9 +52,10 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Página {table.getState().pagination.pageIndex + 1} de{" "}
-          {table.getPageCount()}
+        <div className="flex items-center justify-center text-sm font-medium">
+            <span className="hidden md:inline-block mr-1">Página</span>
+            {table.getState().pagination.pageIndex + 1} de{" "}
+            {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
           <Button
