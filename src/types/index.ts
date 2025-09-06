@@ -47,6 +47,8 @@ export interface PlayerWithStats extends Player {
     goals: number;
     assists: number;
     matchesPlayed: number;
+    minutesPlayed: number;
+    avgMinutesPerMatch: number;
     team: Team;
 }
 

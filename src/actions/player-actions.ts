@@ -59,8 +59,21 @@ export async function getPlayerById(id: number): Promise<(Player & { team: Team 
 export async function getAggregatedPlayerStats(): Promise<PlayerWithStats[]> {
     const allMatches = await getAllMatches();
     const finishedMatches = allMatches.filter(m => m.status === 'FINISHED');
+    const allPlayersWithTeam = await getAllPlayers();
 
-    const playerStatsMap: { [playerId: number]: { player: PlayerStat['player'], goals: number, assists: number, matchesPlayed: number } } = {};
+    const playerStatsMap: { [playerId: number]: { player: PlayerWithStats, goals: number, assists: number, matchesPlayed: number, minutesPlayed: number } } = {};
+
+    // Initialize all players
+    allPlayersWithTeam.forEach(p => {
+        playerStatsMap[p.id] = {
+            player: { ...p, goals: 0, assists: 0, matchesPlayed: 0, minutesPlayed: 0, avgMinutesPerMatch: 0 },
+            goals: 0,
+            assists: 0,
+            matchesPlayed: 0,
+            minutesPlayed: 0
+        };
+    });
+
 
     for (const match of finishedMatches) {
         const stats = await getMatchStats(match.id);
@@ -68,14 +81,8 @@ export async function getAggregatedPlayerStats(): Promise<PlayerWithStats[]> {
 
         const processStats = (statArray: PlayerStat[], type: 'goals' | 'assists') => {
             statArray.forEach(stat => {
-                if (!playerStatsMap[stat.player.id]) {
-                    playerStatsMap[stat.player.id] = {
-                        player: stat.player,
-                        goals: 0,
-                        assists: 0,
-                        matchesPlayed: 0,
-                    };
-                }
+                if (!playerStatsMap[stat.player.id]) return;
+
                 if (type === 'goals') {
                     playerStatsMap[stat.player.id].goals += stat.count;
                 } else {
@@ -94,25 +101,28 @@ export async function getAggregatedPlayerStats(): Promise<PlayerWithStats[]> {
         playersInMatch.forEach(playerId => {
              if (playerStatsMap[playerId]) {
                 playerStatsMap[playerId].matchesPlayed += 1;
-            } else {
-                 const allPlayers = [...stats.teamA.players, ...stats.teamB.players];
-                 const player = allPlayers.find(p => p.id === playerId);
-                 if (player) {
-                    playerStatsMap[playerId] = {
-                        player: { ...player, team: player.teamId === stats.teamA.id ? stats.teamA : stats.teamB },
-                        goals: 0,
-                        assists: 0,
-                        matchesPlayed: 1,
-                    };
-                 }
+            }
+        });
+        
+        match.playerMatchStats.forEach(stat => {
+            if (playerStatsMap[stat.playerId]) {
+                playerStatsMap[stat.playerId].minutesPlayed += stat.timePlayedInSeconds;
             }
         });
     }
 
-    return Object.values(playerStatsMap).map(p => ({
-        ...p.player,
-        goals: p.goals,
-        assists: p.assists,
-        matchesPlayed: p.matchesPlayed,
-    }));
+    return Object.values(playerStatsMap).map(p => {
+        const matchesPlayed = p.matchesPlayed || 0;
+        const minutesPlayed = Math.floor(p.minutesPlayed / 60);
+        const avgMinutesPerMatch = matchesPlayed > 0 ? parseFloat((minutesPlayed / matchesPlayed).toFixed(1)) : 0;
+        
+        return {
+            ...p.player,
+            goals: p.goals,
+            assists: p.assists,
+            matchesPlayed,
+            minutesPlayed,
+            avgMinutesPerMatch,
+        };
+    });
 }

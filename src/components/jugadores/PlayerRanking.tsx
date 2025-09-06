@@ -17,14 +17,16 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { playerAvatars } from '@/data/datosgenerales';
 
-type StatKey = 'goals' | 'assists' | 'matchesPlayed';
-type StatLabel = 'Goles' | 'Asistencias' | 'Partidos';
+type StatKey = 'goals' | 'assists' | 'matchesPlayed' | 'minutesPlayed' | 'avgMinutesPerMatch';
+type StatLabel = 'Goles' | 'Asistencias' | 'Partidos' | 'Minutos' | 'Prom. Minutos';
 
 
 const STATS_CONFIG: { key: StatKey; label: StatLabel }[] = [
   { key: 'goals', label: 'Goles' },
   { key: 'assists', label: 'Asistencias' },
   { key: 'matchesPlayed', label: 'Partidos' },
+  { key: 'minutesPlayed', label: 'Minutos' },
+  { key: 'avgMinutesPerMatch', label: 'Prom. Minutos' },
 ];
 
 interface RankingProps {
@@ -89,7 +91,7 @@ export function PlayerRanking({ players }: RankingProps) {
   if (!featuredPlayer) {
       return (
           <div>
-            <div className="mb-6 flex justify-center gap-2">
+            <div className="mb-6 flex justify-center gap-2 flex-wrap">
                 {STATS_CONFIG.map(stat => (
                     <Button 
                         key={stat.key}
@@ -100,14 +102,14 @@ export function PlayerRanking({ players }: RankingProps) {
                     </Button>
                 ))}
             </div>
-            <Card><CardContent className="p-8 text-center text-muted-foreground">No hay jugadores con {activeLabel} registrados.</CardContent></Card>
+            <Card><CardContent className="p-8 text-center text-muted-foreground">No hay jugadores con {activeLabel.toLowerCase()} registrados.</CardContent></Card>
           </div>
       )
   }
 
   return (
     <div>
-        <div className="mb-6 flex justify-center gap-2">
+        <div className="mb-6 flex justify-center gap-2 flex-wrap">
             {STATS_CONFIG.map(stat => (
                  <Button 
                     key={stat.key}
