@@ -144,8 +144,19 @@ export function PlayByPlayFeed({ events, teamA, teamB }: PlayByPlayFeedProps) {
   if (events.some(e => e.type === 'MATCH_END')) {
       allEvents.push({ id: -3, matchId: teamA.id, type: 'MATCH_END', timestamp: 0, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
   }
+  
+  const getAbsoluteTime = (event: GameEvent) => {
+    const periodDuration = 1200;
+    if (event.timestamp > periodDuration) {
+        // First half, time counts down from 2400 to 1201
+        return 2400 - event.timestamp;
+    } else {
+        // Second half, time counts down from 1200 to 0
+        return periodDuration + (1200 - event.timestamp);
+    }
+  }
 
-  const sortedEvents = [...allEvents].sort((a, b) => b.timestamp - a.timestamp);
+  const sortedEvents = [...allEvents].sort((a, b) => getAbsoluteTime(a) - getAbsoluteTime(b));
 
   return (
     <Card className="shadow-lg bg-card/50">
