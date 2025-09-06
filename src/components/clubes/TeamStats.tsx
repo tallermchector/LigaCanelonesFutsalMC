@@ -1,4 +1,5 @@
-import type { Team } from '@/types';
+
+import type { Team, GameEvent, GameEventType } from '@/types';
 import { CardContent } from '@/components/ui/card';
 import {
   Accordion,
@@ -19,21 +20,34 @@ const StatRow = ({ label, value }: { label: string, value: number | string }) =>
 );
 
 export function TeamStats({ team }: TeamStatsProps) {
-    // Placeholder para futuras estadísticas
+    const getTeamEvents = (eventType: GameEventType): GameEvent[] => {
+        if (!team.matches) return [];
+        return team.matches.flatMap(match =>
+            match.events.filter(event =>
+                event.type === eventType &&
+                (event.teamId === team.id || 
+                 (match.teamAId === team.id && event.teamId === match.teamA.id) || 
+                 (match.teamBId === team.id && event.teamId === match.teamB.id))
+            )
+        );
+    };
+
+    const goals = team.matches?.reduce((acc, match) => {
+        if (match.teamAId === team.id) return acc + (match.scoreA || 0);
+        if (match.teamBId === team.id) return acc + (match.scoreB || 0);
+        return acc;
+    }, 0) || 0;
+
     const attackStats = [
-        { label: "Goles Totales", value: 5 },
-        { label: "Disparos", value: 31 },
-        { label: "Asistencias", value: 4 },
-        { label: "Penaltis Lanzados", value: 0 },
-        { label: "Penaltis Recibidos", value: 0 },
+        { label: "Goles Totales", value: goals },
+        { label: "Disparos", value: getTeamEvents('SHOT').length },
+        { label: "Asistencias", value: getTeamEvents('ASSIST').length },
     ];
     
     const teamPlayStats = [
-        { label: "Pases", value: 1770 },
-        { label: "Faltas Cometidas", value: 12 },
-        { label: "Faltas Recibidas", value: 18 },
-        { label: "Tarjetas Amarillas", value: 3 },
-        { label: "Tarjetas Rojas", value: 1 },
+        { label: "Faltas Cometidas", value: getTeamEvents('FOUL').length },
+        { label: "Tarjetas Amarillas", value: getTeamEvents('YELLOW_CARD').length },
+        { label: "Tarjetas Rojas", value: getTeamEvents('RED_CARD').length },
     ];
 
     return (
