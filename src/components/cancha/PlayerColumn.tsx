@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from "react";
@@ -33,7 +34,7 @@ const PlayerButton = ({ player, teamId }: { player: Player, teamId: 'A' | 'B'}) 
                     >
                         {player.number}
                     </Button>
-                    <span className="text-xs font-semibold text-white/80 w-20 text-center truncate">{player.name}</span>
+                    <span className="text-xs font-semibold text-white/80 w-20 text-center truncate hidden md:block">{player.name}</span>
                 </div>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-1 bg-gray-900/80 border-gray-700 text-white backdrop-blur-md">
@@ -79,7 +80,7 @@ export function PlayerColumn({ teamId }: PlayerColumnProps) {
                 </div>
 
                 {/* Field Players Rows */}
-                <div className="grid grid-cols-2 gap-x-4 gap-y-6">
+                <div className="grid grid-cols-2 gap-x-2 gap-y-4 md:gap-x-4 md:gap-y-6">
                     {fieldPlayers.map(player => (
                         <PlayerButton key={player.id} player={player} teamId={teamId} />
                     ))}
