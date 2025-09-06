@@ -15,6 +15,9 @@ import {
 
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { EditClubSheet } from "./EditClubSheet"
+import type { Team } from "@/types"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -25,9 +28,17 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const { toast } = useToast()
   const router = useRouter()
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const team = row.original as Team
 
 
   return (
+    <>
+    <EditClubSheet
+        team={team}
+        isOpen={isSheetOpen}
+        onClose={() => setIsSheetOpen(false)}
+    />
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
@@ -39,12 +50,15 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Editar</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setIsSheetOpen(true)}>
+            Editar
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">
           Eliminar
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </>
   )
 }

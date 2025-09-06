@@ -1,4 +1,5 @@
 
+
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { PageHero } from '@/components/layout/PageHero';
@@ -6,6 +7,7 @@ import { getAllTeams } from '@/actions/team-actions';
 import { ClubDataTable } from '@/components/gestion/clubes/ClubDataTable';
 import { columns } from '@/components/gestion/clubes/Columns';
 import { CreateClubForm } from '@/components/gestion/clubes/CreateClubForm';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function GestionClubesPage() {
     const teams = await getAllTeams();
@@ -19,14 +21,20 @@ export default async function GestionClubesPage() {
                     description="Administra los equipos que participan en la liga."
                 />
                 <div className="container mx-auto p-4 py-8 md:p-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                         <div className="lg:col-span-2">
                              <h2 className="text-2xl font-bold text-primary mb-4">Lista de Clubes</h2>
                              <ClubDataTable columns={columns} data={teams} />
                         </div>
                         <div>
-                             <h2 className="text-2xl font-bold text-primary mb-4">Crear Nuevo Club</h2>
-                             <CreateClubForm />
+                             <Card>
+                                <CardHeader>
+                                    <CardTitle>Crear Nuevo Club</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <CreateClubForm />
+                                </CardContent>
+                            </Card>
                         </div>
                     </div>
                 </div>

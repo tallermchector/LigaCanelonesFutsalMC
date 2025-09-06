@@ -5,6 +5,7 @@ import { Table } from "@tanstack/react-table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
+import { DataTableViewOptions } from "./DataTableViewOptions"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -37,6 +38,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
+      <DataTableViewOptions table={table} />
     </div>
   )
 }

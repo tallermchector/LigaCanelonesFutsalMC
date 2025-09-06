@@ -7,6 +7,7 @@ import { z } from "zod"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,14 +15,24 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
+function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-');
+}
+
 const createClubSchema = z.object({
   name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
   logoUrl: z.string().url("Debe ser una URL válida para el logo"),
+  slug: z.string().min(3, "El slug debe tener al menos 3 caracteres"),
 });
 
 type CreateClubFormValues = z.infer<typeof createClubSchema>
@@ -36,8 +47,15 @@ export function CreateClubForm() {
         defaultValues: {
             name: '',
             logoUrl: '',
+            slug: '',
         },
     });
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const name = e.target.value;
+        form.setValue('name', name);
+        form.setValue('slug', slugify(name));
+    }
     
     async function onSubmit(values: CreateClubFormValues) {
         setIsSubmitting(true)
@@ -63,44 +81,55 @@ export function CreateClubForm() {
     }
 
     return (
-        <Card>
-            <CardContent className="pt-6">
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nombre del Club</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Ej: Futsaleros FC" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        
-                         <FormField
-                            control={form.control}
-                            name="logoUrl"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>URL del Logo</FormLabel>
-                                     <FormControl>
-                                        <Input placeholder="https://example.com/logo.png" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        
-                        <Button type="submit" disabled={isSubmitting} className="w-full">
-                            {isSubmitting ? 'Creando...' : 'Crear Club'}
-                        </Button>
-                    </form>
-                </Form>
-            </CardContent>
-        </Card>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Nombre del Club</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Ej: Futsaleros FC" {...field} onChange={handleNameChange} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="slug"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Slug</FormLabel>
+                            <FormControl>
+                                <Input placeholder="ej: futsaleros-fc" {...field} />
+                            </FormControl>
+                             <FormDescription>
+                                Se utiliza para la URL. Se genera automáticamente.
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="logoUrl"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>URL del Logo</FormLabel>
+                             <FormControl>
+                                <Input placeholder="https://example.com/logo.png" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                
+                <Button type="submit" disabled={isSubmitting} className="w-full">
+                    {isSubmitting ? 'Creando...' : 'Crear Club'}
+                </Button>
+            </form>
+        </Form>
     )
 }
