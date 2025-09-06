@@ -4,7 +4,8 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, notFound } from 'next/navigation';
-import { getMatchById, saveMatchState, createGameEvent } from '@/actions/match-actions';
+import { saveMatchState, createGameEvent } from '@/actions/match-actions';
+import { getMatchById } from '@/actions/prisma-actions';
 import type { FullMatch } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { GameProvider } from '@/contexts/GameProvider';
@@ -12,7 +13,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TacticalHeader } from '@/components/cancha/TacticalHeader';
 import { TacticalActions } from '@/components/cancha/TacticalActions';
-import { TeamPanel } from '@/components/controles/TeamPanel';
+import { PlayerColumn } from '@/components/cancha/PlayerColumn';
 import { cn } from '@/lib/utils';
 
 
@@ -95,22 +96,9 @@ export default function TacticalBoardPage() {
                         <TacticalHeader match={match} />
                     </header>
                     
-                    <main className="flex-1 container mx-auto p-4 md:p-8 flex items-center justify-center">
-                        <div className={cn("absolute top-1/2 -translate-y-1/2 h-[80%] w-80 transition-all duration-300", 
-                            "left-4",
-                            visiblePanel !== 'A' && "-translate-x-[120%]"
-                        )}>
-                           <TeamPanel teamId="A" variant="cancha" />
-                        </div>
-
-                        <h1 className="text-4xl font-bold text-center text-white/10 select-none">PIZARRA TÁCTICA</h1>
-
-                         <div className={cn("absolute top-1/2 -translate-y-1/2 h-[80%] w-80 transition-all duration-300", 
-                            "right-4",
-                            visiblePanel !== 'B' && "translate-x-[120%]"
-                        )}>
-                           <TeamPanel teamId="B" variant="cancha" />
-                        </div>
+                    <main className="flex-1 container mx-auto p-4 md:p-8 grid grid-cols-2 gap-4 md:gap-8">
+                        <PlayerColumn teamId="A" />
+                        <PlayerColumn teamId="B" />
                     </main>
 
                      <footer className="flex-shrink-0 z-20">
