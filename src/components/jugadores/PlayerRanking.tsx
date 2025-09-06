@@ -78,10 +78,32 @@ export function PlayerRanking({ players }: RankingProps) {
     return <Card><CardContent className="p-8 text-center text-muted-foreground">No hay datos de ranking disponibles.</CardContent></Card>;
   }
 
-  const sortedPlayers = [...players].sort((a, b) => b[activeStat] - a[activeStat]);
-  const featuredPlayer = sortedPlayers[0];
-  const rankedList = sortedPlayers.slice(1, 10);
+  const sortedPlayers = [...players]
+    .filter(p => p[activeStat] > 0) // Filter out players with 0 for the stat
+    .sort((a, b) => b[activeStat] - a[activeStat]);
+
+  const featuredPlayer = sortedPlayers.length > 0 ? sortedPlayers[0] : null;
+  const rankedList = sortedPlayers.slice(1, 10); // Take the next 9 players for a total of 10
   const activeLabel = STATS_CONFIG.find(s => s.key === activeStat)?.label || 'Goles';
+
+  if (!featuredPlayer) {
+      return (
+          <div>
+            <div className="mb-6 flex justify-center gap-2">
+                {STATS_CONFIG.map(stat => (
+                    <Button 
+                        key={stat.key}
+                        variant={activeStat === stat.key ? 'default' : 'outline'}
+                        onClick={() => setActiveStat(stat.key)}
+                    >
+                        {stat.label}
+                    </Button>
+                ))}
+            </div>
+            <Card><CardContent className="p-8 text-center text-muted-foreground">No hay jugadores con {activeLabel} registrados.</CardContent></Card>
+          </div>
+      )
+  }
 
   return (
     <div>
