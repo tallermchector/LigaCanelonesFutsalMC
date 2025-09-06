@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { FullMatch, Team } from '@/types';
@@ -159,19 +158,19 @@ function MatchItem({ match }: { match: FullMatch }) {
 function TeamDisplay({ team, alignment }: { team: Team, alignment: 'left' | 'right' }) {
   return (
     <div className={cn(
-      "flex items-center gap-3",
-      alignment === 'right' ? 'flex-row-reverse' : 'flex-row'
+      "flex flex-col sm:flex-row items-center gap-2 sm:gap-3",
+      alignment === 'right' ? 'sm:flex-row-reverse' : 'sm:flex-row'
     )}>
       <Image
         src={team.logoUrl || '/logofu.svg'}
         alt={`Logo de ${team.name}`}
-        width={48}
-        height={48}
-        className="w-10 h-10 md:w-12 md:h-12 aspect-square object-contain transition-transform group-hover:scale-110"
+        width={40}
+        height={40}
+        className="w-10 h-10 aspect-square object-contain transition-transform group-hover:scale-110"
       />
       <span className={cn(
-        "font-bold text-sm md:text-base text-foreground group-hover:text-primary transition-colors",
-        alignment === 'left' ? 'text-left' : 'text-right',
+        "font-bold text-sm text-center sm:text-base text-foreground group-hover:text-primary transition-colors",
+        alignment === 'left' ? 'sm:text-left' : 'sm:text-right',
         "truncate"
       )}>
         {team.name}
