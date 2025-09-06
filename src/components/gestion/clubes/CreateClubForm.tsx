@@ -31,7 +31,7 @@ function slugify(text: string): string {
 
 const createClubSchema = z.object({
   name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
-  logoUrl: z.string().url("Debe ser una URL válida para el logo"),
+  logoUrl: z.string().min(1, "La URL del logo no puede estar vacía."),
   slug: z.string().min(3, "El slug debe tener al menos 3 caracteres"),
 });
 
@@ -119,7 +119,7 @@ export function CreateClubForm() {
                         <FormItem>
                             <FormLabel>URL del Logo</FormLabel>
                              <FormControl>
-                                <Input placeholder="https://example.com/logo.png" {...field} />
+                                <Input placeholder="/equipos/logo.png" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
