@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FutsalBallIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import {
   Carousel,
@@ -16,6 +15,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { Badge } from '../ui/badge';
 
 interface ScheduleCalendarProps {
   matches: FullMatch[];
@@ -106,36 +106,56 @@ export function ScheduleCalendar({ matches }: ScheduleCalendarProps) {
 
 
 function MatchItem({ match }: { match: FullMatch }) {
-  const { teamA, teamB, scheduledTime } = match;
+  const { teamA, teamB, status, scoreA, scoreB, scheduledTime } = match;
   const date = new Date(scheduledTime);
+
+  const renderScoreOrTime = () => {
+    switch (status) {
+      case 'FINISHED':
+        return <div className="text-2xl font-bold tabular-nums">{scoreA} - {scoreB}</div>;
+      case 'LIVE':
+        return (
+          <div className="flex flex-col items-center">
+            <div className="text-2xl font-bold tabular-nums">{scoreA} - {scoreB}</div>
+            <Badge variant="destructive" className="mt-1 animate-pulse">EN VIVO</Badge>
+          </div>
+        );
+      case 'SCHEDULED':
+      default:
+        return (
+          <div className="text-xl font-bold">
+            {date.toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' })}
+          </div>
+        );
+    }
+  };
 
   return (
     <Link href={`/partidos/${match.id}`} className="block group">
-        <Card className="overflow-hidden transition-all duration-300 ease-in-out group-hover:shadow-lg group-hover:border-primary/50 group-hover:-translate-y-1">
-            <CardContent className="p-4">
-                <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
-                    <span>Jornada {match.round}</span>
-                     <span>
-                        {date.toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' })} hs.
-                    </span>
-                </div>
-                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-                    <TeamDisplay team={teamA} alignment="left"/>
-                    <div className="text-muted-foreground font-bold text-xl">VS</div>
-                    <TeamDisplay team={teamB} alignment="right"/>
-                </div>
-            </CardContent>
-        </Card>
+      <Card className="overflow-hidden transition-all duration-300 ease-in-out group-hover:shadow-lg group-hover:border-primary/50 group-hover:-translate-y-1">
+        <CardContent className="p-4">
+          <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
+            <span>Jornada {match.round}</span>
+          </div>
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+            <TeamDisplay team={teamA} alignment="left" />
+            <div className="text-muted-foreground font-bold text-center">
+              {renderScoreOrTime()}
+            </div>
+            <TeamDisplay team={teamB} alignment="right" />
+          </div>
+        </CardContent>
+      </Card>
     </Link>
   );
 }
 
 function TeamDisplay({ team, alignment }: { team: Team, alignment: 'left' | 'right' }) {
   return (
-     <div className={cn(
-        "flex items-center gap-3",
-        alignment === 'right' && 'flex-row-reverse'
-     )}>
+    <div className={cn(
+      "flex items-center gap-3",
+      alignment === 'right' ? 'flex-row-reverse' : 'flex-row'
+    )}>
       <Image
         src={team.logoUrl || '/logofu.svg'}
         alt={`Logo de ${team.name}`}
@@ -144,8 +164,9 @@ function TeamDisplay({ team, alignment }: { team: Team, alignment: 'left' | 'rig
         className="w-10 h-10 md:w-12 md:h-12 aspect-square object-contain transition-transform group-hover:scale-110"
       />
       <span className={cn(
-          "font-bold text-sm md:text-base text-foreground group-hover:text-primary transition-colors",
-           alignment === 'left' ? 'text-left' : 'text-right'
+        "font-bold text-sm md:text-base text-foreground group-hover:text-primary transition-colors",
+        alignment === 'left' ? 'text-left' : 'text-right',
+        "truncate"
       )}>
         {team.name}
       </span>
