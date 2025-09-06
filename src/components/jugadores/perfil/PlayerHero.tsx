@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import type { Player, Team } from '@/types';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { playerAvatars } from '@/data/datosgenerales';
 
 interface PlayerHeroProps {
     player: Player & { team: Team };
@@ -14,6 +15,7 @@ interface PlayerHeroProps {
 
 export function PlayerHero({ player }: PlayerHeroProps) {
     const router = useRouter();
+    const avatarUrl = playerAvatars[player.id] || `/avatar/1.png`;
 
     return (
         <header className="relative bg-gray-900 overflow-hidden">
@@ -65,7 +67,7 @@ export function PlayerHero({ player }: PlayerHeroProps) {
                     </div>
                      <div className="relative order-1 md:order-2 h-80 w-80 md:h-96 md:w-96 flex-shrink-0 z-10">
                         <Image
-                            src={'/avatar/3.png'}
+                            src={avatarUrl}
                             alt={`Foto de ${player.name}`}
                             fill
                             className="object-contain object-bottom drop-shadow-[0_20px_15px_rgba(0,0,0,0.4)]"

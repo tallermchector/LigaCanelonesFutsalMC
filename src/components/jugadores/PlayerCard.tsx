@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
+import { playerAvatars } from '@/data/datosgenerales';
 
 // Asumimos que el tipo Player ahora puede incluir la información del equipo
 interface PlayerWithTeam extends Player {
@@ -17,8 +18,7 @@ interface PlayerCardProps {
 
 export function PlayerCard({ player }: PlayerCardProps) {
   // Selecciona una imagen de avatar aleatoria
-  const avatarNumber = (player.id % 3) + 1;
-  const avatarUrl = `/avatar/${avatarNumber}.png`;
+  const avatarUrl = playerAvatars[player.id] || `/avatar/1.png`;
 
   return (
     <motion.div

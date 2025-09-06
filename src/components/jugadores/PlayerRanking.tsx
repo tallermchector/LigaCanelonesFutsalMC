@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { playerAvatars } from '@/data/datosgenerales';
 
 interface PlayerWithStats extends Player {
     goals: number;
@@ -26,8 +27,7 @@ interface RankingProps {
 
 const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
     const teamSlug = player.team.slug || player.team.name.toLowerCase().replace(/\s+/g, '-');
-    const avatarNumber = (player.id % 3) + 1;
-    const avatarUrl = `/avatar/${avatarNumber}.png`;
+    const avatarUrl = playerAvatars[player.id] || `/avatar/1.png`;
     
     return (
     <div className="relative mb-8 overflow-hidden rounded-xl p-4 sm:p-6 transition-shadow hover:shadow-lg group text-white">
@@ -95,8 +95,7 @@ export function PlayerRanking({ players }: RankingProps) {
             <TableBody>
                 {rankedList.map((player, index) => {
                     const teamSlug = player.team.slug || player.team.name.toLowerCase().replace(/\s+/g, '-');
-                    const avatarNumber = (player.id % 3) + 1;
-                    const avatarUrl = `/avatar/${avatarNumber}.png`;
+                    const avatarUrl = playerAvatars[player.id] || `/avatar/1.png`;
                     return (
                         <TableRow key={player.id} className="hover:bg-muted/30">
                             <TableCell className="text-center font-bold text-muted-foreground">{index + 2}º</TableCell>

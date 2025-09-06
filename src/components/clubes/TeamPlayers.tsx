@@ -3,6 +3,7 @@ import { CardContent } from '../ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { playerAvatars } from '@/data/datosgenerales';
 
 interface TeamPlayersProps {
     players: Player[];
@@ -39,8 +40,7 @@ export function TeamPlayers({ players }: TeamPlayersProps) {
                             </h3>
                             <div className="divide-y divide-border">
                                 {groupedPlayers[position].map(player => {
-                                    const avatarNumber = (player.id % 3) + 1;
-                                    const avatarUrl = `/avatar/${avatarNumber}.png`;
+                                    const avatarUrl = playerAvatars[player.id] || `/avatar/1.png`;
                                     return (
                                         <Link key={player.id} href={`/jugadores/${player.id}`} className="flex items-center gap-4 p-4 hover:bg-muted/30 group">
                                             <div className="w-8 text-center font-bold text-primary text-lg">
