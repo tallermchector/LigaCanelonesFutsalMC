@@ -2,7 +2,7 @@
 
 'use server';
 
-import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus } from '@/types';
+import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, GameEventType } from '@/types';
 import { 
     createMatch as createMatchInDb, 
     updateMatchStatus as updateMatchStatusInDb, 
