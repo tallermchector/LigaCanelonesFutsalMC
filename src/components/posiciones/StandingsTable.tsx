@@ -88,13 +88,15 @@ export function StandingsTable({ standings }: StandingsTableProps) {
             <TableBody>
                 {standings.map((entry, index) => {
                 const teamSlug = entry.team.slug || entry.team.name.toLowerCase().replace(/\s+/g, '-');
-                // Mock trend data
+                // Mock trend data - only show if matches have been played
                 const trend: 'up' | 'down' | 'same' = index % 3 === 0 ? 'up' : index % 3 === 1 ? 'down' : 'same';
+                const hasPlayed = entry.played > 0;
+
                 return (
                 <TableRow key={entry.teamId} className="hover:bg-muted/30">
                     <TableCell className="font-bold text-center text-muted-foreground">
                         <div className="flex items-center justify-center gap-2">
-                            {renderTrendIcon(trend)}
+                            {hasPlayed ? renderTrendIcon(trend) : <Minus className="h-4 w-4 text-muted-foreground" />}
                             <span>{entry.position}</span>
                         </div>
                     </TableCell>
@@ -119,11 +121,13 @@ export function StandingsTable({ standings }: StandingsTableProps) {
                     <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalsAgainst}</TableCell>
                     <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalDifference}</TableCell>
                     <TableCell>
-                        <div className="flex items-center justify-center gap-1">
-                            {recentResults.slice(0, 5).map((result, i) => (
-                                <MatchResultIndicator key={i} result={result} />
-                            ))}
-                        </div>
+                        {hasPlayed && (
+                            <div className="flex items-center justify-center gap-1">
+                                {recentResults.slice(0, 5).map((result, i) => (
+                                    <MatchResultIndicator key={i} result={result} />
+                                ))}
+                            </div>
+                        )}
                     </TableCell>
                 </TableRow>
                 )})}
@@ -135,7 +139,6 @@ export function StandingsTable({ standings }: StandingsTableProps) {
           <LegendItem color="bg-green-500" label="Victoria" />
           <LegendItem color="bg-gray-400" label="Empate" />
           <LegendItem color="bg-red-500" label="Derrota" />
-          <LegendItem color="bg-gray-200 dark:bg-gray-700" label="No Disputado" />
       </CardFooter>
     </Card>
   );
