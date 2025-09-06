@@ -1,3 +1,4 @@
+
 import type { Player } from '@/types';
 import { CardContent } from '../ui/card';
 import Image from 'next/image';
