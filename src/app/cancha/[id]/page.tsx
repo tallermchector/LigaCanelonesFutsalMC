@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, notFound } from 'next/navigation';
-import { getMatchByIdFromDb, saveMatchState, createGameEvent } from '@/actions/prisma-actions';
+import { getMatchById, saveMatchState, createGameEvent } from '@/actions/match-actions';
 import type { FullMatch } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TacticalBoard } from '@/components/cancha/TacticalBoard';
@@ -69,7 +69,7 @@ export default function TacticalBoardPage() {
                 setLoading(false);
                 return;
             }
-            getMatchByIdFromDb(numericId).then(data => {
+            getMatchById(numericId).then(data => {
                 if (data) {
                     setMatch(data);
                 }

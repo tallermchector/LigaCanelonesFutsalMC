@@ -5,6 +5,7 @@
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker, PlayerMatchStats } from '@/types';
 import React from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { saveMatchState, createGameEvent } from '@/actions/match-actions';
 
 type GameAction =
   | { type: 'LOAD_MATCH'; payload: { match: FullMatch; state: GameState | null } }
@@ -69,7 +70,7 @@ const updatePlayerTimeReducer = (state: GameState): GameState => {
     return { ...state, playerTimeTracker: newTracker };
 };
 
-const createGameReducer = (createGameEvent: (matchId: number, event: Omit<GameEvent, 'id' | 'matchId'>) => Promise<void>) => (state: GameState, action: GameAction): GameState => {
+const createGameReducer = (createGameEventFn: (matchId: number, event: Omit<GameEvent, 'id' | 'matchId'>) => Promise<void>) => (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
     case 'LOAD_MATCH': {
       let baseState = action.payload.state || {
@@ -189,7 +190,7 @@ const createGameReducer = (createGameEvent: (matchId: number, event: Omit<GameEv
                     timestamp: state.time,
                 };
                 
-                 if(state.matchId) createGameEvent(state.matchId, newEvent);
+                 if(state.matchId) createGameEventFn(state.matchId, newEvent);
                 
                 const activePlayersKey = playerOut.teamId === 'A' ? 'activePlayersA' : 'activePlayersB';
                 const currentActivePlayers = state[activePlayersKey];
@@ -243,20 +244,19 @@ const createGameReducer = (createGameEvent: (matchId: number, event: Omit<GameEv
           playerInName: null,
       };
       
-      // Save to DB immediately
-      if(state.matchId) createGameEvent(state.matchId, newEvent);
+      if(state.matchId) createGameEventFn(state.matchId, newEvent);
       
       let newState: GameState = { ...state, events: [...state.events, {...newEvent, id: Date.now(), matchId: state.matchId!}], selectedPlayer: null };
 
       if (action.payload.type === 'GOAL') {
-          newState = createGameReducer(createGameEvent)(newState, { type: 'UPDATE_SCORE', payload: { team: selectedTeamId, delta: 1 } });
+          newState = createGameReducer(createGameEventFn)(newState, { type: 'UPDATE_SCORE', payload: { team: selectedTeamId, delta: 1 } });
       }
       if (action.payload.type === 'FOUL') {
-          newState = createGameReducer(createGameEvent)(newState, { type: 'UPDATE_FOULS', payload: { team: selectedTeamId, delta: 1 } });
+          newState = createGameReducer(createGameEventFn)(newState, { type: 'UPDATE_FOULS', payload: { team: selectedTeamId, delta: 1 } });
       }
       if (action.payload.type === 'TIMEOUT') {
           const timeoutTeamId = action.payload.teamId === state.teamA?.id ? 'A' : 'B';
-          newState = createGameReducer(createGameEvent)(newState, { type: 'UPDATE_TIMEOUTS', payload: { team: timeoutTeamId, delta: -1 } });
+          newState = createGameReducer(createGameEventFn)(newState, { type: 'UPDATE_TIMEOUTS', payload: { team: timeoutTeamId, delta: -1 } });
       }
 
       return newState;
@@ -375,7 +375,8 @@ const GameContext = React.createContext<{
 } | undefined>(undefined);
 
 export const GameProvider: React.FC<GameProviderProps> = ({ children, match, saveMatchState, createGameEvent }) => {
-  const [state, dispatch] = React.useReducer(createGameReducer(createGameEvent), initialState);
+  const gameReducer = React.useMemo(() => createGameReducer(createGameEvent), [createGameEvent]);
+  const [state, dispatch] = React.useReducer(gameReducer, initialState);
   const { toast } = useToast();
 
 

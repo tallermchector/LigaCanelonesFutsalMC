@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import type { FullMatch, MatchStatus } from '@/types';
@@ -9,7 +10,7 @@ import Image from 'next/image';
 import { Calendar, Clock, Edit, BarChart2, Users, CheckCircle, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
-import { updateMatchStatus } from '@/actions/prisma-actions';
+import { updateMatchStatus } from '@/actions/match-actions';
 import { useRouter } from 'next/navigation';
 
 

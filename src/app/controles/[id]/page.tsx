@@ -1,11 +1,12 @@
 
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { useToast } from '@/hooks/use-toast';
-import { getMatchByIdFromDb, saveMatchState, createGameEvent } from '@/actions/prisma-actions';
+import { getMatchById, saveMatchState, createGameEvent } from '@/actions/match-actions';
 import type { FullMatch, MatchStatus } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -71,7 +72,7 @@ export default function MatchControlPage() {
             setError('ID de partido inválido.');
             return;
           }
-          const fetchedMatch = await getMatchByIdFromDb(matchId);
+          const fetchedMatch = await getMatchById(matchId);
           if (fetchedMatch) {
             // Ensure status is what we expect
              if (fetchedMatch.status === 'SCHEDULED') {
