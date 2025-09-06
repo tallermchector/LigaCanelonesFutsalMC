@@ -259,37 +259,25 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     }
     case 'SET_INITIAL_POSITIONS': {
         if (!state.teamA || !state.teamB) return state;
-
+    
         const newPositions: { [playerId: number]: PlayerPosition } = {};
-
-        const setPositionsForTeam = (playerIds: number[], teamPlayers: Player[], team: 'A' | 'B') => {
-            const goalkeeper = playerIds.map(id => teamPlayers.find(p => p.id === id)).find(p => p?.position === 'GOLERO');
-            let fieldPlayers = playerIds.filter(id => id !== goalkeeper?.id);
-            
-            if (goalkeeper) {
-                 newPositions[goalkeeper.id] = { x: team === 'A' ? 8 : 92, y: 50 };
-            } else if (playerIds.length > 0) {
-                // If no designated GK, assign the first player as GK
-                const tempGoalkeeperId = playerIds[0];
-                newPositions[tempGoalkeeperId] = { x: team === 'A' ? 8 : 92, y: 50 };
-                fieldPlayers = playerIds.slice(1);
-            }
-
-            // 1-2-1 Formation
-            const formationSpots = team === 'A' 
-                ? [{x: 25, y: 50}, {x: 40, y: 25}, {x: 40, y: 75}, {x: 30, y: 50}] // Defender, Top Winger, Bottom Winger, Pivot
-                : [{x: 75, y: 50}, {x: 60, y: 25}, {x: 60, y: 75}, {x: 70, y: 50}]; // Defender, Top Winger, Bottom Winger, Pivot
-            
-            fieldPlayers.forEach((playerId, index) => {
-                if (index < formationSpots.length) {
-                    newPositions[playerId] = formationSpots[index];
-                }
+    
+        const setPositionsForTeam = (playerIds: number[], team: 'A' | 'B') => {
+            const xPosition = team === 'A' ? 25 : 75; // Team A on left, Team B on right
+            const yStart = 15; // Starting y position
+            const yIncrement = 17.5; // Space between players
+    
+            playerIds.forEach((playerId, index) => {
+                newPositions[playerId] = {
+                    x: xPosition,
+                    y: yStart + (index * yIncrement),
+                };
             });
         };
-
-        setPositionsForTeam(state.activePlayersA, state.teamA.players, 'A');
-        setPositionsForTeam(state.activePlayersB, state.teamB.players, 'B');
-
+    
+        setPositionsForTeam(state.activePlayersA, 'A');
+        setPositionsForTeam(state.activePlayersB, 'B');
+    
         return { ...state, playerPositions: newPositions };
     }
     case 'UPDATE_PLAYER_POSITION': {
