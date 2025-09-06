@@ -11,6 +11,15 @@ import {
     saveMatchState as saveMatchStateInDb, 
     createGameEvent as createGameEventInDb 
 } from './match-actions';
+import type { FullMatch as ActionFullMatch } from './match-actions';
+
+
+function toClientFullMatch(match: ActionFullMatch): FullMatch {
+    return {
+        ...match,
+        scheduledTime: match.scheduledTime.toISOString(),
+    };
+}
 
 
 /**
@@ -21,7 +30,8 @@ import {
  */
 export async function getMatchByIdFromDb(id: number): Promise<FullMatch | undefined> {
    const match = await getMatchByIdFromDbInDb(id);
-   return match ?? undefined;
+   if (!match) return undefined;
+   return toClientFullMatch(match);
 }
 
 /**
@@ -30,7 +40,8 @@ export async function getMatchByIdFromDb(id: number): Promise<FullMatch | undefi
  * @returns {Promise<FullMatch[]>} A promise that resolves to an array of all matches.
  */
 export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
-   return getAllMatchesFromDbInDb();
+   const matches = await getAllMatchesFromDbInDb();
+   return matches.map(toClientFullMatch);
 }
 
 
@@ -70,7 +81,7 @@ export async function getMatchStatsFromDb(id: number): Promise<MatchStats | unde
 
 
   return {
-    ...match,
+    ...toClientFullMatch(match),
     stats: {
         topScorers: getPlayerStats('GOAL'),
         assistsLeaders: getPlayerStats('ASSIST'),
@@ -96,19 +107,10 @@ export async function createMatch(data: {
     teamBId: number;
     scheduledTime: Date;
     round: number;
+    seasonId: number;
 }): Promise<FullMatch> {
     const newMatch = await createMatchInDb(data);
-    // The type from createMatchInDb might be slightly different, so we cast it.
-    // This assumes the data structure is compatible.
-    return {
-        ...newMatch,
-        scheduledTime: newMatch.scheduledTime.toISOString(),
-        status: newMatch.status as MatchStatus,
-        teamA: { id: newMatch.teamAId, name: 'Team A', players: [], logoUrl: '', slug: '' },
-        teamB: { id: newMatch.teamBId, name: 'Team B', players: [], logoUrl: '', slug: '' },
-        events: [],
-        playerMatchStats: [],
-    } as unknown as FullMatch;
+    return toClientFullMatch(newMatch as ActionFullMatch);
 }
 
 /**
