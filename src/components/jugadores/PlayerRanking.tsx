@@ -84,6 +84,7 @@ export function PlayerRanking({ players }: RankingProps) {
         <FeaturedPlayer player={featuredPlayer} />
 
         <Card className="overflow-hidden">
+          <div className="overflow-x-auto">
             <Table>
             <TableHeader>
                 <TableRow>
@@ -127,6 +128,7 @@ export function PlayerRanking({ players }: RankingProps) {
                 })}
             </TableBody>
             </Table>
+          </div>
         </Card>
     </div>
   );

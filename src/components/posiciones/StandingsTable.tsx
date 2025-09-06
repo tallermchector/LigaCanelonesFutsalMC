@@ -52,7 +52,7 @@ export function StandingsTable({ standings }: StandingsTableProps) {
           <TableHeader className="bg-muted/50">
             <TableRow>
               <TableHead className="w-12 text-center font-bold">#</TableHead>
-              <TableHead className="font-bold">Equipo</TableHead>
+              <TableHead className="font-bold min-w-[200px]">Equipo</TableHead>
               <TableHead className="w-16 text-center font-bold text-primary">PTS</TableHead>
               {STAT_COLUMNS.map(col => (
                 <TableHead key={col} className="w-12 text-center font-bold text-muted-foreground">{col}</TableHead>

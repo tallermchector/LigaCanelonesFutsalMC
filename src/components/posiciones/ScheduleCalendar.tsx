@@ -67,7 +67,7 @@ export function ScheduleCalendar({ matches }: ScheduleCalendarProps) {
     <div>
       <Carousel
         opts={{ align: "start", containScroll: "trimSnaps" }}
-        className="w-full max-w-lg mx-auto mb-8"
+        className="w-full max-w-sm sm:max-w-md mx-auto mb-8"
       >
         <CarouselContent className="-ml-2">
           {rounds.map(round => (
@@ -133,8 +133,8 @@ function MatchItem({ match }: { match: FullMatch }) {
 function TeamDisplay({ team, alignment }: { team: Team, alignment: 'left' | 'right' }) {
   return (
      <div className={cn(
-        "flex flex-col md:flex-row items-center gap-3",
-        alignment === 'right' && 'md:flex-row-reverse'
+        "flex items-center gap-3",
+        alignment === 'right' && 'flex-row-reverse'
      )}>
       <Image
         src={team.logoUrl || '/logofu.svg'}
@@ -144,8 +144,8 @@ function TeamDisplay({ team, alignment }: { team: Team, alignment: 'left' | 'rig
         className="w-10 h-10 md:w-12 md:h-12 aspect-square object-contain transition-transform group-hover:scale-110"
       />
       <span className={cn(
-          "font-bold text-sm md:text-base text-foreground group-hover:text-primary transition-colors text-center",
-           alignment === 'left' ? 'md:text-left' : 'md:text-right'
+          "font-bold text-sm md:text-base text-foreground group-hover:text-primary transition-colors",
+           alignment === 'left' ? 'text-left' : 'text-right'
       )}>
         {team.name}
       </span>
