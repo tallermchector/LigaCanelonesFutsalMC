@@ -260,7 +260,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         const newPositions: { [playerId: number]: PlayerPosition } = {};
 
         const setPositionsForTeam = (playerIds: number[], teamPlayers: Player[], team: 'A' | 'B') => {
-            const goalkeeper = playerIds.map(id => teamPlayers.find(p => p.id === id)).find(p => p?.position === 'Goalkeeper');
+            const goalkeeper = playerIds.map(id => teamPlayers.find(p => p.id === id)).find(p => p?.position === 'GOLERO');
             let fieldPlayers = playerIds.filter(id => id !== goalkeeper?.id);
             
             if (goalkeeper) {
