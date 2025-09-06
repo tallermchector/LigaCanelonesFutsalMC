@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import prisma from '@/lib/prisma';
@@ -8,7 +9,7 @@ import { getAllTeams as getAllTeamsFromSource } from './team-actions';
 
 // Definimos un tipo más específico para el resultado que esperamos
 type StandingWithTeam = SeasonTeam & { team: Team };
-type StandingCalculated = Omit<SeasonTeam, 'id' | 'seasonId' | 'position'> & { team: Team, position: number };
+type StandingCalculated = Omit<SeasonTeam, 'id' | 'seasonId' | 'position'> & { team: Team, position: number, recentResults: ('W' | 'D' | 'L')[] };
 
 
 /**
@@ -56,6 +57,9 @@ export async function getStandingsFromMatches(seasonId: number): Promise<Standin
                 teamA: true,
                 teamB: true,
             },
+            orderBy: {
+                scheduledTime: 'desc' // Sort by most recent first
+            }
         });
 
         const allTeamsInSeason = await prisma.seasonTeam.findMany({
@@ -77,40 +81,115 @@ export async function getStandingsFromMatches(seasonId: number): Promise<Standin
                 goalsFor: 0,
                 goalsAgainst: 0,
                 goalDifference: 0,
+                recentResults: []
             };
         });
 
-        // Calculate stats from finished matches
+        // Calculate stats and recent results from finished matches
         for (const match of finishedMatches) {
             const teamAStats = stats[match.teamAId];
             const teamBStats = stats[match.teamBId];
 
-            if (!teamAStats || !teamBStats) continue; // Skip if a team in a match is not in the season
+            if (!teamAStats || !teamBStats) continue;
 
-            teamAStats.played += 1;
-            teamBStats.played += 1;
-            teamAStats.goalsFor += match.scoreA;
-            teamBStats.goalsFor += match.scoreB;
-            teamAStats.goalsAgainst += match.scoreB;
-            teamBStats.goalsAgainst += match.scoreA;
-            teamAStats.goalDifference = teamAStats.goalsFor - teamAStats.goalsAgainst;
-            teamBStats.goalDifference = teamBStats.goalsFor - teamBStats.goalsAgainst;
+            const playedCountA = teamAStats.played;
+            const playedCountB = teamBStats.played;
+
+            // Update general stats only if it's a new match for the team
+            if(playedCountA < finishedMatches.filter(m => m.teamAId === match.teamAId || m.teamBId === match.teamAId).length) {
+                teamAStats.played += 1;
+                teamAStats.goalsFor += match.scoreA;
+                teamAStats.goalsAgainst += match.scoreB;
+                teamAStats.goalDifference = teamAStats.goalsFor - teamAStats.goalsAgainst;
+            }
+            if(playedCountB < finishedMatches.filter(m => m.teamAId === match.teamBId || m.teamBId === match.teamBId).length) {
+                teamBStats.played += 1;
+                teamBStats.goalsFor += match.scoreB;
+                teamBStats.goalsAgainst += match.scoreA;
+                teamBStats.goalDifference = teamBStats.goalsFor - teamBStats.goalsAgainst;
+            }
+
+            let resultA: 'W' | 'D' | 'L' = 'D';
+            let resultB: 'W' | 'D' | 'L' = 'D';
 
             if (match.scoreA > match.scoreB) {
-                teamAStats.wins += 1;
-                teamAStats.points += 3;
-                teamBStats.losses += 1;
+                if(playedCountA < finishedMatches.filter(m => m.teamAId === match.teamAId || m.teamBId === match.teamAId).length) {
+                    teamAStats.wins += 1;
+                    teamAStats.points += 3;
+                }
+                if(playedCountB < finishedMatches.filter(m => m.teamAId === match.teamBId || m.teamBId === match.teamBId).length) teamBStats.losses += 1;
+                resultA = 'W';
+                resultB = 'L';
             } else if (match.scoreB > match.scoreA) {
-                teamBStats.wins += 1;
-                teamBStats.points += 3;
-                teamAStats.losses += 1;
+                if(playedCountB < finishedMatches.filter(m => m.teamAId === match.teamBId || m.teamBId === match.teamBId).length) {
+                    teamBStats.wins += 1;
+                    teamBStats.points += 3;
+                }
+                if(playedCountA < finishedMatches.filter(m => m.teamAId === match.teamAId || m.teamBId === match.teamAId).length) teamAStats.losses += 1;
+                resultA = 'L';
+                resultB = 'W';
             } else {
-                teamAStats.draws += 1;
-                teamBStats.draws += 1;
-                teamAStats.points += 1;
-                teamBStats.points += 1;
+                 if(playedCountA < finishedMatches.filter(m => m.teamAId === match.teamAId || m.teamBId === match.teamAId).length) {
+                    teamAStats.draws += 1;
+                    teamAStats.points += 1;
+                }
+                 if(playedCountB < finishedMatches.filter(m => m.teamAId === match.teamBId || m.teamBId === match.teamBId).length) {
+                    teamBStats.draws += 1;
+                    teamBStats.points += 1;
+                }
+            }
+
+            if (teamAStats.recentResults.length < 5) {
+                teamAStats.recentResults.push(resultA);
+            }
+            if (teamBStats.recentResults.length < 5) {
+                teamBStats.recentResults.push(resultB);
             }
         }
+        
+        const finishedMatchesByTeam: {[teamId: number]: Match[]} = {};
+        finishedMatches.forEach(match => {
+            if(!finishedMatchesByTeam[match.teamAId]) finishedMatchesByTeam[match.teamAId] = [];
+            if(!finishedMatchesByTeam[match.teamBId]) finishedMatchesByTeam[match.teamBId] = [];
+            finishedMatchesByTeam[match.teamAId].push(match);
+            finishedMatchesByTeam[match.teamBId].push(match);
+        })
+
+        allTeamsInSeason.forEach(seasonTeam => {
+            const teamId = seasonTeam.teamId;
+            const teamMatches = (finishedMatchesByTeam[teamId] || []).slice(0, 5);
+            stats[teamId].played = teamMatches.length;
+
+            let wins = 0, draws = 0, losses = 0, goalsFor = 0, goalsAgainst = 0;
+            const recentResults: ('W' | 'D' | 'L')[] = [];
+
+            teamMatches.forEach(m => {
+                if (m.teamAId === teamId) {
+                    goalsFor += m.scoreA;
+                    goalsAgainst += m.scoreB;
+                    if(m.scoreA > m.scoreB) { wins++; recentResults.push('W'); }
+                    else if (m.scoreA < m.scoreB) { losses++; recentResults.push('L'); }
+                    else { draws++; recentResults.push('D'); }
+                } else {
+                    goalsFor += m.scoreB;
+                    goalsAgainst += m.scoreA;
+                    if(m.scoreB > m.scoreA) { wins++; recentResults.push('W'); }
+                    else if (m.scoreB < m.scoreA) { losses++; recentResults.push('L'); }
+                    else { draws++; recentResults.push('D'); }
+                }
+            });
+            
+            stats[teamId].wins = wins;
+            stats[teamId].draws = draws;
+            stats[teamId].losses = losses;
+            stats[teamId].goalsFor = goalsFor;
+            stats[teamId].goalsAgainst = goalsAgainst;
+            stats[teamId].goalDifference = goalsFor - goalsAgainst;
+            stats[teamId].points = wins * 3 + draws;
+            stats[teamId].recentResults = recentResults;
+
+        });
+
 
         const sortedStandings = Object.values(stats).sort((a, b) => {
             if (b.points !== a.points) return b.points - a.points;

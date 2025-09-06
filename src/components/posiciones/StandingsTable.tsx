@@ -63,9 +63,6 @@ export function StandingsTable({ standings }: StandingsTableProps) {
     );
   }
 
-  // Mocked recent results for display purposes
-  const recentResults: ('W' | 'D' | 'L' | 'N')[] = ['W', 'D', 'L', 'W', 'W'];
-
   return (
     <Card className="overflow-hidden shadow-lg">
       <CardHeader>
@@ -121,13 +118,11 @@ export function StandingsTable({ standings }: StandingsTableProps) {
                     <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalsAgainst}</TableCell>
                     <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalDifference}</TableCell>
                     <TableCell>
-                        {hasPlayed && (
-                            <div className="flex items-center justify-center gap-1">
-                                {recentResults.slice(0, 5).map((result, i) => (
-                                    <MatchResultIndicator key={i} result={result} />
-                                ))}
-                            </div>
-                        )}
+                        <div className="flex items-center justify-center gap-1">
+                            {(entry.recentResults || []).slice(0, 5).map((result: 'W' | 'D' | 'L', i: number) => (
+                                <MatchResultIndicator key={i} result={result} />
+                            ))}
+                        </div>
                     </TableCell>
                 </TableRow>
                 )})}
