@@ -29,8 +29,8 @@ async function main() {
   // 2. Leer y parsear los archivos JSON
   // ----------------------------------------------------
   console.log('📂 Leyendo archivos JSON...');
-  const teamsPath = path.join(__dirname, 'json-exports', 'teams.json');
-  const playersPath = path.join(__dirname, 'json-exports', 'players.json');
+  const teamsPath = path.join(__dirname, 'json-exports', 'team.json');
+  const playersPath = path.join(__dirname, 'json-exports', 'player.json');
 
   const teamsFile = fs.readFileSync(teamsPath, 'utf-8');
   const playersFile = fs.readFileSync(playersPath, 'utf-8');
