@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import { useForm } from "react-hook-form"
@@ -27,11 +28,10 @@ import { CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { Team } from "@/types"
+import type { FullMatch, Team } from "@/types"
 import { createMatch } from "@/actions/prisma-actions"
 import { useToast } from "@/hooks/use-toast"
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 
 const createMatchSchema = z.object({
   teamAId: z.string().min(1, "Debe seleccionar el equipo local"),
@@ -49,18 +49,14 @@ const createMatchSchema = z.object({
 type CreateMatchFormValues = z.infer<typeof createMatchSchema>
 
 interface CreateMatchFormProps {
-    teams: Team[]
+    teams: Team[];
+    seasonId: number;
+    onMatchCreated: (newMatch: FullMatch) => void;
 }
 
-export function CreateMatchForm({ teams }: CreateMatchFormProps) {
+export function CreateMatchForm({ teams, seasonId, onMatchCreated }: CreateMatchFormProps) {
     const { toast } = useToast()
-    const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [isClient, setIsClient] = useState(false)
-
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
 
     const form = useForm<CreateMatchFormValues>({
         resolver: zodResolver(createMatchSchema),
@@ -72,6 +68,16 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
             round: 1,
         },
     });
+
+    useEffect(() => {
+        form.reset({
+            teamAId: '',
+            teamBId: '',
+            scheduledDate: new Date(),
+            scheduledTime: '19:00',
+            round: 1,
+        });
+    }, [seasonId, form]);
     
     const teamAId = form.watch("teamAId");
 
@@ -82,18 +88,19 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
             const combinedDateTime = new Date(values.scheduledDate);
             combinedDateTime.setHours(hours, minutes);
 
-            await createMatch({
+            const newMatch = await createMatch({
                 teamAId: parseInt(values.teamAId),
                 teamBId: parseInt(values.teamBId),
                 scheduledTime: combinedDateTime,
                 round: values.round,
+                seasonId: seasonId,
             })
             toast({
                 title: "Partido Creado",
                 description: "El nuevo partido ha sido programado exitosamente.",
             })
+            onMatchCreated(newMatch);
             form.reset({ round: 1, teamAId: '', teamBId: '', scheduledDate: new Date(), scheduledTime: '19:00' })
-            router.refresh()
         } catch (error) {
              toast({
                 variant: "destructive",
@@ -103,10 +110,6 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
         } finally {
             setIsSubmitting(false)
         }
-    }
-
-    if (!isClient) {
-        return null;
     }
 
     return (
@@ -223,7 +226,7 @@ export function CreateMatchForm({ teams }: CreateMatchFormProps) {
                     )}
                 />
                 
-                <Button type="submit" disabled={isSubmitting} className="w-full">
+                <Button type="submit" disabled={isSubmitting || teams.length < 2} className="w-full">
                     {isSubmitting ? 'Creando...' : 'Crear Partido'}
                 </Button>
             </form>
