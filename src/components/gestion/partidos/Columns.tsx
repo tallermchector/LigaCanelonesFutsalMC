@@ -48,7 +48,7 @@ export const columns: ColumnDef<FullMatch>[] = [
     ),
     cell: ({ row }) => {
       const date = new Date(row.getValue("scheduledTime"));
-      const formatted = date.toLocaleString('es-UY', { dateStyle: 'short', timeStyle: 'short' });
+      const formatted = date.toLocaleString('es-UY', { dateStyle: 'short', timeStyle: 'short', timeZone: 'UTC' });
       return <div className="text-muted-foreground">{formatted}</div>
     },
   },
