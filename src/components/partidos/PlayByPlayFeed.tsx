@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { GameEvent, Team } from '@/types';
@@ -9,10 +10,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useGame } from '@/contexts/GameProvider';
 
 type PlayByPlayFeedProps = {
   events: GameEvent[];
+  teamA: Team;
+  teamB: Team;
 };
 
 const eventDisplayConfig: Record<string, { icon: React.ReactNode; label: string; className: string; iconBg: string }> = {
@@ -109,9 +111,7 @@ const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team, isT
 };
 
 
-export function PlayByPlayFeed({ events }: PlayByPlayFeedProps) {
-  const { state } = useGame();
-  const { teamA, teamB } = state;
+export function PlayByPlayFeed({ events, teamA, teamB }: PlayByPlayFeedProps) {
 
   if (!teamA || !teamB) return null;
 
@@ -161,7 +161,7 @@ export function PlayByPlayFeed({ events }: PlayByPlayFeedProps) {
                                 </div>
                             </div>
 
-                            <div className={cn("pt-1 w-full", !isTeamA ? 'col-start-3 text-left' : 'hidden')}>
+                            <div className={cn("pt-1 w-full", !isTeamA ? 'col-start-1 text-right' : 'col-start-3 text-left')}>
                                 {!isTeamA && <EventCard event={event} team={team} isTeamA={isTeamA} />}
                             </div>
                         </motion.div>

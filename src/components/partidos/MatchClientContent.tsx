@@ -63,7 +63,7 @@ export function MatchClientContent({ initialMatch }: { initialMatch: FullMatch }
             />
 
             <div className="mt-8 w-full max-w-4xl">
-                <PlayByPlayFeed events={events} />
+                <PlayByPlayFeed events={events} teamA={teamA} teamB={teamB} />
             </div>
         </>
     );
