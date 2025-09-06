@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState } from 'react';
@@ -47,8 +48,8 @@ export function SeasonSetup({ allTeams }: SeasonSetupProps) {
     setStep('FIXTURE');
   };
   
-  const getStepContent = () => {
-      switch(step) {
+  const getStepContent = (currentStep: Step) => {
+      switch(currentStep) {
           case 'SEASON':
               return <p className="text-sm text-muted-foreground mt-2">Dale un nombre a tu nueva temporada para empezar.</p>
           case 'TEAMS':
@@ -66,7 +67,7 @@ export function SeasonSetup({ allTeams }: SeasonSetupProps) {
         <StepIndicator label="Paso 1: Crear Temporada" isCompleted={!!season} isActive={step === 'SEASON'} />
         <div className="pl-8 mt-2 border-l-2 border-dashed ml-3 pb-6 border-border">
           <div className="pl-4">
-             {getStepContent() === "Paso 1" && <p className="text-sm text-muted-foreground mb-4">Dale un nombre a tu nueva temporada para empezar.</p>}
+             {getStepContent(step) && <p className="text-sm text-muted-foreground mb-4">{getStepContent('SEASON')}</p>}
              <CreateSeasonForm
               onSeasonCreated={handleSeasonCreated}
               isDisabled={step !== 'SEASON'}

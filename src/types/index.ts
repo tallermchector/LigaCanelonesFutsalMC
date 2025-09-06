@@ -1,7 +1,7 @@
 
 
 import type { ElementType } from 'react';
-import type { Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent, PlayerMatchStats as PrismaPlayerMatchStats, SeasonTeam as PrismaSeasonTeam } from '@prisma/client';
+import type { Season as PrismaSeason, Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent, PlayerMatchStats as PrismaPlayerMatchStats, SeasonTeam as PrismaSeasonTeam } from '@prisma/client';
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED' | 'SELECTING_STARTERS'| 'POSTPONED' | 'IN_PROGRESS' ;
 export type PlayerPositionType = "GOLERO" | "DEFENSA" | "ALA" | "PIVOT";
@@ -12,6 +12,8 @@ export interface Player extends Omit<PrismaPlayer, 'position'> {
 }
 
 export interface PlayerMatchStats extends PrismaPlayerMatchStats {}
+
+export interface Season extends PrismaSeason {}
 
 export interface SeasonTeam extends PrismaSeasonTeam {}
 

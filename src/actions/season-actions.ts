@@ -115,7 +115,7 @@ export async function getStandingsFromMatches(seasonId: number): Promise<Standin
             if (match.scoreA > match.scoreB) {
                 if(playedCountA < finishedMatches.filter(m => m.teamAId === match.teamAId || m.teamBId === match.teamAId).length) {
                     teamAStats.wins += 1;
-                    teamAStats.points += 3;
+                    teamAStats.points += 2;
                 }
                 if(playedCountB < finishedMatches.filter(m => m.teamAId === match.teamBId || m.teamBId === match.teamBId).length) teamBStats.losses += 1;
                 resultA = 'W';
@@ -123,7 +123,7 @@ export async function getStandingsFromMatches(seasonId: number): Promise<Standin
             } else if (match.scoreB > match.scoreA) {
                 if(playedCountB < finishedMatches.filter(m => m.teamAId === match.teamBId || m.teamBId === match.teamBId).length) {
                     teamBStats.wins += 1;
-                    teamBStats.points += 3;
+                    teamBStats.points += 2;
                 }
                 if(playedCountA < finishedMatches.filter(m => m.teamAId === match.teamAId || m.teamBId === match.teamAId).length) teamAStats.losses += 1;
                 resultA = 'L';
@@ -185,7 +185,7 @@ export async function getStandingsFromMatches(seasonId: number): Promise<Standin
             stats[teamId].goalsFor = goalsFor;
             stats[teamId].goalsAgainst = goalsAgainst;
             stats[teamId].goalDifference = goalsFor - goalsAgainst;
-            stats[teamId].points = wins * 3 + draws;
+            stats[teamId].points = wins * 2 + draws;
             stats[teamId].recentResults = recentResults;
 
         });
