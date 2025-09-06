@@ -3,7 +3,7 @@
 import type { ElementType } from 'react';
 import type { Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent, PlayerMatchStats as PrismaPlayerMatchStats, SeasonTeam as PrismaSeasonTeam } from '@prisma/client';
 
-export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED' | 'SELECTING_STARTERS';
+export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED' | 'SELECTING_STARTERS'| 'POSTPONED' | 'IN_PROGRESS' ;
 
 export interface Player extends PrismaPlayer {
     avatarUrl?: string | null;

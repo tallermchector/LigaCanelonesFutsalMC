@@ -16,7 +16,7 @@ enum MatchStatus {
   SCHEDULED
   FINISHED
   POSTPONED
-  IN_PROGRESS // Se mantiene por consistencia, pero se añaden los que usas.
+  IN_PROGRESS 
   LIVE
   SELECTING_STARTERS
 }
