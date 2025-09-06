@@ -7,7 +7,7 @@ import { EventsList } from '@/components/partidos/estadisticas/EventsList';
 import type { Metadata } from 'next';
 import { ScoreSummary } from '@/components/partidos/estadisticas/ScoreSummary';
 import { MatchSummaryStats } from '@/components/resumen/MatchSummaryStats';
-import type { Team } from '@/types';
+import type { Team, GameEvent } from '@/types';
 
 
 interface EstadisticasPageProps {
@@ -57,24 +57,30 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
       redirect('/partidos');
   }
 
-  const allEvents = (match.events || []).sort((a, b) => b.timestamp - a.timestamp);
+  // Add structural events to the timeline
+  const allEvents: GameEvent[] = [...(match.events || [])];
   
-  // A placeholder function to generate a gradient from team colors
-  // In a real app, you would fetch these colors from your DB.
-  const getTeamGradient = (teamA: Team, teamB: Team) => {
-      const colorA = teamA.logoUrl?.includes('1.png') ? '#FF0000' : '#0000FF';
-      const colorB = teamB.logoUrl?.includes('10.png') ? '#FFFF00' : '#00FF00';
-      return `linear-gradient(135deg, ${colorA}40, ${colorB}40)`;
+  allEvents.push({ id: -1, matchId: match.id, type: 'MATCH_START', timestamp: 1200 * 2, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
+  if (match.status !== 'FINISHED' || match.period === 2) {
+    const hasSecondPeriodEvents = match.events.some(e => e.timestamp <= 1200);
+    if(hasSecondPeriodEvents || match.status === 'FINISHED')
+      allEvents.push({ id: -2, matchId: match.id, type: 'PERIOD_START', timestamp: 1200, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
   }
+  if (match.status === 'FINISHED') {
+      allEvents.push({ id: -3, matchId: match.id, type: 'MATCH_END', timestamp: 0, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
+  }
+
+  allEvents.sort((a, b) => b.timestamp - a.timestamp);
+  
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main 
-        className="flex-1 pt-[var(--header-height)] bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/stadium-bg.jpg')" }}
+        className="flex-1 pt-[var(--header-height)]"
+        style={{ background: 'radial-gradient(circle at top, hsl(var(--card)), hsl(var(--background)))' }}
       >
-        <div className="bg-black/80 backdrop-blur-sm min-h-full">
+        <div className="bg-transparent min-h-full">
             <div className="container mx-auto px-2 sm:px-4 py-8 md:py-12">
                 <div className="max-w-4xl mx-auto">
                     <ScoreSummary match={match} />

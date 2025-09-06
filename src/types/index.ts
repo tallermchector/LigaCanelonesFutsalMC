@@ -23,7 +23,7 @@ export interface Team extends Omit<PrismaTeam, 'slug'> {
   matches?: FullMatch[];
 }
 
-export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT' | 'YELLOW_CARD' | 'RED_CARD' | 'TIMEOUT' | 'SUBSTITUTION';
+export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT' | 'YELLOW_CARD' | 'RED_CARD' | 'TIMEOUT' | 'SUBSTITUTION' | 'MATCH_START' | 'PERIOD_START' | 'MATCH_END';
 
 export interface GameEvent extends Omit<PrismaGameEvent, 'type'> {
     type: GameEventType;
