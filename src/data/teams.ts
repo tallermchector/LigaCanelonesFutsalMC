@@ -8,90 +8,120 @@ const baseTeams: Omit<Team, 'players'>[] = [
     name: "LOS QUITU",
     logoUrl: "/equipos/1.png",
     slug: "losquitu",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 10,
     name: "LA PAPA MADRE",
     logoUrl: "/equipos/10.png",
     slug: "lpm",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 11,
     name: "WANDERERS",
     logoUrl: "/equipos/11.png",
     slug: "wanderers",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 12,
     name: "JCC 1930",
     logoUrl: "/equipos/12.png",
     slug: "jcc-1930",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 13,
     name: "STELLA",
     logoUrl: '/equipos/13.png',
     slug: "stella",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 14,
     name: "REAL CANELONES",
     logoUrl: "/equipos/14.png",
     slug: "realcanelones",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 15,
     name: "DAC",
     logoUrl: "/equipos/15.png",
     slug: "dac",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 2,
     name: "VALDEARCOS",
     logoUrl: "/equipos/2.png",
     slug: "valdearcos",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 3,
     name: "NEGRIAZUL",
     logoUrl: "/equipos/3.png",
     slug: "negriazul",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 4,
     name: "PEDRENSE",
     logoUrl: "/equipos/4.png",
     slug: "pedrense",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 5,
     name: "LA PIECITA",
     logoUrl: "/equipos/5.png",
     slug: "lapiecita",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 6,
     name: "EL HACHA",
     logoUrl: "/equipos/6.png",
     slug: "elhacha",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 7,
     name: "MILANO",
     logoUrl: "/equipos/7.png",
     slug: "milano",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 8,
     name: "T. DE CAMPEONES",
     logoUrl: "/equipos/8.png",
     slug: "tierra",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+     updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 9,
     name: "CAPINCHO",
     logoUrl: '/equipos/9.png',
     slug: "capincho",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   }
 ];
 
