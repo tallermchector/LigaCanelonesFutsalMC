@@ -3,7 +3,6 @@
 
 import prisma from '@/lib/prisma';
 import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, Team, Player, GameEventType, PlayerTimeTracker } from '@/types';
-import { revalidatePath } from 'next/cache';
 
 /**
  * Saves the current state of a match to the database.
@@ -64,8 +63,6 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
     await prisma.$transaction(txs);
 
     console.log(`Match ${matchId} state saved successfully.`);
-    revalidatePath(`/controles/${matchId}`);
-    revalidatePath('/controles');
   } catch (error) {
     console.error(`Failed to save match state for ${matchId}:`, error);
     throw new Error('Database operation failed.');
@@ -95,7 +92,6 @@ export async function createGameEvent(matchId: number, event: Omit<GameEvent, 'i
             },
         });
         console.log(`Event ${event.type} for match ${matchId} created successfully.`);
-        revalidatePath(`/partidos/${matchId}/estadisticas`);
     } catch(error) {
         console.error(`Failed to create event for match ${matchId}:`, error);
         // We don't throw here, as it might interrupt the game flow on the client.
@@ -258,7 +254,6 @@ export async function createMatch(data: {
                 playerMatchStats: true,
             },
         });
-        revalidatePath('/gestion');
         return {
             ...newMatch,
             scheduledTime: newMatch.scheduledTime.toISOString(),
@@ -285,8 +280,6 @@ export async function updateMatchStatus(matchId: number, status: MatchStatus): P
             where: { id: matchId },
             data: { status },
         });
-        revalidatePath('/gestion');
-        revalidatePath(`/controles/${matchId}`);
     } catch (error) {
         console.error(`Failed to update match ${matchId} status:`, error);
         throw new Error("Could not update match status.");
