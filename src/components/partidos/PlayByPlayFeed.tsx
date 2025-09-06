@@ -147,13 +147,19 @@ export function PlayByPlayFeed({ events, teamA, teamB }: PlayByPlayFeedProps) {
   
   const getAbsoluteTime = (event: GameEvent) => {
     const periodDuration = 1200;
-    if (event.timestamp > periodDuration) {
-        // First half, time counts down from 2400 to 1201
-        return 2400 - event.timestamp;
-    } else {
-        // Second half, time counts down from 1200 to 0
-        return periodDuration + (1200 - event.timestamp);
-    }
+    // MATCH_START is at the very beginning (time 0)
+    if (event.type === 'MATCH_START') return 0;
+    
+    // In-game events are sorted by how much time has elapsed
+    const timeElapsed = (2 * periodDuration) - event.timestamp;
+    
+    // Make sure PERIOD_START comes right after the first period's events
+    if (event.type === 'PERIOD_START') return periodDuration + 0.5;
+    
+    // MATCH_END is at the very end
+    if (event.type === 'MATCH_END') return (2 * periodDuration) + 1;
+    
+    return timeElapsed;
   }
 
   const sortedEvents = [...allEvents].sort((a, b) => getAbsoluteTime(a) - getAbsoluteTime(b));
