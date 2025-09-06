@@ -1,3 +1,4 @@
+
 import { getMatchById } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import type { FullMatch } from '@/types';
@@ -26,7 +27,10 @@ export default async function MatchPage({ params }: MatchPageProps) {
     return (
         <div className="flex min-h-screen flex-col bg-background">
             <Header />
-            <main className="container mx-auto flex flex-1 flex-col items-center justify-center p-4 md:p-8 pt-[var(--header-height)]">
+            <main 
+              className="container mx-auto flex flex-1 flex-col items-center p-4 md:p-8 pt-[var(--header-height)]"
+              style={{ background: 'radial-gradient(circle at top, hsl(var(--card)), hsl(var(--background)))' }}
+            >
                 <div className="w-full text-center mb-8">
                     <h1 className="text-4xl font-bold text-primary">Marcador en Vivo</h1>
                     <p className="text-muted-foreground mt-2">Sigue toda la acción del partido minuto a minuto.</p>

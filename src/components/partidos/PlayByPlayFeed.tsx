@@ -1,10 +1,10 @@
 
 'use client';
 
-import type { GameEvent, Team } from '@/types';
+import type { GameEvent, GameEventType, Team } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Hand, RefreshCw, Shield, Square, Timer, Target, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Hand, RefreshCw, Shield, Square, Timer, Target, ArrowLeft, ArrowRight, PlayCircle, Flag, CheckCircle } from 'lucide-react';
 import { FutsalBallIcon } from '@/components/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -26,21 +26,30 @@ const eventDisplayConfig: Record<string, { icon: React.ReactNode; label: string;
     RED_CARD: { icon: <Square className="w-5 h-5 text-red-500 fill-current" />, label: "Roja", className: "text-red-500 font-bold", iconBg: "bg-red-500/20" },
     TIMEOUT: { icon: <Timer className="w-5 h-5" />, label: "T. Muerto", className: "text-teal-400", iconBg: "bg-teal-500/20" },
     SUBSTITUTION: { icon: <RefreshCw className="w-5 h-5" />, label: "Cambio", className: "text-cyan-400", iconBg: "bg-cyan-500/20" },
+    MATCH_START: { icon: <PlayCircle className="w-5 h-5" />, label: "Inicio del Partido", className: "text-white font-bold", iconBg: "bg-gray-500/20" },
+    PERIOD_START: { icon: <Flag className="w-5 h-5" />, label: "Inicio 2º Tiempo", className: "text-white font-bold", iconBg: "bg-gray-500/20" },
+    MATCH_END: { icon: <CheckCircle className="w-5 h-5" />, label: "Final del Partido", className: "text-white font-bold", iconBg: "bg-gray-500/20" },
 };
 
-const formatTimeFromTotalSeconds = (totalSeconds: number) => {
+
+const formatTimeFromTotalSeconds = (totalSeconds: number, eventType: GameEvent['type']) => {
+    if (eventType === 'MATCH_END') return { period: '', minute: "Final" };
+    if (eventType === 'MATCH_START') return { period: '', minute: "Inicio" };
+    if (eventType === 'PERIOD_START') return { period: '', minute: "2T" };
+
     const gameDurationPerPeriod = 1200; // 20 mins
     let secondsLeft = totalSeconds;
     let period = 1;
-    if (totalSeconds > gameDurationPerPeriod) {
-        secondsLeft = totalSeconds - gameDurationPerPeriod;
+    if (totalSeconds <= gameDurationPerPeriod) {
+        secondsLeft = totalSeconds;
         period = 2;
+    } else {
+        secondsLeft = totalSeconds - gameDurationPerPeriod;
+        period = 1;
     }
-    const minute = 20 - Math.floor(secondsLeft / 60) - 1;
-    const second = 60 - (secondsLeft % 60);
-    const displayMinute = minute + (period - 1) * 20;
 
-    return { period: `${period}T`, minute: `${displayMinute}'` };
+    const minuteInPeriod = 20 - Math.floor(secondsLeft / 60);
+    return { period: `${period}T`, minute: `${minuteInPeriod}'` };
 }
 
 const PlayerLink = ({ id, name }: { id: number | null, name: string }) => {
@@ -83,11 +92,11 @@ const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team, isT
     };
 
     return (
-        <div className={cn(
+        <Card className={cn(
             "w-full bg-card border p-0 shadow-sm transition-colors",
             isTeamA ? 'border-primary/20 hover:border-primary/50' : 'border-accent/20 hover:border-accent/50'
         )}>
-            <div className="flex items-center gap-3 p-3">
+            <CardContent className="flex items-center gap-3 p-3">
                  <div className={cn(
                     "flex-shrink-0 flex flex-col items-center",
                     isTeamA ? 'order-1' : 'order-3'
@@ -105,7 +114,18 @@ const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team, isT
                 <div className={cn("flex-1 min-w-0", isTeamA ? 'order-2 text-left' : 'order-2 text-right')}>
                     {renderEventContent()}
                 </div>
-            </div>
+            </CardContent>
+        </Card>
+    );
+};
+
+const StructuralEventCard = ({ event }: { event: GameEvent }) => {
+    const config = eventDisplayConfig[event.type as keyof typeof eventDisplayConfig];
+    if (!config) return null;
+
+    return (
+        <div className="text-center w-full">
+            <h4 className={cn("font-bold text-sm", config.className)}>{config.label}</h4>
         </div>
     );
 };
@@ -115,10 +135,20 @@ export function PlayByPlayFeed({ events, teamA, teamB }: PlayByPlayFeedProps) {
 
   if (!teamA || !teamB) return null;
 
-  const sortedEvents = [...events].sort((a, b) => b.timestamp - a.timestamp);
+  const allEvents: GameEvent[] = [...(events || [])];
+  
+  allEvents.push({ id: -1, matchId: teamA.id, type: 'MATCH_START', timestamp: 2400, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
+  if (events.some(e => e.timestamp <= 1200)) {
+    allEvents.push({ id: -2, matchId: teamA.id, type: 'PERIOD_START', timestamp: 1200, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
+  }
+  if (events.some(e => e.type === 'MATCH_END')) {
+      allEvents.push({ id: -3, matchId: teamA.id, type: 'MATCH_END', timestamp: 0, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
+  }
+
+  const sortedEvents = [...allEvents].sort((a, b) => b.timestamp - a.timestamp);
 
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg bg-card/50">
       <CardHeader>
         <CardTitle className="text-xl">Minuto a Minuto</CardTitle>
       </CardHeader>
@@ -128,12 +158,13 @@ export function PlayByPlayFeed({ events, teamA, teamB }: PlayByPlayFeedProps) {
                 <div className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-border" aria-hidden="true"></div>
                 <div className="relative flex flex-col items-center gap-y-6">
                     {sortedEvents.map((event, index) => {
-                    const config = eventDisplayConfig[event.type];
+                    const config = eventDisplayConfig[event.type as keyof typeof eventDisplayConfig];
                     if (!config) return null;
-
+                    
+                    const isStructural = ['MATCH_START', 'PERIOD_START', 'MATCH_END'].includes(event.type);
                     const team = event.teamId === teamA.id ? teamA : teamB;
                     const isTeamA = event.teamId === teamA.id;
-                    const time = formatTimeFromTotalSeconds(event.timestamp);
+                    const time = formatTimeFromTotalSeconds(event.timestamp, event.type);
 
                     return (
                         <motion.div 
@@ -143,14 +174,14 @@ export function PlayByPlayFeed({ events, teamA, teamB }: PlayByPlayFeedProps) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.05 }}
                         >
-                            <div className={cn("pt-1 w-full", isTeamA ? 'col-start-1 text-right' : 'hidden')}>
-                                {isTeamA && <EventCard event={event} team={team} isTeamA={isTeamA} />}
+                            <div className={cn("pt-1 w-full", isTeamA && !isStructural ? 'col-start-1 text-right' : 'col-start-1 hidden')}>
+                                {isTeamA && !isStructural && <EventCard event={event} team={team} isTeamA={isTeamA} />}
                             </div>
                             
                             <div className="col-start-2 flex flex-col items-center">
                                 <div className="relative grid h-10 w-10 place-items-center">
                                     <div className={cn(
-                                        "relative z-10 grid h-10 w-10 place-items-center rounded-full border bg-card",
+                                        "relative z-10 grid h-10 w-10 place-items-center rounded-full border bg-card text-foreground",
                                         config.iconBg
                                     )}>
                                     {config.icon}
@@ -161,13 +192,19 @@ export function PlayByPlayFeed({ events, teamA, teamB }: PlayByPlayFeedProps) {
                                 </div>
                             </div>
 
-                            <div className={cn("pt-1 w-full", !isTeamA ? 'col-start-1 text-right' : 'col-start-3 text-left')}>
-                                {!isTeamA && <EventCard event={event} team={team} isTeamA={isTeamA} />}
+                            <div className={cn("pt-1 w-full", !isTeamA && !isStructural ? 'col-start-3 text-left' : 'col-start-3 hidden')}>
+                                 {!isTeamA && !isStructural && <EventCard event={event} team={team} isTeamA={isTeamA} />}
                             </div>
+
+                             {isStructural && (
+                                <div className="col-start-1 col-span-3 -mt-10 pt-1 w-full flex justify-center">
+                                    <StructuralEventCard event={event} />
+                                </div>
+                            )}
                         </motion.div>
                     );
                     })}
-                    {sortedEvents.length === 0 && (
+                    {sortedEvents.length <= 1 && ( // Only MATCH_START
                         <p className="text-muted-foreground text-center py-8">
                             No hay eventos registrados aún.
                         </p>
