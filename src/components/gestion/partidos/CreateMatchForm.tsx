@@ -32,6 +32,7 @@ import type { FullMatch, Team } from "@/types"
 import { createMatch } from "@/actions/prisma-actions"
 import { useToast } from "@/hooks/use-toast"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 const createMatchSchema = z.object({
   teamAId: z.string().min(1, "Debe seleccionar el equipo local"),
@@ -56,6 +57,7 @@ interface CreateMatchFormProps {
 
 export function CreateMatchForm({ teams, seasonId, onMatchCreated }: CreateMatchFormProps) {
     const { toast } = useToast()
+    const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const form = useForm<CreateMatchFormValues>({
@@ -88,7 +90,7 @@ export function CreateMatchForm({ teams, seasonId, onMatchCreated }: CreateMatch
             const combinedDateTime = new Date(values.scheduledDate);
             combinedDateTime.setHours(hours, minutes);
 
-            const newMatch = await createMatch({
+            await createMatch({
                 teamAId: parseInt(values.teamAId),
                 teamBId: parseInt(values.teamBId),
                 scheduledTime: combinedDateTime,
@@ -99,7 +101,11 @@ export function CreateMatchForm({ teams, seasonId, onMatchCreated }: CreateMatch
                 title: "Partido Creado",
                 description: "El nuevo partido ha sido programado exitosamente.",
             })
-            onMatchCreated(newMatch);
+            
+            // Re-fetch data from the server instead of updating local state
+            // This ensures the new match has all its relational data (teams) included
+            router.refresh();
+
             form.reset({ round: 1, teamAId: '', teamBId: '', scheduledDate: new Date(), scheduledTime: '19:00' })
         } catch (error) {
              toast({
