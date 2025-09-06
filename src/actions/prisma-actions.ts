@@ -11,7 +11,8 @@ import {
     saveMatchState as saveMatchStateInDb, 
     createGameEvent as createGameEventInDb 
 } from './match-actions';
-import type { FullMatch as ActionFullMatch, GameEventType } from './match-actions';
+import type { FullMatch as ActionFullMatch } from './match-actions';
+import type { GameEventType } from '@/types';
 
 
 function toClientFullMatch(match: ActionFullMatch): FullMatch {
