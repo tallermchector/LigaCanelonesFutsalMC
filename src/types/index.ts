@@ -5,7 +5,9 @@ import type { Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, 
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED' | 'SELECTING_STARTERS';
 
-export interface Player extends PrismaPlayer {}
+export interface Player extends PrismaPlayer {
+    avatarUrl?: string | null;
+}
 
 export interface PlayerMatchStats extends PrismaPlayerMatchStats {}
 

@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -32,6 +31,7 @@ const createPlayerSchema = z.object({
   number: z.coerce.number().min(0, "El número no puede ser negativo"),
   position: z.enum(["GOLERO", "DEFENSA", "ALA", "PIVOT"]),
   teamId: z.string().min(1, "Debe seleccionar un equipo"),
+  avatarUrl: z.string().optional(),
 });
 
 type CreatePlayerFormValues = z.infer<typeof createPlayerSchema>
@@ -51,7 +51,8 @@ export function CreatePlayerForm({ teams }: CreatePlayerFormProps) {
             name: '',
             number: 0,
             position: "ALA",
-            teamId: ''
+            teamId: '',
+            avatarUrl: ''
         },
     });
     
@@ -82,84 +83,93 @@ export function CreatePlayerForm({ teams }: CreatePlayerFormProps) {
     }
 
     return (
-        <Card>
-            <CardContent className="pt-6">
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nombre del Jugador</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Ej: Juan Pérez" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="teamId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Equipo</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger><SelectValue placeholder="Seleccione un equipo" /></SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {teams.map(team => (
-                                                <SelectItem key={team.id} value={String(team.id)}>{team.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="number"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Número de Camiseta</FormLabel>
-                                     <FormControl>
-                                        <Input type="number" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="position"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Posición</FormLabel>
-                                     <Select onValueChange={field.onChange} value={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger><SelectValue placeholder="Seleccione una posición" /></SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="GOLERO">Golero</SelectItem>
-                                            <SelectItem value="DEFENSA">Defensa</SelectItem>
-                                            <SelectItem value="ALA">Ala</SelectItem>
-                                            <SelectItem value="PIVOT">Pivot</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        
-                        <Button type="submit" disabled={isSubmitting} className="w-full">
-                            {isSubmitting ? 'Creando...' : 'Crear Jugador'}
-                        </Button>
-                    </form>
-                </Form>
-            </CardContent>
-        </Card>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Nombre del Jugador</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Ej: Juan Pérez" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="teamId"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Equipo</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                    <SelectTrigger><SelectValue placeholder="Seleccione un equipo" /></SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {teams.map(team => (
+                                        <SelectItem key={team.id} value={String(team.id)}>{team.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="number"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Número de Camiseta</FormLabel>
+                             <FormControl>
+                                <Input type="number" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="position"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Posición</FormLabel>
+                             <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                    <SelectTrigger><SelectValue placeholder="Seleccione una posición" /></SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="GOLERO">Golero</SelectItem>
+                                    <SelectItem value="DEFENSA">Defensa</SelectItem>
+                                    <SelectItem value="ALA">Ala</SelectItem>
+                                    <SelectItem value="PIVOT">Pivot</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="avatarUrl"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>URL del Avatar</FormLabel>
+                             <FormControl>
+                                <Input placeholder="/avatar/1.png" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                
+                <Button type="submit" disabled={isSubmitting} className="w-full">
+                    {isSubmitting ? 'Creando...' : 'Crear Jugador'}
+                </Button>
+            </form>
+        </Form>
     )
 }

@@ -7,6 +7,7 @@ import { PlayerDataTable } from '@/components/gestion/jugadores/PlayerDataTable'
 import { columns } from '@/components/gestion/jugadores/Columns';
 import { CreatePlayerForm } from '@/components/gestion/jugadores/CreatePlayerForm';
 import { getAllTeams } from '@/actions/team-actions';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function GestionJugadoresPage() {
     const players = await getAllPlayers();
@@ -21,14 +22,26 @@ export default async function GestionJugadoresPage() {
                     description="Administra todos los jugadores de la liga."
                 />
                 <div className="container mx-auto p-4 py-8 md:p-8">
-                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                         <div className="lg:col-span-2">
-                             <h2 className="text-2xl font-bold text-primary mb-4">Lista de Jugadores</h2>
-                             <PlayerDataTable columns={columns} data={players} />
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Lista de Jugadores</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <PlayerDataTable columns={columns} data={players} />
+                                </CardContent>
+                            </Card>
                         </div>
                         <div>
-                             <h2 className="text-2xl font-bold text-primary mb-4">Crear Nuevo Jugador</h2>
-                             <CreatePlayerForm teams={teams} />
+                             <Card>
+                                <CardHeader>
+                                    <CardTitle>Crear Nuevo Jugador</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <CreatePlayerForm teams={teams} />
+                                </CardContent>
+                            </Card>
                         </div>
                     </div>
                 </div>
