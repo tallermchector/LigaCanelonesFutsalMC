@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, notFound } from 'next/navigation';
-import { getMatchById, saveMatchState, createGameEvent } from '@/actions/match-actions';
+import { getMatchById } from '@/actions/match-actions';
 import type { FullMatch } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { GameProvider } from '@/contexts/GameProvider';
@@ -59,7 +59,7 @@ export default function TacticalBoardPage() {
             }
             getMatchById(numericId).then(data => {
                 if (data) {
-                    setMatch(data);
+                    setMatch(data as FullMatch);
                 }
                 setLoading(false);
             });
@@ -88,7 +88,7 @@ export default function TacticalBoardPage() {
                         <TacticalHeader match={match} />
                     </header>
                     
-                    <main className="flex-1 container mx-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                    <main className="flex-1 container mx-auto p-4 md:p-8 grid grid-cols-2 gap-4 md:gap-8">
                        <PlayerColumn teamId="A" />
                        <PlayerColumn teamId="B" />
                     </main>
