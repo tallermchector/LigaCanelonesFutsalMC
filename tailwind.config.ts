@@ -1,6 +1,6 @@
 import type {Config} from 'tailwindcss';
 
-const config: Config = {
+export default {
   darkMode: ['class'],
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -10,23 +10,17 @@ const config: Config = {
   theme: {
     container: {
       center: true,
-      padding: '2rem',
+      padding: "2rem",
       screens: {
-        '2xl': '1400px',
+        "2xl": "1400px",
       },
     },
     extend: {
-      height: {
-        'header': 'var(--header-height, 4rem)',
-        'main-content': 'calc(100vh - var(--header-height, 4rem))',
-      },
-      minHeight: {
-        'main-content': 'calc(100vh - var(--header-height, 4rem))',
-      },
       fontFamily: {
-        body: ['var(--font-roboto)', 'sans-serif'],
-        headline: ['var(--font-orbitron)', 'sans-serif'],
-        code: ['monospace'],
+        sans: ["var(--font-sans)"],
+        roboto: ["var(--font-roboto)"],
+        orbitron: ["var(--font-orbitron)"],
+        headline: ["var(--font-roboto)", "sans-serif"],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -62,32 +56,11 @@ const config: Config = {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
-        },
-        sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          primary: 'hsl(var(--sidebar-primary))',
-          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))',
-        },
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
-      },
-      boxShadow: {
-        elevated: '0 10px 20px -5px rgba(0, 0, 0, 0.15)',
-        glow: '0 0 15px 5px rgba(119, 21, 46, 0.3)',
       },
       keyframes: {
         'accordion-down': {
@@ -106,13 +79,39 @@ const config: Config = {
             height: '0',
           },
         },
+        'fade-in-down': {
+          '0%': { opacity: '0', transform: 'translateY(-10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'fade-in-down': 'fade-in-down 0.5s ease-out forwards',
+        'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
       },
+      animationDelay: {
+        '300': '300ms',
+        '600': '600ms',
+      }
     },
   },
-  plugins: [require('tailwindcss-animate'), require('@tailwindcss/aspect-ratio')],
-};
-export default config;
+  plugins: [
+    require('tailwindcss-animate'),
+    function({ addUtilities }: { addUtilities: any }) {
+      const newUtilities = {
+        '.animation-delay-300': {
+          'animation-delay': '300ms',
+        },
+        '.animation-delay-600': {
+          'animation-delay': '600ms',
+        },
+      }
+      addUtilities(newUtilities)
+    }
+  ],
+} satisfies Config;
