@@ -1,4 +1,5 @@
 
+
 'use server';
 /**
  * @fileOverview Flow para generar una temporada completa, incluyendo equipos y fixture.
@@ -76,9 +77,9 @@ const generateFixtureForSeasonFlow = ai.defineFlow(
     outputSchema: z.object({ matchCount: z.number() }),
   },
   async (input) => {
-    const matches = await generateFixture(input.seasonId, input.teams.map(t => t.id));
+    const { count } = await generateFixture(input.seasonId, input.teams.map(t => t.id));
     return {
-      matchCount: matches.length,
+      matchCount: count,
     };
   }
 );

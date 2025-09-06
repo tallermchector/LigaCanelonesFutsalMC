@@ -3,7 +3,8 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import type { Match, Team, Player, GameEvent, MatchStatus, FullMatch as ClientFullMatch, PlayerMatchStats, GameState } from '@/types';
+import type { Team, Player, GameEvent, MatchStatus, FullMatch as ClientFullMatch, PlayerMatchStats, GameState } from '@/types';
+import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export type FullMatch = ClientFullMatch & {
@@ -11,7 +12,7 @@ export type FullMatch = ClientFullMatch & {
   teamB: Team & { players: Player[] };
 };
 
-export type LiveMatch = Match & {
+export type LiveMatch = ClientFullMatch & {
   teamA: Team;
   teamB: Team;
   scoreA: number;
@@ -20,7 +21,7 @@ export type LiveMatch = Match & {
   period: number;
 }
 
-export type MatchWithTeams = Match & {
+export type MatchWithTeams = ClientFullMatch & {
   teamA: Team;
   teamB: Team;
 };
@@ -30,7 +31,7 @@ export type GameEventWithTeamAndPlayer = GameEvent & {
   player: Player | null;
 };
 
-export type MatchStats = Match & {
+export type MatchStats = ClientFullMatch & {
   teamA: Team;
   teamB: Team;
   gameEvents: GameEventWithTeamAndPlayer[];
@@ -65,7 +66,7 @@ export async function getMatchById(matchId: number): Promise<ClientFullMatch | n
         ...match,
         scheduledTime: match.scheduledTime.toISOString(),
         status: match.status as MatchStatus,
-    } as ClientFullMatch;
+    } as unknown as ClientFullMatch;
 }
 
 export async function getAllMatches(): Promise<ClientFullMatch[]> {
@@ -85,7 +86,7 @@ export async function getAllMatches(): Promise<ClientFullMatch[]> {
       ...match,
       scheduledTime: match.scheduledTime.toISOString(),
       status: match.status as MatchStatus,
-  })) as ClientFullMatch[];
+  })) as unknown as ClientFullMatch[];
 }
 
 export async function getLiveMatches(): Promise<LiveMatch[]> {
@@ -101,7 +102,8 @@ export async function getLiveMatches(): Promise<LiveMatch[]> {
     scoreB: match.scoreB ?? 0,
     time: match.time ?? 0,
     period: match.period ?? 1,
-  }));
+    // Cast to any to satisfy the complex FullMatch type which is not fully available here
+  } as any));
 }
 
 // --- Match Write Operations ---
@@ -111,7 +113,7 @@ export async function createMatch(data: {
     teamBId: number;
     scheduledTime: Date;
     round: number;
-}): Promise<Match> {
+}): Promise<Prisma.Match> {
     const newMatch = await prisma.match.create({
         data: {
             ...data,
@@ -129,7 +131,6 @@ export async function createMatch(data: {
             activePlayersB: [],
         }
     });
-    revalidatePath('/gestion/partidos');
     return newMatch;
 }
 
@@ -138,8 +139,6 @@ export async function updateMatchStatus(matchId: number, status: MatchStatus): P
     where: { id: matchId },
     data: { status },
   });
-  revalidatePath('/controles');
-  revalidatePath(`/controles/${matchId}`);
 }
 
 
@@ -166,7 +165,10 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
 
             return prisma.playerMatchStats.upsert({
                 where: { matchId_playerId: { matchId, playerId } },
-                update: { timePlayedInSeconds: Math.floor(stats.totalTime) },
+                update: { 
+                  timePlayedInSeconds: Math.floor(stats.totalTime),
+                  teamId: player.teamId // Ensure teamId is included in update
+                },
                 create: {
                     matchId,
                     playerId,
@@ -198,3 +200,43 @@ export async function createGameEvent(matchId: number, event: Omit<GameEvent, 'i
     }
 }
     
+export async function generateFixture(seasonId: number, teamIds: number[]): Promise<Prisma.BatchPayload> {
+    if (teamIds.length < 2) {
+        throw new Error("Se necesitan al menos dos equipos para generar un fixture.");
+    }
+
+    const matchesToCreate: Prisma.MatchCreateManyInput[] = [];
+    const scheduleDate = new Date();
+    scheduleDate.setHours(19, 0, 0, 0); // Start matches at 19:00
+
+    for (let i = 0; i < teamIds.length; i++) {
+        for (let j = i + 1; j < teamIds.length; j++) {
+            // Match 1: Team A vs Team B
+            matchesToCreate.push({
+                teamAId: teamIds[i],
+                teamBId: teamIds[j],
+                seasonId,
+                round: (i + j - 1),
+                scheduledTime: new Date(scheduleDate),
+                status: 'SCHEDULED',
+                scoreA: 0,
+                scoreB: 0,
+                period: 1,
+                time: 1200,
+                foulsA: 0,
+                foulsB: 0,
+                timeoutsA: 1,
+                timeoutsB: 1,
+            });
+
+            // Increment date for the next match
+            scheduleDate.setDate(scheduleDate.getDate() + 1);
+        }
+    }
+    
+    // Create all matches in a single transaction
+    return prisma.match.createMany({
+        data: matchesToCreate,
+        skipDuplicates: true,
+    });
+}
