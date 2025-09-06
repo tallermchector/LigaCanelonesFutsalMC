@@ -6,13 +6,8 @@ import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 import { PageHero } from '@/components/layout/PageHero';
 import { PlayerRanking } from '@/components/jugadores/PlayerRanking';
-import type { Team, Player } from '@/types';
+import type { PlayerWithStats } from '@/types';
 import { useEffect, useState } from 'react';
-
-interface PlayerWithStats extends Player {
-    goals: number;
-    team: Team;
-}
 
 export default function JugadoresPage() {
   const [players, setPlayers] = useState<PlayerWithStats[]>([]);
@@ -26,7 +21,9 @@ export default function JugadoresPage() {
             team.players.map(player => ({
                 ...player,
                 team: { ...team, players: [] }, // Evita la circularidad
-                goals: Math.floor(Math.random() * 15) // Simular goles
+                goals: Math.floor(Math.random() * 15), // Simular goles
+                assists: Math.floor(Math.random() * 10), // Simular asistencias
+                matchesPlayed: Math.floor(Math.random() * 5) + 1, // Simular partidos
             }))
         );
         allPlayers.sort((a, b) => b.goals - a.goals);

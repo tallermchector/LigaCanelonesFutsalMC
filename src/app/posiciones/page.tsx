@@ -7,7 +7,7 @@ import { Header } from '@/components/layout/header';
 import { StandingsTable } from '@/components/posiciones/StandingsTable';
 import { PlayerRanking } from '@/components/jugadores/PlayerRanking';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { Team, SeasonTeam, FullMatch, Player } from '@/types';
+import type { Team, SeasonTeam, FullMatch, Player, PlayerWithStats } from '@/types';
 import { useEffect, useState } from 'react';
 import { getAllTeams } from '@/actions/team-actions';
 import { ScheduleCalendar } from '@/components/posiciones/ScheduleCalendar';
@@ -15,11 +15,6 @@ import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 import { Trophy } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-
-interface PlayerWithStats extends Player {
-    goals: number;
-    team: Team;
-}
 
 const TabSkeleton = () => <Skeleton className="w-full h-96 bg-muted rounded-lg" />;
 
@@ -40,7 +35,9 @@ export default function PosicionesPage() {
             team.players.map(player => ({
                 ...player,
                 team: { ...team }, 
-                goals: Math.floor(Math.random() * 15) 
+                goals: Math.floor(Math.random() * 15),
+                assists: Math.floor(Math.random() * 10),
+                matchesPlayed: Math.floor(Math.random() * 5) + 1,
             }))
         );
         allPlayers.sort((a, b) => b.goals - a.goals);

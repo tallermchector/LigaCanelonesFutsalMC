@@ -1,7 +1,8 @@
 
 'use client';
 
-import type { Player, Team } from '@/types';
+import { useState } from 'react';
+import type { Player, Team, PlayerWithStats } from '@/types';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -16,16 +17,21 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { playerAvatars } from '@/data/datosgenerales';
 
-interface PlayerWithStats extends Player {
-    goals: number;
-    team: Team;
-}
+type StatKey = 'goals' | 'assists' | 'matchesPlayed';
+type StatLabel = 'Goles' | 'Asistencias' | 'Partidos';
+
+
+const STATS_CONFIG: { key: StatKey; label: StatLabel }[] = [
+  { key: 'goals', label: 'Goles' },
+  { key: 'assists', label: 'Asistencias' },
+  { key: 'matchesPlayed', label: 'Partidos' },
+];
 
 interface RankingProps {
   players: PlayerWithStats[];
 }
 
-const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
+const FeaturedPlayer = ({ player, statKey, statLabel }: { player: PlayerWithStats, statKey: StatKey, statLabel: StatLabel }) => {
     const teamSlug = player.team.slug || player.team.name.toLowerCase().replace(/\s+/g, '-');
     const avatarUrl = playerAvatars[player.id] || `/avatar/1.png`;
     
@@ -57,8 +63,8 @@ const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
             </div>
 
             <div className="md:ml-auto text-center md:text-right">
-                <div className="text-7xl sm:text-8xl font-black text-accent drop-shadow-lg">{player.goals}</div>
-                <div className="text-lg font-bold uppercase text-white/80 tracking-widest">Goles</div>
+                <div className="text-7xl sm:text-8xl font-black text-accent drop-shadow-lg">{player[statKey]}</div>
+                <div className="text-lg font-bold uppercase text-white/80 tracking-widest">{statLabel}</div>
             </div>
         </div>
     </div>
@@ -66,22 +72,32 @@ const FeaturedPlayer = ({ player }: { player: PlayerWithStats }) => {
 };
 
 export function PlayerRanking({ players }: RankingProps) {
+  const [activeStat, setActiveStat] = useState<StatKey>('goals');
+
   if (players.length === 0) {
     return <Card><CardContent className="p-8 text-center text-muted-foreground">No hay datos de ranking disponibles.</CardContent></Card>;
   }
 
-  const featuredPlayer = players[0];
-  const rankedList = players.slice(1);
+  const sortedPlayers = [...players].sort((a, b) => b[activeStat] - a[activeStat]);
+  const featuredPlayer = sortedPlayers[0];
+  const rankedList = sortedPlayers.slice(1);
+  const activeLabel = STATS_CONFIG.find(s => s.key === activeStat)?.label || 'Goles';
 
   return (
     <div>
         <div className="mb-6 flex justify-center gap-2">
-            <Button>Goles</Button>
-            <Button variant="outline">Asistencias</Button>
-            <Button variant="outline">Partidos Jugados</Button>
+            {STATS_CONFIG.map(stat => (
+                 <Button 
+                    key={stat.key}
+                    variant={activeStat === stat.key ? 'default' : 'outline'}
+                    onClick={() => setActiveStat(stat.key)}
+                 >
+                    {stat.label}
+                </Button>
+            ))}
         </div>
 
-        <FeaturedPlayer player={featuredPlayer} />
+        <FeaturedPlayer player={featuredPlayer} statKey={activeStat} statLabel={activeLabel} />
 
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
@@ -90,7 +106,7 @@ export function PlayerRanking({ players }: RankingProps) {
                 <TableRow>
                 <TableHead className="w-16 text-center">POS.</TableHead>
                 <TableHead>JUGADOR</TableHead>
-                <TableHead className="w-24 text-right">GOLES</TableHead>
+                <TableHead className="w-24 text-right uppercase">{activeLabel}</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -122,7 +138,7 @@ export function PlayerRanking({ players }: RankingProps) {
                                 </div>
                             </div>
                             </TableCell>
-                            <TableCell className="text-right text-2xl font-black text-primary">{player.goals}</TableCell>
+                            <TableCell className="text-right text-2xl font-black text-primary">{player[activeStat]}</TableCell>
                         </TableRow>
                     )
                 })}

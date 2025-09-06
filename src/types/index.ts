@@ -39,6 +39,13 @@ export type PlayerStat = {
   count: number;
 };
 
+export interface PlayerWithStats extends Player {
+    goals: number;
+    assists: number;
+    matchesPlayed: number;
+    team: Team;
+}
+
 export interface MatchStats extends FullMatch {
   stats: {
     topScorers: PlayerStat[];
