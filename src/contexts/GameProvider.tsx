@@ -425,25 +425,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
 
 
   React.useEffect(() => {
-    // Debounce state saving to avoid spamming the database
-    const handler = setTimeout(() => {
-        if (state.matchId && (state.status === 'LIVE' || state.status === 'FINISHED' || state.status === 'SELECTING_STARTERS')) {
-            // Save to DB
-            handleSaveChanges(state);
-
-            // Write to localStorage to trigger live updates on other tabs
-            try {
-                localStorage.setItem(`futsal-match-state-${state.matchId}`, JSON.stringify(state));
-            } catch (error) {
-                console.error("Failed to write state to localStorage", error);
-            }
+    if (state.matchId && (state.status === 'LIVE' || state.status === 'FINISHED' || state.status === 'SELECTING_STARTERS')) {
+        try {
+            localStorage.setItem(`futsal-match-state-${state.matchId}`, JSON.stringify(state));
+        } catch (error) {
+            console.error("Failed to write state to localStorage", error);
         }
-    }, 500); // Save state 0.5 second after the last change
-
-    return () => {
-        clearTimeout(handler);
-    };
-  }, [state, handleSaveChanges]);
+    }
+  }, [state]);
 
 
   React.useEffect(() => {
