@@ -34,12 +34,12 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
 
     return (
         <div ref={ref} className="w-full">
-            <div className="flex justify-between items-center text-white font-bold text-sm md:text-base px-1 sm:px-2 mb-1.5">
+            <div className="flex justify-between items-center text-foreground font-bold text-sm md:text-base px-1 sm:px-2 mb-1.5">
                 <span className="tabular-nums">{valueA}</span>
-                <span className="uppercase tracking-wider text-white/80 text-xs sm:text-sm text-center">{label}</span>
+                <span className="uppercase tracking-wider text-muted-foreground text-xs sm:text-sm text-center">{label}</span>
                 <span className="tabular-nums">{valueB}</span>
             </div>
-            <div className="h-3 md:h-4 w-full bg-white/10 rounded-full overflow-hidden flex justify-between">
+            <div className="h-3 md:h-4 w-full bg-muted/80 rounded-full overflow-hidden flex justify-between">
                 <motion.div
                     className="h-full bg-primary rounded-l-full"
                     style={{ background: `linear-gradient(90deg, hsl(var(--primary) / 0.7), hsl(var(--primary)))` }}
@@ -49,7 +49,7 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
                 />
                 <motion.div
                     className="h-full bg-accent rounded-r-full"
-                    style={{ background: `linear-gradient(90deg, hsl(var(--accent)), hsl(var(--accent) / 0.7))` }}
+                    style={{ background: `linear-gradient(270deg, hsl(var(--accent) / 0.7), hsl(var(--accent)))` }}
                     variants={variantsB}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
@@ -63,7 +63,7 @@ const PlayerStatItem = ({ player, count }: { player: PlayerStat['player'], count
     if (!player.team) return null;
     const teamSlug = player.team.name.toLowerCase().replace(/\s+/g, '-');
     return (
-        <Card className="bg-black/20 border border-white/10 hover:bg-white/10 transition-colors">
+        <Card className="bg-card/80 border-border hover:bg-muted/50 transition-colors">
             <CardContent className="p-2 flex items-center justify-between">
                 <div className="flex items-center gap-2 overflow-hidden">
                      <Link href={`/clubes/${teamSlug}`} className="shrink-0">
@@ -72,7 +72,7 @@ const PlayerStatItem = ({ player, count }: { player: PlayerStat['player'], count
                             alt={player.name}
                             width={24}
                             height={24}
-                            className="w-6 h-6 rounded-full object-cover bg-white/20 p-0.5"
+                            className="w-6 h-6 rounded-full object-cover bg-muted p-0.5"
                         />
                      </Link>
                      <Link href={`/jugadores/${player.id}`} className="font-semibold text-sm hover:text-primary truncate">
@@ -92,24 +92,28 @@ const StatLeaders = ({ title, icon, leaders, teamA, teamB }: { title: string, ic
     const teamBLeaders = leaders.filter(l => l.player.teamId === teamB.id).slice(0, 3);
 
     return (
-        <div>
-            <h3 className="flex items-center justify-center gap-2 font-bold text-lg mb-4 text-center">
-                {icon}
-                <span>{title}</span>
-            </h3>
-            <div className="grid grid-cols-2 gap-4">
-                 <div className="space-y-2">
-                     {teamALeaders.map(({ player, count }) => (
-                         <PlayerStatItem key={player.id} player={player} count={count} />
-                     ))}
-                 </div>
-                 <div className="space-y-2">
-                      {teamBLeaders.map(({ player, count }) => (
-                         <PlayerStatItem key={player.id} player={player} count={count} />
-                     ))}
-                 </div>
-            </div>
-        </div>
+        <Card className="bg-card/80 backdrop-blur-sm border-border text-foreground">
+            <CardHeader>
+                <CardTitle className="flex items-center justify-center gap-2 font-bold text-lg text-center">
+                    {icon}
+                    <span>{title}</span>
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+                     <div className="space-y-2">
+                         {teamALeaders.map(({ player, count }) => (
+                             <PlayerStatItem key={player.id} player={player} count={count} />
+                         ))}
+                     </div>
+                     <div className="space-y-2">
+                          {teamBLeaders.map(({ player, count }) => (
+                             <PlayerStatItem key={player.id} player={player} count={count} />
+                         ))}
+                     </div>
+                </div>
+            </CardContent>
+        </Card>
     );
 };
 
@@ -133,8 +137,8 @@ export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
     ];
     
     return (
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="bg-black/30 backdrop-blur-sm border-white/10 text-white">
+        <div className="mt-8 space-y-8">
+            <Card className="bg-card/80 backdrop-blur-sm border-border text-foreground">
                 <CardHeader>
                     <CardTitle>Estadísticas del Partido</CardTitle>
                 </CardHeader>
@@ -144,7 +148,7 @@ export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
                     ))}
                 </CardContent>
             </Card>
-            <div className="space-y-6 text-white">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <StatLeaders title="Goleadores" icon={<FutsalBallIcon />} leaders={stats.topScorers} teamA={teamA} teamB={teamB} />
                 <StatLeaders title="Asistencias" icon={<Hand />} leaders={stats.assistsLeaders} teamA={teamA} teamB={teamB} />
             </div>

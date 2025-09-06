@@ -59,10 +59,9 @@ export default async function ResumenPage(props: ResumenPageProps) {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main 
-        className="flex-1 pt-[var(--header-height)] bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/stadium-bg.jpg')" }}
+        className="flex-1 pt-[var(--header-height)] bg-gradient-to-br from-background via-card to-background"
       >
-        <div className="bg-black/70 min-h-full">
+        <div className="bg-black/10 min-h-full">
             <div className="container mx-auto px-2 sm:px-4 py-8 md:py-12">
                 <div className="max-w-4xl mx-auto">
                     <MatchSummaryHeader match={match as MatchStats} />
