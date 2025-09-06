@@ -1,17 +1,5 @@
 [
   {
-    "id": 1,
-    "name": "LOS QUITU",
-    "slug": "los-quitu",
-    "logoUrl": "/equipos/1.png"
-  },
-  {
-    "id": 10,
-    "name": "LA PAPA MADRE",
-    "slug": "la-papa-madre",
-    "logoUrl": "/equipos/10.png"
-  },
-  {
     "id": 11,
     "name": "WANDERERS",
     "slug": "wanderers",
@@ -28,12 +16,6 @@
     "name": "STELLA",
     "slug": "stella",
     "logoUrl": "/equipos/13.png"
-  },
-  {
-    "id": 14,
-    "name": "REAL CANELONES",
-    "slug": "real-canelones",
-    "logoUrl": "/equipos/14.png"
   },
   {
     "id": 15,
@@ -60,33 +42,51 @@
     "logoUrl": "/equipos/4.png"
   },
   {
-    "id": 5,
-    "name": "LA PIECITA",
-    "slug": "la-piecita",
-    "logoUrl": "/equipos/5.png"
-  },
-  {
-    "id": 6,
-    "name": "EL HACHA",
-    "slug": "el-hacha",
-    "logoUrl": "/equipos/6.png"
-  },
-  {
     "id": 7,
     "name": "MILANO",
     "slug": "milano",
     "logoUrl": "/equipos/7.png"
   },
   {
-    "id": 8,
-    "name": "T. DE CAMPEONES",
-    "slug": "t.-de-campeones",
-    "logoUrl": "/equipos/8.png"
-  },
-  {
     "id": 9,
     "name": "CAPINCHO",
     "slug": "capincho",
     "logoUrl": "/equipos/9.png"
+  },
+  {
+    "id": 1,
+    "name": "LOS QUITU",
+    "slug": "losquitu",
+    "logoUrl": "/equipos/1.png"
+  },
+  {
+    "id": 5,
+    "name": "LA PIECITA",
+    "slug": "lapiecita",
+    "logoUrl": "/equipos/5.png"
+  },
+  {
+    "id": 6,
+    "name": "EL HACHA",
+    "slug": "elhacha",
+    "logoUrl": "/equipos/6.png"
+  },
+  {
+    "id": 10,
+    "name": "LA PAPA MADRE",
+    "slug": "lpm",
+    "logoUrl": "/equipos/10.png"
+  },
+  {
+    "id": 14,
+    "name": "REAL CANELONES",
+    "slug": "realcanelones",
+    "logoUrl": "/equipos/14.png"
+  },
+  {
+    "id": 8,
+    "name": "TIERRA DE CAMPEONES",
+    "slug": "tierra",
+    "logoUrl": "/equipos/8.png"
   }
 ]

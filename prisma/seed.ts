@@ -1,56 +1,72 @@
-import { PrismaClient } from '@prisma/client';
-import { futsalTeams } from '../src/data/teams';
-import { players } from '../src/data/players';
+
+import { PrismaClient, Prisma } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
+// Definimos tipos para los datos que leeremos de los JSON.
+// Esto nos da autocompletado y seguridad de tipos.
+type TeamData = Prisma.TeamCreateInput;
+type PlayerData = Prisma.PlayerCreateManyInput;
+
 async function main() {
-  console.log(`Start seeding ...`);
+  console.log(`🔵 Iniciando el proceso de seeding...`);
 
-  // Clear existing data
+  // 1. Limpieza de la base de datos en el orden correcto
+  // ----------------------------------------------------
+  // Se eliminan primero los modelos con claves foráneas.
+  console.log(`🧹 Limpiando la base de datos...`);
+  await prisma.playerMatchStats.deleteMany();
+  await prisma.gameEvent.deleteMany();
+  await prisma.match.deleteMany();
   await prisma.player.deleteMany();
+  await prisma.seasonTeam.deleteMany();
   await prisma.team.deleteMany();
-  console.log('Cleared previous data.');
+  await prisma.season.deleteMany();
+  console.log('-> ✅ Base de datos limpia.');
 
-  // Seed Teams
-  for (const team of futsalTeams) {
-    await prisma.team.create({
-      data: {
-        id: team.id,
-        name: team.name,
-        logoUrl: team.logoUrl,
-        slug: team.slug,
-      },
-    });
-    console.log(`Created team: ${team.name}`);
-  }
+  // 2. Leer y parsear los archivos JSON
+  // ----------------------------------------------------
+  console.log('📂 Leyendo archivos JSON...');
+  const teamsPath = path.join(__dirname, 'json-exports', 'teams.json');
+  const playersPath = path.join(__dirname, 'json-exports', 'players.json');
 
-  // Seed Players
-  for (const player of players) {
-    await prisma.player.create({
-      data: {
-        id: player.id,
-        name: player.name,
-        number: player.number,
-        position: player.position,
-        birthDate: player.birthDate,
-        height: player.height,
-        weight: player.weight,
-        nationality: player.nationality,
-        teamId: player.teamId,
-      },
-    });
-  }
-  console.log(`Created ${players.length} players.`);
+  const teamsFile = fs.readFileSync(teamsPath, 'utf-8');
+  const playersFile = fs.readFileSync(playersPath, 'utf-8');
 
-  console.log(`Seeding finished.`);
+  const teamsData: TeamData[] = JSON.parse(teamsFile);
+  const playersData: PlayerData[] = JSON.parse(playersFile);
+  console.log(`-> ✅ Encontrados ${teamsData.length} equipos y ${playersData.length} jugadores.`);
+
+  // 3. Inserción de los datos usando createMany para eficiencia
+  // ----------------------------------------------------
+  console.log(`🌱 Sembrando los datos...`);
+  
+  // Insertar Equipos
+  // Usamos `skipDuplicates: true` por si acaso, aunque la limpieza debería prevenirlo.
+  await prisma.team.createMany({
+    data: teamsData,
+    skipDuplicates: true,
+  });
+  console.log(`-> ✅ ${teamsData.length} equipos creados.`);
+
+  // Insertar Jugadores
+  await prisma.player.createMany({
+    data: playersData,
+    skipDuplicates: true,
+  });
+  console.log(`-> ✅ ${playersData.length} jugadores creados.`);
+
+  console.log(`🟢 Seeding finalizado exitosamente.`);
 }
 
 main()
-  .catch(e => {
-    console.error(e);
+  .catch((e) => {
+    console.error('🔴 Error durante el proceso de seeding:', e);
     process.exit(1);
   })
   .finally(async () => {
+    // Asegurarse de cerrar la conexión a la base de datos
     await prisma.$disconnect();
   });
