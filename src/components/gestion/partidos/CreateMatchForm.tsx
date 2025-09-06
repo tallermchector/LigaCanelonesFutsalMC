@@ -32,7 +32,6 @@ import { createMatch } from "@/actions/prisma-actions"
 import { useToast } from "@/hooks/use-toast"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { revalidatePath } from "next/cache"
 
 const createMatchSchema = z.object({
   teamAId: z.string().min(1, "Debe seleccionar el equipo local"),
