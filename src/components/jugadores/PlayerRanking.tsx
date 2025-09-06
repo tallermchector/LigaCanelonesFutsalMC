@@ -80,7 +80,7 @@ export function PlayerRanking({ players }: RankingProps) {
 
   const sortedPlayers = [...players].sort((a, b) => b[activeStat] - a[activeStat]);
   const featuredPlayer = sortedPlayers[0];
-  const rankedList = sortedPlayers.slice(1);
+  const rankedList = sortedPlayers.slice(1, 10);
   const activeLabel = STATS_CONFIG.find(s => s.key === activeStat)?.label || 'Goles';
 
   return (
@@ -97,7 +97,7 @@ export function PlayerRanking({ players }: RankingProps) {
             ))}
         </div>
 
-        <FeaturedPlayer player={featuredPlayer} statKey={activeStat} statLabel={activeLabel} />
+        {featuredPlayer && <FeaturedPlayer player={featuredPlayer} statKey={activeStat} statLabel={activeLabel} />}
 
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
