@@ -14,7 +14,6 @@ import { ScheduleCalendar } from '@/components/posiciones/ScheduleCalendar';
 import { getAllMatches } from '@/actions/prisma-actions';
 import { Trophy } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { LeagueStats } from '@/components/posiciones/LeagueStats';
 
 
 const TabSkeleton = () => <Skeleton className="w-full h-96 bg-muted rounded-lg" />;
@@ -57,8 +56,6 @@ export default function PosicionesPage() {
                      <p className="text-muted-foreground mt-2">Analiza el rendimiento de los equipos y jugadores de la liga.</p>
                  </div>
           
-                {matches && <LeagueStats matches={matches} />}
-
                 <Tabs defaultValue="clasificacion" value={activeTab} onValueChange={setActiveTab} className="w-full mt-8">
                     <TabsList className="grid w-full grid-cols-3 mx-auto max-w-lg bg-muted/50">
                     <TabsTrigger value="calendario">Calendario</TabsTrigger>
