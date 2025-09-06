@@ -8,13 +8,10 @@ import { MatchDataTable } from '@/components/gestion/partidos/DataTable';
 import { columns } from '@/components/gestion/partidos/Columns';
 import { CreateMatchForm } from '@/components/gestion/partidos/CreateMatchForm';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { revalidatePath } from 'next/cache';
 
 export default async function GestionPartidosPage() {
     const matches = await getAllMatchesFromDb();
     const teams = await getAllTeams();
-    revalidatePath('/gestion/partidos');
-
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
