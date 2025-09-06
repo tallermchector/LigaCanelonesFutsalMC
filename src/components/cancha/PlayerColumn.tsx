@@ -62,7 +62,9 @@ export function PlayerColumn({ teamId }: PlayerColumnProps) {
             });
     }, [team, activePlayers]);
     
-    if (!team) return null;
+    if (!team) {
+        return null;
+    }
 
     const goalkeeper = sortedActivePlayers.find(p => p.position === 'GOLERO');
     const fieldPlayers = sortedActivePlayers.filter(p => p.position !== 'GOLERO');
@@ -79,7 +81,7 @@ export function PlayerColumn({ teamId }: PlayerColumnProps) {
                 </div>
 
                 {/* Field Players Rows */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {fieldPlayers.map(player => (
                         <PlayerButton key={player.id} player={player} teamId={teamId} />
                     ))}
