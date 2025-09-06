@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from "react";
@@ -50,9 +51,8 @@ export function PlayerColumn({ teamId }: PlayerColumnProps) {
     const team = teamId === 'A' ? state.teamA : state.teamB;
     const activePlayers = teamId === 'A' ? state.activePlayersA : state.activePlayersB;
 
-    if (!team) return null;
-    
     const sortedActivePlayers = React.useMemo(() => {
+        if (!team) return [];
         return team.players
             .filter(p => activePlayers.includes(p.id))
             .sort((a, b) => {
@@ -60,8 +60,9 @@ export function PlayerColumn({ teamId }: PlayerColumnProps) {
                 if (a.position !== 'GOLERO' && b.position === 'GOLERO') return 1;
                 return 0; // Mantener el orden original para los demás
             });
-    }, [team.players, activePlayers]);
+    }, [team, activePlayers]);
 
+    if (!team) return null;
 
     return (
         <Card className={cn(
