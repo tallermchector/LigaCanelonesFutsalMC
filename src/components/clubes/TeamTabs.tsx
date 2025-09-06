@@ -13,7 +13,7 @@ interface TeamTabsProps {
 export function TeamTabs({ team }: TeamTabsProps) {
     return (
         <Card className="shadow-lg border-none">
-            <Tabs defaultValue="schedule" className="w-full">
+            <Tabs defaultValue="players" className="w-full">
                 <TabsList className="grid w-full grid-cols-3 bg-muted/60">
                     <TabsTrigger value="stats">Estadísticas</TabsTrigger>
                     <TabsTrigger value="players">Jugadores</TabsTrigger>
