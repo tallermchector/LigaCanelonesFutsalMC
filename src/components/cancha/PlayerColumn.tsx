@@ -1,10 +1,9 @@
-
 'use client';
 
 import * as React from "react";
 import { useGame } from '@/contexts/GameProvider';
 import type { Player, SelectedPlayer } from '@/types';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from "@/components/ui/button";
 import { ActionMenu } from "./ActionMenu";
@@ -69,14 +68,6 @@ export function PlayerColumn({ teamId }: PlayerColumnProps) {
             "h-full flex flex-col border-2",
             teamId === 'A' ? 'border-blue-500/50 bg-blue-900/20' : 'border-red-500/50 bg-red-900/20'
         )}>
-            <CardHeader>
-                <CardTitle className={cn(
-                    "text-center text-xl",
-                    teamId === 'A' ? 'text-blue-400' : 'text-red-400'
-                )}>
-                    {team.name}
-                </CardTitle>
-            </CardHeader>
             <CardContent className="flex-grow p-2 md:p-4">
                 <div className="space-y-3">
                     {sortedActivePlayers.map(player => (
