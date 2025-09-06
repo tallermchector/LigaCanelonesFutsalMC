@@ -27,6 +27,7 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
     dispatch({ type: 'SET_STATUS', payload: 'FINISHED' });
     await handleSaveChanges();
     router.push('/cancha');
+    router.refresh();
   }
 
   const isMatchLive = state.status === 'LIVE';
@@ -127,7 +128,11 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
                     <Users className="mr-2 h-5 w-5"/> {state.teamB?.name.substring(0,3)}
                 </Button>
             </div>
-            <div className="hidden md:flex items-center justify-end gap-2 w-32">
+             <div className="hidden md:flex items-center justify-end gap-2 w-64">
+                <Button variant="secondary" onClick={handleSaveChanges} size="lg" className="w-full" disabled={!isMatchLive}>
+                    <Save className="mr-2 h-5 w-5" />
+                    Guardar
+                </Button>
                  <Button variant="destructive" onClick={handleFinishMatch} size="lg" className="w-full" disabled={!isMatchLive}>
                     <CheckCircle className="mr-2 h-5 w-5" />
                     Finalizar
@@ -137,4 +142,3 @@ export function TacticalActions({ onTogglePanel, visiblePanel }: TacticalActions
     </footer>
   );
 }
-
