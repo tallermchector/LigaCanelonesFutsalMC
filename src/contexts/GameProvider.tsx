@@ -120,6 +120,9 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'SET_PERIOD':
       return { ...state, period: action.payload, time: initialState.time, isRunning: false };
     case 'SET_STATUS':
+        if (action.payload === 'FINISHED') {
+            return { ...state, status: 'FINISHED', isRunning: false, time: 0 };
+        }
         return { ...state, status: action.payload, isRunning: action.payload !== 'FINISHED' && state.isRunning };
     case 'TOGGLE_TIMER':
       const nextIsRunning = !state.isRunning;
