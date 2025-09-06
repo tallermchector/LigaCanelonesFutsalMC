@@ -61,18 +61,27 @@ export function PlayerColumn({ teamId }: PlayerColumnProps) {
                 return 0; // Mantener el orden original para los demás
             });
     }, [team, activePlayers]);
-
+    
     if (!team) return null;
+
+    const goalkeeper = sortedActivePlayers.find(p => p.position === 'GOLERO');
+    const fieldPlayers = sortedActivePlayers.filter(p => p.position !== 'GOLERO');
 
     return (
         <Card className={cn(
             "h-full flex flex-col border-2",
             teamId === 'A' ? 'border-blue-500/50 bg-blue-900/20' : 'border-red-500/50 bg-red-900/20'
         )}>
-            <CardContent className="flex-grow p-2 md:p-4">
-                <div className="space-y-3">
-                    {sortedActivePlayers.map(player => (
-                       <PlayerButton key={player.id} player={player} teamId={teamId}/>
+            <CardContent className="flex-grow p-2 md:p-4 flex flex-col justify-center gap-4">
+                {/* Goalkeeper Row */}
+                <div className="flex justify-center">
+                    {goalkeeper && <PlayerButton player={goalkeeper} teamId={teamId} />}
+                </div>
+
+                {/* Field Players Rows */}
+                <div className="grid grid-cols-2 gap-3">
+                    {fieldPlayers.map(player => (
+                        <PlayerButton key={player.id} player={player} teamId={teamId} />
                     ))}
                 </div>
             </CardContent>
