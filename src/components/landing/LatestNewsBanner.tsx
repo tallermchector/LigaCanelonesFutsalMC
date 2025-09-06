@@ -15,18 +15,49 @@ import {
 import type { Post } from '@/types';
 import { getPosts } from '@/actions/blog-actions';
 import { Skeleton } from '../ui/skeleton';
+import { ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 
 function LatestNewsSkeleton() {
     return (
-         <div className="w-full max-w-xs sm:max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto">
-            <div className="flex space-x-4">
-                 <Skeleton className="h-96 w-full md:w-1/2 lg:w-1/3 rounded-lg" />
-                 <Skeleton className="h-96 w-full hidden md:block md:w-1/2 lg:w-1/3 rounded-lg" />
-                 <Skeleton className="h-96 w-full hidden lg:block lg:w-1/3 rounded-lg" />
+         <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className='space-y-4'>
+                <Skeleton className="h-96 w-full rounded-lg" />
+                 <Skeleton className="h-6 w-3/4 rounded-lg" />
+                 <Skeleton className="h-5 w-1/2 rounded-lg" />
+            </div>
+            <div className="space-y-4">
+                {Array.from({length: 4}).map((_, i) => (
+                    <div key={i} className="flex gap-4">
+                        <Skeleton className="h-24 w-24 rounded-lg shrink-0" />
+                        <div className="space-y-2 w-full">
+                            <Skeleton className="h-5 w-32" />
+                            <Skeleton className="h-6 w-full" />
+                             <Skeleton className="h-6 w-3/4" />
+                        </div>
+                    </div>
+                ))}
             </div>
          </div>
     )
 }
+
+const SmallPostCard = ({ post }: { post: Post }) => (
+    <Link href={`/blog/${post.slug}`} className="group flex gap-4 items-center">
+        <div className="relative w-24 h-24 rounded-lg overflow-hidden shrink-0">
+            <Image 
+                src={post.imageUrl} 
+                alt={post.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+        </div>
+        <div className="flex-grow">
+            <p className="text-primary text-sm font-semibold">{post.category}</p>
+            <h4 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">{post.title}</h4>
+        </div>
+    </Link>
+)
 
 
 export function LatestNewsBanner() {
@@ -39,41 +70,35 @@ export function LatestNewsBanner() {
             setLoading(false);
         });
     }, []);
+
+    const featuredPost = posts[0];
+    const otherPosts = posts.slice(1, 5);
     
 
     return (
-        <section id="news" className="py-20 text-center bg-secondary">
+        <section id="news" className="py-20 text-center bg-background">
             <div className="container px-4 md:px-6">
-                <h2 className="text-3xl font-bold text-primary mb-2">Últimas Noticias</h2>
-                <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">Enterate de las últimas novedades de la liga.</p>
+                <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-3xl font-bold text-primary text-left">Últimas Noticias</h2>
+                     <Button asChild variant="link" className="text-primary">
+                        <Link href="/blog">
+                           Ver todo <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                    </Button>
+                </div>
                 
                 {loading ? <LatestNewsSkeleton /> : posts.length > 0 ? (
                 <>
-                    <Carousel 
-                    className="w-full max-w-xs sm:max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto"
-                    opts={{
-                        align: "start",
-                        loop: true,
-                    }}
-                    >
-                    <CarouselContent>
-                        {posts.slice(0, 4).map(post => (
-                            <CarouselItem key={post.id} className="md:basis-1/2 lg:basis-1/3">
-                                <div className="p-1 h-full">
-                                    <PostCard post={post} />
-                                </div>
-                            </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                    </Carousel>
-                    
-                    <div className="mt-12">
-                        <Button asChild>
-                            <Link href="/blog">Ver todas las noticias</Link>
-                        </Button>
-                    </div>
+                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                        {featuredPost && (
+                            <PostCard post={featuredPost} isFeatured={true} />
+                        )}
+                        <div className="flex flex-col gap-6">
+                            {otherPosts.map(post => (
+                                <SmallPostCard key={post.id} post={post} />
+                            ))}
+                        </div>
+                   </div>
                 </>
                 ) : null}
             </div>
