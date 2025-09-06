@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Header } from '@/components/layout/header';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ControlMatchCard } from '@/components/controles/ControlMatchCard';
@@ -9,11 +9,58 @@ import { MatchListSkeleton } from '@/components/controles/MatchListSkeleton';
 import { useToast } from '@/hooks/use-toast';
 import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 import type { FullMatch, MatchStatus } from '@/types';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import { Button } from '@/components/ui/button';
+
+const RoundFilter = ({ rounds, selectedRound, onSelectRound }: { rounds: number[], selectedRound: number | 'all', onSelectRound: (round: number | 'all') => void }) => {
+    if (rounds.length <= 1) return null;
+
+    return (
+        <Carousel
+            opts={{ align: "start", containScroll: "trimSnaps" }}
+            className="w-full max-w-lg mx-auto my-6"
+        >
+            <CarouselContent className="-ml-2">
+                 <CarouselItem className="pl-2 basis-auto">
+                    <Button
+                        variant={selectedRound === 'all' ? 'default' : 'outline'}
+                        onClick={() => onSelectRound('all')}
+                        size="sm"
+                    >
+                        Todas las Jornadas
+                    </Button>
+                </CarouselItem>
+                {rounds.map(round => (
+                    <CarouselItem key={round} className="pl-2 basis-auto">
+                    <Button
+                        variant={selectedRound === round ? 'default' : 'outline'}
+                        onClick={() => onSelectRound(round)}
+                        className="w-full"
+                        size="sm"
+                    >
+                        Jornada {round}
+                    </Button>
+                    </CarouselItem>
+                ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden sm:flex" />
+            <CarouselNext className="hidden sm:flex" />
+      </Carousel>
+    )
+}
+
 
 export default function ControlesPage() {
   const [matches, setMatches] = useState<FullMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<MatchStatus | 'ALL'>('SCHEDULED');
+  const [selectedRound, setSelectedRound] = useState<number | 'all'>('all');
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -39,8 +86,28 @@ export default function ControlesPage() {
 
     loadMatches();
   }, [toast]);
+  
+  const handleTabChange = (value: string) => {
+    setActiveTab(value as MatchStatus);
+    setSelectedRound('all');
+  }
 
-  const filteredMatches = matches.filter((m) => activeTab === 'ALL' || m.status === activeTab);
+  const matchesForTab = useMemo(() => {
+      return matches.filter((m) => activeTab === 'ALL' || m.status === activeTab)
+  }, [matches, activeTab]);
+
+  const availableRounds = useMemo(() => {
+    const rounds = new Set(matchesForTab.map(m => m.round).filter((r): r is number => r !== null));
+    return Array.from(rounds).sort((a,b) => a - b);
+  }, [matchesForTab]);
+
+  const filteredMatches = useMemo(() => {
+      if (selectedRound === 'all') {
+          return matchesForTab;
+      }
+      return matchesForTab.filter(m => m.round === selectedRound);
+  }, [matchesForTab, selectedRound]);
+
 
   return (
     <div className="flex min-h-screen flex-col bg-[hsl(var(--background))]">
@@ -52,7 +119,7 @@ export default function ControlesPage() {
             </h1>
             <Tabs
             value={activeTab}
-            onValueChange={(value) => setActiveTab(value as MatchStatus)}
+            onValueChange={handleTabChange}
             aria-label="Filtrar partidos por estado"
             className="w-full sm:w-auto"
             >
@@ -76,16 +143,25 @@ export default function ControlesPage() {
           <div className="flex justify-center items-center h-40 text-center text-red-500 bg-red-500/10 rounded-lg">
             <p>Error: {error}</p>
           </div>
-        ) : filteredMatches.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredMatches.map((match) => (
-              <ControlMatchCard key={match.id} match={match} />
-            ))}
-          </div>
         ) : (
-          <div className="flex justify-center items-center h-40 text-center text-muted-foreground bg-secondary/50 rounded-lg">
-            <p>No hay partidos en este estado.</p>
-          </div>
+          <>
+            <RoundFilter
+                rounds={availableRounds}
+                selectedRound={selectedRound}
+                onSelectRound={setSelectedRound}
+            />
+            {filteredMatches.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredMatches.map((match) => (
+                <ControlMatchCard key={match.id} match={match} />
+                ))}
+            </div>
+            ) : (
+            <div className="flex justify-center items-center h-40 text-center text-muted-foreground bg-secondary/50 rounded-lg">
+                <p>No hay partidos para los filtros seleccionados.</p>
+            </div>
+            )}
+          </>
         )}
       </main>
     </div>
