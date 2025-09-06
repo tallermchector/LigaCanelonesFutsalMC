@@ -5,7 +5,7 @@
 import * as React from "react";
 import { Button } from '@/components/ui/button';
 import { useGame } from '@/contexts/GameProvider';
-import type { GameEventType, Player } from '@/types';
+import type { GameEvent, GameEventType, Player } from '@/types';
 import { Goal, Shield, Hand, Footprints, Square, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -26,13 +26,29 @@ const actionButtons: { type: GameEventType; label: string; icon: React.ReactNode
 ];
 
 export function ActionMenu({ player, onAction }: ActionMenuProps) {
-  const { state, dispatch } = useGame();
+  const { state, dispatch, createGameEvent } = useGame();
 
   const handleActionClick = (type: GameEventType) => {
     if (type === 'SUBSTITUTION') {
         dispatch({ type: 'INITIATE_SUBSTITUTION' });
     } else {
-        dispatch({ type: 'ADD_EVENT', payload: { type } });
+        const teamId = state.teamA?.players.some(p => p.id === player.id) ? state.teamA.id : state.teamB?.id;
+        const teamName = state.teamA?.players.some(p => p.id === player.id) ? state.teamA.name : state.teamB?.name;
+        
+        if(!teamId || !teamName) return;
+
+        const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
+            type: type,
+            teamId: teamId,
+            playerId: player.id,
+            playerName: player.name,
+            teamName: teamName,
+            timestamp: state.time,
+            playerInId: null,
+            playerInName: null,
+        };
+        dispatch({ type: 'ADD_EVENT', payload: { event: newEvent } });
+        createGameEvent(newEvent);
     }
     onAction(); // Close the popover
   };

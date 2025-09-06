@@ -1,23 +1,44 @@
 
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Goal, Shield, Hand, Footprints, Square, RefreshCw, XCircle } from 'lucide-react';
-import type { GameEventType } from '@/types';
+import type { GameEvent, GameEventType } from '@/types';
 import { motion } from 'framer-motion';
 
 export function EventButtons() {
-  const { state, dispatch } = useGame();
+  const { state, dispatch, createGameEvent } = useGame();
   const { selectedPlayer, teamA, teamB, substitutionState, activePlayersA, activePlayersB } = state;
 
   const handleAddEvent = (type: GameEventType) => {
     if (type === 'SUBSTITUTION') {
       dispatch({ type: 'INITIATE_SUBSTITUTION' });
-    } else {
-      dispatch({ type: 'ADD_EVENT', payload: { type } });
+      return;
     }
+    
+    if (!selectedPlayer) return;
+
+    const team = selectedPlayer.teamId === 'A' ? teamA : teamB;
+    const player = team?.players?.find(p => p.id === selectedPlayer.playerId);
+
+    if(!team || !player) return;
+
+    const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
+        type: type,
+        teamId: team.id,
+        playerId: player.id,
+        playerName: player.name,
+        teamName: team.name,
+        timestamp: state.time,
+        playerInId: null,
+        playerInName: null,
+    };
+    
+    dispatch({ type: 'ADD_EVENT', payload: { event: newEvent } });
+    createGameEvent(newEvent);
   };
 
   const getPlayerInfo = () => {

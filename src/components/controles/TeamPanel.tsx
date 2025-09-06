@@ -5,7 +5,7 @@
 import { useGame } from '@/contexts/GameProvider';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { JerseyButton } from './JerseyButton';
-import type { SelectedPlayer } from '@/types';
+import type { SelectedPlayer, GameEvent } from '@/types';
 import { motion } from 'framer-motion';
 import { Shirt } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -18,7 +18,7 @@ interface TeamPanelProps {
 }
 
 export function TeamPanel({ teamId }: TeamPanelProps) {
-  const { state, dispatch } = useGame();
+  const { state, dispatch, createGameEvent } = useGame();
   const pathname = usePathname();
   
   const team = teamId === 'A' ? state.teamA : state.teamB;
@@ -34,14 +34,29 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
 
     // If we are in substitution mode, selecting a player here completes the sub.
     if (substitutionState) {
-        // We can only select players from the same team as the one being subbed out.
-        if (teamId === substitutionState.playerOut.teamId) {
-            // And the player must not be the same one being subbed out.
-            if (playerId !== substitutionState.playerOut.playerId) {
-                 dispatch({ type: 'SELECT_PLAYER', payload });
+        const { playerOut } = substitutionState;
+        
+        if (teamId === playerOut.teamId && playerId !== playerOut.playerId) {
+            const pOut = team.players.find(p => p.id === playerOut.playerId);
+            const pIn = team.players.find(p => p.id === playerId);
+            
+            if (pOut && pIn) {
+                dispatch({ type: 'COMPLETE_SUBSTITUTION', payload: { playerInId: pIn.id }});
+                
+                const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
+                    type: 'SUBSTITUTION',
+                    teamId: team.id,
+                    playerId: pOut.id,
+                    playerName: pOut.name,
+                    playerInId: pIn.id,
+                    playerInName: pIn.name,
+                    teamName: team.name,
+                    timestamp: state.time,
+                };
+                createGameEvent(newEvent);
             }
         }
-        return; // Do nothing if trying to select from the wrong team.
+        return; // Do nothing if trying to select from the wrong team or the same player.
     }
 
     // Standard player selection logic for other modes.

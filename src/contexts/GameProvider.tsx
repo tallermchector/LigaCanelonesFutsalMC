@@ -18,9 +18,10 @@ type GameAction =
   | { type: 'RESET_TIMER' }
   | { type: 'TICK' }
   | { type: 'SELECT_PLAYER'; payload: SelectedPlayer }
-  | { type: 'ADD_EVENT'; payload: { type: GameEventType; teamId?: number } }
+  | { type: 'ADD_EVENT'; payload: { event: Omit<GameEvent, 'id' | 'matchId'> } }
   | { type: 'INITIATE_SUBSTITUTION' }
   | { type: 'CANCEL_SUBSTITUTION' }
+  | { type: 'COMPLETE_SUBSTITUTION'; payload: { playerInId: number } }
   | { type: 'TOGGLE_ACTIVE_PLAYER'; payload: { teamId: 'A' | 'B'; playerId: number } }
   | { type: 'SET_INITIAL_POSITIONS' }
   | { type: 'SAVE_FULL_STATE'; }
@@ -70,7 +71,7 @@ const updatePlayerTimeReducer = (state: GameState): GameState => {
     return { ...state, playerTimeTracker: newTracker };
 };
 
-const createGameReducer = (createGameEventFn: (matchId: number, event: Omit<GameEvent, 'id' | 'matchId'>) => Promise<void>) => (state: GameState, action: GameAction): GameState => {
+const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
     case 'LOAD_MATCH': {
       let baseState = action.payload.state || {
@@ -154,69 +155,10 @@ const createGameReducer = (createGameEventFn: (matchId: number, event: Omit<Game
       return state;
     case 'SELECT_PLAYER': {
         const selected = action.payload;
-
         if (state.substitutionState) {
-            const { playerOut } = state.substitutionState;
-
-            if (selected.teamId === playerOut.teamId && selected.playerId !== playerOut.playerId) {
-                const team = playerOut.teamId === 'A' ? state.teamA : state.teamB;
-                const pOut = team?.players.find(p => p.id === playerOut.playerId);
-                const pIn = team?.players.find(p => p.id === selected.playerId);
-                
-                if (!team || !pOut || !pIn || !state.matchId) return state;
-                
-                const timeStateWithUpdate = updatePlayerTimeReducer(state);
-                const newTracker = {...timeStateWithUpdate.playerTimeTracker};
-                
-                // Finalize time for player leaving
-                const pOutTracker = newTracker[pOut.id];
-                if(pOutTracker) {
-                    const timePlayed = pOutTracker.startTime - timeStateWithUpdate.time;
-                    pOutTracker.totalTime += timePlayed;
-                }
-
-                // Initialize time for player entering
-                newTracker[pIn.id] = newTracker[pIn.id] || { startTime: timeStateWithUpdate.time, totalTime: 0 };
-                newTracker[pIn.id].startTime = timeStateWithUpdate.time;
-                
-                const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
-                    type: 'SUBSTITUTION',
-                    teamId: team.id,
-                    playerId: pOut.id,
-                    playerName: pOut.name,
-                    playerInId: pIn.id,
-                    playerInName: pIn.name,
-                    teamName: team.name,
-                    timestamp: state.time,
-                };
-                
-                 if(state.matchId) createGameEventFn(state.matchId, newEvent);
-                
-                const activePlayersKey = playerOut.teamId === 'A' ? 'activePlayersA' : 'activePlayersB';
-                const currentActivePlayers = state[activePlayersKey];
-                const updatedActivePlayers = currentActivePlayers.filter(id => id !== pOut.id).concat(pIn.id);
-
-                // Transfer position
-                const newPlayerPositions = { ...state.playerPositions };
-                const playerOutPosition = newPlayerPositions[pOut.id];
-                if (playerOutPosition) {
-                    newPlayerPositions[pIn.id] = playerOutPosition;
-                }
-                delete newPlayerPositions[pOut.id];
-
-                return {
-                    ...timeStateWithUpdate,
-                    playerTimeTracker: newTracker,
-                    events: [...state.events, {...newEvent, id: Date.now(), matchId: state.matchId!}],
-                    selectedPlayer: null,
-                    substitutionState: null,
-                    [activePlayersKey]: updatedActivePlayers,
-                    playerPositions: newPlayerPositions,
-                };
-            }
-            return { ...state, substitutionState: null, selectedPlayer: null };
+            // Do not change selectedPlayer while substitution is in progress
+            return state;
         }
-
         if (state.selectedPlayer?.playerId === selected.playerId && state.selectedPlayer?.teamId === selected.teamId) {
             return { ...state, selectedPlayer: null };
         }
@@ -224,39 +166,21 @@ const createGameReducer = (createGameEventFn: (matchId: number, event: Omit<Game
         return { ...state, selectedPlayer: selected };
     }
     case 'ADD_EVENT': {
-      if (!state.selectedPlayer || !state.matchId) return state;
-      
-      const { teamId: selectedTeamId, playerId } = state.selectedPlayer;
-      
-      const team = selectedTeamId === 'A' ? state.teamA : state.teamB;
-      const player = team?.players?.find(p => p.id === playerId);
+      if (!state.matchId) return state;
 
-      if (!team || !player) return state;
+      let newState: GameState = { ...state, events: [...state.events, { ...action.payload.event, id: Date.now(), matchId: state.matchId }], selectedPlayer: null };
 
-      const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
-          type: action.payload.type,
-          teamId: team.id,
-          playerId,
-          playerName: player.name,
-          teamName: team.name,
-          timestamp: state.time,
-          playerInId: null,
-          playerInName: null,
-      };
-      
-      if(state.matchId) createGameEventFn(state.matchId, newEvent);
-      
-      let newState: GameState = { ...state, events: [...state.events, {...newEvent, id: Date.now(), matchId: state.matchId!}], selectedPlayer: null };
-
-      if (action.payload.type === 'GOAL') {
-          newState = createGameReducer(createGameEventFn)(newState, { type: 'UPDATE_SCORE', payload: { team: selectedTeamId, delta: 1 } });
+      if (action.payload.event.type === 'GOAL' && action.payload.event.teamId) {
+          const team = action.payload.event.teamId === state.teamA?.id ? 'A' : 'B';
+          newState = gameReducer(newState, { type: 'UPDATE_SCORE', payload: { team, delta: 1 } });
       }
-      if (action.payload.type === 'FOUL') {
-          newState = createGameReducer(createGameEventFn)(newState, { type: 'UPDATE_FOULS', payload: { team: selectedTeamId, delta: 1 } });
+      if (action.payload.event.type === 'FOUL' && action.payload.event.teamId) {
+          const team = action.payload.event.teamId === state.teamA?.id ? 'A' : 'B';
+          newState = gameReducer(newState, { type: 'UPDATE_FOULS', payload: { team, delta: 1 } });
       }
-      if (action.payload.type === 'TIMEOUT') {
-          const timeoutTeamId = action.payload.teamId === state.teamA?.id ? 'A' : 'B';
-          newState = createGameReducer(createGameEventFn)(newState, { type: 'UPDATE_TIMEOUTS', payload: { team: timeoutTeamId, delta: -1 } });
+       if (action.payload.event.type === 'TIMEOUT' && action.payload.event.teamId) {
+          const team = action.payload.event.teamId === state.teamA?.id ? 'A' : 'B';
+          newState = gameReducer(newState, { type: 'UPDATE_TIMEOUTS', payload: { team, delta: -1 } });
       }
 
       return newState;
@@ -270,6 +194,41 @@ const createGameReducer = (createGameEventFn: (matchId: number, event: Omit<Game
         };
     case 'CANCEL_SUBSTITUTION':
         return { ...state, substitutionState: null };
+    
+     case 'COMPLETE_SUBSTITUTION': {
+        if (!state.substitutionState) return state;
+
+        const { playerOut } = state.substitutionState;
+        const playerInId = action.payload.playerInId;
+
+        if (playerOut.playerId === playerInId) return state;
+
+        const team = playerOut.teamId === 'A' ? state.teamA : state.teamB;
+        if (!team) return state;
+
+        const pOut = team.players.find(p => p.id === playerOut.playerId);
+        const pIn = team.players.find(p => p.id === playerInId);
+        if (!pOut || !pIn) return state;
+
+        const activePlayersKey = playerOut.teamId === 'A' ? 'activePlayersA' : 'activePlayersB';
+        const currentActivePlayers = state[activePlayersKey];
+        const updatedActivePlayers = currentActivePlayers.filter(id => id !== pOut.id).concat(pIn.id);
+        
+        const newPlayerPositions = { ...state.playerPositions };
+        const playerOutPosition = newPlayerPositions[pOut.id];
+        if (playerOutPosition) {
+            newPlayerPositions[pIn.id] = playerOutPosition;
+        }
+        delete newPlayerPositions[pOut.id];
+
+        return {
+            ...state,
+            [activePlayersKey]: updatedActivePlayers,
+            playerPositions: newPlayerPositions,
+            substitutionState: null,
+            selectedPlayer: null,
+        };
+    }
     
     case 'TOGGLE_ACTIVE_PLAYER': {
         const { teamId, playerId } = action.payload;
@@ -364,18 +323,16 @@ const createGameReducer = (createGameEventFn: (matchId: number, event: Omit<Game
 type GameProviderProps = {
   children: React.ReactNode;
   match: FullMatch;
-  saveMatchState: (matchId: number, state: GameState) => Promise<void>;
-  createGameEvent: (matchId: number, event: Omit<GameEvent, 'id' | 'matchId'>) => Promise<void>;
 }
 
 const GameContext = React.createContext<{ 
     state: GameState; 
     dispatch: React.Dispatch<GameAction>;
     handleSaveChanges: () => Promise<void>;
+    createGameEvent: (event: Omit<GameEvent, 'id'|'matchId'>) => Promise<void>;
 } | undefined>(undefined);
 
-export const GameProvider: React.FC<GameProviderProps> = ({ children, match, saveMatchState, createGameEvent }) => {
-  const gameReducer = React.useMemo(() => createGameReducer(createGameEvent), [createGameEvent]);
+export const GameProvider: React.FC<GameProviderProps> = ({ children, match }) => {
   const [state, dispatch] = React.useReducer(gameReducer, initialState);
   const { toast } = useToast();
 
@@ -405,14 +362,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
     dispatch({ type: 'LOAD_MATCH', payload: { match, state: getInitialState() } });
   }, [match, getInitialState]);
   
-  const handleSaveChanges = React.useCallback(async (currentState: GameState) => {
-    if (!currentState.matchId) {
+  const handleSaveChanges = React.useCallback(async () => {
+    if (!state.matchId) {
         console.error("No match ID, cannot save state.");
         return;
     }
     try {
-        const stateWithUpdatedTime = updatePlayerTimeReducer(currentState);
-        await saveMatchState(currentState.matchId, stateWithUpdatedTime);
+        const stateWithUpdatedTime = updatePlayerTimeReducer(state);
+        await saveMatchState(state.matchId, stateWithUpdatedTime);
     } catch (error) {
         toast({
             variant: "destructive",
@@ -421,7 +378,24 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
         });
         console.error("Failed to save match state:", error);
     }
-  }, [toast, saveMatchState]);
+  }, [state, toast]);
+
+ const handleCreateGameEvent = React.useCallback(async (event: Omit<GameEvent, 'id'|'matchId'>) => {
+    if (!state.matchId) {
+        console.error("No match ID, cannot create event.");
+        return;
+    }
+    try {
+        await createGameEvent(state.matchId, event);
+    } catch (error) {
+         toast({
+            variant: "destructive",
+            title: "Error de Sincronización",
+            description: "No se pudo registrar el evento del partido.",
+        });
+        console.error("Failed to create game event:", error);
+    }
+ }, [state.matchId, toast]);
 
 
   React.useEffect(() => {
@@ -449,29 +423,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match, sav
     };
   }, [state.isRunning, state.time]);
   
-  const handleSaveAndExit = React.useCallback(async () => {
-    if (!state.matchId) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se puede guardar un partido sin ID.",
-      });
-      return;
-    }
-    try {
-      await handleSaveChanges(state);
-      toast({
-        title: "Éxito",
-        description: "El estado del partido ha sido guardado correctamente.",
-      });
-    } catch (error) {
-       console.error("Error on explicit save:", error);
-    }
-  }, [state, toast, handleSaveChanges]);
-
-
   return (
-    <GameContext.Provider value={{ state, dispatch, handleSaveChanges: handleSaveAndExit }}>
+    <GameContext.Provider value={{ state, dispatch, handleSaveChanges, createGameEvent: handleCreateGameEvent }}>
       {children}
     </GameContext.Provider>
   );

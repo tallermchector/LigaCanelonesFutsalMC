@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer, Users, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { GameEvent } from '@/types';
 
 
 const formatTime = (seconds: number) => {
@@ -17,7 +18,7 @@ const formatTime = (seconds: number) => {
 };
 
 export function ControlsPanel() {
-  const { state, dispatch, handleSaveChanges } = useGame();
+  const { state, dispatch, handleSaveChanges, createGameEvent } = useGame();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -29,7 +30,18 @@ export function ControlsPanel() {
   const handleTimeout = (teamId: 'A' | 'B') => {
       const team = teamId === 'A' ? state.teamA : state.teamB;
       if (!team) return;
-      dispatch({ type: 'ADD_EVENT', payload: { type: 'TIMEOUT', teamId: team.id }})
+      const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
+          type: 'TIMEOUT',
+          teamId: team.id,
+          teamName: team.name,
+          timestamp: state.time,
+          playerId: null,
+          playerName: null,
+          playerInId: null,
+          playerInName: null,
+      }
+      dispatch({ type: 'ADD_EVENT', payload: { event: newEvent }})
+      createGameEvent(newEvent);
   }
   
   const handleSaveAndExit = async () => {
