@@ -2,6 +2,7 @@
 'use client';
 
 import { getStandingsFromMatches } from '@/actions/season-actions';
+import { getAggregatedPlayerStats } from '@/actions/player-actions';
 import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 import { StandingsTable } from '@/components/posiciones/StandingsTable';
@@ -9,7 +10,6 @@ import { PlayerRanking } from '@/components/jugadores/PlayerRanking';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Team, SeasonTeam, FullMatch, Player, PlayerWithStats } from '@/types';
 import { useEffect, useState } from 'react';
-import { getAllTeams } from '@/actions/team-actions';
 import { ScheduleCalendar } from '@/components/posiciones/ScheduleCalendar';
 import { getAllMatches } from '@/actions/prisma-actions';
 import { Trophy } from 'lucide-react';
@@ -27,23 +27,15 @@ export default function PosicionesPage() {
   useEffect(() => {
     const fetchDataForTab = async () => {
       if (activeTab === 'clasificacion' && !standings) {
-        // Assuming season 1 is the default/active season
+        setStandings(null); // Show skeleton
         const standingsData = await getStandingsFromMatches(1); 
         setStandings(standingsData);
       } else if (activeTab === 'ranking' && !players) {
-        const teamsData = await getAllTeams();
-        const allPlayers = teamsData.flatMap(team =>
-            team.players.map(player => ({
-                ...player,
-                team: { ...team }, 
-                goals: Math.floor(Math.random() * 15),
-                assists: Math.floor(Math.random() * 10),
-                matchesPlayed: Math.floor(Math.random() * 5) + 1,
-            }))
-        );
-        allPlayers.sort((a, b) => b.goals - a.goals);
-        setPlayers(allPlayers as PlayerWithStats[]);
+        setPlayers(null); // Show skeleton
+        const aggregatedStats = await getAggregatedPlayerStats();
+        setPlayers(aggregatedStats);
       } else if (activeTab === 'calendario' && !matches) {
+        setMatches(null); // Show skeleton
         const matchesData = await getAllMatches();
         setMatches(matchesData as FullMatch[]);
       }
