@@ -75,9 +75,6 @@ export async function getAllMatches(): Promise<FullMatch[]> {
         teamB: { include: { players: true } },
         events: true,
         playerMatchStats: true,
-    },
-    orderBy: {
-      scheduledTime: 'desc'
     }
   });
 
