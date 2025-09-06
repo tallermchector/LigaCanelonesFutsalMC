@@ -46,6 +46,10 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
             const playerId = parseInt(playerIdStr, 10);
             const stats = playerTimeTracker[playerId];
 
+            // Find which team the player belongs to
+            const playerTeamA = state.teamA.players.find(p => p.id === playerId);
+            const teamId = playerTeamA ? state.teamA.id : state.teamB.id;
+
             txs.push(
                 prisma.playerMatchStats.upsert({
                     where: { matchId_playerId: { matchId, playerId } },
@@ -53,6 +57,7 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
                     create: {
                         matchId,
                         playerId,
+                        teamId: teamId, // Add the teamId here
                         timePlayedInSeconds: stats.totalTime,
                     },
                 })
@@ -62,7 +67,6 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
 
     await prisma.$transaction(txs);
 
-    console.log(`Match ${matchId} state saved successfully.`);
   } catch (error) {
     console.error(`Failed to save match state for ${matchId}:`, error);
     throw new Error('Database operation failed.');
