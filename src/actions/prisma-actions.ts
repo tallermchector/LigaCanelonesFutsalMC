@@ -2,7 +2,7 @@
 
 'use server';
 
-import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, GameEventType } from '@/types';
+import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, GameEventType, Player, PlayerPositionType } from '@/types';
 import { 
     createMatch as createMatchInDb, 
     updateMatchStatus as updateMatchStatusInDb, 
@@ -15,9 +15,21 @@ import type { FullMatch as ActionFullMatch } from './match-actions';
 
 
 function toClientFullMatch(match: ActionFullMatch): FullMatch {
+    // This function ensures the server-side Prisma types are correctly
+    // mapped to the client-side types defined in /src/types.
     return {
         ...match,
+        // Convert Date object to ISO string for client-side serialization.
         scheduledTime: match.scheduledTime.toISOString(),
+        // Explicitly cast player positions to the specific PlayerPositionType enum.
+        teamA: {
+            ...match.teamA,
+            players: match.teamA.players.map(p => ({...p, position: p.position as PlayerPositionType})) as Player[],
+        },
+        teamB: {
+            ...match.teamB,
+            players: match.teamB.players.map(p => ({...p, position: p.position as PlayerPositionType})) as Player[],
+        }
     };
 }
 
@@ -110,7 +122,7 @@ export async function createMatch(data: {
     seasonId: number;
 }): Promise<FullMatch> {
     const newMatch = await createMatchInDb(data);
-    return toClientFullMatch(newMatch as ActionFullMatch);
+    return toClientFullMatch(newMatch);
 }
 
 /**
