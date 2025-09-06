@@ -2,12 +2,14 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import type { Season, SeasonTeam, Team } from '@prisma/client';
+import type { Season, SeasonTeam, Team, Match } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { getAllTeams as getAllTeamsFromSource } from './team-actions';
 
 // Definimos un tipo más específico para el resultado que esperamos
 type StandingWithTeam = SeasonTeam & { team: Team };
+type StandingCalculated = Omit<SeasonTeam, 'id' | 'seasonId' | 'position'> & { team: Team, position: number };
+
 
 /**
  * Retrieves the standings for a specific season.
@@ -34,6 +36,104 @@ export async function getStandings(seasonId: number): Promise<StandingWithTeam[]
     } catch (error) {
         console.error(`Error al obtener la tabla de posiciones para la temporada ${seasonId}:`, error);
         // Devolvemos un array vacío en caso de error para evitar que la página se rompa.
+        return [];
+    }
+}
+
+/**
+ * Calculates standings dynamically from finished matches for a given season.
+ * @param {number} seasonId - The ID of the season.
+ * @returns {Promise<StandingCalculated[]>} A promise that resolves to an array of calculated standings.
+ */
+export async function getStandingsFromMatches(seasonId: number): Promise<StandingCalculated[]> {
+    try {
+        const finishedMatches = await prisma.match.findMany({
+            where: {
+                seasonId: seasonId,
+                status: 'FINISHED',
+            },
+            include: {
+                teamA: true,
+                teamB: true,
+            },
+        });
+
+        const allTeamsInSeason = await prisma.seasonTeam.findMany({
+            where: { seasonId },
+            include: { team: true }
+        });
+
+        const stats: { [teamId: number]: Omit<StandingCalculated, 'team' | 'position'> & { teamId: number } } = {};
+
+        // Initialize stats for all teams in the season
+        allTeamsInSeason.forEach(seasonTeam => {
+            stats[seasonTeam.teamId] = {
+                teamId: seasonTeam.teamId,
+                points: 0,
+                played: 0,
+                wins: 0,
+                draws: 0,
+                losses: 0,
+                goalsFor: 0,
+                goalsAgainst: 0,
+                goalDifference: 0,
+            };
+        });
+
+        // Calculate stats from finished matches
+        for (const match of finishedMatches) {
+            const teamAStats = stats[match.teamAId];
+            const teamBStats = stats[match.teamBId];
+
+            if (!teamAStats || !teamBStats) continue; // Skip if a team in a match is not in the season
+
+            teamAStats.played += 1;
+            teamBStats.played += 1;
+            teamAStats.goalsFor += match.scoreA;
+            teamBStats.goalsFor += match.scoreB;
+            teamAStats.goalsAgainst += match.scoreB;
+            teamBStats.goalsAgainst += match.scoreA;
+            teamAStats.goalDifference = teamAStats.goalsFor - teamAStats.goalsAgainst;
+            teamBStats.goalDifference = teamBStats.goalsFor - teamBStats.goalsAgainst;
+
+            if (match.scoreA > match.scoreB) {
+                teamAStats.wins += 1;
+                teamAStats.points += 3;
+                teamBStats.losses += 1;
+            } else if (match.scoreB > match.scoreA) {
+                teamBStats.wins += 1;
+                teamBStats.points += 3;
+                teamAStats.losses += 1;
+            } else {
+                teamAStats.draws += 1;
+                teamBStats.draws += 1;
+                teamAStats.points += 1;
+                teamBStats.points += 1;
+            }
+        }
+
+        const sortedStandings = Object.values(stats).sort((a, b) => {
+            if (b.points !== a.points) return b.points - a.points;
+            if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+            if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
+            return a.teamId - b.teamId; // Fallback sort
+        });
+
+        // Add team data and position
+        const finalStandings: StandingCalculated[] = sortedStandings.map((stat, index) => {
+            const teamData = allTeamsInSeason.find(t => t.teamId === stat.teamId)?.team;
+            if (!teamData) throw new Error(`Team with ID ${stat.teamId} not found in season.`);
+            
+            return {
+                ...stat,
+                team: teamData,
+                position: index + 1,
+            };
+        });
+
+        return finalStandings;
+    } catch (error) {
+        console.error(`Error calculating standings for season ${seasonId}:`, error);
         return [];
     }
 }

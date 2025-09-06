@@ -17,8 +17,8 @@ import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import Link from 'next/link';
 
 interface StandingsTableProps {
-  // El tipo debe incluir la relación con el equipo
-  standings: (SeasonTeamWithTeam & { team: Team })[];
+  // The type is now more generic to accept calculated standings
+  standings: any[];
 }
 
 const STAT_COLUMNS = ['PJ', 'G', 'E', 'P', 'GF', 'GC', 'DG'];

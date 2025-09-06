@@ -10,7 +10,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 2,
@@ -21,7 +23,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 3,
@@ -32,7 +36,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 4,
@@ -43,7 +49,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 5,
@@ -54,7 +62,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 6,
@@ -65,7 +75,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 7,
@@ -76,7 +88,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 8,
@@ -87,7 +101,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 9,
@@ -98,7 +114,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 10,
@@ -109,7 +127,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 11,
@@ -120,7 +140,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 12,
@@ -131,7 +153,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 13,
@@ -142,7 +166,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 14,
@@ -153,7 +179,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 15,
@@ -164,7 +192,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 16,
@@ -175,7 +205,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 17,
@@ -186,7 +218,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 18,
@@ -197,7 +231,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 19,
@@ -208,7 +244,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 20,
@@ -219,7 +257,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 21,
@@ -230,7 +270,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 22,
@@ -241,7 +283,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 23,
@@ -252,7 +296,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 24,
@@ -263,7 +309,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 25,
@@ -274,7 +322,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 26,
@@ -285,7 +335,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 27,
@@ -296,7 +348,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 28,
@@ -307,7 +361,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 29,
@@ -318,7 +374,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 30,
@@ -329,7 +387,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 31,
@@ -340,7 +400,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 32,
@@ -351,7 +413,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 33,
@@ -362,7 +426,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 34,
@@ -373,7 +439,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 35,
@@ -384,7 +452,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 36,
@@ -395,7 +465,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 37,
@@ -406,7 +478,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 38,
@@ -417,7 +491,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 39,
@@ -428,7 +504,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 40,
@@ -439,7 +517,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 41,
@@ -450,7 +530,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 42,
@@ -461,7 +543,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 43,
@@ -472,7 +556,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 44,
@@ -483,7 +569,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 45,
@@ -494,7 +582,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 46,
@@ -505,7 +595,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 47,
@@ -516,7 +608,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 48,
@@ -527,7 +621,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 49,
@@ -538,7 +634,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 50,
@@ -549,7 +647,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 51,
@@ -560,7 +660,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 52,
@@ -571,7 +673,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 53,
@@ -582,7 +686,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 54,
@@ -593,7 +699,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 55,
@@ -604,7 +712,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 56,
@@ -615,7 +725,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 57,
@@ -626,7 +738,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 58,
@@ -637,7 +751,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 59,
@@ -648,7 +764,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 60,
@@ -659,7 +777,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 61,
@@ -670,7 +790,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 62,
@@ -681,7 +803,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 63,
@@ -692,7 +816,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 64,
@@ -703,7 +829,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 65,
@@ -714,7 +842,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 66,
@@ -725,7 +855,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 67,
@@ -736,7 +868,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 68,
@@ -747,7 +881,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 69,
@@ -758,7 +894,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 70,
@@ -769,7 +907,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 71,
@@ -780,7 +920,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 72,
@@ -791,7 +933,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 73,
@@ -802,7 +946,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 74,
@@ -813,7 +959,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 75,
@@ -824,7 +972,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 76,
@@ -835,7 +985,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 77,
@@ -846,7 +998,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 78,
@@ -857,7 +1011,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 79,
@@ -868,7 +1024,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 80,
@@ -879,7 +1037,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 81,
@@ -890,7 +1050,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 82,
@@ -901,7 +1063,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 83,
@@ -912,7 +1076,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 84,
@@ -923,7 +1089,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 85,
@@ -934,7 +1102,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 86,
@@ -945,7 +1115,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 87,
@@ -956,7 +1128,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 88,
@@ -967,7 +1141,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 89,
@@ -978,7 +1154,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 90,
@@ -989,7 +1167,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 91,
@@ -1000,7 +1180,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 92,
@@ -1011,7 +1193,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 93,
@@ -1022,7 +1206,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 94,
@@ -1033,7 +1219,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 95,
@@ -1044,7 +1232,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 96,
@@ -1055,7 +1245,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 97,
@@ -1066,7 +1258,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 98,
@@ -1077,7 +1271,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 99,
@@ -1088,7 +1284,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 100,
@@ -1099,7 +1297,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 101,
@@ -1110,7 +1310,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 102,
@@ -1121,7 +1323,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 103,
@@ -1132,7 +1336,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 104,
@@ -1143,7 +1349,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 105,
@@ -1154,7 +1362,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 106,
@@ -1165,7 +1375,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 107,
@@ -1176,7 +1388,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 108,
@@ -1187,7 +1401,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 109,
@@ -1198,7 +1414,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 110,
@@ -1209,7 +1427,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 111,
@@ -1220,7 +1440,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 112,
@@ -1231,7 +1453,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 113,
@@ -1242,7 +1466,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 114,
@@ -1253,7 +1479,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 115,
@@ -1264,7 +1492,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 116,
@@ -1275,7 +1505,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 117,
@@ -1286,7 +1518,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 118,
@@ -1297,7 +1531,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 119,
@@ -1308,7 +1544,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 120,
@@ -1319,7 +1557,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 121,
@@ -1330,7 +1570,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 122,
@@ -1341,7 +1583,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 123,
@@ -1352,7 +1596,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 124,
@@ -1363,7 +1609,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 125,
@@ -1374,7 +1622,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 126,
@@ -1385,7 +1635,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 127,
@@ -1396,7 +1648,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 128,
@@ -1407,7 +1661,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 129,
@@ -1418,7 +1674,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 130,
@@ -1429,7 +1687,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 131,
@@ -1440,7 +1700,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 132,
@@ -1451,7 +1713,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 133,
@@ -1462,7 +1726,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 134,
@@ -1473,7 +1739,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 135,
@@ -1484,7 +1752,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 136,
@@ -1495,7 +1765,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 137,
@@ -1506,7 +1778,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 138,
@@ -1517,7 +1791,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 139,
@@ -1528,7 +1804,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 140,
@@ -1539,7 +1817,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 141,
@@ -1550,7 +1830,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 142,
@@ -1561,7 +1843,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 143,
@@ -1572,7 +1856,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 144,
@@ -1583,7 +1869,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 145,
@@ -1594,7 +1882,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 146,
@@ -1605,7 +1895,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 147,
@@ -1616,7 +1908,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 148,
@@ -1627,7 +1921,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   },
   {
     id: 149,
@@ -1638,7 +1934,9 @@ export const players: Player[] = [
     birthDate: null,
     height: 180,
     weight: 75,
-    nationality: "URU"
+    nationality: "URU",
+    createdAt: new Date("2025-09-06T02:11:09.842Z"),
+    updatedAt: new Date("2025-09-06T02:11:09.842Z")
   }
 ]
   ;

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { getStandings } from '@/actions/season-actions';
+import { getStandingsFromMatches } from '@/actions/season-actions';
 import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 import { StandingsTable } from '@/components/posiciones/StandingsTable';
@@ -19,7 +19,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 const TabSkeleton = () => <Skeleton className="w-full h-96 bg-muted rounded-lg" />;
 
 export default function PosicionesPage() {
-  const [standings, setStandings] = useState<(SeasonTeam & { team: Team })[] | null>(null);
+  const [standings, setStandings] = useState<any[] | null>(null);
   const [players, setPlayers] = useState<PlayerWithStats[] | null>(null);
   const [matches, setMatches] = useState<FullMatch[] | null>(null);
   const [activeTab, setActiveTab] = useState('clasificacion');
@@ -27,8 +27,9 @@ export default function PosicionesPage() {
   useEffect(() => {
     const fetchDataForTab = async () => {
       if (activeTab === 'clasificacion' && !standings) {
-        const standingsData = await getStandings(1);
-        setStandings(standingsData as (SeasonTeam & { team: Team })[]);
+        // Assuming season 1 is the default/active season
+        const standingsData = await getStandingsFromMatches(1); 
+        setStandings(standingsData);
       } else if (activeTab === 'ranking' && !players) {
         const teamsData = await getAllTeams();
         const allPlayers = teamsData.flatMap(team =>
