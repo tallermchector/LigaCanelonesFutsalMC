@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, notFound } from 'next/navigation';
-import { getMatchById } from '@/actions/match-actions';
+import { getMatchById, saveMatchState, createGameEvent } from '@/actions/match-actions';
 import type { FullMatch } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { GameProvider } from '@/contexts/GameProvider';
