@@ -9,7 +9,7 @@ export function PlayerInfoTabs() {
     const [activeTab, setActiveTab] = useState('Resumen');
 
     return (
-        <div className="sticky top-16 z-10 bg-white dark:bg-gray-800 shadow-md">
+        <div className="sticky top-[var(--header-height)] z-30 bg-card shadow-md">
             <div className="container mx-auto flex">
                 {tabs.map((tab) => (
                     <button
@@ -18,8 +18,8 @@ export function PlayerInfoTabs() {
                         className={cn(
                             'flex-1 py-3 text-sm font-semibold text-center transition-colors',
                             activeTab === tab
-                                ? 'text-red-600 border-b-2 border-red-600'
-                                : 'text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white'
+                                ? 'text-primary border-b-2 border-primary'
+                                : 'text-muted-foreground hover:text-foreground border-b-2 border-transparent'
                         )}
                     >
                         {tab}

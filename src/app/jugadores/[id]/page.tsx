@@ -5,6 +5,8 @@ import { PlayerHero } from '@/components/jugadores/perfil/PlayerHero';
 import { PlayerInfoTabs } from '@/components/jugadores/perfil/PlayerInfoTabs';
 import { PlayerStats } from '@/components/jugadores/perfil/PlayerStats';
 import { notFound } from 'next/navigation';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 
 interface PlayerPageProps {
     params: Promise<{
@@ -27,17 +29,19 @@ export default async function PlayerPage(props: PlayerPageProps) {
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
-            <main className="flex-1">
+            <Header />
+            <main className="flex-1 pt-[var(--header-height)]">
                 <PlayerHero player={player} />
                 <PlayerInfoTabs />
 
-                <div className="bg-gray-100 dark:bg-gray-900 py-6">
-                    <div className="container mx-auto space-y-6">
+                <div className="bg-muted/40 py-8">
+                    <div className="container mx-auto max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                         <PlayerBasicInfo player={player} />
                         <PlayerStats />
                     </div>
                 </div>
             </main>
+            <Footer />
         </div>
     );
 }

@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Player, Team, PlayerWithStats } from '@/types';
+import type { PlayerWithStats } from '@/types';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import {
