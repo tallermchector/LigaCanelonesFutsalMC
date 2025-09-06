@@ -9,8 +9,22 @@ import Hero from '@/components/layout/hero';
 import { SocialsBanner } from '@/components/landing/SocialsBanner';
 import { LatestNewsBanner } from '@/components/landing/LatestNewsBanner';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import type { FullMatch } from './types';
 
 export default function Home() {
+  const [finishedMatches, setFinishedMatches] = useState<FullMatch[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAllMatchesFromDb().then(matches => {
+        setFinishedMatches(matches.filter(m => m.status === 'FINISHED'));
+        setLoading(false);
+    });
+  }, []);
+
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -22,7 +36,7 @@ export default function Home() {
         transition={{ duration: 0.5 }}
       >
         <LiveMatchesBanner />
-        <FinishedMatches />
+        <FinishedMatches finishedMatches={finishedMatches} loading={loading} />
         <LatestNewsBanner />
         <SocialsBanner />
       </motion.main>

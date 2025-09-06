@@ -1,12 +1,10 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
 import { FinishedMatchCard } from './FinishedMatchCard';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import type { FullMatch } from '@/types';
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
 
 function FinishedMatchesSkeleton() {
     return (
@@ -18,17 +16,12 @@ function FinishedMatchesSkeleton() {
     )
 }
 
+interface FinishedMatchesProps {
+    finishedMatches: FullMatch[];
+    loading: boolean;
+}
 
-export function FinishedMatches() {
-    const [finishedMatches, setFinishedMatches] = useState<FullMatch[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        getAllMatchesFromDb().then(matches => {
-            setFinishedMatches(matches.filter(m => m.status === 'FINISHED'));
-            setLoading(false);
-        });
-    }, []);
+export function FinishedMatches({ finishedMatches, loading }: FinishedMatchesProps) {
 
     if (loading) {
         return (
