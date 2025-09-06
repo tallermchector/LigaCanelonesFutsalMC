@@ -19,15 +19,17 @@ interface DraggablePlayerProps {
   y: number;
   color: 'blue' | 'red';
   onMove: (x: number, y: number) => void;
+  isSubstitute?: boolean;
 }
 
-export function DraggablePlayer({ player, x, y, color, onMove }: DraggablePlayerProps) {
+export function DraggablePlayer({ player, x, y, color, onMove, isSubstitute = false }: DraggablePlayerProps) {
     const { state, dispatch } = useGame();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const [{ isDragging }, drag] = useDrag(() => ({
         type: ItemTypes.PLAYER,
         item: { id: player.id },
+        canDrag: !isSubstitute,
         end: (item, monitor) => {
             const delta = monitor.getDifferenceFromInitialOffset();
             const didDrag = monitor.didDrop() || (delta && (delta.x !== 0 || delta.y !== 0));
@@ -41,7 +43,7 @@ export function DraggablePlayer({ player, x, y, color, onMove }: DraggablePlayer
         collect: monitor => ({
             isDragging: !!monitor.isDragging(),
         }),
-    }), [x, y, player.id, onMove]);
+    }), [x, y, player.id, onMove, isSubstitute]);
 
     const handleClick = (e: React.MouseEvent) => {
         // Prevent click from propagating if it was part of a drag
@@ -61,15 +63,16 @@ export function DraggablePlayer({ player, x, y, color, onMove }: DraggablePlayer
                     ref={drag as any}
                     onClick={handleClick}
                     className={cn(
-                        'absolute flex h-12 w-12 md:h-14 md:w-14 cursor-move items-center justify-center rounded-full border-2 border-white/50 font-bold text-white shadow-lg transition-transform',
+                        'relative flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full border-2 border-white/50 font-bold text-white shadow-lg transition-transform',
                         color === 'blue' ? 'bg-blue-500' : 'bg-red-500',
-                        isDragging ? 'opacity-50 scale-110' : 'opacity-100 scale-100'
+                        isDragging ? 'opacity-50 scale-110' : 'opacity-100 scale-100',
+                        isSubstitute ? 'cursor-pointer' : 'absolute cursor-move'
                     )}
-                    style={{
+                    style={!isSubstitute ? {
                         left: `${x}%`,
                         top: `${y}%`,
                         transform: 'translate(-50%, -50%)',
-                    }}
+                    } : {}}
                 >
                     <span className="text-lg md:text-xl">{player.number}</span>
                 </div>

@@ -3,7 +3,7 @@
 
 import { DraggablePlayer } from './DraggablePlayer';
 import { useGame } from '@/contexts/GameProvider';
-import type { FullMatch, PlayerPosition } from '@/types';
+import type { FullMatch, Player, PlayerPosition } from '@/types';
 import { useEffect, useRef } from 'react';
 import { useDrop } from 'react-dnd';
 
@@ -58,37 +58,72 @@ export function TacticalBoard({ match }: { match: FullMatch }) {
 
   const allPlayers = [...match.teamA.players, ...match.teamB.players];
   const allActivePlayers = [...state.activePlayersA, ...state.activePlayersB];
+  
+  const substitutePlayersA = state.teamA.players.filter(p => !state.activePlayersA.includes(p.id));
+  const substitutePlayersB = state.teamB.players.filter(p => !state.activePlayersB.includes(p.id));
 
   return (
-    <div
-      ref={dropRef}
-      className="relative w-full h-full max-w-4xl bg-contain bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/cancha-futbol.png')" }}
-    >
-        {allActivePlayers.map(playerId => {
-            const player = allPlayers.find(p => p.id === playerId);
-            const position = state.playerPositions[playerId];
-
-            if (!player || !position) return null;
-
-            const isTeamA = state.teamA!.players.some(p => p.id === playerId);
-
-            return (
-                <DraggablePlayer
+    <div className="w-full h-full flex items-center justify-center">
+        {/* Team A Substitutes */}
+        <div className="flex flex-col gap-4 p-4">
+            {substitutePlayersA.map(player => (
+                 <DraggablePlayer
                     key={player.id}
                     player={player}
-                    x={position.x}
-                    y={position.y}
-                    color={isTeamA ? 'blue' : 'red'}
-                    onMove={(x, y) => {
-                        dispatch({
-                            type: 'UPDATE_PLAYER_POSITION',
-                            payload: { playerId: player.id, position: { x, y } }
-                        });
-                    }}
+                    x={0}
+                    y={0}
+                    color='blue'
+                    onMove={(x, y) => {}}
+                    isSubstitute={true}
                 />
-            );
-        })}
+            ))}
+        </div>
+        
+        <div
+        ref={dropRef}
+        className="relative w-full h-full max-w-4xl bg-contain bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/cancha-futbol.png')" }}
+        >
+            {allActivePlayers.map(playerId => {
+                const player = allPlayers.find(p => p.id === playerId);
+                const position = state.playerPositions[playerId];
+
+                if (!player || !position) return null;
+
+                const isTeamA = state.teamA!.players.some(p => p.id === playerId);
+
+                return (
+                    <DraggablePlayer
+                        key={player.id}
+                        player={player}
+                        x={position.x}
+                        y={position.y}
+                        color={isTeamA ? 'blue' : 'red'}
+                        onMove={(x, y) => {
+                            dispatch({
+                                type: 'UPDATE_PLAYER_POSITION',
+                                payload: { playerId: player.id, position: { x, y } }
+                            });
+                        }}
+                    />
+                );
+            })}
+        </div>
+
+        {/* Team B Substitutes */}
+        <div className="flex flex-col gap-4 p-4">
+             {substitutePlayersB.map(player => (
+                 <DraggablePlayer
+                    key={player.id}
+                    player={player}
+                    x={0}
+                    y={0}
+                    color='red'
+                    onMove={(x, y) => {}}
+                    isSubstitute={true}
+                />
+            ))}
+        </div>
     </div>
   );
 }
