@@ -3,9 +3,8 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
-import { CalendarDays, Shield, Users, Trophy, ListChecks, Wrench } from 'lucide-react';
-import prisma from '@/lib/prisma';
-import { type Season } from '@prisma/client';
+import { CalendarDays, Shield, Users, Trophy, ListChecks, Wrench, AlertTriangle } from 'lucide-react';
+import { ClearLocalStorageButton } from '@/components/gestion/ClearLocalStorageButton';
 
 export default async function GestionLigaPage() {
 
@@ -69,6 +68,21 @@ export default async function GestionLigaPage() {
                                 </Link>
                             ))}
                         </div>
+
+                        <Card className="mt-12 border-destructive/50 bg-destructive/5">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2 text-destructive">
+                                    <AlertTriangle className="h-5 w-5" />
+                                    Acciones de Administrador
+                                </CardTitle>
+                                <CardDescription>
+                                    Estas acciones son permanentes y deben usarse con precaución.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <ClearLocalStorageButton />
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
             </main>
