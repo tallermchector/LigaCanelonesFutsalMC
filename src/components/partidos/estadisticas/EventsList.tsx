@@ -31,11 +31,17 @@ const eventDisplayConfig: Record<string, { icon: React.ReactNode; label: string;
 
 const formatTimeFromTotalSeconds = (totalSeconds: number) => {
     const gameDurationPerPeriod = 1200; // 20 mins
-    const period = totalSeconds > gameDurationPerPeriod ? 2 : 1;
-    const timeInPeriod = totalSeconds > gameDurationPerPeriod ? totalSeconds - gameDurationPerPeriod : totalSeconds;
-    const minute = Math.floor(timeInPeriod / 60);
+    let secondsLeft = totalSeconds;
+    let period = 1;
+    if (totalSeconds > gameDurationPerPeriod) {
+        secondsLeft = totalSeconds - gameDurationPerPeriod;
+        period = 2;
+    }
+    const minute = 20 - Math.floor(secondsLeft / 60) - 1;
+    const second = 60 - (secondsLeft % 60);
+    const displayMinute = minute + (period - 1) * 20;
 
-    return { period: `${period}T`, minute: `${minute}'` };
+    return { period: `${period}T`, minute: `${displayMinute}'` };
 }
 
 const PlayerLink = ({ id, name }: { id: number | null, name: string }) => {
@@ -57,13 +63,13 @@ const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team, isT
                 <>
                     <p className="font-semibold text-sm md:text-base text-white truncate">{config.label}</p>
                     <div className="flex flex-col gap-1 w-full text-xs mt-1">
-                        <div className="flex items-center gap-2 text-red-400">
-                            <ArrowRight className="w-3 h-3 shrink-0" />
-                            <Link href={`/jugadores/${event.playerId}`} className="truncate flex-1 hover:underline">{event.playerName} (Sale)</Link>
-                        </div>
                         <div className="flex items-center gap-2 text-green-400">
                             <ArrowLeft className="w-3 h-3 shrink-0" />
                             <Link href={`/jugadores/${event.playerInId}`} className="truncate flex-1 hover:underline">{event.playerInName} (Entra)</Link>
+                        </div>
+                        <div className="flex items-center gap-2 text-red-400">
+                            <ArrowRight className="w-3 h-3 shrink-0" />
+                            <Link href={`/jugadores/${event.playerId}`} className="truncate flex-1 hover:underline">{event.playerName} (Sale)</Link>
                         </div>
                     </div>
                 </>
@@ -83,16 +89,21 @@ const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team, isT
             isTeamA ? 'border-primary/50 hover:border-primary' : 'border-accent/50 hover:border-accent'
         )}>
             <CardContent className="flex items-center gap-3 p-3">
-                {team.logoUrl && (
-                    <Image
-                        src={team.logoUrl}
-                        alt={`${team.name} logo`}
-                        width={32}
-                        height={32}
-                        className="w-8 h-8 object-contain bg-white/10 rounded-full p-1"
-                    />
-                )}
-                <div className="flex-1 min-w-0 text-left">
+                 <div className={cn(
+                    "flex-shrink-0 flex flex-col items-center",
+                    isTeamA ? 'order-1' : 'order-3'
+                 )}>
+                    {team.logoUrl && (
+                        <Image
+                            src={team.logoUrl}
+                            alt={`${team.name} logo`}
+                            width={32}
+                            height={32}
+                            className="w-8 h-8 object-contain bg-white/10 rounded-full p-1"
+                        />
+                    )}
+                 </div>
+                <div className={cn("flex-1 min-w-0", isTeamA ? 'order-2 text-left' : 'order-2 text-right')}>
                     {renderEventContent()}
                 </div>
             </CardContent>
@@ -113,11 +124,11 @@ export function EventsList({ events, teamA, teamB }: EventsListProps) {
   }
 
   return (
-    <div className="relative w-full max-w-sm mx-auto">
+    <div className="relative w-full">
       {/* Central timeline bar */}
-      <div className="absolute left-5 top-0 h-full w-0.5 -translate-x-1/2 bg-white/10" aria-hidden="true"></div>
+      <div className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-white/10" aria-hidden="true"></div>
 
-      <div className="relative flex flex-col items-start gap-y-6">
+      <div className="relative flex flex-col items-center gap-y-6">
         {events.map((event, index) => {
           const config = eventDisplayConfig[event.type];
           if (!config) return null;
@@ -129,13 +140,17 @@ export function EventsList({ events, teamA, teamB }: EventsListProps) {
           return (
             <motion.div 
               key={event.id || index} 
-              className="relative z-10 w-full flex items-start gap-x-4 pl-10"
+              className="relative z-10 w-full grid grid-cols-[1fr_auto_1fr] items-start gap-x-4"
               variants={animationVariants.slideInUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.5 }}
              >
-                <div className="absolute top-0 left-0 flex flex-col items-center">
+                <div className={cn("pt-1 w-full", isTeamA ? 'col-start-1 text-right' : 'col-start-3 text-left')}>
+                     {isTeamA && <EventCard event={event} team={team} isTeamA={isTeamA} />}
+                </div>
+                
+                <div className="col-start-2 flex flex-col items-center">
                     <div className="relative grid h-10 w-10 place-items-center">
                         <div className={cn(
                             "relative z-10 grid h-10 w-10 place-items-center rounded-full border border-white/20 text-white",
@@ -145,12 +160,12 @@ export function EventsList({ events, teamA, teamB }: EventsListProps) {
                         </div>
                     </div>
                      <div className="mt-1.5 font-mono text-xs text-white/80">
-                       <span>{time.period}</span> {time.minute}
+                       <span>{time.minute}</span>
                    </div>
                 </div>
-                
-                <div className="pt-1 w-full">
-                     <EventCard event={event} team={team} isTeamA={isTeamA} />
+
+                 <div className={cn("pt-1 w-full", !isTeamA ? 'col-start-1 text-right' : 'col-start-3 text-left')}>
+                     {!isTeamA && <EventCard event={event} team={team} isTeamA={isTeamA} />}
                 </div>
             </motion.div>
           );

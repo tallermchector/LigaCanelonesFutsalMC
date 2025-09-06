@@ -17,8 +17,7 @@ interface EstadisticasPageProps {
 }
 
 export async function generateMetadata({ params }: EstadisticasPageProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const id = parseInt(resolvedParams.id, 10);
+  const id = parseInt(params.id, 10);
   if (isNaN(id)) {
     return { title: 'Estadísticas no encontradas' };
   }
@@ -44,8 +43,7 @@ export async function generateMetadata({ params }: EstadisticasPageProps): Promi
 }
 
 export default async function EstadisticasPage({ params }: EstadisticasPageProps) {
-  const resolvedParams = await params;
-  const id = parseInt(resolvedParams.id, 10);
+  const id = parseInt(params.id, 10);
   if (isNaN(id)) {
       notFound();
   }
@@ -59,7 +57,7 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
       redirect('/partidos');
   }
 
-  const allEvents = (match.events || []).sort((a, b) => a.timestamp - b.timestamp);
+  const allEvents = (match.events || []).sort((a, b) => b.timestamp - a.timestamp);
   
   // A placeholder function to generate a gradient from team colors
   // In a real app, you would fetch these colors from your DB.
