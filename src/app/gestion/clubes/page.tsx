@@ -23,8 +23,14 @@ export default async function GestionClubesPage() {
                 <div className="container mx-auto p-4 py-8 md:p-8">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                         <div className="lg:col-span-2">
-                             <h2 className="text-2xl font-bold text-primary mb-4">Lista de Clubes</h2>
-                             <ClubDataTable columns={columns} data={teams} />
+                             <Card>
+                                <CardHeader>
+                                    <CardTitle>Lista de Clubes</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <ClubDataTable columns={columns} data={teams} />
+                                </CardContent>
+                            </Card>
                         </div>
                         <div>
                              <Card>
