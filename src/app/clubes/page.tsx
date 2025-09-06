@@ -5,7 +5,6 @@ import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 import { PageHero } from '@/components/layout/PageHero';
 import type { Team } from '@/types';
-import { Shield } from 'lucide-react';
 
 export default async function ClubesPage() {
   const teams: Team[] = await getAllTeams();
@@ -17,7 +16,7 @@ export default async function ClubesPage() {
         <PageHero
           title="Equipos de la Liga"
           description="Conoce a todos los equipos que compiten en la temporada activa."
-          icon={Shield}
+          icon="Shield"
         />
         <div className="container mx-auto p-4 py-8 md:p-8">
             {teams.length > 0 ? (

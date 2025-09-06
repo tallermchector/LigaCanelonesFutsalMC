@@ -3,14 +3,24 @@
 
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
-import { BarChart2 } from 'lucide-react'; // Example icon, can be dynamic
+import { BarChart2, Shield, Users, Trophy } from 'lucide-react'; 
 import { cn } from '@/lib/utils';
+
+type IconName = 'Shield' | 'BarChart2' | 'Users' | 'Trophy';
+
+const iconMap: { [key in IconName]: React.ElementType } = {
+  Shield,
+  BarChart2,
+  Users,
+  Trophy,
+};
+
 
 type PageHeroProps = {
   title: string;
   description?: string;
   children?: React.ReactNode;
-  icon?: React.ElementType;
+  icon?: IconName;
 };
 
 const containerVariants: Variants = {
@@ -29,7 +39,9 @@ const itemVariants: Variants = {
   show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 15 } },
 };
 
-export function PageHero({ title, description, icon: Icon, children }: PageHeroProps) {
+export function PageHero({ title, description, icon, children }: PageHeroProps) {
+  const Icon = icon ? iconMap[icon] : null;
+
   return (
     <motion.section 
       className="relative bg-secondary/30 py-16 md:py-24 text-foreground overflow-hidden"
