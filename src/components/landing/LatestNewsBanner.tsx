@@ -55,6 +55,7 @@ const SmallPostCard = ({ post }: { post: Post }) => (
         <div className="flex-grow">
             <p className="text-primary text-sm font-semibold">{post.category}</p>
             <h4 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">{post.title}</h4>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{post.excerpt}</p>
         </div>
     </Link>
 )
