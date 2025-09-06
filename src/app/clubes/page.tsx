@@ -16,7 +16,7 @@ export default async function ClubesPage() {
         <PageHero
           title="Equipos de la Liga"
           description="Conoce a todos los equipos que compiten en la temporada activa."
-          icon="Shield"
+          icon={true}
         />
         <div className="container mx-auto p-4 py-8 md:p-8">
             {teams.length > 0 ? (

@@ -3,24 +3,14 @@
 
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
-import { BarChart2, Shield, Users, Trophy } from 'lucide-react'; 
+import { FutsalBallIcon } from '@/components/icons'; 
 import { cn } from '@/lib/utils';
-
-type IconName = 'Shield' | 'BarChart2' | 'Users' | 'Trophy';
-
-const iconMap: { [key in IconName]: React.ElementType } = {
-  Shield,
-  BarChart2,
-  Users,
-  Trophy,
-};
-
 
 type PageHeroProps = {
   title: string;
   description?: string;
   children?: React.ReactNode;
-  icon?: IconName;
+  icon?: boolean; // Changed to a boolean to control visibility
 };
 
 const containerVariants: Variants = {
@@ -40,8 +30,6 @@ const itemVariants: Variants = {
 };
 
 export function PageHero({ title, description, icon, children }: PageHeroProps) {
-  const Icon = icon ? iconMap[icon] : null;
-
   return (
     <motion.section 
       className="relative bg-secondary/30 py-16 md:py-24 text-foreground overflow-hidden"
@@ -53,10 +41,10 @@ export function PageHero({ title, description, icon, children }: PageHeroProps) 
       <div className="absolute inset-0 bg-gradient-to-b from-secondary/10 via-transparent to-secondary/20"></div>
       
       <div className="relative container mx-auto px-4 text-center">
-        {Icon && (
+        {icon && (
           <motion.div variants={itemVariants} className="flex justify-center mb-4">
               <div className="p-3 bg-primary/10 border-2 border-primary/20 rounded-full">
-                <Icon className="h-8 w-8 text-primary" />
+                <FutsalBallIcon className="h-8 w-8 text-primary" />
               </div>
           </motion.div>
         )}
