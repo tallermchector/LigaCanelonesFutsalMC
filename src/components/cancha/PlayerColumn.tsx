@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from "react";
@@ -27,17 +26,15 @@ const PlayerButton = ({ player, teamId }: { player: Player, teamId: 'A' | 'B'}) 
     return (
         <Popover open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <PopoverTrigger asChild>
-                <Button 
-                    variant={teamId === 'A' ? 'accent-blue' : 'accent-red'}
-                    className="w-full justify-start p-3 h-auto text-left"
-                    onClick={handlePlayerSelect}
-                >
-                    <span className="text-2xl font-bold w-10">{player.number}</span>
-                    <div className="flex flex-col">
-                        <span className="font-semibold">{player.name}</span>
-                        <span className="text-xs opacity-80">{player.position}</span>
-                    </div>
-                </Button>
+                <div className="flex flex-col items-center gap-1">
+                    <Button 
+                        variant={teamId === 'A' ? 'accent-blue' : 'accent-red'}
+                        className="w-16 h-16 rounded-full text-xl font-bold flex items-center justify-center p-0"
+                    >
+                        {player.number}
+                    </Button>
+                    <span className="text-xs font-semibold text-white/80 w-20 text-center truncate">{player.name}</span>
+                </div>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-1 bg-gray-900/80 border-gray-700 text-white backdrop-blur-md">
                  <ActionMenu player={player} onAction={() => setIsMenuOpen(false)} />
@@ -58,7 +55,7 @@ export function PlayerColumn({ teamId }: PlayerColumnProps) {
             .sort((a, b) => {
                 if (a.position === 'GOLERO' && b.position !== 'GOLERO') return -1;
                 if (a.position !== 'GOLERO' && b.position === 'GOLERO') return 1;
-                return 0; // Mantener el orden original para los demás
+                return 0; // Maintain original order for others
             });
     }, [team, activePlayers]);
 
@@ -74,18 +71,20 @@ export function PlayerColumn({ teamId }: PlayerColumnProps) {
             "h-full flex flex-col border-2",
             teamId === 'A' ? 'border-blue-500/50 bg-blue-900/20' : 'border-red-500/50 bg-red-900/20'
         )}>
-            <CardContent className="flex-grow p-2 md:p-4 flex flex-col justify-center gap-4">
+            <CardContent className="flex-grow p-2 md:p-4 flex flex-col justify-center items-center gap-4">
+                
                 {/* Goalkeeper Row */}
-                <div className="flex justify-center">
+                <div className="flex justify-center w-full">
                     {goalkeeper && <PlayerButton player={goalkeeper} teamId={teamId} />}
                 </div>
 
                 {/* Field Players Rows */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-6">
                     {fieldPlayers.map(player => (
                         <PlayerButton key={player.id} player={player} teamId={teamId} />
                     ))}
                 </div>
+
             </CardContent>
         </Card>
     )
