@@ -162,7 +162,7 @@ export function PlayByPlayFeed({ events, teamA, teamB }: PlayByPlayFeedProps) {
     return timeElapsed;
   }
 
-  const sortedEvents = [...allEvents].sort((a, b) => getAbsoluteTime(a) - getAbsoluteTime(b));
+  const sortedEvents = [...allEvents].sort((a, b) => getAbsoluteTime(b) - getAbsoluteTime(a)).reverse();
 
   return (
     <Card className="shadow-lg bg-card/50">
