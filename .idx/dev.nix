@@ -10,6 +10,7 @@
     pkgs.bun
     pkgs.openssl
     pkgs.python313
+    pkgs.tree
   ];
   # Sets environment variables in the workspace
   env = {};
