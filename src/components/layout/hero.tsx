@@ -71,7 +71,7 @@ export default function Hero() {
             {/* Main Title with Animation */}
             <div className="relative">
               <h1
-                className={`text-5xl md:text-7xl lg:text-8xl font-black tracking-tight transition-all duration-1500 ease-out ${
+                className={`text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight transition-all duration-1500 ease-out ${
                   isLoaded
                     ? 'opacity-100 translate-y-0'
                     : 'opacity-0 translate-y-8'
@@ -96,7 +96,7 @@ export default function Hero() {
 
             {/* Subtitle with Delay Animation */}
             <p
-              className={`mt-8 text-xl md:text-2xl leading-relaxed text-gray-200 max-w-4xl mx-auto font-light transition-all duration-1500 ease-out ${
+              className={`mt-8 text-lg md:text-2xl leading-relaxed text-gray-200 max-w-4xl mx-auto font-light transition-all duration-1500 ease-out ${
                 isLoaded
                   ? 'opacity-100 translate-y-0'
                   : 'opacity-0 translate-y-8'
@@ -109,7 +109,7 @@ export default function Hero() {
 
             {/* Enhanced Action Buttons */}
             <div
-              className={`mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 transition-all duration-1500 ease-out ${
+              className={`mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 transition-all duration-1500 ease-out ${
                 isLoaded
                   ? 'opacity-100 translate-y-0'
                   : 'opacity-0 translate-y-8'
@@ -118,23 +118,23 @@ export default function Hero() {
             >
               <Link
                 href="/partidos"
-                className="group relative px-8 py-4 text-lg font-bold text-white rounded-2xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-red-500/25"
+                className="group relative px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-bold text-white rounded-2xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-red-500/25 w-full sm:w-auto"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-red-800"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-red-600 to-red-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center justify-center gap-2">
                   ⚽ Ver Partidos
                 </span>
               </Link>
 
               <Link
                 href="/posiciones"
-                className="group relative px-8 py-4 text-lg font-bold text-gray-900 bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-white/25"
+                className="group relative px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-bold text-gray-900 bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-white/25 w-full sm:w-auto"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/90 to-gray-100/90"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center justify-center gap-2">
                   🏆 Ver Posiciones
                 </span>
               </Link>
