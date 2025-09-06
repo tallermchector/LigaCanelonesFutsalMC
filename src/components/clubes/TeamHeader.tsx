@@ -3,7 +3,7 @@
 
 import type { Team } from '@/types';
 import Image from 'next/image';
-import { Users, Shield, Hash, BarChart2 } from 'lucide-react';
+import { Users, BarChart2, Clock, Goal } from 'lucide-react';
 
 const Stat = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: number | string }) => (
     <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-black/20 backdrop-blur-sm text-white">
@@ -14,6 +14,24 @@ const Stat = ({ icon: Icon, label, value }: { icon: React.ElementType, label: st
 )
 
 export const TeamHeader = ({ team }: { team: Team }) => {
+    const finishedMatches = team.matches?.filter(m => m.status === 'FINISHED') || [];
+    const totalMatchesPlayed = finishedMatches.length;
+
+    const totalMinutesPlayed = finishedMatches.reduce((acc) => {
+        // Assuming each match is 40 minutes (2 periods of 20 minutes)
+        // This could be more accurate if match duration is stored
+        return acc + 40; 
+    }, 0);
+
+    const totalGoalsScored = finishedMatches.reduce((acc, match) => {
+        if (match.teamAId === team.id) return acc + (match.scoreA || 0);
+        if (match.teamBId === team.id) return acc + (match.scoreB || 0);
+        return acc;
+    }, 0);
+
+    const averageGoals = totalMatchesPlayed > 0 ? (totalGoalsScored / totalMatchesPlayed).toFixed(1) : '0';
+
+
   return (
     <section className="relative bg-secondary/30 py-16 text-foreground">
          <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
@@ -33,9 +51,9 @@ export const TeamHeader = ({ team }: { team: Team }) => {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 border-t border-primary/20 pt-8">
                 <Stat icon={Users} label="Jugadores" value={team.players.length} />
-                <Stat icon={Shield} label="Posición" value={1} />
-                <Stat icon={Hash} label="Partidos Jugados" value={team.matches?.length || 0} />
-                <Stat icon={BarChart2} label="Goles a Favor" value={0} />
+                <Stat icon={BarChart2} label="Partidos Jugados" value={totalMatchesPlayed} />
+                <Stat icon={Clock} label="Minutos Jugados" value={totalMinutesPlayed} />
+                <Stat icon={Goal} label="Prom. Goles" value={averageGoals} />
             </div>
          </div>
     </section>
