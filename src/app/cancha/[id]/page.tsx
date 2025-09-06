@@ -12,6 +12,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TacticalHeader } from '@/components/cancha/TacticalHeader';
 import { PlayerColumn } from '@/components/cancha/PlayerColumn';
+import { TacticalActions } from '@/components/cancha/TacticalActions';
 
 
 function TacticalBoardSkeleton() {
@@ -49,6 +50,11 @@ export default function TacticalBoardPage() {
     
     const [match, setMatch] = useState<FullMatch | null>(null);
     const [loading, setLoading] = useState(true);
+    const [visiblePanel, setVisiblePanel] = useState<'A' | 'B' | null>(null);
+
+    const handleTogglePanel = (panel: 'A' | 'B') => {
+        setVisiblePanel(current => (current === panel ? null : panel));
+    };
 
     useEffect(() => {
         if (matchId) {
@@ -92,6 +98,10 @@ export default function TacticalBoardPage() {
                        <PlayerColumn teamId="A" />
                        <PlayerColumn teamId="B" />
                     </main>
+
+                     <footer className="flex-shrink-0 z-20">
+                        <TacticalActions onTogglePanel={handleTogglePanel} visiblePanel={visiblePanel} />
+                    </footer>
 
                 </div>
             </DndProvider>
