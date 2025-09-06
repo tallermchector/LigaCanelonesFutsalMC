@@ -11,9 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ArrowDown, ArrowUp, Minus } from 'lucide-react';
+import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import Link from 'next/link';
 
 interface StandingsTableProps {
@@ -21,7 +21,7 @@ interface StandingsTableProps {
   standings: (SeasonTeamWithTeam & { team: Team })[];
 }
 
-const STAT_COLUMNS = ['PJ', 'PG', 'PE', 'PP', 'GF', 'GC', 'DG'];
+const STAT_COLUMNS = ['PJ', 'G', 'E', 'P', 'GF', 'GC', 'DG'];
 
 const renderTrendIcon = (trend: 'up' | 'down' | 'same') => {
     switch (trend) {
@@ -34,6 +34,24 @@ const renderTrendIcon = (trend: 'up' | 'down' | 'same') => {
     }
 }
 
+const MatchResultIndicator = ({ result }: { result: 'W' | 'D' | 'L' | 'N' }) => {
+    const baseClasses = "h-2.5 w-2.5 rounded-full";
+    const variantClasses = {
+        W: "bg-green-500",
+        D: "bg-gray-400",
+        L: "bg-red-500",
+        N: "bg-gray-200 dark:bg-gray-700",
+    };
+    return <div className={cn(baseClasses, variantClasses[result])}></div>
+}
+
+const LegendItem = ({ color, label }: { color: string, label: string }) => (
+    <div className="flex items-center gap-2">
+        <div className={cn("h-2.5 w-2.5 rounded-full", color)}></div>
+        <span className="text-xs text-muted-foreground">{label}</span>
+    </div>
+)
+
 export function StandingsTable({ standings }: StandingsTableProps) {
   if (standings.length === 0) {
     return (
@@ -45,57 +63,80 @@ export function StandingsTable({ standings }: StandingsTableProps) {
     );
   }
 
+  // Mocked recent results for display purposes
+  const recentResults: ('W' | 'D' | 'L' | 'N')[] = ['W', 'D', 'L', 'W', 'W'];
+
   return (
     <Card className="overflow-hidden shadow-lg">
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              <TableHead className="w-12 text-center font-bold">#</TableHead>
-              <TableHead className="font-bold min-w-[200px]">Equipo</TableHead>
-              <TableHead className="w-16 text-center font-bold text-primary">PTS</TableHead>
-              {STAT_COLUMNS.map(col => (
-                <TableHead key={col} className="w-12 text-center font-bold text-muted-foreground">{col}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {standings.map((entry, index) => {
-              const teamSlug = entry.team.slug || entry.team.name.toLowerCase().replace(/\s+/g, '-');
-              return (
-              <TableRow key={entry.teamId} className="hover:bg-muted/30">
-                <TableCell className="font-bold text-center text-muted-foreground">
-                    <div className="flex items-center justify-center gap-2">
-                         {/* Placeholder para el icono de tendencia */}
-                        {renderTrendIcon('same')}
-                        <span>{entry.position}</span>
-                    </div>
-                </TableCell>
-                <TableCell>
-                  <Link href={`/clubes/${teamSlug}`} className="flex items-center gap-3 group">
-                    <Image
-                      src={entry.team.logoUrl || '/logofu.svg'}
-                      alt={`Logo de ${entry.team.name}`}
-                      width={28}
-                      height={28}
-                      className="aspect-square object-contain transition-transform group-hover:scale-110"
-                    />
-                    <span className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">{entry.team.name}</span>
-                  </Link>
-                </TableCell>
-                <TableCell className="text-center font-bold text-lg text-primary tabular-nums">{entry.points}</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.played}</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.wins}</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.draws}</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.losses}</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalsFor}</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalsAgainst}</TableCell>
-                <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalDifference}</TableCell>
-              </TableRow>
-            )})}
-          </TableBody>
-        </Table>
-      </div>
+      <CardHeader>
+          <CardTitle>Tabla de Posiciones</CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="overflow-x-auto">
+            <Table>
+            <TableHeader className="bg-muted/50">
+                <TableRow>
+                <TableHead className="w-12 text-center font-bold">#</TableHead>
+                <TableHead className="font-bold min-w-[200px]">Equipo</TableHead>
+                <TableHead className="w-16 text-center font-bold text-primary">Pts</TableHead>
+                {STAT_COLUMNS.map(col => (
+                    <TableHead key={col} className="w-12 text-center font-bold text-muted-foreground">{col}</TableHead>
+                ))}
+                <TableHead className="w-28 text-center font-bold text-muted-foreground">Resultados</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {standings.map((entry, index) => {
+                const teamSlug = entry.team.slug || entry.team.name.toLowerCase().replace(/\s+/g, '-');
+                // Mock trend data
+                const trend: 'up' | 'down' | 'same' = index % 3 === 0 ? 'up' : index % 3 === 1 ? 'down' : 'same';
+                return (
+                <TableRow key={entry.teamId} className="hover:bg-muted/30">
+                    <TableCell className="font-bold text-center text-muted-foreground">
+                        <div className="flex items-center justify-center gap-2">
+                            {renderTrendIcon(trend)}
+                            <span>{entry.position}</span>
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                    <Link href={`/clubes/${teamSlug}`} className="flex items-center gap-3 group">
+                        <Image
+                        src={entry.team.logoUrl || '/logofu.svg'}
+                        alt={`Logo de ${entry.team.name}`}
+                        width={28}
+                        height={28}
+                        className="aspect-square object-contain transition-transform group-hover:scale-110"
+                        />
+                        <span className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">{entry.team.name}</span>
+                    </Link>
+                    </TableCell>
+                    <TableCell className="text-center font-bold text-lg text-primary tabular-nums">{entry.points}</TableCell>
+                    <TableCell className="text-center text-muted-foreground tabular-nums">{entry.played}</TableCell>
+                    <TableCell className="text-center text-muted-foreground tabular-nums">{entry.wins}</TableCell>
+                    <TableCell className="text-center text-muted-foreground tabular-nums">{entry.draws}</TableCell>
+                    <TableCell className="text-center text-muted-foreground tabular-nums">{entry.losses}</TableCell>
+                    <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalsFor}</TableCell>
+                    <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalsAgainst}</TableCell>
+                    <TableCell className="text-center text-muted-foreground tabular-nums">{entry.goalDifference}</TableCell>
+                    <TableCell>
+                        <div className="flex items-center justify-center gap-1">
+                            {recentResults.slice(0, 5).map((result, i) => (
+                                <MatchResultIndicator key={i} result={result} />
+                            ))}
+                        </div>
+                    </TableCell>
+                </TableRow>
+                )})}
+            </TableBody>
+            </Table>
+        </div>
+      </CardContent>
+      <CardFooter className="bg-muted/50 p-4 flex flex-wrap gap-x-4 gap-y-2">
+          <LegendItem color="bg-green-500" label="Victoria" />
+          <LegendItem color="bg-gray-400" label="Empate" />
+          <LegendItem color="bg-red-500" label="Derrota" />
+          <LegendItem color="bg-gray-200 dark:bg-gray-700" label="No Disputado" />
+      </CardFooter>
     </Card>
   );
 }
