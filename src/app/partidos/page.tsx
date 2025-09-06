@@ -1,6 +1,6 @@
 
 'use client';
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { getAllMatches } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -184,7 +184,7 @@ export default function PartidosPage() {
   const [selectedRound, setSelectedRound] = useState<number | 'all'>('all');
 
   useEffect(() => {
-    getAllMatchesFromDb().then(data => {
+    getAllMatches().then(data => {
         setAllMatches(data);
         setLoading(false);
     });

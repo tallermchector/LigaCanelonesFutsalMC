@@ -10,7 +10,7 @@ import { SocialsBanner } from '@/components/landing/SocialsBanner';
 import { LatestNewsBanner } from '@/components/landing/LatestNewsBanner';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { getAllMatches } from '@/actions/prisma-actions';
 import type { FullMatch } from './types';
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllMatchesFromDb().then(matches => {
+    getAllMatches().then(matches => {
         setFinishedMatches(matches.filter(m => m.status === 'FINISHED'));
         setLoading(false);
     });

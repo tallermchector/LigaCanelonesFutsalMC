@@ -6,7 +6,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { PageHero } from '@/components/layout/PageHero';
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { getAllMatches } from '@/actions/prisma-actions';
 import { getAllSeasonsWithTeams } from '@/actions/season-actions';
 import type { FullMatch, Team } from '@/types';
 import type { Season } from '@prisma/client';
@@ -29,7 +29,7 @@ export default function GestionPartidosPage() {
         async function loadData() {
             setLoading(true);
             const [matchesData, seasonsData] = await Promise.all([
-                getAllMatchesFromDb(),
+                getAllMatches(),
                 getAllSeasonsWithTeams() as Promise<SeasonWithTeams[]>
             ]);
             setMatches(matchesData);

@@ -1,6 +1,6 @@
 
 import { MetadataRoute } from 'next';
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { getAllMatches } from '@/actions/prisma-actions';
 import { getPosts } from '@/actions/blog-actions';
 import { getAllTeams } from '@/actions/team-actions';
 
@@ -25,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
   
   // Páginas dinámicas de partidos
-  const allMatches = await getAllMatchesFromDb();
+  const allMatches = await getAllMatches();
   const matchRoutes = allMatches.map((match) => ({
     url: `${baseUrl}/partidos/${match.id}`,
     lastModified: new Date(match.scheduledTime).toISOString(),

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { getAllMatches } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,7 +16,7 @@ export default function BannerSelectionPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      getAllMatchesFromDb().then(matches => {
+      getAllMatches().then(matches => {
           setLiveMatches(matches.filter(match => match.status === 'LIVE'));
           setLoading(false);
       });

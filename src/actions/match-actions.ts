@@ -6,7 +6,7 @@ import prisma from '@/lib/prisma';
 // FIX: Import Prisma-generated types directly from '@prisma/client'
 import type { Team, Player, GameEvent as PrismaGameEvent, Match, PlayerMatchStats, Prisma, MatchStatus, EventType } from '@prisma/client';
 // FIX: Keep client-specific types from the local types file
-import type { FullMatch as ClientFullMatch, GameState, GameEvent as ClientGameEvent } from '@/types';
+import type { GameState, GameEvent as ClientGameEvent } from '@/types';
 import { revalidatePath } from 'next/cache';
 
 // --- Type Definitions for this Action File ---
@@ -108,8 +108,8 @@ export async function createMatch(data: {
     teamBId: number;
     scheduledTime: Date;
     round: number;
-    seasonId: number; // FIX: Added seasonId to align with schema
-}): Promise<Match> {
+    seasonId: number;
+}): Promise<FullMatch> { // Return FullMatch to include relations
     const newMatch = await prisma.match.create({
         data: {
             ...data,
@@ -128,7 +128,14 @@ export async function createMatch(data: {
         }
     });
     revalidatePath('/gestion/partidos');
-    return newMatch;
+    
+    // FIX: Re-fetch the match to include all relations and return the full object.
+    // This solves type errors when updating the client-side state.
+    const fullNewMatch = await getMatchById(newMatch.id);
+    if (!fullNewMatch) {
+        throw new Error("Failed to re-fetch newly created match.");
+    }
+    return fullNewMatch;
 }
 
 export async function updateMatchStatus(matchId: number, status: MatchStatus): Promise<void> {
@@ -161,6 +168,8 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
             },
         });
 
+        // FIX: This logic is now safer. It filters out players not found in the state and ensures
+        // the transaction array only contains valid Prisma promises.
         const playerStatPromises = Object.entries(playerTimeTracker).map(([playerIdStr, stats]) => {
             const playerId = parseInt(playerIdStr, 10);
             const player = state.teamA?.players.find(p => p.id === playerId) || state.teamB?.players.find(p => p.id === playerId);
@@ -178,7 +187,7 @@ export async function saveMatchState(matchId: number, state: GameState): Promise
                     // FIX: Removed teamId as it's not in the schema for this model
                 },
             });
-        }).filter((p): p is NonNullable<typeof p> => p !== null); // FIX: Filter out null values to ensure a safe transaction array
+        }).filter((p): p is NonNullable<typeof p> => p !== null);
 
         // FIX: Ensure the transaction only receives valid Prisma promises
         await prisma.$transaction([updateMatchPromise, ...playerStatPromises]);

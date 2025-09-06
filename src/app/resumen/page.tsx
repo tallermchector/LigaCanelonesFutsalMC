@@ -1,6 +1,6 @@
 'use client';
 
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { getAllMatches } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { PageHero } from '@/components/layout/PageHero';
@@ -33,7 +33,7 @@ export default function ResumenSelectionPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllMatchesFromDb().then(matches => {
+    getAllMatches().then(matches => {
         setAllMatches(matches);
         setLoading(false);
     });

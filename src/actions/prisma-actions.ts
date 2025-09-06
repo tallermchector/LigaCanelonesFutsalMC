@@ -2,16 +2,16 @@
 
 'use server';
 
-import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, GameEventType, Player, PlayerPositionType } from '@/types';
+import type { GameState, FullMatch, MatchStats, GameEvent, MatchStatus, PlayerPositionType, Player } from '@/types';
 import { 
     createMatch as createMatchInDb, 
     updateMatchStatus as updateMatchStatusInDb, 
-    getAllMatches as getAllMatchesFromDbInDb, 
-    getMatchById as getMatchByIdFromDbInDb,
+    getAllMatches as getAllMatchesFromDb, 
+    getMatchById as getMatchByIdFromDb,
     saveMatchState as saveMatchStateInDb, 
     createGameEvent as createGameEventInDb 
 } from './match-actions';
-import type { FullMatch as ActionFullMatch } from './match-actions';
+import type { FullMatch as ActionFullMatch, GameEventType } from './match-actions';
 
 
 function toClientFullMatch(match: ActionFullMatch): FullMatch {
@@ -40,8 +40,8 @@ function toClientFullMatch(match: ActionFullMatch): FullMatch {
  * @param {number} id - The ID of the match to retrieve.
  * @returns {Promise<FullMatch | undefined>} A promise that resolves to the full match object, or undefined if not found.
  */
-export async function getMatchByIdFromDb(id: number): Promise<FullMatch | undefined> {
-   const match = await getMatchByIdFromDbInDb(id);
+export async function getMatchById(id: number): Promise<FullMatch | undefined> {
+   const match = await getMatchByIdFromDb(id);
    if (!match) return undefined;
    return toClientFullMatch(match);
 }
@@ -51,8 +51,8 @@ export async function getMatchByIdFromDb(id: number): Promise<FullMatch | undefi
  *
  * @returns {Promise<FullMatch[]>} A promise that resolves to an array of all matches.
  */
-export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
-   const matches = await getAllMatchesFromDbInDb();
+export async function getAllMatches(): Promise<FullMatch[]> {
+   const matches = await getAllMatchesFromDb();
    return matches.map(toClientFullMatch);
 }
 
@@ -63,11 +63,11 @@ export async function getAllMatchesFromDb(): Promise<FullMatch[]> {
  * @param {number} id - The ID of the match to retrieve statistics for.
  * @returns {Promise<MatchStats | undefined>} A promise that resolves to the match statistics, or undefined if the match is not found.
  */
-export async function getMatchStatsFromDb(id: number): Promise<MatchStats | undefined> {
-  // This function is a placeholder as getMatchStatsFromDb doesn't exist in match-actions.
+export async function getMatchStats(id: number): Promise<MatchStats | undefined> {
+  // This function is a placeholder as getMatchStats doesn't exist in match-actions.
   // To make this compile, we'll temporarily use getMatchById and cast the result.
   // This should be replaced with a proper implementation.
-  const match = await getMatchByIdFromDbInDb(id);
+  const match = await getMatchByIdFromDb(id);
   if (!match) return undefined;
   
   const getPlayerStats = (eventType: GameEventType) => {
@@ -122,6 +122,8 @@ export async function createMatch(data: {
     seasonId: number;
 }): Promise<FullMatch> {
     const newMatch = await createMatchInDb(data);
+    // The `createMatchInDb` now returns a FullMatch, which already includes relations.
+    // We just need to convert the Date object to a string for the client.
     return toClientFullMatch(newMatch);
 }
 

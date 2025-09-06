@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/carousel";
 import { LiveMatchCard } from './LiveMatchCard';
 import type { FullMatch } from '@/types';
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { getAllMatches } from '@/actions/prisma-actions';
 import { Skeleton } from '../ui/skeleton';
 
 
@@ -33,7 +33,7 @@ export function LiveMatchesBanner() {
 
   useEffect(() => {
     const fetchMatches = () => {
-        getAllMatchesFromDb().then(matches => {
+        getAllMatches().then(matches => {
             setLiveMatches(matches.filter(m => m.status === 'LIVE'));
             setLoading(false);
         });

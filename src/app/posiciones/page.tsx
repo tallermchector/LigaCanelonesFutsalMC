@@ -11,7 +11,7 @@ import type { Team, SeasonTeam, FullMatch, Player, PlayerWithStats } from '@/typ
 import { useEffect, useState } from 'react';
 import { getAllTeams } from '@/actions/team-actions';
 import { ScheduleCalendar } from '@/components/posiciones/ScheduleCalendar';
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { getAllMatches } from '@/actions/prisma-actions';
 import { Trophy } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -44,7 +44,7 @@ export default function PosicionesPage() {
         allPlayers.sort((a, b) => b.goals - a.goals);
         setPlayers(allPlayers as PlayerWithStats[]);
       } else if (activeTab === 'calendario' && !matches) {
-        const matchesData = await getAllMatchesFromDb();
+        const matchesData = await getAllMatches();
         setMatches(matchesData as FullMatch[]);
       }
     };

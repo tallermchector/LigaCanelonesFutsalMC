@@ -1,4 +1,4 @@
-import { getMatchByIdFromDb } from '@/actions/prisma-actions';
+import { getMatchById } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import type { FullMatch } from '@/types';
 import { notFound } from 'next/navigation';
@@ -17,7 +17,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
         notFound();
     }
 
-    const initialMatch: FullMatch | undefined = await getMatchByIdFromDb(matchId);
+    const initialMatch: FullMatch | undefined = await getMatchById(matchId);
 
     if (!initialMatch) {
         notFound();

@@ -10,7 +10,7 @@ import { PageHero } from '@/components/layout/PageHero';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { getAllMatches } from '@/actions/prisma-actions';
 import type { FullMatch, MatchStatus } from '@/types';
 import { ArrowRight } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -98,7 +98,7 @@ export default function CanchaSelectionPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllMatchesFromDb().then(data => {
+    getAllMatches().then(data => {
       setMatches(data);
       setLoading(false);
     });

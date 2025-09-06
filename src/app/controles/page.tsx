@@ -7,7 +7,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ControlMatchCard } from '@/components/controles/ControlMatchCard';
 import { MatchListSkeleton } from '@/components/controles/MatchListSkeleton';
 import { useToast } from '@/hooks/use-toast';
-import { getAllMatchesFromDb } from '@/actions/prisma-actions';
+import { getAllMatches } from '@/actions/prisma-actions';
 import type { FullMatch, MatchStatus } from '@/types';
 import {
   Carousel,
@@ -69,7 +69,7 @@ export default function ControlesPage() {
       setLoading(true);
       setError(null);
       try {
-        const fetchedMatches = await getAllMatchesFromDb();
+        const fetchedMatches = await getAllMatches();
         setMatches(fetchedMatches);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'No se pudieron cargar los partidos.';

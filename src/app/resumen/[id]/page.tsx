@@ -1,6 +1,6 @@
 
 import { notFound } from 'next/navigation';
-import { getMatchStatsFromDb } from '@/actions/prisma-actions';
+import { getMatchStats } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { MatchSummaryHeader } from '@/components/resumen/MatchSummaryHeader';
@@ -21,7 +21,7 @@ export async function generateMetadata(props: ResumenPageProps): Promise<Metadat
   if (isNaN(id)) {
       return { title: 'Resumen no encontrado' };
   }
-  const match = await getMatchStatsFromDb(id);
+  const match = await getMatchStats(id);
 
   if (!match) {
     return {
@@ -49,7 +49,7 @@ export default async function ResumenPage(props: ResumenPageProps) {
   if (isNaN(id)) {
      notFound();
  }
-  const match = await getMatchStatsFromDb(id);
+  const match = await getMatchStats(id);
 
   if (!match) {
     notFound();

@@ -1,6 +1,6 @@
 
 import { notFound, redirect } from 'next/navigation';
-import { getMatchStatsFromDb } from '@/actions/prisma-actions';
+import { getMatchStats } from '@/actions/prisma-actions';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { EventsList } from '@/components/partidos/estadisticas/EventsList';
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: EstadisticasPageProps): Promi
   if (isNaN(id)) {
     return { title: 'Estadísticas no encontradas' };
   }
-  const match = await getMatchStatsFromDb(id);
+  const match = await getMatchStats(id);
 
   if (!match) {
     return {
@@ -49,7 +49,7 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
   if (isNaN(id)) {
       notFound();
   }
-  const match = await getMatchStatsFromDb(id);
+  const match = await getMatchStats(id);
 
   if (!match) {
     notFound();
