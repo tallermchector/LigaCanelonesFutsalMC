@@ -112,7 +112,13 @@ function MatchItem({ match }: { match: FullMatch }) {
   const renderScoreOrTime = () => {
     switch (status) {
       case 'FINISHED':
-        return <div className="text-2xl font-bold tabular-nums">{scoreA} - {scoreB}</div>;
+        return (
+          <div className="text-2xl font-bold tabular-nums flex items-center justify-center gap-x-2">
+            <span className={cn(scoreA > scoreB && 'text-green-500')}>{scoreA}</span>
+            <span>-</span>
+            <span className={cn(scoreB > scoreA && 'text-green-500')}>{scoreB}</span>
+          </div>
+        );
       case 'LIVE':
         return (
           <div className="flex flex-col items-center">
