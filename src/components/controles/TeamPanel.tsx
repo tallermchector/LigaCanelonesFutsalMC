@@ -15,11 +15,11 @@ import { cn } from '@/lib/utils';
 
 interface TeamPanelProps {
   teamId: 'A' | 'B';
+  variant?: 'default' | 'cancha';
 }
 
-export function TeamPanel({ teamId }: TeamPanelProps) {
+export function TeamPanel({ teamId, variant = 'default' }: TeamPanelProps) {
   const { state, dispatch, createGameEvent } = useGame();
-  const pathname = usePathname();
   
   const team = teamId === 'A' ? state.teamA : state.teamB;
   const { selectedPlayer, substitutionState, status } = state;
@@ -27,7 +27,7 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
 
   if (!team || !team.players) return null;
 
-  const isCanchaPage = pathname.includes('/cancha/');
+  const isCanchaVariant = variant === 'cancha';
 
   const handlePlayerSelect = (playerId: number) => {
     const payload: SelectedPlayer = { teamId, playerId };
@@ -74,15 +74,13 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
   const getPlayerVariant = (playerId: number, isSelected: boolean) => {
       const isActive = activePlayers.includes(playerId);
 
-      if (isCanchaPage) {
+      if (isCanchaVariant) {
           if (isPlayerBeingSubbedOut(playerId)) return 'destructive';
           if (isSelected) return teamId === 'A' ? 'cancha-blue-selected' : 'cancha-red-selected';
           if (isActive) return 'cancha-active';
           return 'cancha-inactive';
       }
       
-      const accentColorClass = teamId === 'A' ? 'accent-blue' : 'accent-red';
-
       if (isPlayerBeingSubbedOut(playerId)) return 'destructive';
       if (isSelected) return teamId === 'A' ? 'accent-blue' : 'accent-red';
       if (isActive) return 'default';
@@ -139,9 +137,9 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
 
 
   return (
-    <Card className={cn("h-full flex flex-col", isCanchaPage && "bg-gray-800/90 border-gray-700 text-white")}>
+    <Card className={cn("h-full flex flex-col", isCanchaVariant && "bg-gray-800/90 border-gray-700 text-white")}>
       <CardHeader className="flex-shrink-0">
-        <CardTitle className={cn("text-center text-primary", isCanchaPage && (teamId === 'A' ? "text-blue-400" : "text-red-400"))}>{team.name}</CardTitle>
+        <CardTitle className={cn("text-center text-primary", isCanchaVariant && (teamId === 'A' ? "text-blue-400" : "text-red-400"))}>{team.name}</CardTitle>
         <div className="text-center text-sm text-muted-foreground font-semibold flex items-center justify-center gap-2">
             <Shirt className="h-4 w-4" />
             <span>Activos: {activePlayers.length} / 5</span>
@@ -155,7 +153,7 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
           ) : (
             <>
               {/* Starters */}
-              {!isCanchaPage && (
+              {!isCanchaVariant && (
                 <div>
                     <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Titulares</h3>
                     <div className="flex flex-wrap items-start justify-center gap-4">
@@ -166,9 +164,9 @@ export function TeamPanel({ teamId }: TeamPanelProps) {
               
               {/* Substitutes */}
               {!substitutionState && (
-                <div className={!isCanchaPage ? "mt-4" : ""}>
-                    {!isCanchaPage && <Separator className="my-2" />}
-                    <h3 className={cn("px-2 mb-2 text-sm font-semibold", isCanchaPage ? "text-gray-400" : "text-muted-foreground")}>Suplentes</h3>
+                <div className={!isCanchaVariant ? "mt-4" : ""}>
+                    {!isCanchaVariant && <Separator className="my-2" />}
+                    <h3 className={cn("px-2 mb-2 text-sm font-semibold", isCanchaVariant ? "text-gray-400" : "text-muted-foreground")}>Suplentes</h3>
                     <div className="flex flex-wrap items-start justify-center gap-4">
                         {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes disponibles.</p>}
                     </div>
