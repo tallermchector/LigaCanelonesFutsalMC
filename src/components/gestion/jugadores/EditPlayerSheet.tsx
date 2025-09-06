@@ -26,9 +26,10 @@ import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import type { Player } from "@/types"
+import type { Player, Team } from "@/types"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getAllTeams } from "@/actions/team-actions"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 
 const editPlayerSchema = z.object({
@@ -52,7 +53,7 @@ export function EditPlayerSheet({ player, isOpen, onClose }: EditPlayerSheetProp
     const { toast } = useToast()
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [teams, setTeams] = useState<any[]>([]);
+    const [teams, setTeams] = useState<Team[]>([]);
 
      useEffect(() => {
         getAllTeams().then(setTeams);
@@ -106,105 +107,109 @@ export function EditPlayerSheet({ player, isOpen, onClose }: EditPlayerSheetProp
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            <SheetContent>
-                <SheetHeader>
+            <SheetContent className="flex flex-col gap-0 p-0">
+                <SheetHeader className="p-6 border-b">
                     <SheetTitle>Editar Jugador: {player.name}</SheetTitle>
                     <SheetDescription>
                         Realiza cambios en la información del jugador. Haz clic en guardar cuando termines.
                     </SheetDescription>
                 </SheetHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
-                       <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nombre del Jugador</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Ej: Juan Pérez" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="teamId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Equipo</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
+                <ScrollArea className="flex-grow">
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6">
+                           <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Nombre del Jugador</FormLabel>
                                         <FormControl>
-                                            <SelectTrigger><SelectValue placeholder="Seleccione un equipo" /></SelectTrigger>
+                                            <Input placeholder="Ej: Juan Pérez" {...field} />
                                         </FormControl>
-                                        <SelectContent>
-                                            {teams.map(team => (
-                                                <SelectItem key={team.id} value={String(team.id)}>{team.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="number"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Número de Camiseta</FormLabel>
-                                     <FormControl>
-                                        <Input type="number" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="position"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Posición</FormLabel>
-                                     <Select onValueChange={field.onChange} value={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger><SelectValue placeholder="Seleccione una posición" /></SelectTrigger>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="teamId"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Equipo</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger><SelectValue placeholder="Seleccione un equipo" /></SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {teams.map(team => (
+                                                    <SelectItem key={team.id} value={String(team.id)}>{team.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="number"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Número</FormLabel>
+                                             <FormControl>
+                                                <Input type="number" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                 <FormField
+                                    control={form.control}
+                                    name="position"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Posición</FormLabel>
+                                             <Select onValueChange={field.onChange} value={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger><SelectValue placeholder="Seleccione una posición" /></SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="GOLERO">Golero</SelectItem>
+                                                    <SelectItem value="DEFENSA">Defensa</SelectItem>
+                                                    <SelectItem value="ALA">Ala</SelectItem>
+                                                    <SelectItem value="PIVOT">Pivot</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                             <FormField
+                                control={form.control}
+                                name="avatarUrl"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>URL del Avatar</FormLabel>
+                                         <FormControl>
+                                            <Input placeholder="/avatar/1.png" {...field} />
                                         </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="GOLERO">Golero</SelectItem>
-                                            <SelectItem value="DEFENSA">Defensa</SelectItem>
-                                            <SelectItem value="ALA">Ala</SelectItem>
-                                            <SelectItem value="PIVOT">Pivot</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="avatarUrl"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>URL del Avatar</FormLabel>
-                                     <FormControl>
-                                        <Input placeholder="/avatar/1.png" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <SheetFooter>
-                            <SheetClose asChild>
-                                <Button type="button" variant="outline">Cancelar</Button>
-                            </SheetClose>
-                             <Button type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
-                            </Button>
-                        </SheetFooter>
-                    </form>
-                </Form>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <SheetFooter className="mt-8 pt-6 border-t">
+                                <SheetClose asChild>
+                                    <Button type="button" variant="outline">Cancelar</Button>
+                                </SheetClose>
+                                 <Button type="submit" disabled={isSubmitting}>
+                                    {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
+                                </Button>
+                            </SheetFooter>
+                        </form>
+                    </Form>
+                </ScrollArea>
             </SheetContent>
         </Sheet>
     )
