@@ -24,7 +24,7 @@ import { ClearLiveEventsButton } from '@/components/gestion/ClearLiveEventsButto
 function MatchControlContent() {
     const { state, dispatch } = useGame();
 
-    if (state.status === 'SELECTING_STARTERS') {
+    if (state.status === 'SCHEDULED' || state.activePlayersA.length < 5 || state.activePlayersB.length < 5) {
         return <StarterSelection />;
     }
 
@@ -91,10 +91,6 @@ export default function MatchControlPage() {
           }
           const fetchedMatch = await getMatchById(matchId);
           if (fetchedMatch) {
-            // Ensure status is what we expect
-             if (fetchedMatch.status === 'SCHEDULED') {
-              fetchedMatch.status = 'SELECTING_STARTERS';
-            }
             setMatch(fetchedMatch as unknown as FullMatch);
           } else {
             setError('Partido no encontrado.');
