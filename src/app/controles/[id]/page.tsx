@@ -41,17 +41,6 @@ function MatchControlContent() {
             <div className="flex-grow pt-4 w-full max-w-7xl mx-auto">
                 <GameControls />
             </div>
-             <Sheet open={!!selectedPlayer} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
-                <SheetContent>
-                    <SheetHeader>
-                        <SheetTitle>Registrar Acción</SheetTitle>
-                        <SheetDescription>
-                            Seleccione una acción para el jugador seleccionado.
-                        </SheetDescription>
-                    </SheetHeader>
-                    <ActionMenu onActionComplete={handleSheetClose} />
-                </SheetContent>
-            </Sheet>
         </>
     );
 }

@@ -7,28 +7,53 @@ import { JerseyButton } from './JerseyButton';
 import type { Player, SelectedPlayer } from '@/types';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from '@/components/ui/sheet';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { ActionMenu } from '@/components/controles/ActionMenu';
+
+const PlayerButton = ({ player, teamId }: { player: Player, teamId: 'A' | 'B'}) => {
+    const { state, dispatch } = useGame();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { selectedPlayer } = state;
+    
+    const handlePlayerSelect = () => {
+        const payload: SelectedPlayer = { teamId, playerId: player.id };
+        dispatch({ type: 'SELECT_PLAYER', payload });
+        setIsMenuOpen(true);
+    };
+
+    return (
+        <Popover open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <PopoverTrigger asChild>
+                <div onClick={handlePlayerSelect}>
+                    <JerseyButton
+                        jerseyNumber={player.number}
+                        playerName={player.name}
+                        isSelected={selectedPlayer?.playerId === player.id}
+                        isActive={true}
+                        onClick={() => {}} // onClick is handled by the wrapper div
+                    />
+                </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-1 bg-gray-900/80 border-gray-700 text-white backdrop-blur-md">
+                 <ActionMenu player={player} onAction={() => setIsMenuOpen(false)} />
+            </PopoverContent>
+        </Popover>
+    );
+};
+
 
 const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
     const { state, dispatch } = useGame();
     const team = teamId === 'A' ? state.teamA : state.teamB;
-    const { selectedPlayer, substitutionState, status } = state;
+    const { substitutionState, status } = state;
     const activePlayers = teamId === 'A' ? state.activePlayersA : state.activePlayersB;
 
     if (!team) return null;
-
-    const handlePlayerSelect = (player: Player) => {
-        const payload: SelectedPlayer = { teamId, playerId: player.id };
-        dispatch({ type: 'SELECT_PLAYER', payload });
-    };
     
     const isPlayerBeingSubbedOut = (playerId: number) => {
         return substitutionState?.playerOut?.teamId === teamId && substitutionState?.playerOut?.playerId === playerId;
@@ -75,40 +100,15 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                     <div className="w-full flex flex-col items-center gap-4">
                         <div className="flex justify-center w-full">
                           {goalkeeper && (
-                            <JerseyButton
-                              key={goalkeeper.id}
-                              jerseyNumber={goalkeeper.number}
-                              playerName={goalkeeper.name}
-                              isSelected={selectedPlayer?.playerId === goalkeeper.id}
-                              isActive={true}
-                              onClick={() => handlePlayerSelect(goalkeeper)}
-                            />
+                             <PlayerButton player={goalkeeper} teamId={teamId} />
                           )}
                         </div>
                         <div className="grid grid-cols-2 gap-x-2 gap-y-4">
-                          {fieldPlayers.slice(0,2).map(player => (
-                             <JerseyButton
-                                key={player.id}
-                                jerseyNumber={player.number}
-                                playerName={player.name}
-                                isSelected={selectedPlayer?.playerId === player.id}
-                                isActive={true}
-                                onClick={() => handlePlayerSelect(player)}
-                            />
+                          {fieldPlayers.map(player => (
+                             <PlayerButton key={player.id} player={player} teamId={teamId} />
                           ))}
                         </div>
-                         <div className="grid grid-cols-2 gap-x-2 gap-y-4">
-                          {fieldPlayers.slice(2,4).map(player => (
-                             <JerseyButton
-                                key={player.id}
-                                jerseyNumber={player.number}
-                                playerName={player.name}
-                                isSelected={selectedPlayer?.playerId === player.id}
-                                isActive={true}
-                                onClick={() => handlePlayerSelect(player)}
-                            />
-                          ))}
-                        </div>
+                        
                         {starters.length === 0 && <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares.</p>}
                          {!goalkeeper && starters.length > 0 && <p className="text-xs text-muted-foreground p-4 text-center">Sin golero titular.</p>}
                     </div>
@@ -141,12 +141,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
 
 
 export function CombinedTeamPanel() {
-  const { state, dispatch } = useGame();
-  const { selectedPlayer } = state;
-
-  const handleSheetClose = () => {
-    dispatch({ type: 'SELECT_PLAYER', payload: null });
-  };
+  const { state } = useGame();
   
   return (
     <Card className="h-full flex flex-col">
@@ -156,17 +151,6 @@ export function CombinedTeamPanel() {
             <Separator orientation="horizontal" className="block md:hidden my-2" />
             <PlayerList teamId="B" />
         </div>
-        <Sheet open={!!selectedPlayer && !state.substitutionState} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
-            <SheetContent>
-                <SheetHeader>
-                    <SheetTitle>Registrar Acción</SheetTitle>
-                    <SheetDescription>
-                        Seleccione una acción para el jugador seleccionado.
-                    </SheetDescription>
-                </SheetHeader>
-                <ActionMenu onActionComplete={handleSheetClose} />
-            </SheetContent>
-        </Sheet>
     </Card>
   );
 }
