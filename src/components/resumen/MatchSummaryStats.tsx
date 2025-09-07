@@ -39,7 +39,7 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
                 <span className="uppercase tracking-wider text-muted-foreground text-xs sm:text-sm text-center">{label}</span>
                 <span className="tabular-nums">{valueB}</span>
             </div>
-            <div className="h-3 md:h-4 w-full bg-muted/80 rounded-full overflow-hidden flex justify-between">
+            <div className="h-2 sm:h-3 md:h-4 w-full bg-muted/80 rounded-full overflow-hidden flex justify-between">
                 <motion.div
                     className="h-full bg-primary rounded-l-full"
                     style={{ background: `linear-gradient(90deg, hsl(var(--primary) / 0.7), hsl(var(--primary)))` }}

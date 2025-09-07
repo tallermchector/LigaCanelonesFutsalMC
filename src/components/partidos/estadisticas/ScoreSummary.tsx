@@ -44,7 +44,7 @@ export function ScoreSummary({ match }: ScoreSummaryProps) {
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-4 text-center">
           {/* Team A */}
           <Link href={`/clubes/${teamA.slug}`} className="flex flex-col md:flex-row items-center justify-end gap-2 md:gap-4 group">
-            <h2 className="text-base md:text-2xl font-bold text-right truncate group-hover:text-primary transition-colors">{teamA.name}</h2>
+            <h2 className="text-sm sm:text-base md:text-2xl font-bold text-right truncate group-hover:text-primary transition-colors">{teamA.name}</h2>
             <Image
               src={teamA.logoUrl || ''}
               alt={`Logo de ${teamA.name}`}
@@ -56,7 +56,7 @@ export function ScoreSummary({ match }: ScoreSummaryProps) {
 
           {/* Score */}
           <div className="flex flex-col items-center justify-center h-full">
-            <div className="text-4xl md:text-6xl font-black tracking-tighter text-white">
+            <div className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white">
               {scoreA} - {scoreB}
             </div>
             <div className="h-12 flex items-center justify-center">
@@ -73,7 +73,7 @@ export function ScoreSummary({ match }: ScoreSummaryProps) {
               height={80}
               className="w-12 h-12 md:w-20 md:h-20 rounded-full aspect-square object-contain transition-transform group-hover:scale-105"
             />
-            <h2 className="text-base md:text-2xl font-bold text-left truncate group-hover:text-primary transition-colors">{teamB.name}</h2>
+            <h2 className="text-sm sm:text-base md:text-2xl font-bold text-left truncate group-hover:text-primary transition-colors">{teamB.name}</h2>
           </Link>
         </div>
       </CardContent>

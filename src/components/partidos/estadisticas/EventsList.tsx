@@ -159,7 +159,7 @@ export function EventsList({ events, teamA, teamB }: EventsListProps) {
           return (
             <motion.div 
               key={event.id || index} 
-              className="relative z-10 w-full grid grid-cols-[1fr_auto_1fr] items-start gap-x-4"
+              className="relative z-10 w-full grid grid-cols-[1fr_auto_1fr] items-start gap-x-2 sm:gap-x-4"
               variants={animationVariants.slideInUp}
               initial="hidden"
               whileInView="visible"
