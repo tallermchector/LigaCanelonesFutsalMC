@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Users, BarChart2, Clock, Goal, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../ui/button';
+import { InstagramIcon, FacebookIcon, YoutubeIcon } from '../icons';
 
 const Stat = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: number | string }) => (
     <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-black/30 backdrop-blur-sm text-white shadow-lg">
@@ -32,6 +33,24 @@ export const TeamHeader = ({ team }: { team: Team }) => {
     }, 0);
 
     const averageGoals = totalMatchesPlayed > 0 ? (totalGoalsScored / totalMatchesPlayed).toFixed(1) : '0';
+
+    const socialLinks = [
+        {
+            href: team.instagram,
+            icon: <InstagramIcon width={24} height={24} />,
+            name: 'Instagram'
+        },
+        {
+            href: team.facebook,
+            icon: <FacebookIcon width={24} height={24} />,
+            name: 'Facebook'
+        },
+        {
+            href: team.whatsapp,
+            icon: <YoutubeIcon width={24} height={24} />, // Placeholder, assuming youtube icon for whatsapp
+            name: 'WhatsApp'
+        }
+    ].filter(link => link.href);
 
     return (
         <section 
@@ -61,6 +80,16 @@ export const TeamHeader = ({ team }: { team: Team }) => {
                         <h1 className="text-5xl lg:text-7xl font-bold font-orbitron mt-1 drop-shadow-lg">{team.name}</h1>
                         {team.description && (
                             <p className="mt-4 text-muted-foreground max-w-xl mx-auto md:mx-0">{team.description}</p>
+                        )}
+                        {socialLinks.length > 0 && (
+                             <div className="mt-4 flex items-center justify-center md:justify-start gap-4">
+                                {socialLinks.map(link => (
+                                    <Link key={link.name} href={link.href!} target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors">
+                                        {link.icon}
+                                        <span className="sr-only">{link.name}</span>
+                                    </Link>
+                                ))}
+                            </div>
                         )}
                     </div>
                 </div>
