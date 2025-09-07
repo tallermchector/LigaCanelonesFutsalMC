@@ -7,13 +7,22 @@ import { Users, BarChart2, Clock, Goal, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { InstagramIcon, FacebookIcon, YoutubeIcon } from '../icons';
+import { motion } from 'framer-motion';
+
 
 const Stat = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: number | string }) => (
-    <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-black/30 backdrop-blur-sm text-white shadow-lg">
-        <Icon className="h-8 w-8 text-primary mb-2" />
-        <span className="text-2xl font-bold">{value}</span>
-        <span className="text-sm text-muted-foreground">{label}</span>
-    </div>
+    <motion.div 
+        className="flex flex-col items-center justify-center p-4 rounded-lg bg-black/30 backdrop-blur-sm text-white shadow-lg border border-white/10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+    >
+        <div className="p-3 bg-primary/20 rounded-full mb-2 border border-primary/30">
+            <Icon className="h-6 w-6 text-primary" />
+        </div>
+        <span className="text-3xl font-bold font-orbitron">{value}</span>
+        <span className="text-xs text-muted-foreground uppercase tracking-wider">{label}</span>
+    </motion.div>
 )
 
 export const TeamHeader = ({ team }: { team: Team }) => {
@@ -117,7 +126,7 @@ export const TeamHeader = ({ team }: { team: Team }) => {
             </div>
 
             <div className="container mx-auto px-4 relative z-10 mt-12">
-                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-primary/20 pt-8">
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 border-t border-primary/20 pt-8">
                     <Stat icon={Users} label="Jugadores" value={team.players.length} />
                     <Stat icon={BarChart2} label="Partidos Jugados" value={totalMatchesPlayed} />
                     <Stat icon={Clock} label="Minutos Jugados" value={totalMinutesPlayed} />
