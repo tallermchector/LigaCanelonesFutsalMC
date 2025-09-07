@@ -2,6 +2,7 @@
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { Roboto, Orbitron } from 'next/font/google';
+import { cn } from '@/lib/utils';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -24,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${roboto.variable} ${orbitron.variable}`} suppressHydrationWarning={true}>
+    <html lang="es" className={cn("font-sans", roboto.variable, orbitron.variable)} suppressHydrationWarning={true}>
       <head>
         <meta charSet="utf-8" />
         <title>Liga Canelones Futsal - Pasión por el Fútbol Sala</title>
