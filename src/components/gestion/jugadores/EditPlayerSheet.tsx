@@ -199,17 +199,17 @@ export function EditPlayerSheet({ player, isOpen, onClose }: EditPlayerSheetProp
                                     </FormItem>
                                 )}
                             />
-                             <SheetFooter className="mt-8 pt-6 border-t">
-                                <SheetClose asChild>
-                                    <Button type="button" variant="outline">Cancelar</Button>
-                                </SheetClose>
-                                 <Button type="submit" disabled={isSubmitting}>
-                                    {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
-                                </Button>
-                            </SheetFooter>
                         </form>
                     </Form>
                 </ScrollArea>
+                <SheetFooter className="p-6 mt-auto border-t">
+                    <SheetClose asChild>
+                        <Button type="button" variant="outline">Cancelar</Button>
+                    </SheetClose>
+                     <Button onClick={form.handleSubmit(onSubmit)} disabled={isSubmitting}>
+                        {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
+                    </Button>
+                </SheetFooter>
             </SheetContent>
         </Sheet>
     )
