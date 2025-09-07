@@ -35,6 +35,7 @@ export interface GameEvent extends Omit<PrismaGameEvent, 'type'> {
 }
 
 export interface FullMatch extends Omit<PrismaMatch, 'teamAId' | 'teamBId' | 'events' | 'scheduledTime' | 'status'> {
+  [x: string]: number;
   scheduledTime: string; 
   status: MatchStatus;
   teamA: Team;

@@ -4,10 +4,9 @@
 import type { Team } from '@/types';
 import Image from 'next/image';
 import { Users, BarChart2, Clock, Goal } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 const Stat = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: number | string }) => (
-    <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-black/20 backdrop-blur-sm text-white">
+    <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-black/30 backdrop-blur-sm text-white shadow-lg">
         <Icon className="h-8 w-8 text-primary mb-2" />
         <span className="text-2xl font-bold">{value}</span>
         <span className="text-sm text-muted-foreground">{label}</span>
@@ -32,35 +31,41 @@ export const TeamHeader = ({ team }: { team: Team }) => {
 
     const averageGoals = totalMatchesPlayed > 0 ? (totalGoalsScored / totalMatchesPlayed).toFixed(1) : '0';
 
-
-  return (
-    <section 
-        className="relative bg-secondary/30 py-16 text-foreground bg-cover bg-center"
-        style={{ backgroundImage: team.bannerUrl ? `url(${team.bannerUrl})` : "none" }}
-    >
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
-         <div className="container mx-auto px-4 relative">
-            <div className="flex flex-col md:flex-row items-center gap-8">
-                <Image
-                     src={team.logoUrl || '/logofu.svg'}
-                     alt={team.name}
-                     width={150}
-                     height={150}
-                     className="rounded-full border-4 border-primary shadow-2xl bg-white/10"
-                />
-                <div className="text-center md:text-left">
-                    <p className="text-primary font-semibold">Equipo de la Liga</p>
-                    <h1 className="text-5xl lg:text-7xl font-bold font-orbitron mt-1">{team.name}</h1>
+    return (
+        <section 
+            className="relative bg-secondary/30 pt-24 pb-12 text-foreground bg-cover bg-center"
+            style={{ backgroundImage: team.bannerUrl ? `url(${team.bannerUrl})` : "none" }}
+        >
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80"></div>
+            <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+            
+            <div className="container mx-auto px-4 relative z-10">
+                <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+                    <Image
+                        src={team.logoUrl || '/logofu.svg'}
+                        alt={team.name}
+                        width={150}
+                        height={150}
+                        className="rounded-full border-4 border-primary shadow-2xl bg-white/10 flex-shrink-0"
+                    />
+                    <div>
+                        <p className="text-primary font-semibold">Equipo de la Liga</p>
+                        <h1 className="text-5xl lg:text-7xl font-bold font-orbitron mt-1 drop-shadow-lg">{team.name}</h1>
+                        {team.description && (
+                            <p className="mt-4 text-muted-foreground max-w-xl mx-auto md:mx-0">{team.description}</p>
+                        )}
+                    </div>
                 </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 border-t border-primary/20 pt-8">
-                <Stat icon={Users} label="Jugadores" value={team.players.length} />
-                <Stat icon={BarChart2} label="Partidos Jugados" value={totalMatchesPlayed} />
-                <Stat icon={Clock} label="Minutos Jugados" value={totalMinutesPlayed} />
-                <Stat icon={Goal} label="Prom. Goles" value={averageGoals} />
+
+            <div className="container mx-auto px-4 relative z-10 mt-12">
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-primary/20 pt-8">
+                    <Stat icon={Users} label="Jugadores" value={team.players.length} />
+                    <Stat icon={BarChart2} label="Partidos Jugados" value={totalMatchesPlayed} />
+                    <Stat icon={Clock} label="Minutos Jugados" value={totalMinutesPlayed} />
+                    <Stat icon={Goal} label="Prom. Goles" value={averageGoals} />
+                </div>
             </div>
-         </div>
-    </section>
-  );
+        </section>
+    );
 };
