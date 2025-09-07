@@ -8,6 +8,7 @@ I am Gemini, a large language model from Google, and I'm here to assist you as a
 
 ## How to Interact with Me
 
+- **Communicate in Spanish**: For clarity and better understanding, please provide your requests in Spanish. All of my responses, explanations, and questions will also be in Spanish.
 - **Be Clear and Specific**: The more detailed your request, the better I can understand and implement the changes you want. For example, instead of "change the header," try "add a dropdown menu to the 'Información' link in the header."
 - **Provide Context**: If you're referring to a specific part of the code, mentioning the file name (`src/components/layout/header.tsx`) or component name (`Header`) is very helpful.
 - **Iterate**: We can work together. If the first change isn't exactly what you wanted, just let me know what you'dlike to adjust.
@@ -16,7 +17,7 @@ I am Gemini, a large language model from Google, and I'm here to assist you as a
 
 - **Code Generation and Modification**: I can write new components, modify existing ones, create server actions, and update styles. I will always provide the complete, final content of any file I modify.
 - **Understanding the Tech Stack**: I am familiar with the project's stack: Next.js, React, TypeScript, Tailwind CSS, ShadCN/UI, Prisma, and Genkit.
-- **Following Project Conventions**: I will adhere to the existing code style, project structure, and established best practices outlined in files like `guidelines.txt` and `.idx/airules.md`.
+- **Following Project Conventions**: I will adhere to the existing code style, project structure, and established best practices outlined in files like `.idx/airules.md`.
 
 ## Technical Guidelines I Follow
 
