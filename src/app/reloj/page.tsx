@@ -33,6 +33,43 @@ function MatchTimer({ match }: { match: FullMatch | null }) {
     );
 }
 
+function AlternativeMatchTimer({ match }: { match: FullMatch | null }) {
+    const [targetDate, setTargetDate] = useState<Date | null>(null);
+
+    useEffect(() => {
+        if (match?.isRunning && match.updatedAt) {
+            const serverTime = match.time;
+            const lastUpdate = new Date(match.updatedAt).getTime();
+            const now = Date.now();
+            const elapsed = (now - lastUpdate) / 1000;
+            const currentTime = Math.max(0, serverTime - elapsed);
+            
+            const newTargetDate = new Date(now + (currentTime * 1000));
+            setTargetDate(newTargetDate);
+        } else if (match) {
+             const newTargetDate = new Date(Date.now() + (match.time * 1000));
+             setTargetDate(newTargetDate);
+        } else {
+            setTargetDate(null);
+        }
+    }, [match]);
+    
+    if (!match || !targetDate) {
+        return <Skeleton className="h-16 w-48 bg-muted" />;
+    }
+    
+    return (
+         <div className="text-6xl font-mono font-bold text-foreground bg-card p-4 rounded-lg border">
+            <LiveClock
+                targetDate={targetDate.toISOString()}
+                ticking={match.isRunning}
+                format={'mm:ss'}
+                date="" 
+            />
+        </div>
+    )
+}
+
 
 export default function ClockPage() {
     const [liveMatches, setLiveMatches] = useState<FullMatch[]>([]);
@@ -57,7 +94,7 @@ export default function ClockPage() {
                     <CardHeader>
                         <CardTitle className="text-center text-primary">Página de Depuración de Reloj</CardTitle>
                         <CardDescription className="text-center">
-                           Selecciona un partido en vivo para comparar su tiempo calculado con el reloj del sistema.
+                           Selecciona un partido para comparar implementaciones de cronómetro.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center justify-center gap-6">
@@ -81,14 +118,12 @@ export default function ClockPage() {
                         {selectedMatch && (
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
                                 <div className="flex flex-col items-center gap-2">
-                                    <h3 className="font-semibold text-muted-foreground">Tiempo Calculado del Partido</h3>
+                                    <h3 className="font-semibold text-muted-foreground">Temporizador (useLiveMatchState)</h3>
                                     <MatchTimer match={selectedMatch} />
                                 </div>
                                 <div className="flex flex-col items-center gap-2">
-                                    <h3 className="font-semibold text-muted-foreground">Reloj Local (Referencia)</h3>
-                                     <div className="text-6xl font-mono font-bold text-foreground bg-card p-4 rounded-lg border">
-                                        <LiveClock format="HH:mm:ss" ticking={true} />
-                                    </div>
+                                    <h3 className="font-semibold text-muted-foreground">Temporizador (react-live-clock)</h3>
+                                    <AlternativeMatchTimer match={selectedMatch} />
                                 </div>
                             </div>
                         )}
