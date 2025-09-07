@@ -130,7 +130,7 @@ export function EditClubSheet({ team, isOpen, onClose }: EditClubSheetProps) {
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            <SheetContent className="flex flex-col p-0">
+            <SheetContent className="flex flex-col gap-0 p-0">
                 <SheetHeader className="p-6 border-b">
                     <SheetTitle>Editar Club: {team.name}</SheetTitle>
                     <SheetDescription>
@@ -234,43 +234,45 @@ export function EditClubSheet({ team, isOpen, onClose }: EditClubSheetProps) {
                                   </FormItem>
                               )}
                           />
-                          <FormField
-                              control={form.control}
-                              name="whatsapp"
-                              render={({ field }) => (
-                                  <FormItem>
-                                      <FormLabel>WhatsApp</FormLabel>
-                                      <FormControl>
-                                          <Input placeholder="Número de WhatsApp" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                  </FormItem>
-                              )}
-                          />
-                          <FormField
-                              control={form.control}
-                              name="phone"
-                              render={({ field }) => (
-                                  <FormItem>
-                                      <FormLabel>Teléfono de Contacto</FormLabel>
-                                      <FormControl>
-                                          <Input placeholder="Número de teléfono" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                  </FormItem>
-                              )}
-                          />
-                          <SheetFooter className="mt-8 pt-6 border-t">
-                              <SheetClose asChild>
-                                  <Button type="button" variant="outline">Cancelar</Button>
-                              </SheetClose>
-                              <Button type="submit" disabled={isSubmitting}>
-                                  {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
-                              </Button>
-                          </SheetFooter>
+                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="whatsapp"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>WhatsApp</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Número de WhatsApp" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="phone"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Teléfono</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Teléfono de contacto" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                       </form>
                   </Form>
                 </ScrollArea>
+                <SheetFooter className="p-6 mt-auto border-t">
+                    <SheetClose asChild>
+                        <Button type="button" variant="outline">Cancelar</Button>
+                    </SheetClose>
+                    <Button onClick={form.handleSubmit(onSubmit)} disabled={isSubmitting}>
+                        {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
+                    </Button>
+                </SheetFooter>
             </SheetContent>
         </Sheet>
     )
