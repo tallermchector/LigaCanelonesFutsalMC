@@ -43,8 +43,8 @@ export function PageHero({ title, description, icon, children }: PageHeroProps) 
       <div className="relative container mx-auto px-4 text-center">
         {icon && (
           <motion.div variants={itemVariants} className="flex justify-center mb-4">
-              <div className="p-3 bg-primary/10 border-2 border-primary/20 rounded-full">
-                <FutsalBallIcon className="h-8 w-8 text-primary" />
+              <div className="p-4 bg-primary/10 border-2 border-primary/20 rounded-full">
+                <FutsalBallIcon className="h-12 w-12 text-primary" />
               </div>
           </motion.div>
         )}
