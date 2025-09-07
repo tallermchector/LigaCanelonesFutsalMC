@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Footer } from '@/components/layout/footer';
@@ -11,7 +10,7 @@ import { LatestNewsBanner } from '@/components/landing/LatestNewsBanner';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { getAllMatches } from '@/actions/prisma-actions';
-import type { FullMatch } from './types';
+import type { FullMatch } from '@/types';
 
 export default function Home() {
   const [finishedMatches, setFinishedMatches] = useState<FullMatch[]>([]);
