@@ -6,6 +6,7 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import type { FullMatch } from '@/types';
 import { Skeleton } from '../ui/skeleton';
+import { Card } from '../ui/card';
 
 function FinishedMatchesSkeleton() {
     return (
