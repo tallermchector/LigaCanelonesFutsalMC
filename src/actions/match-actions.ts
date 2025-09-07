@@ -71,14 +71,14 @@ export async function getMatchById(matchId: number): Promise<FullMatch | null> {
 export async function getAllMatches(): Promise<FullMatch[]> {
   const matches = await prisma.match.findMany({
     include: {
-        teamA: { include: { players: true } },
-        teamB: { include: { players: true } },
+        teamA: true,
+        teamB: true,
         events: true,
         playerMatchStats: true,
     }
   });
 
-  return matches;
+  return matches as unknown as FullMatch[];
 }
 
 export async function getLiveMatches(): Promise<LiveMatch[]> {
