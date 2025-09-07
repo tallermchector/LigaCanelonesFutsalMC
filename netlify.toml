@@ -18,6 +18,6 @@
 [build.environment]
   # Especifica la versión de Bun que Netlify debe usar
   # Puedes ajustarla a la versión que usas en desarrollo
-  BUN_VERSION = "1.0.25"
+  BUN_VERSION = "1.2.21"
   # Optimiza la velocidad de instalación de dependencias
   BUN_INSTALL_CACHE_DIR = "/tmp/.bun_cache"
