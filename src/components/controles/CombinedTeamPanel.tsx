@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -58,7 +59,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
             </CardHeader>
             <CardContent className="flex-grow p-2 overflow-y-auto">
                  { isSelectionMode ? (
-                    <div className="flex flex-wrap items-start justify-center gap-4">
+                    <div className="flex flex-nowrap items-start justify-center gap-4">
                         {team.players.map(player => (
                            <JerseyButton
                                 key={player.id}
@@ -75,7 +76,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                     <>
                     <div>
                         <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Titulares</h3>
-                        <div className="flex flex-wrap items-start justify-center gap-4">
+                        <div className="flex flex-nowrap items-start justify-center gap-4">
                             {starters.length > 0 ? starters.map(p => (
                                 <JerseyButton
                                     key={p.id}
@@ -125,23 +126,22 @@ export function CombinedTeamPanel() {
   };
 
   return (
-    <Card className="h-full flex flex-col">
-      <div className="flex-grow flex flex-col">
+    <Card className="h-full flex flex-col md:flex-row">
         <PlayerList teamId="A" />
-        <Separator orientation="horizontal" className="my-0" />
+        <Separator orientation="vertical" className="hidden md:block h-auto" />
+        <Separator orientation="horizontal" className="md:hidden w-full" />
         <PlayerList teamId="B" />
-      </div>
-      <Sheet open={!!selectedPlayer && !state.substitutionState} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
-        <SheetContent>
-            <SheetHeader>
-                <SheetTitle>Registrar Acción</SheetTitle>
-                <SheetDescription>
-                    Seleccione una acción para el jugador seleccionado.
-                </SheetDescription>
-            </SheetHeader>
-            <ActionMenu onActionComplete={handleSheetClose} />
-        </SheetContent>
-      </Sheet>
+        <Sheet open={!!selectedPlayer && !state.substitutionState} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
+            <SheetContent>
+                <SheetHeader>
+                    <SheetTitle>Registrar Acción</SheetTitle>
+                    <SheetDescription>
+                        Seleccione una acción para el jugador seleccionado.
+                    </SheetDescription>
+                </SheetHeader>
+                <ActionMenu onActionComplete={handleSheetClose} />
+            </SheetContent>
+        </Sheet>
     </Card>
   );
 }
