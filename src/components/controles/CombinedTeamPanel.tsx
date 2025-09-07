@@ -14,11 +14,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { ActionMenu } from '@/components/controles/ActionMenu';
+import { Users } from 'lucide-react';
 
 const PlayerButton = ({ player, teamId }: { player: Player, teamId: 'A' | 'B'}) => {
     const { state, dispatch } = useGame();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { selectedPlayer } = state;
+    const { selectedPlayer, activePlayersA, activePlayersB } = state;
+    const activePlayers = teamId === 'A' ? activePlayersA : activePlayersB;
     
     const handlePlayerSelect = () => {
         const payload: SelectedPlayer = { teamId, playerId: player.id };
@@ -34,7 +36,7 @@ const PlayerButton = ({ player, teamId }: { player: Player, teamId: 'A' | 'B'}) 
                         jerseyNumber={player.number}
                         playerName={player.name}
                         isSelected={selectedPlayer?.playerId === player.id}
-                        isActive={true}
+                        isActive={activePlayers.includes(player.id)}
                         onClick={() => {}} // onClick is handled by the wrapper div
                         variant={teamId === 'A' ? 'accent-blue' : 'accent-red'}
                     />
@@ -78,8 +80,11 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
 
     return (
         <div className="flex-1 flex flex-col">
-            <CardHeader className="p-4">
+             <CardHeader className="p-4 flex-row items-center justify-between">
                  <CardTitle className={cn("text-center", teamId === 'A' ? 'text-blue-400' : 'text-red-400' )}>{team.name}</CardTitle>
+                 <div className="hidden md:flex text-center text-sm text-muted-foreground font-semibold items-center justify-center gap-2">
+                    <Users className="h-4 w-4" /> Activos: {activePlayers.length} / 5
+                </div>
             </CardHeader>
             <CardContent className="flex-grow p-2 flex flex-col items-center gap-4 overflow-y-auto">
                  { isSelectionMode ? (
@@ -159,4 +164,3 @@ export function CombinedTeamPanel() {
     </Card>
   );
 }
-
