@@ -9,6 +9,10 @@ import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer, Us
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { GameEvent } from '@/types';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import { Label } from '../ui/label';
 
 
 const formatTime = (seconds: number) => {
@@ -21,6 +25,8 @@ export function ControlsPanel() {
   const { state, dispatch, handleSaveChanges, createGameEvent } = useGame();
   const { toast } = useToast();
   const router = useRouter();
+  const [newMinutes, setNewMinutes] = useState(Math.floor(state.time / 60));
+  const [newSeconds, setNewSeconds] = useState(state.time % 60);
 
   const handlePeriodChange = (delta: number) => {
     const newPeriod = Math.max(1, state.period + delta);
@@ -50,6 +56,11 @@ export function ControlsPanel() {
     router.refresh();
   }
 
+  const handleTimeChange = () => {
+    const totalSeconds = (newMinutes * 60) + newSeconds;
+    dispatch({ type: 'SET_TIME', payload: totalSeconds });
+  };
+
   return (
     <Card className="w-full shadow-md flex flex-col h-full">
       <CardHeader className="flex-shrink-0">
@@ -58,7 +69,43 @@ export function ControlsPanel() {
       <CardContent className="flex-grow flex flex-col items-center justify-around gap-4 pt-6 overflow-y-auto">
           <div className="text-center">
               <p className="text-sm text-muted-foreground">Tiempo de Juego</p>
-              <p className="text-6xl font-mono font-bold text-foreground" aria-live="polite">{formatTime(state.time)}</p>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <p className="text-6xl font-mono font-bold text-foreground cursor-pointer hover:text-primary transition-colors" aria-live="polite">{formatTime(state.time)}</p>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Editar Tiempo</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid grid-cols-2 gap-4 py-4">
+                            <div>
+                                <Label htmlFor="minutes-panel" className="text-right">Minutos</Label>
+                                <Input
+                                    id="minutes-panel"
+                                    type="number"
+                                    value={newMinutes}
+                                    onChange={(e) => setNewMinutes(Math.max(0, parseInt(e.target.value, 10)))}
+                                    className="col-span-3"
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="seconds-panel" className="text-right">Segundos</Label>
+                                <Input
+                                    id="seconds-panel"
+                                    type="number"
+                                    value={newSeconds}
+                                    onChange={(e) => setNewSeconds(Math.max(0, Math.min(59, parseInt(e.target.value, 10))))}
+                                    className="col-span-3"
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button type="button" onClick={handleTimeChange}>Guardar Cambios</Button>
+                            </DialogClose>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
           </div>
           <div className="flex items-center gap-4">
               <Button size="lg" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })} aria-label={state.isRunning ? "Pausar tiempo" : "Iniciar tiempo"}>
