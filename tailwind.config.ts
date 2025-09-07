@@ -17,10 +17,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)"],
+        sans: ["var(--font-roboto)"],
         roboto: ["var(--font-roboto)"],
         orbitron: ["var(--font-orbitron)"],
-        headline: ["var(--font-roboto)", "sans-serif"],
+        headline: ["var(--font-orbitron)", "sans-serif"],
       },
       colors: {
         background: 'hsl(var(--background))',

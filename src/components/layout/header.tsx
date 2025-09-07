@@ -75,7 +75,7 @@ export function Header() {
             <div className="container flex h-full max-w-screen-2xl items-center justify-between">
                 <div className="flex items-center space-x-2">
                      <Image src="/logofu.svg" alt="Liga Futsal Logo" width={32} height={32} />
-                    <span className="font-bold sm:inline-block text-lg whitespace-nowrap">
+                    <span className="font-bold sm:inline-block text-lg whitespace-nowrap font-orbitron">
                         Liga Canaria Futsal
                     </span>
                 </div>
@@ -96,7 +96,7 @@ export function Header() {
       <div className="container flex h-[var(--header-height)] max-w-screen-2xl items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
             <Image src="/logofu.svg" alt="Liga Futsal Logo" width={32} height={32} />
-            <span className="font-bold sm:inline-block text-lg whitespace-nowrap">
+            <span className="font-bold sm:inline-block text-lg whitespace-nowrap font-orbitron">
               Liga Canaria Futsal 
             </span>
         </Link>
@@ -215,7 +215,7 @@ export function Header() {
                         <SheetClose asChild>
                             <Link href="/" className="flex items-center space-x-2">
                                 <Image src="/logofu.svg" alt="Liga Futsal Logo" width={24} height={24} />
-                                <span className="font-bold text-base">Liga Canaria Futsal</span>
+                                <span className="font-bold text-base font-orbitron">Liga Canaria Futsal</span>
                             </Link>
                         </SheetClose>
                         <VisuallyHidden>
@@ -323,5 +323,3 @@ export function Header() {
     </motion.header>
   );
 }
-
-    

@@ -36,7 +36,7 @@ export default function RootLayout({
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="es_UY" />
       </head>
-      <body className="font-body antialiased">
+      <body className="font-roboto antialiased">
         {children}
         <Toaster />
       </body>
