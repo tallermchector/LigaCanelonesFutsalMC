@@ -10,7 +10,7 @@ I am Gemini, a large language model from Google, and I'm here to assist you as a
 
 - **Be Clear and Specific**: The more detailed your request, the better I can understand and implement the changes you want. For example, instead of "change the header," try "add a dropdown menu to the 'Información' link in the header."
 - **Provide Context**: If you're referring to a specific part of the code, mentioning the file name (`src/components/layout/header.tsx`) or component name (`Header`) is very helpful.
-- **Iterate**: We can work together. If the first change isn't exactly what you wanted, just let me know what you'd like to adjust.
+- **Iterate**: We can work together. If the first change isn't exactly what you wanted, just let me know what you'dlike to adjust.
 
 ## My Capabilities
 
