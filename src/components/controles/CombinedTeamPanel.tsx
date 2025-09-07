@@ -15,8 +15,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from '@/components/ui/sheet';
-import { ActionMenu } from './ActionMenu';
-import { Shirt } from 'lucide-react';
+import { ActionMenu } from '@/components/controles/ActionMenu';
 
 const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
     const { state, dispatch } = useGame();
@@ -55,10 +54,6 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
         <div className="flex-1 flex flex-col">
             <CardHeader className="p-4">
                  <CardTitle className={cn("text-center", teamId === 'A' ? 'text-primary' : 'text-accent' )}>{team.name}</CardTitle>
-                 <div className="hidden md:flex text-center text-sm text-muted-foreground font-semibold items-center justify-center gap-2">
-                    <Shirt className="h-4 w-4" />
-                    <span>Activos: {activePlayers.length} / 5</span>
-                </div>
             </CardHeader>
             <CardContent className="flex-grow p-2 flex flex-col items-center gap-4 overflow-y-auto">
                  { isSelectionMode ? (
@@ -78,11 +73,8 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                  ) : (
                     <>
                     <div className="w-full flex flex-col items-center gap-4">
-                        <div className="hidden md:block text-sm font-semibold text-muted-foreground">Titulares</div>
-                        
-                        {/* Goalkeeper Row */}
                         <div className="flex justify-center w-full">
-                          {goalkeeper ? (
+                          {goalkeeper && (
                             <JerseyButton
                               key={goalkeeper.id}
                               jerseyNumber={goalkeeper.number}
@@ -91,12 +83,10 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                               isActive={true}
                               onClick={() => handlePlayerSelect(goalkeeper)}
                             />
-                          ) : starters.length > 0 && <p className="text-xs text-muted-foreground p-4 text-center">Sin golero titular.</p>}
+                          )}
                         </div>
-
-                        {/* Field Players Grid */}
-                        <div className="grid grid-cols-2 gap-x-2 gap-y-4 md:gap-x-4 md:gap-y-6">
-                          {fieldPlayers.map(player => (
+                        <div className="grid grid-cols-2 gap-x-2 gap-y-4">
+                          {fieldPlayers.slice(0,2).map(player => (
                              <JerseyButton
                                 key={player.id}
                                 jerseyNumber={player.number}
@@ -107,8 +97,20 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                             />
                           ))}
                         </div>
-
-                         {starters.length === 0 && <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares.</p>}
+                         <div className="grid grid-cols-2 gap-x-2 gap-y-4">
+                          {fieldPlayers.slice(2,4).map(player => (
+                             <JerseyButton
+                                key={player.id}
+                                jerseyNumber={player.number}
+                                playerName={player.name}
+                                isSelected={selectedPlayer?.playerId === player.id}
+                                isActive={true}
+                                onClick={() => handlePlayerSelect(player)}
+                            />
+                          ))}
+                        </div>
+                        {starters.length === 0 && <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares.</p>}
+                         {!goalkeeper && starters.length > 0 && <p className="text-xs text-muted-foreground p-4 text-center">Sin golero titular.</p>}
                     </div>
                     
                     {substitutionState && substitutionState.playerOut.teamId === teamId && (
@@ -145,7 +147,7 @@ export function CombinedTeamPanel() {
   const handleSheetClose = () => {
     dispatch({ type: 'SELECT_PLAYER', payload: null });
   };
-
+  
   return (
     <Card className="h-full flex flex-col">
         <div className="flex-grow flex flex-col md:flex-row">
