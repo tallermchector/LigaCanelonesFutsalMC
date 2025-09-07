@@ -8,11 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Play, Pause, RotateCcw, Flag, Save, CheckCircle, Minus, Plus, Timer, Users, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { GameEvent } from '@/types';
+import type { GameEvent, MatchStatus } from '@/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { Label } from '../ui/label';
+import { cn } from '@/lib/utils';
 
 
 const formatTime = (seconds: number) => {
@@ -22,7 +23,7 @@ const formatTime = (seconds: number) => {
 };
 
 export function ControlsPanel() {
-  const { state, dispatch, handleSaveChanges, createGameEvent } = useGame();
+  const { state, dispatch, handleSaveChanges } = useGame();
   const { toast } = useToast();
   const router = useRouter();
   const [newMinutes, setNewMinutes] = useState(Math.floor(state.time / 60));
@@ -32,22 +33,12 @@ export function ControlsPanel() {
     const newPeriod = Math.max(1, state.period + delta);
     dispatch({ type: 'SET_PERIOD', payload: newPeriod });
   };
-  
-  const handleTimeout = (teamId: 'A' | 'B') => {
-      const team = teamId === 'A' ? state.teamA : state.teamB;
-      if (!team) return;
-      const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
-          type: 'TIMEOUT',
-          teamId: team.id,
-          teamName: team.name,
-          timestamp: state.time,
-          playerId: null,
-          playerName: null,
-          playerInId: null,
-          playerInName: null,
-      }
-      dispatch({ type: 'ADD_EVENT', payload: { event: newEvent }})
-      createGameEvent(newEvent);
+    
+  const handleFinishMatch = async () => {
+    dispatch({ type: 'SET_STATUS', payload: 'FINISHED' });
+    await handleSaveChanges();
+    router.push('/controles');
+    router.refresh();
   }
   
   const handleSaveAndExit = async () => {
@@ -60,13 +51,15 @@ export function ControlsPanel() {
     const totalSeconds = (newMinutes * 60) + newSeconds;
     dispatch({ type: 'SET_TIME', payload: totalSeconds });
   };
+  
+  const isMatchLive = state.status === 'LIVE';
 
   return (
-    <Card className="w-full shadow-md flex flex-col h-full">
-      <CardHeader className="flex-shrink-0">
-        <CardTitle className="text-center text-primary">Controles del Juego</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow flex flex-col items-center justify-around gap-4 pt-6 overflow-y-auto">
+    <div className="bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-md flex flex-col h-full p-2 sm:p-4 gap-4">
+
+      {/* -- DESKTOP CONTROLS -- */}
+      <div className="hidden md:flex flex-col flex-grow items-center justify-around gap-4 pt-6 overflow-y-auto">
+          <CardTitle className="text-center text-primary">Controles del Juego</CardTitle>
           <div className="text-center">
               <p className="text-sm text-muted-foreground">Tiempo de Juego</p>
                 <Dialog>
@@ -128,24 +121,52 @@ export function ControlsPanel() {
           <div className="flex w-full justify-around pt-4 border-t">
               <div className="text-center">
                   <p className="text-sm font-semibold">{state.teamA?.name}</p>
-                  <Button size="sm" variant="outline" className="mt-1" disabled={state.timeoutsA <= 0} onClick={() => handleTimeout('A')}>
+                  <Button size="sm" variant="outline" className="mt-1" disabled={state.timeoutsA <= 0} onClick={() => {}}>
                       <Timer className="mr-2 h-4 w-4" /> T. Muerto ({state.timeoutsA})
                   </Button>
               </div>
                 <div className="text-center">
                   <p className="text-sm font-semibold">{state.teamB?.name}</p>
-                    <Button size="sm" variant="outline" className="mt-1" disabled={state.timeoutsB <= 0} onClick={() => handleTimeout('B')}>
+                    <Button size="sm" variant="outline" className="mt-1" disabled={state.timeoutsB <= 0} onClick={() => {}}>
                       <Timer className="mr-2 h-4 w-4" /> T. Muerto ({state.timeoutsB})
                   </Button>
               </div>
           </div>
-      </CardContent>
-      <CardFooter className="p-4 bg-card-foreground/5 flex-shrink-0">
           <Button variant="destructive" onClick={handleSaveAndExit} className="w-full">
               <Save className="mr-2 h-4 w-4" />
               Guardar y Salir
           </Button>
-      </CardFooter>
-    </Card>
+      </div>
+
+       {/* -- MOBILE CONTROLS -- */}
+        <div className="md:hidden w-full flex flex-col gap-2 items-center">
+            <div className="grid grid-cols-2 gap-2 w-full">
+                <Button size="lg" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })} className={cn(state.isRunning ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-600 hover:bg-gray-700')} disabled={!isMatchLive}>
+                    {state.isRunning ? <Pause className="mr-2 h-5 w-5"/> : <Play className="mr-2 h-5 w-5"/>}
+                    {state.isRunning ? 'Pausar' : 'Iniciar'}
+                </Button>
+                <Button variant="destructive" onClick={handleFinishMatch} size="lg" disabled={!isMatchLive}>
+                    <CheckCircle className="mr-2 h-5 w-5" />
+                    Finalizar
+                </Button>
+            </div>
+             <div className="grid grid-cols-2 gap-2 w-full">
+                 <div className="flex items-center justify-around gap-1 rounded-lg bg-muted/80 shadow-inner col-span-1 p-1">
+                    <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(-1)} className="text-foreground h-8 w-8 hover:bg-background/50" disabled={!isMatchLive}><Minus className="h-4 w-4"/></Button>
+                    <span className="font-semibold text-foreground text-sm">P:{state.period}</span>
+                    <Button variant="ghost" size="icon" onClick={() => handlePeriodChange(1)} className="text-foreground h-8 w-8 hover:bg-background/50" disabled={!isMatchLive}><Plus className="h-4 w-4"/></Button>
+                </div>
+                 <Button variant="outline" onClick={() => dispatch({ type: 'RESET_TIMER' })} size="lg" className="border-border bg-muted/80 text-foreground hover:bg-background/50" disabled={!isMatchLive}>
+                    <RotateCcw className="mr-2 h-5 w-5" />
+                    Reiniciar
+                </Button>
+            </div>
+             <Button variant="secondary" onClick={handleSaveAndExit} className="w-full">
+                <Save className="mr-2 h-4 w-4" />
+                Guardar Cambios
+            </Button>
+        </div>
+
+    </div>
   );
 }

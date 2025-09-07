@@ -12,11 +12,11 @@ export function GameControls() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4 h-full">
-      <div className="lg:w-2/3">
+    <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 h-full">
+      <div className="lg:col-span-2">
         <CombinedTeamPanel />
       </div>
-      <div className="lg:w-1/3 flex flex-col gap-4">
+      <div className="lg:col-span-1 flex flex-col gap-4">
         <ControlsPanel />
       </div>
     </div>
