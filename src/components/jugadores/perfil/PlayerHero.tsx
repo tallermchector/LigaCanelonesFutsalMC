@@ -18,10 +18,10 @@ export function PlayerHero({ player }: PlayerHeroProps) {
     const avatarUrl = playerAvatars[player.id] || `/avatar/1.png`;
 
     return (
-        <header className="relative bg-gray-900 overflow-hidden">
+        <header className="relative bg-gray-900 overflow-hidden pt-12 pb-8">
              <div 
                 className="absolute inset-0 bg-cover bg-center opacity-30"
-                style={{ backgroundImage: `url('/banner_youtube.jpg')` }}
+                style={{ backgroundImage: `url('${player.team.bannerUrl || '/banner_youtube.jpg'}')` }}
             ></div>
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
 
@@ -30,32 +30,29 @@ export function PlayerHero({ player }: PlayerHeroProps) {
                      <Button onClick={() => router.back()} variant="ghost" size="icon" className="hover:bg-white/10">
                         <ArrowLeft className="h-6 w-6" />
                     </Button>
-                    <h1 className="text-lg font-bold">{player.name}</h1>
-                    <div className="w-10"></div>
                  </div>
             </div>
             
-            <div className="container mx-auto pt-16 pb-8 relative z-10">
+            <div className="container mx-auto pt-8 relative z-10">
                  <div className="relative flex flex-col md:flex-row items-center justify-center md:justify-between">
                     <div className="absolute -left-10 -top-10 md:left-0 md:top-0 text-[12rem] md:text-[18rem] font-black text-white/5 opacity-50 z-0 select-none pointer-events-none">
                         {player.number}
                     </div>
 
                     <div className="order-2 md:order-1 text-center md:text-left mt-4 md:mt-0 relative z-10">
-                        <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase text-white drop-shadow-lg">{player.name}</h2>
+                        <Link href={`/clubes/${player.team.slug}`} className="inline-flex items-center gap-2 group mb-2">
+                            <Image
+                                src={player.team.logoUrl || ''}
+                                alt={`Logo de ${player.team.name}`}
+                                width={28}
+                                height={28}
+                                className="w-7 h-7 object-contain transition-transform group-hover:scale-110 bg-white/20 rounded-full p-1"
+                            />
+                            <span className="font-bold text-lg text-white/90 group-hover:text-primary transition-colors">{player.team.name}</span>
+                        </Link>
+                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase text-white drop-shadow-lg">{player.name}</h1>
                         
                          <div className="mt-4 flex flex-col md:flex-row items-center justify-center md:justify-start gap-x-6 gap-y-2 text-lg">
-                            <Link href={`/clubes/${player.team.slug}`} className="inline-flex items-center gap-2 group">
-                                <Image
-                                    src={player.team.logoUrl || ''}
-                                    alt={`Logo de ${player.team.name}`}
-                                    width={28}
-                                    height={28}
-                                    className="w-7 h-7 object-contain transition-transform group-hover:scale-110 bg-white/20 rounded-full p-1"
-                                />
-                                <span className="font-bold text-white/90 group-hover:text-primary transition-colors">{player.team.name}</span>
-                            </Link>
-
                             <div className="flex items-center gap-4 text-white/80">
                                 <span className="font-semibold">{player.position}</span>
                                 <div className="flex items-center gap-2">
