@@ -15,7 +15,7 @@ export function SocialsBanner() {
   return (
     <section id="socials" className="py-20 text-center bg-background">
         <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold text-primary mb-2">Síguenos en Redes</h2>
+            <h2 className="text-3xl font-bold font-orbitron text-primary mb-2">Síguenos en Redes</h2>
             <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">Mantente al día con las últimas noticias, resultados y contenido exclusivo.</p>
             
             <Carousel 
