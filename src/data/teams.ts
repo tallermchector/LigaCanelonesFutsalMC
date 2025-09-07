@@ -9,7 +9,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/1.png",
     slug: "losquitu",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-    updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 10,
@@ -17,7 +23,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/10.png",
     slug: "lpm",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 11,
@@ -25,7 +37,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/11.png",
     slug: "wanderers",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 12,
@@ -33,7 +51,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/12.png",
     slug: "jcc-1930",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 13,
@@ -41,7 +65,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: '/equipos/13.png',
     slug: "stella",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 14,
@@ -49,7 +79,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/14.png",
     slug: "realcanelones",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 15,
@@ -57,7 +93,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/15.png",
     slug: "dac",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 2,
@@ -65,7 +107,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/2.png",
     slug: "valdearcos",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 3,
@@ -73,7 +121,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/3.png",
     slug: "negriazul",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 4,
@@ -81,7 +135,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/4.png",
     slug: "pedrense",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 5,
@@ -89,7 +149,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/5.png",
     slug: "lapiecita",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 6,
@@ -97,7 +163,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/6.png",
     slug: "elhacha",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 7,
@@ -105,7 +177,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/7.png",
     slug: "milano",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 8,
@@ -113,7 +191,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: "/equipos/8.png",
     slug: "tierra",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-     updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   },
   {
     id: 9,
@@ -121,7 +205,13 @@ const baseTeams: Omit<Team, 'players'>[] = [
     logoUrl: '/equipos/9.png',
     slug: "capincho",
     createdAt: new Date("2025-09-06T02:11:09.842Z"),
-    updatedAt: new Date("2025-09-06T02:11:09.842Z")
+    updatedAt: new Date("2025-09-06T02:11:09.842Z"),
+    description: null,
+    bannerUrl: null,
+    instagram: null,
+    facebook: null,
+    whatsapp: null,
+    phone: null
   }
 ];
 
