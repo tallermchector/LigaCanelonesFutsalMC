@@ -4,6 +4,7 @@
 import type { Team } from '@/types';
 import Image from 'next/image';
 import { Users, BarChart2, Clock, Goal } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const Stat = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: number | string }) => (
     <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-black/20 backdrop-blur-sm text-white">
@@ -33,7 +34,11 @@ export const TeamHeader = ({ team }: { team: Team }) => {
 
 
   return (
-    <section className="relative bg-secondary/30 py-16 text-foreground">
+    <section 
+        className="relative bg-secondary/30 py-16 text-foreground bg-cover bg-center"
+        style={{ backgroundImage: team.bannerUrl ? `url(${team.bannerUrl})` : "none" }}
+    >
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
          <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
          <div className="container mx-auto px-4 relative">
             <div className="flex flex-col md:flex-row items-center gap-8">
