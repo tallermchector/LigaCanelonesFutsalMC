@@ -30,6 +30,8 @@
       "google.gemini-cli-vscode-ide-companion"
       "ms-python.debugpy"
       "ms-python.python"
+      "google.geminicodeassist"
+      "mblode.pretty-formatter"
     ];
     workspace = {
       onCreate = {
