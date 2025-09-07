@@ -1,25 +1,72 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { FacebookIcon, InstagramIcon, YoutubeIcon } from '../icons';
+
+const QuickLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+    <Link href={href} className="text-muted-foreground transition-colors hover:text-primary">
+        {children}
+    </Link>
+);
+
+const SocialLink = ({ href, icon }: { href: string; icon: React.ReactNode }) => (
+  <a href={href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground transition-colors hover:text-primary">
+    {icon}
+  </a>
+);
+
 
 export function Footer() {
   return (
-    <footer className="w-full bg-secondary text-secondary-foreground">
-      <div className="container flex flex-col items-center justify-between gap-6 py-8 md:flex-row">
-        <div className="flex flex-col items-center gap-2 text-center md:flex-row md:gap-4 md:text-left">
-          <Image src="/logofu.svg" alt="Liga Futsal Logo" width={28} height={28} />
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Liga Canelones Futsal. Todos los derechos reservados.
-          </p>
+    <footer className="w-full bg-card border-t border-border">
+        <div className="container py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Logo and About */}
+            <div className="flex flex-col items-start gap-4">
+                 <Link href="/" className="flex items-center space-x-2">
+                    <Image src="/logofu.svg" alt="Liga Futsal Logo" width={32} height={32} />
+                    <span className="font-bold text-lg whitespace-nowrap">
+                      Liga Canaria Futsal 
+                    </span>
+                </Link>
+                <p className="text-sm text-muted-foreground">
+                    La plataforma definitiva para los amantes del futsal en la región de Canelones.
+                </p>
+            </div>
+            
+            {/* Quick Links */}
+            <div>
+                <h4 className="font-semibold text-foreground mb-4">Navegación</h4>
+                <nav className="flex flex-col gap-2">
+                    <QuickLink href="/partidos">Partidos</QuickLink>
+                    <QuickLink href="/posiciones">Posiciones</QuickLink>
+                    <QuickLink href="/clubes">Clubes</QuickLink>
+                    <QuickLink href="/blog">Noticias</QuickLink>
+                </nav>
+            </div>
+
+            {/* Legal Links */}
+            <div>
+                <h4 className="font-semibold text-foreground mb-4">Legal</h4>
+                 <nav className="flex flex-col gap-2">
+                    <QuickLink href="/politica-de-privacidad">Política de Privacidad</QuickLink>
+                    <QuickLink href="/terminos-de-servicio">Términos de Servicio</QuickLink>
+                </nav>
+            </div>
+            
+            {/* Social and Contact */}
+            <div>
+                <h4 className="font-semibold text-foreground mb-4">Contacto</h4>
+                <div className="flex items-center space-x-4 mb-4">
+                    <SocialLink href="https://www.instagram.com/ligacanariadefutsaloficial/" icon={<InstagramIcon />} />
+                    <SocialLink href="https://www.facebook.com/Ligacanariadefutsal" icon={<FacebookIcon />} />
+                    <SocialLink href="https://youtube.com/@ligacanariadefutsaltv" icon={<YoutubeIcon />} />
+                </div>
+            </div>
         </div>
-        <nav className="flex items-center gap-4 text-sm font-medium text-muted-foreground" aria-label="Footer navigation">
-          <Link href="/politica-de-privacidad" className="transition-colors hover:text-foreground">
-            Política de Privacidad
-          </Link>
-          <Link href="/terminos-de-servicio" className="transition-colors hover:text-foreground">
-            Términos de Servicio
-          </Link>
-        </nav>
-      </div>
+        <div className="bg-muted/50 py-4">
+             <div className="container text-center text-xs text-muted-foreground">
+                © {new Date().getFullYear()} Liga Canelones Futsal. Todos los derechos reservados.
+            </div>
+        </div>
     </footer>
   );
 }
