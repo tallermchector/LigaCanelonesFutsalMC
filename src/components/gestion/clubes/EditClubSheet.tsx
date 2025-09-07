@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation"
 import type { Team } from "@/types"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { updateClub } from "@/actions/club-actions"
 
 function slugify(text: string): string {
   return text
@@ -43,15 +44,16 @@ function slugify(text: string): string {
 
 const editClubSchema = z.object({
   name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
-  logoUrl: z.string().min(1, "La URL del logo no puede estar vacía."),
+  logoUrl: z.string().url("Debe ser una URL válida").optional().or(z.literal('')),
   slug: z.string().min(3, "El slug debe tener al menos 3 caracteres"),
   description: z.string().optional(),
-  bannerUrl: z.string().optional(),
-  instagram: z.string().optional(),
-  facebook: z.string().optional(),
+  bannerUrl: z.string().url("Debe ser una URL válida").optional().or(z.literal('')),
+  instagram: z.string().url("Debe ser una URL válida").optional().or(z.literal('')),
+  facebook: z.string().url("Debe ser una URL válida").optional().or(z.literal('')),
   whatsapp: z.string().optional(),
   phone: z.string().optional(),
 });
+
 
 type EditClubFormValues = z.infer<typeof editClubSchema>
 
@@ -107,20 +109,19 @@ export function EditClubSheet({ team, isOpen, onClose }: EditClubSheetProps) {
     async function onSubmit(values: EditClubFormValues) {
         setIsSubmitting(true)
         try {
-            // Aquí iría la llamada a la server action para editar el club
-            console.log(values);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await updateClub(team.id, values);
             toast({
-                title: "Club Actualizado (Simulación)",
+                title: "Club Actualizado",
                 description: `El club ${values.name} ha sido actualizado exitosamente.`,
             })
             onClose();
             router.refresh()
         } catch (error) {
+             const errorMessage = error instanceof Error ? error.message : "No se pudo actualizar el club.";
              toast({
                 variant: "destructive",
                 title: "Error al actualizar club",
-                description: "No se pudo actualizar el club. Por favor, intente de nuevo.",
+                description: errorMessage,
             })
         } finally {
             setIsSubmitting(false)
