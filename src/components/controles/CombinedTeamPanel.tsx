@@ -49,7 +49,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
     const isSelectionMode = status === 'SELECTING_STARTERS';
 
     return (
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col">
             <CardHeader className="p-4">
                  <CardTitle className={cn("text-center", teamId === 'A' ? 'text-primary' : 'text-accent' )}>{team.name}</CardTitle>
                  <div className="hidden md:flex text-center text-sm text-muted-foreground font-semibold items-center justify-center gap-2">
@@ -57,9 +57,9 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                     <span>Activos: {activePlayers.length} / 5</span>
                 </div>
             </CardHeader>
-            <CardContent className="flex-grow p-2 overflow-y-auto">
+            <CardContent className="flex-grow p-2 flex flex-col items-center gap-4 overflow-y-auto">
                  { isSelectionMode ? (
-                    <div className="flex flex-nowrap items-start justify-center gap-4">
+                    <div className="flex flex-col items-center justify-start gap-4">
                         {team.players.map(player => (
                            <JerseyButton
                                 key={player.id}
@@ -74,9 +74,9 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                     </div>
                  ) : (
                     <>
-                    <div>
+                    <div className="w-full">
                         <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground hidden md:block">Titulares</h3>
-                        <div className="flex flex-nowrap items-start justify-center gap-4">
+                        <div className="flex flex-col items-center justify-start gap-4">
                             {starters.length > 0 ? starters.map(p => (
                                 <JerseyButton
                                     key={p.id}
@@ -91,10 +91,10 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                     </div>
                     
                     {substitutionState && substitutionState.playerOut.teamId === teamId && (
-                        <div className="mt-4">
+                        <div className="w-full mt-4">
                             <Separator className="my-2" />
                             <h3 className="px-2 mb-2 text-sm font-semibold text-blue-500 animate-pulse">Seleccione jugador entrante</h3>
-                            <div className="flex flex-wrap items-start justify-center gap-4">
+                            <div className="flex flex-col items-center justify-start gap-4">
                                 {substitutes.length > 0 ? substitutes.map(p => (
                                      <JerseyButton
                                         key={p.id}
@@ -126,11 +126,12 @@ export function CombinedTeamPanel() {
   };
 
   return (
-    <Card className="h-full flex flex-col md:flex-row">
-        <PlayerList teamId="A" />
-        <Separator orientation="vertical" className="hidden md:block mx-2" />
-        <Separator orientation="horizontal" className="md:hidden my-2" />
-        <PlayerList teamId="B" />
+    <Card className="h-full flex flex-col">
+        <div className="flex-grow flex flex-row">
+            <PlayerList teamId="A" />
+            <Separator orientation="vertical" className="mx-2" />
+            <PlayerList teamId="B" />
+        </div>
         <Sheet open={!!selectedPlayer && !state.substitutionState} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
             <SheetContent>
                 <SheetHeader>
