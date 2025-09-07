@@ -36,7 +36,7 @@ export function ControlsPanel() {
     
   const handleFinishMatch = async () => {
     dispatch({ type: 'SET_STATUS', payload: 'FINISHED' });
-    await handleSaveChanges();
+    await handleSaveChanges({ ...state, status: 'FINISHED', isRunning: false, time: 0 });
     router.push('/controles');
     router.refresh();
   }
@@ -57,7 +57,6 @@ export function ControlsPanel() {
   return (
     <div className="bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-md flex flex-col h-full p-2 sm:p-4 gap-4">
 
-      {/* -- DESKTOP CONTROLS -- */}
       <div className="hidden md:flex flex-col flex-grow items-center justify-around gap-4 pt-6 overflow-y-auto">
           <CardTitle className="text-center text-primary">Controles del Juego</CardTitle>
           <div className="text-center">
@@ -138,7 +137,6 @@ export function ControlsPanel() {
           </Button>
       </div>
 
-       {/* -- MOBILE CONTROLS -- */}
         <div className="md:hidden w-full flex flex-col gap-2 items-center">
             <div className="grid grid-cols-2 gap-2 w-full">
                 <Button size="lg" onClick={() => dispatch({ type: 'TOGGLE_TIMER' })} className={cn(state.isRunning ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-600 hover:bg-gray-700')} disabled={!isMatchLive}>

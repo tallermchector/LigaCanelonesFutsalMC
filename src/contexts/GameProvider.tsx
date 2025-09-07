@@ -3,7 +3,14 @@
 'use client';
 
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker, PlayerMatchStats } from '@/types';
-import React from 'react';
+import React,
+{
+  useReducer,
+  useCallback,
+  useEffect,
+  createContext,
+  useContext
+} from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { saveMatchState, createGameEvent } from '@/actions/match-actions';
 
@@ -25,7 +32,6 @@ type GameAction =
   | { type: 'COMPLETE_SUBSTITUTION'; payload: { playerInId: number } }
   | { type: 'TOGGLE_ACTIVE_PLAYER'; payload: { teamId: 'A' | 'B'; playerId: number } }
   | { type: 'SET_INITIAL_POSITIONS' }
-  | { type: 'SAVE_FULL_STATE'; }
   | { type: 'UPDATE_PLAYER_POSITION'; payload: { playerId: number; position: PlayerPosition } }
   | { type: 'UPDATE_PLAYER_TIME' }
   | { type: 'UPDATE_STATE_FROM_WS'; payload: GameState };
@@ -53,25 +59,6 @@ const initialState: GameState = {
   playerTimeTracker: {},
 };
 
-// Helper function to update player times
-const updatePlayerTimeReducer = (state: GameState): GameState => {
-    if (!state.isRunning) return state;
-
-    const newTracker = { ...state.playerTimeTracker };
-    const allActivePlayers = [...state.activePlayersA, ...state.activePlayersB];
-
-    allActivePlayers.forEach(playerId => {
-        const playerTracker = newTracker[playerId];
-        if (playerTracker) {
-            const timePlayed = playerTracker.startTime - state.time;
-            playerTracker.totalTime += timePlayed;
-            playerTracker.startTime = state.time; // Reset start time for next interval
-        }
-    });
-
-    return { ...state, playerTimeTracker: newTracker };
-};
-
 const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
     case 'LOAD_MATCH': {
@@ -83,6 +70,13 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         teamB: action.payload.match.teamB,
         scoreA: action.payload.match.scoreA,
         scoreB: action.payload.match.scoreB,
+        foulsA: action.payload.match.foulsA,
+        foulsB: action.payload.match.foulsB,
+        timeoutsA: action.payload.match.timeoutsA,
+        timeoutsB: action.payload.match.timeoutsB,
+        period: action.payload.match.period,
+        time: action.payload.match.time,
+        isRunning: action.payload.match.isRunning,
         events: action.payload.match.events || [],
         activePlayersA: action.payload.match.activePlayersA || [],
         activePlayersB: action.payload.match.activePlayersB || [],
@@ -128,24 +122,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         }
         return { ...state, status: action.payload, isRunning: action.payload !== 'FINISHED' && state.isRunning };
     case 'TOGGLE_TIMER':
-      const nextIsRunning = !state.isRunning;
-      const updatedTimeState = updatePlayerTimeReducer(state);
-
-      if(nextIsRunning) {
-        // When starting, set startTime for all active players
-        const newTracker = { ...updatedTimeState.playerTimeTracker };
-        const allActivePlayers = [...state.activePlayersA, ...state.activePlayersB];
-        allActivePlayers.forEach(id => {
-            if (newTracker[id]) {
-                newTracker[id].startTime = updatedTimeState.time;
-            } else {
-                newTracker[id] = { startTime: updatedTimeState.time, totalTime: 0 };
-            }
-        });
-        return { ...updatedTimeState, isRunning: true, playerTimeTracker: newTracker, status: state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS' ? 'LIVE' : state.status };
-      }
-
-      return { ...updatedTimeState, isRunning: false };
+      return { ...state, isRunning: !state.isRunning };
     case 'RESET_TIMER':
       return { ...state, time: initialState.time, isRunning: false };
     case 'TICK':
@@ -162,7 +139,6 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'SELECT_PLAYER': {
         const selected = action.payload;
         if (state.substitutionState) {
-            // Do not change selectedPlayer while substitution is in progress
             return state;
         }
         if (!selected) {
@@ -269,9 +245,9 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         const newPositions: { [playerId: number]: PlayerPosition } = {};
     
         const setPositionsForTeam = (playerIds: number[], team: 'A' | 'B') => {
-            const xPosition = team === 'A' ? 25 : 75; // Team A on left, Team B on right
-            const yStart = 15; // Starting y position
-            const yIncrement = 17.5; // Space between players
+            const xPosition = team === 'A' ? 25 : 75; 
+            const yStart = 15;
+            const yIncrement = 17.5;
     
             playerIds.forEach((playerId, index) => {
                 newPositions[playerId] = {
@@ -296,14 +272,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
             },
         };
     }
-    case 'UPDATE_PLAYER_TIME': {
-        return updatePlayerTimeReducer(state);
-    }
-    case 'SAVE_FULL_STATE': {
-      return state;
-    }
     case 'UPDATE_STATE_FROM_WS': {
-        // Here we merge the state from WS without overwriting the full team objects
         const { teamA, teamB, ...wsState } = action.payload;
         return {
             ...state,
@@ -322,25 +291,23 @@ type GameProviderProps = {
   match: FullMatch;
 }
 
-const GameContext = React.createContext<{ 
+const GameContext = createContext<{ 
     state: GameState; 
     dispatch: React.Dispatch<GameAction>;
     handleSaveChanges: () => Promise<void>;
-    createGameEvent: (event: Omit<GameEvent, 'id'|'matchId'>) => Promise<void>;
+    handleCreateGameEvent: (event: Omit<GameEvent, 'id'|'matchId'>) => Promise<void>;
 } | undefined>(undefined);
 
 export const GameProvider: React.FC<GameProviderProps> = ({ children, match }) => {
-  const [state, dispatch] = React.useReducer(gameReducer, initialState);
+  const [state, dispatch] = useReducer(gameReducer, initialState);
   const { toast } = useToast();
 
-
-  const getInitialState = React.useCallback(() => {
+  const getInitialState = useCallback(() => {
     try {
       if (typeof window !== 'undefined') {
         const savedState = localStorage.getItem(`futsal-match-state-${match.id}`);
         const parsedState = savedState ? JSON.parse(savedState) : null;
         if (parsedState) {
-          // Ensure new state fields are initialized
           parsedState.substitutionState = null;
           if (!parsedState.activePlayersA) parsedState.activePlayersA = match.activePlayersA || [];
           if (!parsedState.activePlayersB) parsedState.activePlayersB = match.activePlayersB || [];
@@ -355,29 +322,28 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match }) =
     return null;
   }, [match.id, match.activePlayersA, match.activePlayersB]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch({ type: 'LOAD_MATCH', payload: { match, state: getInitialState() } });
   }, [match, getInitialState]);
   
-  const handleSaveChanges = React.useCallback(async () => {
-    if (!state.matchId) {
+  const handleSaveChanges = useCallback(async (overrideState?: GameState) => {
+    const stateToSave = overrideState || state;
+    if (!stateToSave.matchId) {
         console.error("No match ID, cannot save state.");
         return;
     }
     try {
-        const stateWithUpdatedTime = updatePlayerTimeReducer(state);
-        await saveMatchState(state.matchId, stateWithUpdatedTime);
+        await saveMatchState(stateToSave.matchId, stateToSave);
     } catch (error) {
         toast({
             variant: "destructive",
             title: "Error de Sincronización",
-            description: "No se pudo guardar el estado del partido en la base de datos.",
+            description: "No se pudo guardar el estado del partido.",
         });
-        console.error("Failed to save match state:", error);
     }
   }, [state, toast]);
 
- const handleCreateGameEvent = React.useCallback(async (event: Omit<GameEvent, 'id'|'matchId'>) => {
+ const handleCreateGameEvent = useCallback(async (event: Omit<GameEvent, 'id'|'matchId'>) => {
     if (!state.matchId) {
         console.error("No match ID, cannot create event.");
         return;
@@ -390,23 +356,28 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match }) =
             title: "Error de Sincronización",
             description: "No se pudo registrar el evento del partido.",
         });
-        console.error("Failed to create game event:", error);
     }
  }, [state.matchId, toast]);
 
+  const debouncedSave = useCallback(() => {
+    const handler = setTimeout(() => {
+      handleSaveChanges();
+    }, 1000); 
+    return () => clearTimeout(handler);
+  }, [handleSaveChanges]);
 
-  React.useEffect(() => {
-    if (state.matchId && (state.status === 'LIVE' || state.status === 'FINISHED' || state.status === 'SELECTING_STARTERS')) {
+  useEffect(() => {
+    if (state.matchId) {
         try {
             localStorage.setItem(`futsal-match-state-${state.matchId}`, JSON.stringify(state));
+            debouncedSave();
         } catch (error) {
             console.error("Failed to write state to localStorage", error);
         }
     }
-  }, [state]);
+  }, [state, debouncedSave]);
 
-
-  React.useEffect(() => {
+  useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
     if (state.isRunning && state.time > 0) {
       timer = setInterval(() => {
@@ -421,14 +392,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match }) =
   }, [state.isRunning, state.time]);
   
   return (
-    <GameContext.Provider value={{ state, dispatch, handleSaveChanges, createGameEvent: handleCreateGameEvent }}>
+    <GameContext.Provider value={{ state, dispatch, handleSaveChanges, handleCreateGameEvent }}>
       {children}
     </GameContext.Provider>
   );
 };
 
 export const useGame = () => {
-  const context = React.useContext(GameContext);
+  const context = useContext(GameContext);
   if (context === undefined) {
     throw new Error('useGame must be used within a GameProvider');
   }

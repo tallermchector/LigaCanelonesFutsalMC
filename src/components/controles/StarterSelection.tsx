@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -31,7 +32,6 @@ function TeamColumn({ team, teamId, activePlayers, onPlayerToggle }: TeamColumnP
                         jerseyNumber={player.number}
                         playerName={player.name}
                         isSelected={activePlayers.includes(player.id)}
-                        isActive={activePlayers.includes(player.id)}
                         onClick={() => onPlayerToggle({ teamId, playerId: player.id })}
                     />
                 ))}
@@ -45,7 +45,7 @@ function TeamColumn({ team, teamId, activePlayers, onPlayerToggle }: TeamColumnP
 }
 
 export function StarterSelection() {
-    const { state, dispatch } = useGame();
+    const { state, dispatch, handleSaveChanges } = useGame();
     const { toast } = useToast();
     const { teamA, teamB, activePlayersA, activePlayersB } = state;
 
@@ -53,7 +53,7 @@ export function StarterSelection() {
         dispatch({ type: 'TOGGLE_ACTIVE_PLAYER', payload });
     };
 
-    const handleConfirmStarters = () => {
+    const handleConfirmStarters = async () => {
         if (activePlayersA.length !== 5 || activePlayersB.length !== 5) {
             toast({
                 variant: 'destructive',
@@ -62,7 +62,16 @@ export function StarterSelection() {
             });
             return;
         }
+        
+        // Create a new state object for the update
+        const newState = { ...state, status: 'LIVE' as const };
+        
+        // Dispatch the status change locally
         dispatch({ type: 'SET_STATUS', payload: 'LIVE' });
+
+        // Save the entire new state to the database
+        await handleSaveChanges(newState);
+        
         toast({
             title: '¡A Jugar!',
             description: 'Los titulares han sido confirmados y el partido está listo para comenzar.',

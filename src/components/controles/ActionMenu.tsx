@@ -25,7 +25,7 @@ const actionButtons: { type: GameEventType; label: string; icon: React.ReactNode
 ];
 
 export function ActionMenu({ player, onAction }: ActionMenuProps) {
-  const { state, dispatch, createGameEvent } = useGame();
+  const { state, dispatch, handleCreateGameEvent } = useGame();
   const { toast } = useToast();
 
   const handleActionClick = (type: GameEventType) => {
@@ -48,13 +48,13 @@ export function ActionMenu({ player, onAction }: ActionMenuProps) {
             playerInName: null,
         };
         dispatch({ type: 'ADD_EVENT', payload: { event: newEvent } });
-        createGameEvent(newEvent);
+        handleCreateGameEvent(newEvent);
         toast({
           title: "Evento Registrado",
           description: `${type} para ${player.name}.`
         })
     }
-    onAction(); // Close the popover
+    onAction();
   };
 
   return (
