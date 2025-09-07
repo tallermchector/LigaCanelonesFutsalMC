@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -34,10 +33,13 @@ export function Scoreboard() {
 
   const TeamScoreSection = ({ team, score, fouls, timeouts, alignment, bgColorClass }: { team: NonNullable<typeof teamA>, score: number, fouls: number, timeouts: number, alignment: 'left' | 'right', bgColorClass: string }) => (
       <div className={cn(
-          "flex-1 flex flex-col sm:flex-row items-center justify-between p-3 gap-2 rounded-lg text-white",
+          "flex-1 flex flex-col p-3 gap-2 rounded-lg text-white",
           bgColorClass
       )}>
-        <div className={cn("flex items-center gap-3", alignment === 'right' && "sm:order-last")}>
+        <div className={cn(
+            "flex items-center gap-3",
+            alignment === 'right' && "sm:order-last sm:flex-row-reverse"
+        )}>
             <Image
                 src={team.logoUrl || ''}
                 alt={`Logo de ${team.name}`}
@@ -47,8 +49,8 @@ export function Scoreboard() {
             />
             <h2 className="text-base sm:text-lg font-bold uppercase truncate">{team.name}</h2>
         </div>
-        <div className="flex items-center gap-4">
-             <div className="flex items-center gap-2 text-xs text-white/90">
+        <div className="flex items-center justify-between">
+             <div className="flex items-center gap-4 text-xs text-white/90">
                 <div className="flex items-center gap-1"><Timer className="h-4 w-4" /> {timeouts}</div>
                 <div className="flex items-center gap-1"><Shield className="h-4 w-4" /> {fouls}</div>
             </div>
@@ -59,7 +61,7 @@ export function Scoreboard() {
 
   return (
     <div className="w-full shadow-lg bg-card/80 backdrop-blur-sm border border-primary/20 rounded-lg overflow-hidden">
-        <div className="flex flex-col sm:flex-row items-stretch text-center">
+        <div className="flex flex-col items-stretch text-center">
             
             <TeamScoreSection 
                 team={teamA}
@@ -71,7 +73,7 @@ export function Scoreboard() {
             />
 
             {/* Center Score and Time */}
-            <div className="flex flex-row sm:flex-col items-center justify-center gap-2 px-2 py-2 sm:py-4 bg-muted/30">
+            <div className="flex flex-row items-center justify-center gap-4 px-2 py-2 sm:py-3 bg-muted/30">
                 <div className="font-mono text-3xl sm:text-4xl font-bold bg-accent text-accent-foreground px-3 py-1 rounded-md">
                 <Dialog>
                     <DialogTrigger asChild>
