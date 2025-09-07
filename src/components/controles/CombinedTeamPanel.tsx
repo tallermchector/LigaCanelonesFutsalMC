@@ -75,7 +75,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                  ) : (
                     <>
                     <div>
-                        <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Titulares</h3>
+                        <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground hidden md:block">Titulares</h3>
                         <div className="flex flex-nowrap items-start justify-center gap-4">
                             {starters.length > 0 ? starters.map(p => (
                                 <JerseyButton
@@ -126,9 +126,10 @@ export function CombinedTeamPanel() {
   };
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col md:flex-row">
         <PlayerList teamId="A" />
-        <Separator orientation="horizontal" className="w-full" />
+        <Separator orientation="vertical" className="hidden md:block mx-2" />
+        <Separator orientation="horizontal" className="md:hidden my-2" />
         <PlayerList teamId="B" />
         <Sheet open={!!selectedPlayer && !state.substitutionState} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
             <SheetContent>
@@ -144,4 +145,3 @@ export function CombinedTeamPanel() {
     </Card>
   );
 }
-
