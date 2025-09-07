@@ -25,11 +25,11 @@ function toClientFullMatch(match: ActionFullMatch): FullMatch {
         // Explicitly cast player positions to the specific PlayerPositionType enum.
         teamA: {
             ...match.teamA,
-            players: match.teamA.players.map(p => ({...p, position: p.position as PlayerPositionType})) as Player[],
+            players: (match.teamA.players || []).map(p => ({...p, position: p.position as PlayerPositionType})) as Player[],
         },
         teamB: {
             ...match.teamB,
-            players: match.teamB.players.map(p => ({...p, position: p.position as PlayerPositionType})) as Player[],
+            players: (match.teamB.players || []).map(p => ({...p, position: p.position as PlayerPositionType})) as Player[],
         }
     };
 }
