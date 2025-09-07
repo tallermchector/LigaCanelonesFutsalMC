@@ -34,19 +34,23 @@ export function Scoreboard() {
   };
 
   const TeamScoreSection = ({ team, score, fouls, timeouts, alignment, bgColorClass }: { team: NonNullable<typeof teamA>, score: number, fouls: number, timeouts: number, alignment: 'left' | 'right', bgColorClass: string }) => (
-      <div className={cn("flex flex-col items-center justify-center gap-2 p-2 sm:p-4 rounded-lg", bgColorClass)}>
-        <Image
-          src={team.logoUrl || ''}
-          alt={`Logo de ${team.name}`}
-          width={64}
-          height={64}
-          className="w-12 h-12 sm:w-16 sm:h-16 rounded-full aspect-square object-contain bg-black/20 p-1"
-        />
-        <h2 className="text-sm sm:text-lg font-bold text-white truncate w-24 sm:w-full text-center">{team.name}</h2>
-        <div className="text-4xl sm:text-5xl font-black text-white">{score}</div>
-        <div className="flex items-center gap-2 sm:gap-4 text-xs text-white/80">
-            <div className="flex items-center gap-1"><Shield className="h-4 w-4" /> {fouls}</div>
-            <div className="hidden sm:flex items-center gap-1"><Timer className="h-4 w-4" /> T.M.: {timeouts}</div>
+      <div className={cn("flex items-center justify-center p-2 sm:p-4 rounded-lg", bgColorClass)}>
+        <div className="flex items-center gap-2 sm:gap-4 w-full">
+            <Image
+                src={team.logoUrl || ''}
+                alt={`Logo de ${team.name}`}
+                width={64}
+                height={64}
+                className="w-10 h-10 sm:w-16 sm:h-16 rounded-full aspect-square object-contain bg-black/20 p-1"
+            />
+            <div className="flex-grow text-left overflow-hidden">
+                <h2 className="text-sm sm:text-lg font-bold text-white truncate">{team.name}</h2>
+                <div className="flex items-center gap-2 sm:gap-4 text-xs text-white/80 mt-1">
+                    <div className="flex items-center gap-1"><Shield className="h-4 w-4" /> Faltas: {fouls}</div>
+                    <div className="flex items-center gap-1"><Timer className="h-4 w-4" /> T.M: {timeouts}</div>
+                </div>
+            </div>
+            <div className="text-4xl sm:text-5xl font-black text-white">{score}</div>
         </div>
       </div>
   );
