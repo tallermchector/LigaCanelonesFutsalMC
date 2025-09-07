@@ -70,7 +70,7 @@ export default async function EstadisticasPage({ params }: EstadisticasPageProps
       allEvents.push({ id: -3, matchId: match.id, type: 'MATCH_END', timestamp: 0, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
   }
 
-  allEvents.sort((a, b) => a.timestamp - b.timestamp);
+  allEvents.sort((a, b) => b.timestamp - a.timestamp);
   
 
   return (
