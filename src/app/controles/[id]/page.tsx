@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { GameProvider } from '@/contexts/GameProvider';
+import { GameProvider, useGame } from '@/contexts/GameProvider';
 import { Scoreboard } from '@/components/controles/Scoreboard';
 import { GameControls } from '@/components/controles/GameControls';
 import { StarterSelection } from '@/components/controles/StarterSelection';
@@ -22,7 +22,7 @@ import { ClearLiveEventsButton } from '@/components/gestion/ClearLiveEventsButto
 
 
 function MatchControlContent() {
-    const { state, dispatch } = useGame();
+    const { state } = useGame();
 
     if (state.status === 'SCHEDULED' || state.activePlayersA.length < 5 || state.activePlayersB.length < 5) {
         return <StarterSelection />;
