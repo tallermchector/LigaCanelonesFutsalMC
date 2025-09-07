@@ -26,15 +26,15 @@ export function TeamStats({ team }: TeamStatsProps) {
             match.events.filter(event =>
                 event.type === eventType &&
                 (event.teamId === team.id || 
-                 (match.teamAId === team.id && event.teamId === match.teamA.id) || 
-                 (match.teamBId === team.id && event.teamId === match.teamB.id))
+                 (match.teamA.id === team.id && event.teamId === match.teamA.id) || 
+                 (match.teamB.id === team.id && event.teamId === match.teamB.id))
             )
         );
     };
 
     const goals = team.matches?.reduce((acc, match) => {
-        if (match.teamAId === team.id) return acc + (match.scoreA || 0);
-        if (match.teamBId === team.id) return acc + (match.scoreB || 0);
+        if (match.teamA.id === team.id) return acc + (match.scoreA || 0);
+        if (match.teamB.id === team.id) return acc + (match.scoreB || 0);
         return acc;
     }, 0) || 0;
 
