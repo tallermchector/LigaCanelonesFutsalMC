@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Textarea } from "@/components/ui/textarea"
 
 function slugify(text: string): string {
   return text
@@ -33,6 +34,12 @@ const createClubSchema = z.object({
   name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
   logoUrl: z.string().min(1, "La URL del logo no puede estar vacía."),
   slug: z.string().min(3, "El slug debe tener al menos 3 caracteres"),
+  description: z.string().optional(),
+  bannerUrl: z.string().optional(),
+  instagram: z.string().optional(),
+  facebook: z.string().optional(),
+  whatsapp: z.string().optional(),
+  phone: z.string().optional(),
 });
 
 type CreateClubFormValues = z.infer<typeof createClubSchema>
@@ -48,6 +55,12 @@ export function CreateClubForm() {
             name: '',
             logoUrl: '',
             slug: '',
+            description: '',
+            bannerUrl: '',
+            instagram: '',
+            facebook: '',
+            whatsapp: '',
+            phone: '',
         },
     });
 
@@ -120,6 +133,84 @@ export function CreateClubForm() {
                             <FormLabel>URL del Logo</FormLabel>
                              <FormControl>
                                 <Input placeholder="/equipos/logo.png" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="bannerUrl"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>URL del Banner</FormLabel>
+                             <FormControl>
+                                <Input placeholder="/banners/equipo.jpg" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Descripción</FormLabel>
+                             <FormControl>
+                                <Textarea placeholder="Una breve descripción del club..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="instagram"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Instagram</FormLabel>
+                             <FormControl>
+                                <Input placeholder="URL del perfil de Instagram" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="facebook"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Facebook</FormLabel>
+                             <FormControl>
+                                <Input placeholder="URL del perfil de Facebook" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="whatsapp"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>WhatsApp</FormLabel>
+                             <FormControl>
+                                <Input placeholder="Número de WhatsApp" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Teléfono de Contacto</FormLabel>
+                             <FormControl>
+                                <Input placeholder="Número de teléfono" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
