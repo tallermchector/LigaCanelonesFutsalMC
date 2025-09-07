@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import type { GameEvent, GameEventType, Team } from '@/types';
@@ -138,7 +139,8 @@ export function PlayByPlayFeed({ events, teamA, teamB }: PlayByPlayFeedProps) {
   const allEvents: GameEvent[] = [...(events || [])];
   
   allEvents.push({ id: -1, matchId: teamA.id, type: 'MATCH_START', timestamp: 2400, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
-  if (events.some(e => e.timestamp <= 1200)) {
+  // Show "start of second half" if the match is in the second half or finished
+  if (events.some(e => e.type === 'MATCH_END') || events.some(e => e.timestamp < 1200)) {
     allEvents.push({ id: -2, matchId: teamA.id, type: 'PERIOD_START', timestamp: 1200, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
   }
   if (events.some(e => e.type === 'MATCH_END')) {
