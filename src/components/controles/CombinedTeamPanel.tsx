@@ -48,6 +48,9 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
     
     const isSelectionMode = status === 'SELECTING_STARTERS';
 
+    const goalkeeper = starters.find(p => p.position === 'GOLERO');
+    const fieldPlayers = starters.filter(p => p.position !== 'GOLERO');
+
     return (
         <div className="flex-1 flex flex-col">
             <CardHeader className="p-4">
@@ -74,20 +77,38 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                     </div>
                  ) : (
                     <>
-                    <div className="w-full">
-                        <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground hidden md:block">Titulares</h3>
-                        <div className="flex flex-col items-center justify-start gap-4">
-                            {starters.length > 0 ? starters.map(p => (
-                                <JerseyButton
-                                    key={p.id}
-                                    jerseyNumber={p.number}
-                                    playerName={p.name}
-                                    isSelected={selectedPlayer?.playerId === p.id}
-                                    isActive={true}
-                                    onClick={() => handlePlayerSelect(p)}
-                                />
-                            )) : <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares.</p>}
+                    <div className="w-full flex flex-col items-center gap-4">
+                        <div className="hidden md:block text-sm font-semibold text-muted-foreground">Titulares</div>
+                        
+                        {/* Goalkeeper Row */}
+                        <div className="flex justify-center w-full">
+                          {goalkeeper ? (
+                            <JerseyButton
+                              key={goalkeeper.id}
+                              jerseyNumber={goalkeeper.number}
+                              playerName={goalkeeper.name}
+                              isSelected={selectedPlayer?.playerId === goalkeeper.id}
+                              isActive={true}
+                              onClick={() => handlePlayerSelect(goalkeeper)}
+                            />
+                          ) : starters.length > 0 && <p className="text-xs text-muted-foreground p-4 text-center">Sin golero titular.</p>}
                         </div>
+
+                        {/* Field Players Grid */}
+                        <div className="grid grid-cols-2 gap-x-2 gap-y-4 md:gap-x-4 md:gap-y-6">
+                          {fieldPlayers.map(player => (
+                             <JerseyButton
+                                key={player.id}
+                                jerseyNumber={player.number}
+                                playerName={player.name}
+                                isSelected={selectedPlayer?.playerId === player.id}
+                                isActive={true}
+                                onClick={() => handlePlayerSelect(player)}
+                            />
+                          ))}
+                        </div>
+
+                         {starters.length === 0 && <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares.</p>}
                     </div>
                     
                     {substitutionState && substitutionState.playerOut.teamId === teamId && (
