@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -39,6 +40,7 @@ export function useLiveMatchState(matchId: number | null, initialMatchData: Full
           activePlayersB: initialMatchData.activePlayersB || [],
           playerPositions: {},
           playerTimeTracker: {},
+          updatedAt: initialMatchData.updatedAt
         }
     }
     return null;
@@ -47,7 +49,14 @@ export function useLiveMatchState(matchId: number | null, initialMatchData: Full
   const [liveState, setLiveState] = useState<GameState | null>(getInitialState);
 
   useEffect(() => {
-    setLiveState(getInitialState());
+    const initialState = getInitialState();
+     if (initialState?.isRunning && initialState.updatedAt) {
+      const timeSinceUpdate = (Date.now() - new Date(initialState.updatedAt).getTime()) / 1000;
+      const newTime = Math.max(0, initialState.time - timeSinceUpdate);
+      setLiveState({ ...initialState, time: newTime });
+    } else {
+      setLiveState(initialState);
+    }
   }, [initialMatchData, getInitialState]);
 
 
@@ -68,11 +77,21 @@ export function useLiveMatchState(matchId: number | null, initialMatchData: Full
     };
 
     window.addEventListener('storage', handleStorageChange);
+    
+    let timer: NodeJS.Timeout;
+    if (liveState?.isRunning && liveState.time > 0) {
+        timer = setInterval(() => {
+            setLiveState(prevState => prevState ? { ...prevState, time: Math.max(0, prevState.time - 1) } : null);
+        }, 1000);
+    }
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+       if (timer) {
+        clearInterval(timer);
+      }
     };
-  }, [matchId]);
+  }, [matchId, liveState?.isRunning]);
 
   return liveState;
 }

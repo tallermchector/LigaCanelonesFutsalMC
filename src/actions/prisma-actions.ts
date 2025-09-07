@@ -22,6 +22,7 @@ function toClientFullMatch(match: ActionFullMatch): FullMatch {
         ...match,
         // Convert Date object to ISO string for client-side serialization.
         scheduledTime: match.scheduledTime.toISOString(),
+        updatedAt: match.updatedAt.toISOString(),
         // Explicitly cast player positions to the specific PlayerPositionType enum.
         teamA: {
             ...match.teamA,

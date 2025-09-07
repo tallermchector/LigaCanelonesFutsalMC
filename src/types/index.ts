@@ -33,8 +33,9 @@ export interface GameEvent extends Omit<PrismaGameEvent, 'type'> {
     type: GameEventType;
 }
 
-export interface FullMatch extends Omit<PrismaMatch, 'teamAId' | 'teamBId' | 'events' | 'scheduledTime' | 'status'> {
-  scheduledTime: string; 
+export interface FullMatch extends Omit<PrismaMatch, 'teamAId' | 'teamBId' | 'events' | 'scheduledTime' | 'status' | 'updatedAt'> {
+  scheduledTime: string;
+  updatedAt: string;
   status: MatchStatus;
   teamA: Team;
   teamB: Team;
@@ -106,6 +107,7 @@ export interface GameState {
   activePlayersB: number[];
   playerPositions: { [playerId: number]: PlayerPosition };
   playerTimeTracker: PlayerTimeTracker;
+  updatedAt: string | null;
 }
 
 export type Post = {

@@ -57,6 +57,7 @@ const initialState: GameState = {
   activePlayersB: [],
   playerPositions: {},
   playerTimeTracker: {},
+  updatedAt: null,
 };
 
 const gameReducer = (state: GameState, action: GameAction): GameState => {
@@ -81,6 +82,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         activePlayersA: action.payload.match.activePlayersA || [],
         activePlayersB: action.payload.match.activePlayersB || [],
         playerPositions: {},
+        updatedAt: action.payload.match.updatedAt,
       };
       
       const timeTracker: PlayerTimeTracker = {};
@@ -294,7 +296,7 @@ type GameProviderProps = {
 const GameContext = createContext<{ 
     state: GameState; 
     dispatch: React.Dispatch<GameAction>;
-    handleSaveChanges: () => Promise<void>;
+    handleSaveChanges: (stateOverride?: GameState) => Promise<void>;
     handleCreateGameEvent: (event: Omit<GameEvent, 'id'|'matchId'>) => Promise<void>;
 } | undefined>(undefined);
 
@@ -333,7 +335,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match }) =
         return;
     }
     try {
-        await saveMatchState(stateToSave.matchId, stateToSave);
+        await saveMatchState(stateToSave.matchId, {...stateToSave, updatedAt: new Date().toISOString()});
     } catch (error) {
         toast({
             variant: "destructive",
@@ -369,7 +371,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match }) =
   useEffect(() => {
     if (state.matchId) {
         try {
-            localStorage.setItem(`futsal-match-state-${state.matchId}`, JSON.stringify(state));
+            localStorage.setItem(`futsal-match-state-${state.matchId}`, JSON.stringify({...state, updatedAt: new Date().toISOString()}));
             debouncedSave();
         } catch (error) {
             console.error("Failed to write state to localStorage", error);
