@@ -1,17 +1,32 @@
+
+'use client';
+
+import * as React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FacebookIcon, InstagramIcon, YoutubeIcon } from '../icons';
+import { motion } from 'framer-motion';
+import { ArrowRight, FileText, GanttChartSquare, Shield, Newspaper, Lock, BookUser, Users } from 'lucide-react';
 
-const QuickLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-    <Link href={href} className="text-muted-foreground transition-colors hover:text-primary">
-        {children}
+
+const QuickLink = ({ href, children, icon }: { href: string; children: React.ReactNode, icon?: React.ReactNode }) => (
+    <Link href={href} className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary group">
+        {icon ? React.cloneElement(icon as React.ReactElement, { className: 'h-4 w-4' }) : <ArrowRight className="h-4 w-4" />}
+        <span>{children}</span>
     </Link>
 );
 
 const SocialLink = ({ href, icon }: { href: string; icon: React.ReactNode }) => (
-  <a href={href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground transition-colors hover:text-primary">
+  <motion.a 
+    href={href} 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    className="text-muted-foreground transition-colors hover:text-primary"
+    whileHover={{ scale: 1.2, rotate: -10 }}
+    transition={{ type: 'spring', stiffness: 300 }}
+  >
     {icon}
-  </a>
+  </motion.a>
 );
 
 
@@ -36,10 +51,10 @@ export function Footer() {
             <div>
                 <h4 className="font-semibold text-foreground mb-4">Navegación</h4>
                 <nav className="flex flex-col gap-2">
-                    <QuickLink href="/partidos">Partidos</QuickLink>
-                    <QuickLink href="/posiciones">Posiciones</QuickLink>
-                    <QuickLink href="/clubes">Clubes</QuickLink>
-                    <QuickLink href="/blog">Noticias</QuickLink>
+                    <QuickLink href="/partidos" icon={<GanttChartSquare />}>Partidos</QuickLink>
+                    <QuickLink href="/posiciones" icon={<Shield />}>Posiciones</QuickLink>
+                    <QuickLink href="/clubes" icon={<Users />}>Clubes</QuickLink>
+                    <QuickLink href="/blog" icon={<Newspaper />}>Noticias</QuickLink>
                 </nav>
             </div>
 
@@ -47,8 +62,8 @@ export function Footer() {
             <div>
                 <h4 className="font-semibold text-foreground mb-4">Legal</h4>
                  <nav className="flex flex-col gap-2">
-                    <QuickLink href="/politica-de-privacidad">Política de Privacidad</QuickLink>
-                    <QuickLink href="/terminos-de-servicio">Términos de Servicio</QuickLink>
+                    <QuickLink href="/politica-de-privacidad" icon={<Lock />}>Política de Privacidad</QuickLink>
+                    <QuickLink href="/terminos-de-servicio" icon={<BookUser />}>Términos de Servicio</QuickLink>
                 </nav>
             </div>
             
