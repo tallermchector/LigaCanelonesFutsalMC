@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { cn } from '@/lib/utils';
@@ -16,14 +17,14 @@ const jerseyVariants = cva(
         'accent-blue': "text-blue-500",
         'accent-red': "text-red-500",
       },
-      isActive: {
+      isSelected: {
         true: "opacity-100",
-        false: "opacity-50 hover:opacity-100"
+        false: "opacity-80 hover:opacity-100"
       }
     },
     defaultVariants: {
       variant: 'default',
-      isActive: true,
+      isSelected: false,
     },
   }
 )
@@ -31,13 +32,12 @@ const jerseyVariants = cva(
 interface JerseyButtonProps extends VariantProps<typeof jerseyVariants> {
   jerseyNumber: number;
   playerName: string;
-  isSelected: boolean;
-  onClick: () => void;
+  onClick?: () => void;
   isDisabled?: boolean;
 }
 
 
-export function JerseyButton({ jerseyNumber, playerName, isSelected, isActive, onClick, isDisabled = false, variant }: JerseyButtonProps) {
+export function JerseyButton({ jerseyNumber, playerName, isSelected, onClick, isDisabled = false, variant }: JerseyButtonProps) {
   
   return (
     <div 
@@ -49,13 +49,13 @@ export function JerseyButton({ jerseyNumber, playerName, isSelected, isActive, o
         aria-label={`Seleccionar jugador ${playerName}, número ${jerseyNumber}`}
         aria-pressed={isSelected}
     >
-        <div className="relative w-16 h-16 flex items-center justify-center">
+        <div className="relative w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
             <TshirtIcon className={cn(
-                "w-14 h-14 transition-all duration-200 ease-in-out group-hover:scale-110",
-                jerseyVariants({ variant, isActive })
+                "w-14 h-14 md:w-20 md:h-20 transition-all duration-200 ease-in-out group-hover:scale-110",
+                jerseyVariants({ variant, isSelected })
             )} />
             <span className={cn(
-                "absolute text-white font-bold text-lg select-none transition-all duration-200 ease-in-out group-hover:scale-110",
+                "absolute text-white font-bold text-lg md:text-2xl select-none transition-all duration-200 ease-in-out group-hover:scale-110",
                 "drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
             )}>
                 {jerseyNumber}
@@ -65,7 +65,7 @@ export function JerseyButton({ jerseyNumber, playerName, isSelected, isActive, o
             )}
         </div>
       <span className={cn(
-          "mt-1 text-xs font-semibold text-center truncate w-20 transition-colors",
+          "mt-1 text-xs md:text-sm font-semibold text-center truncate w-20 md:w-24 transition-colors",
           isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
       )}>
         {playerName}
