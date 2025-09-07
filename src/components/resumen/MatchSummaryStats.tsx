@@ -61,12 +61,11 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
 
 const PlayerStatItem = ({ player, count }: { player: PlayerStat['player'], count: PlayerStat['count'] }) => {
     if (!player.team) return null;
-    const teamSlug = player.team.name.toLowerCase().replace(/\s+/g, '-');
     return (
         <Card className="bg-card/80 border-border hover:bg-muted/50 transition-colors">
             <CardContent className="p-2 flex items-center justify-between">
                 <div className="flex items-center gap-2 overflow-hidden">
-                     <Link href={`/clubes/${teamSlug}`} className="shrink-0">
+                     <Link href={`/clubes/${player.team.slug}`} className="shrink-0">
                         <Image
                             src={player.team?.logoUrl || '/placeholder-player.png'}
                             alt={player.name}

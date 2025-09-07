@@ -63,7 +63,7 @@ const PlayerLink = ({ id, name }: { id: number | null, name: string }) => {
 
 const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team | null, isTeamA: boolean }) => {
     const config = eventDisplayConfig[event.type as keyof typeof eventDisplayConfig];
-    if (!config) return null;
+    if (!config || !team) return null;
 
     const renderEventContent = () => {
         if (event.type === 'SUBSTITUTION' && event.playerInName && event.playerInId) {
@@ -97,20 +97,20 @@ const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team | nu
             isTeamA ? 'border-primary/50 hover:border-primary' : 'border-accent/50 hover:border-accent'
         )}>
             <CardContent className="flex items-center gap-3 p-3">
-                 <div className={cn(
-                    "flex-shrink-0 flex flex-col items-center",
+                 <Link href={`/clubes/${team.slug}`} className={cn(
+                    "flex-shrink-0 flex flex-col items-center group",
                     isTeamA ? 'order-1' : 'order-3'
                  )}>
-                    {team?.logoUrl && (
+                    {team.logoUrl && (
                         <Image
                             src={team.logoUrl}
                             alt={`${team.name} logo`}
                             width={32}
                             height={32}
-                            className="w-8 h-8 object-contain bg-white/10 rounded-full p-1"
+                            className="w-8 h-8 object-contain bg-white/10 rounded-full p-1 transition-transform group-hover:scale-110"
                         />
                     )}
-                 </div>
+                 </Link>
                 <div className={cn("flex-1 min-w-0", isTeamA ? 'order-2 text-left' : 'order-2 text-right')}>
                     {renderEventContent()}
                 </div>
@@ -152,7 +152,7 @@ export function EventsList({ events, teamA, teamB }: EventsListProps) {
           if (!config) return null;
 
           const isStructural = ['MATCH_START', 'PERIOD_START', 'MATCH_END'].includes(event.type);
-          const team = event.teamId === teamA.id ? teamA : teamB;
+          const team = event.teamId === teamA.id ? teamA : event.teamId === teamB.id ? teamB : null;
           const isTeamA = event.teamId === teamA.id;
           const time = formatTimeFromTotalSeconds(event.timestamp, event.type);
 

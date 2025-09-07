@@ -15,16 +15,16 @@ interface FinishedMatchCardProps {
 }
 
 const TeamRow = ({ team, score }: { team: FullMatch['teamA'], score: number }) => (
-    <div className="flex items-center gap-2">
+    <Link href={`/clubes/${team.slug}`} className="flex items-center gap-2 group">
         <Image
             src={team.logoUrl || ''}
             alt={`Logo de ${team.name}`}
             width={28}
             height={28}
-            className="w-7 h-7 object-contain"
+            className="w-7 h-7 object-contain transition-transform group-hover:scale-110"
         />
-        <span className="font-semibold text-base text-foreground truncate">{team.name}</span>
-    </div>
+        <span className="font-semibold text-base text-foreground truncate group-hover:text-primary transition-colors">{team.name}</span>
+    </Link>
 );
 
 
