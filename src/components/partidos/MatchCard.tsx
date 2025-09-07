@@ -86,7 +86,7 @@ function MatchCard({ match }: { match: FullMatch }) {
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="p-2 grid grid-cols-2 gap-2 bg-muted/50">
+            <CardFooter className="p-2 grid grid-cols-1 sm:grid-cols-2 gap-2 bg-muted/50">
              {(match.status === 'FINISHED' || match.status === 'LIVE') && (
                 <Button asChild size="sm" variant="outline">
                     <Link href={`/partidos/${match.id}/estadisticas`}>
@@ -96,7 +96,7 @@ function MatchCard({ match }: { match: FullMatch }) {
                 </Button>
             )}
              {match.status === 'LIVE' && (
-                <Button asChild size="sm" variant="destructive" className="text-white col-span-2">
+                <Button asChild size="sm" variant="destructive" className="text-white col-span-1 sm:col-span-1">
                      <Link href={`/partidos/${match.id}`}>
                         <Tv className="mr-2 h-4 w-4" />
                         Ver en Vivo
@@ -104,8 +104,11 @@ function MatchCard({ match }: { match: FullMatch }) {
                 </Button>
              )}
               {match.status === 'FINISHED' && (
-                 <div className="col-span-2"></div>
+                 <div className="col-span-1 hidden sm:block"></div>
              )}
+              {match.status === 'SCHEDULED' && (
+                <div className="col-span-1 sm:col-span-2 h-9"></div> 
+              )}
             </CardFooter>
         </Card>
     );
