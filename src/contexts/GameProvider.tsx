@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import type { GameState, FullMatch, GameEvent, SelectedPlayer, GameEventType, MatchStatus, Player, PlayerPosition, PlayerTimeTracker, PlayerMatchStats } from '@/types';
@@ -71,7 +70,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         teamA: action.payload.match.teamA,
         teamB: action.payload.match.teamB,
         scoreA: action.payload.match.scoreA,
-        scoreB: actionpayload.match.scoreB,
+        scoreB: action.payload.match.scoreB,
         foulsA: action.payload.match.foulsA,
         foulsB: action.payload.match.foulsB,
         timeoutsA: action.payload.match.timeoutsA,
@@ -407,7 +406,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match }) =
         lastTickRef.current = null;
       }
     };
-  }, [state.isRunning]);
+  }, [state.isRunning, state.time]);
   
   return (
     <GameContext.Provider value={{ state, dispatch, handleSaveChanges, handleCreateGameEvent }}>
