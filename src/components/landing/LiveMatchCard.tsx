@@ -30,9 +30,9 @@ const TeamRow = ({ team, score }: { team: FullMatch['teamA'], score: number }) =
                 alt={`Logo de ${team.name}`}
                 width={40}
                 height={40}
-                className="rounded-full aspect-square object-contain"
+                className="w-10 h-10 rounded-full aspect-square object-contain"
             />
-            <span className="font-bold text-lg md:text-xl text-foreground uppercase">{team.name.substring(0, 3)}</span>
+            <span className="font-bold text-lg md:text-xl text-foreground uppercase">{team.name}</span>
         </div>
         <div className="bg-muted px-4 py-1 rounded-md">
             <span className="font-bold text-xl md:text-2xl text-foreground tabular-nums">{score}</span>
@@ -55,10 +55,10 @@ export function LiveMatchCard({ match }: LiveMatchCardProps) {
   return (
     <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="h-full">
       <Link href={`/partidos/${match.id}`} className="block group h-full">
-        <Card className="overflow-hidden shadow-lg h-full flex flex-col">
+        <Card className="overflow-hidden shadow-lg h-full flex flex-col bg-card border-border hover:border-primary/50">
             <CardContent className="p-4 flex-grow flex flex-col justify-center">
                <TeamRow team={match.teamA} score={match.scoreA} />
-               <div className="border-b my-1 border-border"></div>
+               <div className="border-b my-1 border-border/50"></div>
                <TeamRow team={match.teamB} score={match.scoreB} />
             </CardContent>
             <CardFooter className="p-0">
@@ -66,7 +66,7 @@ export function LiveMatchCard({ match }: LiveMatchCardProps) {
                     <span className="font-semibold text-sm">{formatDate(match.scheduledTime)}</span>
                     <div className="flex items-center gap-2">
                         <span className="font-semibold text-sm">{getPeriodLabel()}</span>
-                        <span className="font-mono text-lg font-bold animate-pulse">{formatTime(match.time)}</span>
+                        <span className="font-orbitron text-lg font-bold text-primary animate-pulse">{formatTime(match.time)}</span>
                     </div>
                 </div>
             </CardFooter>

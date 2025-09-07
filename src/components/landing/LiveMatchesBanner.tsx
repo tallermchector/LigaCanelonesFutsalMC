@@ -49,7 +49,7 @@ export function LiveMatchesBanner() {
     return (
       <section id="live-matches" className="w-full py-12 md:py-20 bg-muted/40">
         <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-center mb-8 text-primary">Sigue la Acción en Vivo</h2>
+          <h2 className="text-3xl font-bold font-orbitron text-center mb-8 text-primary">Sigue la Acción en Vivo</h2>
           <LiveMatchesSkeleton />
         </div>
       </section>
@@ -63,7 +63,7 @@ export function LiveMatchesBanner() {
   return (
     <section id="live-matches" className="w-full py-12 md:py-20 bg-muted/40">
       <div className="container px-4 md:px-6">
-        <h2 className="text-3xl font-bold text-center mb-8 text-primary">Sigue la Acción en Vivo</h2>
+        <h2 className="text-3xl font-bold font-orbitron text-center mb-8 text-primary">Sigue la Acción en Vivo</h2>
         <Carousel 
           className="w-full max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-4xl mx-auto"
           opts={{
