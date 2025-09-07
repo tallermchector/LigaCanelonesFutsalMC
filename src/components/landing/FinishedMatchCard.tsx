@@ -14,17 +14,20 @@ interface FinishedMatchCardProps {
   match: FullMatch;
 }
 
-const TeamRow = ({ team, score }: { team: FullMatch['teamA'], score: number }) => (
-    <Link href={`/clubes/${team.slug}`} className="flex items-center gap-2 group">
-        <Image
-            src={team.logoUrl || ''}
-            alt={`Logo de ${team.name}`}
-            width={28}
-            height={28}
-            className="w-7 h-7 object-contain transition-transform group-hover:scale-110"
-        />
-        <span className="font-semibold text-base text-foreground truncate group-hover:text-primary transition-colors">{team.name}</span>
-    </Link>
+const TeamRow = ({ team, score, isWinner }: { team: FullMatch['teamA'], score: number, isWinner: boolean }) => (
+    <div className="grid grid-cols-[1fr_auto] items-center gap-2">
+      <Link href={`/clubes/${team.slug}`} className="flex items-center gap-2 group overflow-hidden">
+          <Image
+              src={team.logoUrl || ''}
+              alt={`Logo de ${team.name}`}
+              width={28}
+              height={28}
+              className="w-7 h-7 object-contain transition-transform group-hover:scale-110"
+          />
+          <span className="font-semibold text-base text-foreground truncate group-hover:text-primary transition-colors">{team.name}</span>
+      </Link>
+       <span className={`font-bold text-xl tabular-nums ${isWinner ? 'text-primary' : 'text-foreground'}`}>{score}</span>
+    </div>
 );
 
 
@@ -38,25 +41,15 @@ export function FinishedMatchCard({ match }: FinishedMatchCardProps) {
   });
 
   return (
-    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="h-full">
+    <motion.div whileHover={{ y: -5 }} whileTap={{ scale: 0.98 }} className="h-full">
       <Card className="flex flex-col h-full overflow-hidden shadow-md bg-card transition-all duration-300 hover:shadow-primary/10">
         <CardHeader className="p-3 text-xs text-muted-foreground flex flex-row justify-between items-center bg-muted/50">
             <span>Jornada {match.round}</span>
             <span>{formattedDate}</span>
         </CardHeader>
-        <CardContent className="flex-grow p-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-            <div className="flex flex-col gap-2 items-start text-left">
-                <TeamRow team={match.teamA} score={match.scoreA} />
-                <TeamRow team={match.teamB} score={match.scoreB} />
-            </div>
-             <div className="text-3xl font-bold text-primary tabular-nums flex flex-col items-center justify-center h-full px-2">
-                <span>{match.scoreA}</span>
-                <Separator orientation='horizontal' className='my-1 w-4 bg-border' />
-                <span>{match.scoreB}</span>
-            </div>
-             <div className="flex flex-col gap-2 items-end text-right">
-               {/* Puedes agregar más info si es necesario, o dejarlo vacío para alinear */}
-            </div>
+        <CardContent className="flex-grow p-4 flex flex-col justify-center gap-2">
+            <TeamRow team={match.teamA} score={match.scoreA} isWinner={match.scoreA > match.scoreB} />
+            <TeamRow team={match.teamB} score={match.scoreB} isWinner={match.scoreB > match.scoreA} />
         </CardContent>
         <CardFooter className="p-2 bg-muted/50">
             <div className="flex items-center gap-2 w-full">
