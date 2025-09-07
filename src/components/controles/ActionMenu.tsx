@@ -70,9 +70,15 @@ export function ActionMenu({ onActionComplete }: ActionMenuProps) {
         <p className="font-bold text-lg">{player.name}</p>
         <p className="text-sm text-muted-foreground"># {player.number}</p>
       </div>
-      <div className="grid grid-cols-2 gap-2 p-1">
-        {actionButtons.map(action => (
-          <motion.div key={action.type} whileTap={{ scale: 0.95 }}>
+      <div className="flex flex-col gap-2 pt-2">
+        {actionButtons.map((action, index) => (
+          <motion.div 
+            key={action.type} 
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.05 }}
+          >
             <Button
               variant={action.variant || 'ghost'}
               size="lg"
