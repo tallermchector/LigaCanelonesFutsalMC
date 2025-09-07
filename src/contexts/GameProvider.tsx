@@ -16,6 +16,7 @@ type GameAction =
   | { type: 'SET_STATUS'; payload: MatchStatus }
   | { type: 'TOGGLE_TIMER' }
   | { type: 'RESET_TIMER' }
+  | { type: 'SET_TIME'; payload: number }
   | { type: 'TICK' }
   | { type: 'SELECT_PLAYER'; payload: SelectedPlayer }
   | { type: 'ADD_EVENT'; payload: { event: Omit<GameEvent, 'id' | 'matchId'> } }
@@ -119,6 +120,8 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       return { ...state, timeoutsB: Math.max(0, state.timeoutsB + action.payload.delta) };
     case 'SET_PERIOD':
       return { ...state, period: action.payload, time: initialState.time, isRunning: false };
+    case 'SET_TIME':
+        return { ...state, time: action.payload, isRunning: false };
     case 'SET_STATUS':
         if (action.payload === 'FINISHED') {
             return { ...state, status: 'FINISHED', isRunning: false, time: 0 };
