@@ -17,8 +17,9 @@ import { cn } from '@/lib/utils';
 
 
 const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
+    const flooredSeconds = Math.floor(seconds);
+    const minutes = Math.floor(flooredSeconds / 60);
+    const remainingSeconds = flooredSeconds % 60;
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 };
 
