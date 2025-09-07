@@ -84,19 +84,21 @@ export const TeamHeader = ({ team }: { team: Team }) => {
 
     return (
         <section 
-            className="relative bg-secondary/30 pt-24 pb-20 text-foreground bg-cover bg-center"
+            className="relative bg-secondary/30 pt-12 pb-12 text-foreground bg-cover bg-center"
             style={{ backgroundImage: team.bannerUrl ? `url(${team.bannerUrl})` : "none" }}
         >
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/40"></div>
             <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
             
             <div className="container mx-auto px-4 relative z-10">
-                <Button asChild variant="outline" className="absolute top-4 right-4 bg-background/60 backdrop-blur-sm hover:bg-background/80">
-                    <Link href="/clubes">
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Volver a Clubes
-                    </Link>
-                </Button>
+                 <div className="w-full flex justify-start md:justify-end mb-4">
+                    <Button asChild variant="outline" className="bg-background/60 backdrop-blur-sm hover:bg-background/80">
+                        <Link href="/clubes">
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Volver a Clubes
+                        </Link>
+                    </Button>
+                </div>
                 <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
                     <Image
                         src={team.logoUrl || '/logofu.svg'}
