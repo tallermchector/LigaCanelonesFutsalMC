@@ -12,12 +12,12 @@ interface TeamTabsProps {
 
 export function TeamTabs({ team }: TeamTabsProps) {
     return (
-        <div className="container mx-auto max-w-6xl -mt-16 pb-12">
+        <div className="container mx-auto max-w-6xl pb-12 relative z-10 -mt-10">
             <Tabs defaultValue="players" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 bg-card/80 backdrop-blur-sm border rounded-lg shadow-lg">
-                    <TabsTrigger value="stats">Estadísticas</TabsTrigger>
-                    <TabsTrigger value="players">Jugadores</TabsTrigger>
-                    <TabsTrigger value="schedule">Calendario</TabsTrigger>
+                <TabsList className="w-full flex-wrap justify-center h-auto bg-card/80 backdrop-blur-sm border rounded-lg shadow-lg p-1">
+                    <TabsTrigger value="stats" className="flex-1">Estadísticas</TabsTrigger>
+                    <TabsTrigger value="players" className="flex-1">Jugadores</TabsTrigger>
+                    <TabsTrigger value="schedule" className="flex-1">Calendario</TabsTrigger>
                 </TabsList>
                 <div className="mt-6">
                     <Card>
