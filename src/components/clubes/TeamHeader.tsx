@@ -84,10 +84,10 @@ export const TeamHeader = ({ team }: { team: Team }) => {
 
     return (
         <section 
-            className="relative bg-secondary/30 pt-24 pb-12 text-foreground bg-cover bg-center"
+            className="relative bg-secondary/30 pt-24 pb-20 text-foreground bg-cover bg-center"
             style={{ backgroundImage: team.bannerUrl ? `url(${team.bannerUrl})` : "none" }}
         >
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/40"></div>
             <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
             
             <div className="container mx-auto px-4 relative z-10">
@@ -126,7 +126,7 @@ export const TeamHeader = ({ team }: { team: Team }) => {
             </div>
 
             <div className="container mx-auto px-4 relative z-10 mt-12">
-                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 border-t border-primary/20 pt-8">
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                     <Stat icon={Users} label="Jugadores" value={team.players.length} />
                     <Stat icon={BarChart2} label="Partidos Jugados" value={totalMatchesPlayed} />
                     <Stat icon={Clock} label="Minutos Jugados" value={totalMinutesPlayed} />

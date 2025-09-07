@@ -23,9 +23,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
         <div className="flex min-h-screen flex-col bg-muted/40">
             <main className="flex-1">
                 <TeamHeader team={team as Team} />
-                <div className="container mx-auto max-w-6xl -mt-16 pb-12">
-                     <TeamTabs team={team as Team} />
-                </div>
+                <TeamTabs team={team as Team} />
             </main>
         </div>
     );
