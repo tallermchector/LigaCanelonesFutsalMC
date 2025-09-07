@@ -2,10 +2,36 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { GameState, FullMatch } from '@/types';
 
 export function useLiveMatchState(matchId: number | null, initialMatchData: FullMatch | null): GameState | null {
+  const initialStateFromProps = useCallback((matchData: FullMatch): GameState => {
+      return {
+          matchId: matchData.id,
+          status: matchData.status,
+          teamA: matchData.teamA,
+          teamB: matchData.teamB,
+          scoreA: matchData.scoreA,
+          scoreB: matchData.scoreB,
+          foulsA: matchData.foulsA,
+          foulsB: matchData.foulsB,
+          timeoutsA: matchData.timeoutsA,
+          timeoutsB: matchData.timeoutsB,
+          period: matchData.period,
+          time: matchData.time,
+          isRunning: matchData.isRunning,
+          events: matchData.events || [],
+          selectedPlayer: null,
+          substitutionState: null,
+          activePlayersA: matchData.activePlayersA || [],
+          activePlayersB: matchData.activePlayersB || [],
+          playerPositions: {},
+          playerTimeTracker: {},
+          updatedAt: matchData.updatedAt
+      }
+  }, []);
+
   const getInitialState = useCallback((): GameState | null => {
     let localState: GameState | null = null;
     try {
@@ -43,35 +69,11 @@ export function useLiveMatchState(matchId: number | null, initialMatchData: Full
     }
 
     return null;
-  }, [matchId, initialMatchData]);
-
-  const initialStateFromProps = (matchData: FullMatch): GameState => {
-      return {
-          matchId: matchData.id,
-          status: matchData.status,
-          teamA: matchData.teamA,
-          teamB: matchData.teamB,
-          scoreA: matchData.scoreA,
-          scoreB: matchData.scoreB,
-          foulsA: matchData.foulsA,
-          foulsB: matchData.foulsB,
-          timeoutsA: matchData.timeoutsA,
-          timeoutsB: matchData.timeoutsB,
-          period: matchData.period,
-          time: matchData.time,
-          isRunning: matchData.isRunning,
-          events: matchData.events || [],
-          selectedPlayer: null,
-          substitutionState: null,
-          activePlayersA: matchData.activePlayersA || [],
-          activePlayersB: matchData.activePlayersB || [],
-          playerPositions: {},
-          playerTimeTracker: {},
-          updatedAt: matchData.updatedAt
-      }
-  }
+  }, [matchId, initialMatchData, initialStateFromProps]);
 
   const [liveState, setLiveState] = useState<GameState | null>(getInitialState);
+  const lastTickRef = useRef<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const initialState = getInitialState();
@@ -102,21 +104,41 @@ export function useLiveMatchState(matchId: number | null, initialMatchData: Full
     };
 
     window.addEventListener('storage', handleStorageChange);
-    
-    let timer: NodeJS.Timeout;
-    if (liveState?.isRunning && liveState.time > 0) {
-        timer = setInterval(() => {
-            setLiveState(prevState => prevState ? { ...prevState, time: Math.max(0, prevState.time - 1) } : null);
-        }, 1000);
-    }
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-       if (timer) {
-        clearInterval(timer);
+    };
+  }, [matchId]);
+
+   useEffect(() => {
+    if (liveState?.isRunning && liveState.time > 0) {
+      lastTickRef.current = Date.now();
+      timerRef.current = setInterval(() => {
+        if (lastTickRef.current) {
+          const now = Date.now();
+          const timePassed = (now - lastTickRef.current) / 1000;
+          lastTickRef.current = now;
+          setLiveState(prevState => {
+            if (!prevState) return null;
+            const newTime = Math.max(0, prevState.time - timePassed);
+            if (newTime <= 0) {
+              clearInterval(timerRef.current!);
+              return { ...prevState, time: 0, isRunning: false };
+            }
+            return { ...prevState, time: newTime };
+          });
+        }
+      }, 1000);
+    }
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+        lastTickRef.current = null;
       }
     };
-  }, [matchId, liveState?.isRunning]);
+  }, [liveState?.isRunning]);
+
 
   return liveState;
 }

@@ -9,7 +9,8 @@ import React,
   useCallback,
   useEffect,
   createContext,
-  useContext
+  useContext,
+  useRef
 } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { saveMatchState, createGameEvent } from '@/actions/match-actions';
@@ -24,7 +25,7 @@ type GameAction =
   | { type: 'TOGGLE_TIMER' }
   | { type: 'RESET_TIMER' }
   | { type: 'SET_TIME'; payload: number }
-  | { type: 'TICK' }
+  | { type: 'TICK'; payload: { timePassed: number } }
   | { type: 'SELECT_PLAYER'; payload: SelectedPlayer }
   | { type: 'ADD_EVENT'; payload: { event: Omit<GameEvent, 'id' | 'matchId'> } }
   | { type: 'INITIATE_SUBSTITUTION' }
@@ -70,7 +71,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         teamA: action.payload.match.teamA,
         teamB: action.payload.match.teamB,
         scoreA: action.payload.match.scoreA,
-        scoreB: action.payload.match.scoreB,
+        scoreB: actionpayload.match.scoreB,
         foulsA: action.payload.match.foulsA,
         foulsB: action.payload.match.foulsB,
         timeoutsA: action.payload.match.timeoutsA,
@@ -131,17 +132,19 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       return { ...state, isRunning: !state.isRunning };
     case 'RESET_TIMER':
       return { ...state, time: initialState.time, isRunning: false };
-    case 'TICK':
+    case 'TICK': {
       if (state.isRunning && state.time > 0) {
-        return { ...state, time: state.time - 1 };
+        const newTime = Math.max(0, state.time - action.payload.timePassed);
+        return { ...state, time: newTime };
       }
-       if (state.isRunning && state.time === 0) {
-          if (state.period === 2) {
-              return { ...state, isRunning: false, status: 'FINISHED' };
+       if (state.isRunning && state.time <= 0) {
+          if (state.period >= 2) {
+              return { ...state, time: 0, isRunning: false, status: 'FINISHED' };
           }
-          return { ...state, isRunning: false };
+          return { ...state, time: 0, isRunning: false };
       }
       return state;
+    }
     case 'SELECT_PLAYER': {
         const selected = action.payload;
         if (state.substitutionState) {
@@ -307,6 +310,8 @@ const GameContext = createContext<{
 export const GameProvider: React.FC<GameProviderProps> = ({ children, match }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
   const { toast } = useToast();
+  const lastTickRef = useRef<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const getInitialState = useCallback(() => {
     try {
@@ -384,18 +389,25 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, match }) =
   }, [state, debouncedSave]);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | undefined;
     if (state.isRunning && state.time > 0) {
-      timer = setInterval(() => {
-        dispatch({ type: 'TICK' });
+      lastTickRef.current = Date.now();
+      timerRef.current = setInterval(() => {
+        if (lastTickRef.current) {
+          const now = Date.now();
+          const timePassed = (now - lastTickRef.current) / 1000;
+          lastTickRef.current = now;
+          dispatch({ type: 'TICK', payload: { timePassed } });
+        }
       }, 1000);
     }
     return () => {
-      if (timer) {
-        clearInterval(timer)
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+        lastTickRef.current = null;
       }
     };
-  }, [state.isRunning, state.time]);
+  }, [state.isRunning]);
   
   return (
     <GameContext.Provider value={{ state, dispatch, handleSaveChanges, handleCreateGameEvent }}>
