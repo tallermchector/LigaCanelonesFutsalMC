@@ -264,14 +264,28 @@ export async function clearLiveMatchEvents(): Promise<{ count: number }> {
 
     const liveMatchIds = liveMatches.map(match => match.id);
 
-    const { count } = await prisma.gameEvent.deleteMany({
-        where: {
-            matchId: {
-                in: liveMatchIds,
+    const [deletedEvents] = await prisma.$transaction([
+        prisma.gameEvent.deleteMany({
+            where: {
+                matchId: {
+                    in: liveMatchIds,
+                },
             },
-        },
-    });
-
+        }),
+        prisma.match.updateMany({
+            where: {
+                id: {
+                    in: liveMatchIds,
+                },
+            },
+            data: {
+                activePlayersA: [],
+                activePlayersB: [],
+                status: 'SCHEDULED',
+            },
+        }),
+    ]);
+    
     revalidatePath('/controles');
     revalidatePath('/partidos');
     liveMatchIds.forEach(id => {
@@ -279,5 +293,5 @@ export async function clearLiveMatchEvents(): Promise<{ count: number }> {
         revalidatePath(`/partidos/${id}`);
     });
 
-    return { count };
+    return { count: deletedEvents.count };
 }
