@@ -15,13 +15,11 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { ActionMenu } from '@/components/controles/ActionMenu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 
 
 const PlayerButton = ({ player, teamId }: { player: Player, teamId: 'A' | 'B'}) => {
     const { state, dispatch } = useGame();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { selectedPlayer } = state;
     
     const handlePlayerSelect = () => {
         const payload: SelectedPlayer = { teamId, playerId: player.id };
@@ -36,7 +34,7 @@ const PlayerButton = ({ player, teamId }: { player: Player, teamId: 'A' | 'B'}) 
                     <JerseyButton
                         jerseyNumber={player.number}
                         playerName={player.name}
-                        isSelected={selectedPlayer?.playerId === player.id}
+                        isSelected={state.selectedPlayer?.playerId === player.id}
                         variant={teamId === 'A' ? 'accent-blue' : 'accent-red'}
                     />
                 </div>
@@ -73,7 +71,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
             </CardHeader>
             <CardContent className="flex-grow p-2 flex flex-col items-center gap-4 overflow-y-auto">
                  { isSelectionMode ? (
-                    <div className="flex flex-col md:flex-row flex-wrap items-start justify-center gap-4">
+                    <div className="flex flex-wrap items-start justify-center gap-4">
                         {team.players.map(player => (
                            <JerseyButton
                                 key={player.id}
@@ -130,54 +128,21 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
 
 
 export function CombinedTeamPanel() {
-  const { state, dispatch } = useGame();
-  const { selectedPlayer, teamA, teamB } = state;
-  const [ isSheetOpen, setIsSheetOpen ] = useState(false);
-
-  React.useEffect(() => {
-    if(selectedPlayer) {
-        setIsSheetOpen(true);
-    } else {
-        setIsSheetOpen(false);
-    }
-  }, [selectedPlayer]);
-  
-  const selectedPlayerData = React.useMemo(() => {
-    if (!selectedPlayer) return null;
-    const team = selectedPlayer.teamId === 'A' ? teamA : teamB;
-    return team?.players.find(p => p.id === selectedPlayer.playerId) || null;
-  }, [selectedPlayer, teamA, teamB]);
+  const { state } = useGame();
+  const { teamA, teamB } = state;
 
 
   return (
     <Card className="h-full flex flex-col">
-        <div className="flex-grow flex flex-col md:flex-row">
-            <div className={cn("flex-1 md:border-r border-border", 'bg-blue-900/10')}>
+        <div className="flex-grow flex flex-row">
+            <div className={cn("flex-1", 'bg-blue-900/10')}>
                 <PlayerList teamId="A" />
             </div>
-            <Separator orientation="vertical" className="hidden md:block mx-0" />
-            <Separator orientation="horizontal" className="block md:hidden my-0" />
+            <Separator orientation="vertical" className="mx-0" />
             <div className={cn("flex-1", 'bg-red-900/10')}>
                 <PlayerList teamId="B" />
             </div>
         </div>
-         <Sheet open={isSheetOpen} onOpenChange={(open) => {
-            if(!open) {
-                setIsSheetOpen(false);
-                dispatch({ type: 'SELECT_PLAYER', payload: null });
-            }
-         }}>
-             <SheetContent side="right">
-                <SheetHeader>
-                    <SheetTitle>Registrar Acción</SheetTitle>
-                </SheetHeader>
-                {selectedPlayerData ? (
-                    <ActionMenu player={selectedPlayerData} onAction={() => dispatch({ type: 'SELECT_PLAYER', payload: null })} />
-                ) : (
-                    <p>Seleccione una acción para el jugador seleccionado.</p>
-                )}
-             </SheetContent>
-         </Sheet>
     </Card>
   );
 }
