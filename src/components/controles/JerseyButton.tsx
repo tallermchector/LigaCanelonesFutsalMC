@@ -1,21 +1,22 @@
+
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ShieldCheck } from 'lucide-react';
+import { VariantProps } from 'class-variance-authority';
 
 
-interface JerseyButtonProps {
+interface JerseyButtonProps extends VariantProps<typeof buttonVariants> {
   jerseyNumber: number;
   playerName: string;
   isSelected: boolean;
   isActive: boolean;
   onClick: () => void;
   isDisabled?: boolean;
-  variant?: 'default' | 'outline' | 'destructive' 
 }
 
-export function JerseyButton({ jerseyNumber, playerName, isSelected, isActive, onClick, isDisabled = false, variant = 'outline' }: JerseyButtonProps) {
+export function JerseyButton({ jerseyNumber, playerName, isSelected, isActive, onClick, isDisabled = false, variant }: JerseyButtonProps) {
   
   return (
     <div className="flex flex-col items-center">

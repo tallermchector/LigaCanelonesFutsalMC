@@ -36,6 +36,7 @@ const PlayerButton = ({ player, teamId }: { player: Player, teamId: 'A' | 'B'}) 
                         isSelected={selectedPlayer?.playerId === player.id}
                         isActive={true}
                         onClick={() => {}} // onClick is handled by the wrapper div
+                        variant={teamId === 'A' ? 'accent-blue' : 'accent-red'}
                     />
                 </div>
             </PopoverTrigger>
@@ -59,10 +60,10 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
         return substitutionState?.playerOut?.teamId === teamId && substitutionState?.playerOut?.playerId === playerId;
     }
     
-    const getPlayerVariant = (playerId: number): 'default' | 'outline' | 'destructive' => {
+    const getPlayerVariant = (playerId: number): 'default' | 'outline' | 'destructive' | 'accent-blue' | 'accent-red' => {
         const isActive = activePlayers.includes(playerId);
         if (isPlayerBeingSubbedOut(playerId)) return 'destructive';
-        if (isActive) return 'default';
+        if (isActive) return teamId === 'A' ? 'accent-blue' : 'accent-red';
         return 'outline';
     }
     
@@ -78,7 +79,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
     return (
         <div className="flex-1 flex flex-col">
             <CardHeader className="p-4">
-                 <CardTitle className={cn("text-center", teamId === 'A' ? 'text-primary' : 'text-accent' )}>{team.name}</CardTitle>
+                 <CardTitle className={cn("text-center", teamId === 'A' ? 'text-blue-400' : 'text-red-400' )}>{team.name}</CardTitle>
             </CardHeader>
             <CardContent className="flex-grow p-2 flex flex-col items-center gap-4 overflow-y-auto">
                  { isSelectionMode ? (
@@ -146,11 +147,16 @@ export function CombinedTeamPanel() {
   return (
     <Card className="h-full flex flex-col">
         <div className="flex-grow flex flex-col md:flex-row">
-            <PlayerList teamId="A" />
-            <Separator orientation="vertical" className="hidden md:block mx-2" />
-            <Separator orientation="horizontal" className="block md:hidden my-2" />
-            <PlayerList teamId="B" />
+            <div className={cn("flex-1 md:border-r border-border", 'bg-blue-900/10')}>
+                <PlayerList teamId="A" />
+            </div>
+            <Separator orientation="vertical" className="hidden md:block mx-0" />
+            <Separator orientation="horizontal" className="block md:hidden my-0" />
+            <div className={cn("flex-1", 'bg-red-900/10')}>
+                <PlayerList teamId="B" />
+            </div>
         </div>
     </Card>
   );
 }
+
