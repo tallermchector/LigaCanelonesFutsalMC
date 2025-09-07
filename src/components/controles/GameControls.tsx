@@ -1,10 +1,9 @@
-
 'use client';
 
-import { TeamPanel } from './TeamPanel';
 import { ControlsPanel } from './ControlsPanel';
 import { useGame } from '@/contexts/GameProvider';
 import { EventButtons } from './EventButtons';
+import { CombinedTeamPanel } from './CombinedTeamPanel';
 
 export function GameControls() {
   const { state } = useGame();
@@ -15,12 +14,13 @@ export function GameControls() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
-      <TeamPanel teamId="A" />
+      <div className="lg:col-span-2">
+        <CombinedTeamPanel />
+      </div>
       <div className="flex flex-col gap-4">
         <ControlsPanel />
         <EventButtons />
       </div>
-      <TeamPanel teamId="B" />
     </div>
   );
 }
