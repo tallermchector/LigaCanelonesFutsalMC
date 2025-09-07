@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -27,13 +28,13 @@ function getPeriodLabel(status: MatchStatus, period: number) {
 
 const StatDisplay = ({ label, value, icon, hasPenalty }: { label: string, value: number, icon: React.ReactNode, hasPenalty?: boolean }) => (
     <div className="flex flex-col items-center gap-1 text-center text-white">
-        <div className="flex items-center gap-1">
-            <div className={cn('h-4 w-4', hasPenalty ? 'text-red-400' : 'text-white/70')}>{icon}</div>
-            <span className={cn('text-xl md:text-2xl font-bold', hasPenalty ? 'text-red-400' : 'text-white')}>
+        <div className="flex items-center gap-1.5">
+            <div className={cn('h-4 w-4 sm:h-5 sm:w-5', hasPenalty ? 'text-red-400' : 'text-white/70')}>{icon}</div>
+            <span className={cn('font-orbitron font-bold text-lg sm:text-xl md:text-2xl', hasPenalty ? 'text-red-400' : 'text-white')}>
                 {value}
             </span>
         </div>
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-white/60">{label}</span>
+        <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-white/60">{label}</span>
     </div>
 );
 
@@ -65,7 +66,7 @@ export function Scoreboard() {
         </div>
 
         {/* Marcador Principal */}
-        <div className="w-full text-white shadow-2xl rounded-lg overflow-hidden flex items-stretch justify-between bg-[#1a212e]">
+        <div className="w-full text-white shadow-2xl rounded-none overflow-hidden flex items-stretch justify-between bg-[#1a212e]">
             
             {/* Equipo A (Local) */}
             <div className="flex flex-col justify-between gap-2 p-2 flex-1 min-w-0 bg-[#2c3e50]">
