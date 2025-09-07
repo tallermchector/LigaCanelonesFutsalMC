@@ -36,8 +36,8 @@ export const TeamHeader = ({ team }: { team: Team }) => {
     }, 0);
 
     const totalGoalsScored = finishedMatches.reduce((acc, match) => {
-        if (match.teamAId === team.id) return acc + (match.scoreA || 0);
-        if (match.teamBId === team.id) return acc + (match.scoreB || 0);
+        if (match.teamA.id === team.id) return acc + (match.scoreA || 0);
+        if (match.teamB.id === team.id) return acc + (match.scoreB || 0);
         return acc;
     }, 0);
 
