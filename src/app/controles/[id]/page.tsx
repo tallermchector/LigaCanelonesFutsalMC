@@ -10,24 +10,19 @@ import { getMatchById } from '@/actions/match-actions';
 import type { FullMatch, Player } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { AlertTriangle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-
-import { GameProvider, useGame } from '@/contexts/GameProvider';
+import { GameProvider } from '@/contexts/GameProvider';
 import { Scoreboard } from '@/components/controles/Scoreboard';
 import { GameControls } from '@/components/controles/GameControls';
 import { StarterSelection } from '@/components/controles/StarterSelection';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { ActionMenu } from '@/components/controles/ActionMenu';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ClearLocalStorageButton } from '@/components/gestion/ClearLocalStorageButton';
+import { ClearLiveEventsButton } from '@/components/gestion/ClearLiveEventsButton';
 
 
 function MatchControlContent() {
     const { state, dispatch } = useGame();
-    const { selectedPlayer } = state;
-
-    const handleSheetClose = () => {
-        dispatch({ type: 'SELECT_PLAYER', payload: null });
-    };
 
     if (state.status === 'SELECTING_STARTERS') {
         return <StarterSelection />;
@@ -41,6 +36,21 @@ function MatchControlContent() {
             <div className="flex-grow pt-4 w-full max-w-7xl mx-auto">
                 <GameControls />
             </div>
+             <Card className="mt-8 border-destructive/50 bg-destructive/5 max-w-7xl mx-auto">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-destructive">
+                        <AlertTriangle className="h-5 w-5" />
+                        Zona Peligrosa
+                    </CardTitle>
+                    <CardDescription>
+                        Estas acciones son permanentes y deben usarse con precaución.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-4">
+                    <ClearLocalStorageButton />
+                    <ClearLiveEventsButton />
+                </CardContent>
+            </Card>
         </>
     );
 }

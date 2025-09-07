@@ -251,3 +251,33 @@ export async function generateFixture(seasonId: number, teamIds: number[]): Prom
         skipDuplicates: true,
     });
 }
+
+export async function clearLiveMatchEvents(): Promise<{ count: number }> {
+    const liveMatches = await prisma.match.findMany({
+        where: { status: 'LIVE' },
+        select: { id: true },
+    });
+
+    if (liveMatches.length === 0) {
+        return { count: 0 };
+    }
+
+    const liveMatchIds = liveMatches.map(match => match.id);
+
+    const { count } = await prisma.gameEvent.deleteMany({
+        where: {
+            matchId: {
+                in: liveMatchIds,
+            },
+        },
+    });
+
+    revalidatePath('/controles');
+    revalidatePath('/partidos');
+    liveMatchIds.forEach(id => {
+        revalidatePath(`/controles/${id}`);
+        revalidatePath(`/partidos/${id}`);
+    });
+
+    return { count };
+}

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
@@ -8,6 +9,7 @@ import { ControlMatchCard } from '@/components/controles/ControlMatchCard';
 import { MatchListSkeleton } from '@/components/controles/MatchListSkeleton';
 import { useToast } from '@/hooks/use-toast';
 import { getAllMatches } from '@/actions/prisma-actions';
+import { ClearLocalStorageButton } from '@/components/gestion/ClearLocalStorageButton';
 import type { FullMatch, MatchStatus } from '@/types';
 import {
   Carousel,
@@ -17,6 +19,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertTriangle } from 'lucide-react';
+import { ClearLiveEventsButton } from '@/components/gestion/ClearLiveEventsButton';
 
 const RoundFilter = ({ rounds, selectedRound, onSelectRound }: { rounds: number[], selectedRound: number | 'all', onSelectRound: (round: number | 'all') => void }) => {
     if (rounds.length <= 1) return null;
@@ -163,6 +168,22 @@ export default function ControlesPage() {
             )}
           </>
         )}
+
+        <Card className="mt-12 border-destructive/50 bg-destructive/5">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-destructive">
+                    <AlertTriangle className="h-5 w-5" />
+                    Acciones de Administrador
+                </CardTitle>
+                <CardDescription>
+                    Estas acciones son permanentes y deben usarse con precaución.
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-4">
+                <ClearLocalStorageButton />
+                <ClearLiveEventsButton />
+            </CardContent>
+        </Card>
       </main>
     </div>
   );
