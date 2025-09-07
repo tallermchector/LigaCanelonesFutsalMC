@@ -1,4 +1,3 @@
-
 'use client';
 
 import { socialLinks } from '@/data/social-links';
@@ -35,8 +34,8 @@ export function SocialsBanner() {
                     </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
+              <CarouselPrevious className="hidden sm:flex" />
+              <CarouselNext className="hidden sm:flex" />
             </Carousel>
         </div>
     </section>
