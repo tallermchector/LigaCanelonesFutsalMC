@@ -127,9 +127,10 @@ export function CombinedTeamPanel() {
 
   return (
     <Card className="h-full flex flex-col">
-        <div className="flex-grow flex flex-row">
+        <div className="flex-grow flex flex-col md:flex-row">
             <PlayerList teamId="A" />
-            <Separator orientation="vertical" className="mx-2" />
+            <Separator orientation="vertical" className="hidden md:block mx-2" />
+            <Separator orientation="horizontal" className="block md:hidden my-2" />
             <PlayerList teamId="B" />
         </div>
         <Sheet open={!!selectedPlayer && !state.substitutionState} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
