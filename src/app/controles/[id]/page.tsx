@@ -85,7 +85,7 @@ export default function MatchControlPage() {
              if (fetchedMatch.status === 'SCHEDULED') {
               fetchedMatch.status = 'SELECTING_STARTERS';
             }
-            setMatch(fetchedMatch as FullMatch);
+            setMatch(fetchedMatch as unknown as FullMatch);
           } else {
             setError('Partido no encontrado.');
           }

@@ -2,13 +2,15 @@
 
 import { useGame } from '@/contexts/GameProvider';
 import Image from 'next/image';
-import { Shield, Timer, Flag } from 'lucide-react';
+import { Shield, Timer, Flag, ShieldOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { Label } from '../ui/label';
 import { cn } from '@/lib/utils';
+import type { MatchStatus } from '@/types';
+
 
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
@@ -16,9 +18,30 @@ const formatTime = (seconds: number) => {
   return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 };
 
+function getPeriodLabel(status: MatchStatus, period: number) {
+    if (status === 'FINISHED') return 'FINALIZADO';
+    if (status === 'SCHEDULED' || status === 'SELECTING_STARTERS') return 'PROGRAMADO';
+    if (period === 2) return 'SEGUNDO TIEMPO';
+    return 'PRIMER TIEMPO';
+}
+
+const StatDisplay = ({ label, value, icon, hasPenalty }: { label: string, value: number, icon: React.ReactNode, hasPenalty?: boolean }) => (
+    <div className="flex flex-col items-center gap-1 text-center text-white">
+        <div className="flex items-center gap-1">
+            <div className={cn('h-4 w-4', hasPenalty ? 'text-red-400' : 'text-white/70')}>{icon}</div>
+            <span className={cn('text-xl md:text-2xl font-bold', hasPenalty ? 'text-red-400' : 'text-white')}>
+                {value}
+            </span>
+        </div>
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-white/60">{label}</span>
+    </div>
+);
+
+
 export function Scoreboard() {
   const { state, dispatch } = useGame();
-  const { teamA, teamB, scoreA, scoreB, time, period, foulsA, foulsB, timeoutsA, timeoutsB } = state;
+  const { teamA, teamB, scoreA, scoreB, time, period, foulsA, foulsB, timeoutsA, timeoutsB, status } = state;
+  
   const [newMinutes, setNewMinutes] = useState(Math.floor(time / 60));
   const [newSeconds, setNewSeconds] = useState(time % 60);
 
@@ -30,66 +53,48 @@ export function Scoreboard() {
     const totalSeconds = (newMinutes * 60) + newSeconds;
     dispatch({ type: 'SET_TIME', payload: totalSeconds });
   };
+  
+  const leagueLogo = '/logofu.png';
 
-  const TeamScoreSection = ({ team, score, fouls, timeouts, alignment, bgColorClass }: { team: NonNullable<typeof teamA>, score: number, fouls: number, timeouts: number, alignment: 'left' | 'right', bgColorClass: string }) => (
-      <div className={cn(
-          "flex-1 flex flex-col p-3 gap-2 rounded-lg text-white",
-          bgColorClass
-      )}>
-        <div className={cn(
-            "flex items-center gap-3",
-            alignment === 'right' && "sm:order-last sm:flex-row-reverse"
-        )}>
-            <Image
-                src={team.logoUrl || ''}
-                alt={`Logo de ${team.name}`}
-                width={40}
-                height={40}
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full aspect-square object-contain bg-black/20 p-1"
-            />
-            <h2 className="text-base sm:text-lg font-bold uppercase truncate">{team.name}</h2>
-        </div>
-        <div className="flex items-center justify-between">
-             <div className="flex items-center gap-4 text-xs text-white/90">
-                <div className="flex items-center gap-1"><Timer className="h-4 w-4" /> {timeouts}</div>
-                <div className="flex items-center gap-1"><Shield className="h-4 w-4" /> {fouls}</div>
-            </div>
-            <div className="text-3xl sm:text-4xl font-black">{score}</div>
-        </div>
-      </div>
-  );
 
   return (
-    <div className="w-full shadow-lg bg-card/80 backdrop-blur-sm border border-primary/20 rounded-lg overflow-hidden">
-        <div className="flex flex-col items-stretch text-center">
-            
-            <TeamScoreSection 
-                team={teamA}
-                score={scoreA}
-                fouls={foulsA}
-                timeouts={timeoutsA}
-                alignment="left"
-                bgColorClass="bg-gradient-to-br from-blue-800 to-blue-900/70"
-            />
+    <div className="font-sans w-full flex flex-col items-center pt-2">
+        {/* Logo de la Liga */}
+        <div className="relative z-20 mb-[-24px] bg-[#1a212e] p-1 rounded-full border-4 border-[#1a212e] shadow-lg">
+            <Image src={leagueLogo} alt="League Logo" width={40} height={40} className="w-8 h-8 md:w-10 md:h-10 rounded-full object-contain"/>
+        </div>
 
-            {/* Center Score and Time */}
-            <div className="flex flex-row items-center justify-center gap-4 px-2 py-2 sm:py-3 bg-muted/30">
-                <div className="font-mono text-3xl sm:text-4xl font-bold bg-accent text-accent-foreground px-3 py-1 rounded-md">
+        {/* Marcador Principal */}
+        <div className="w-full text-white shadow-2xl rounded-lg overflow-hidden flex items-stretch justify-between bg-[#1a212e]">
+            
+            {/* Equipo A (Local) */}
+            <div className="flex flex-col justify-between gap-2 p-2 flex-1 min-w-0 bg-[#2c3e50]">
+                <h2 className="text-sm md:text-base font-extrabold tracking-wider uppercase leading-tight text-center truncate">{teamA.name}</h2>
+                <div className="flex items-center justify-around">
+                    <Image src={teamA.logoUrl || ''} alt={`${teamA.name} logo`} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 object-contain flex-shrink-0" />
+                    <div className="text-4xl md:text-6xl font-orbitron font-black">{scoreA}</div>
+                </div>
+                 <div className="flex items-center justify-around pt-1 border-t border-white/10">
+                    <StatDisplay label="Faltas" value={foulsA} icon={<ShieldOff />} hasPenalty={foulsA >= 6} />
+                    <StatDisplay label="T.M." value={timeoutsA} icon={<Timer className="text-green-400" />} />
+                </div>
+            </div>
+            
+            {/* Centro: Tiempo y Período */}
+            <div className="flex-shrink-0 flex flex-col items-center justify-center bg-transparent text-xl md:text-3xl font-black px-2 md:px-4 py-2">
                 <Dialog>
                     <DialogTrigger asChild>
-                        <span className="cursor-pointer hover:bg-accent/80 transition-colors p-1 rounded">
-                            {formatTime(time)}
-                        </span>
+                         <span className="text-3xl md:text-4xl font-bold font-orbitron cursor-pointer hover:text-primary/80 transition-colors">{formatTime(time)}</span>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
+                     <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
                             <DialogTitle>Editar Tiempo</DialogTitle>
                         </DialogHeader>
                         <div className="grid grid-cols-2 gap-4 py-4">
                             <div>
-                                <Label htmlFor="minutes" className="text-right">Minutos</Label>
+                                <Label htmlFor="minutes-header" className="text-right">Minutos</Label>
                                 <Input
-                                    id="minutes"
+                                    id="minutes-header"
                                     type="number"
                                     value={newMinutes}
                                     onChange={(e) => setNewMinutes(Math.max(0, parseInt(e.target.value, 10)))}
@@ -97,9 +102,9 @@ export function Scoreboard() {
                                 />
                             </div>
                             <div>
-                                    <Label htmlFor="seconds" className="text-right">Segundos</Label>
-                                    <Input
-                                    id="seconds"
+                                <Label htmlFor="seconds-header" className="text-right">Segundos</Label>
+                                <Input
+                                    id="seconds-header"
                                     type="number"
                                     value={newSeconds}
                                     onChange={(e) => setNewSeconds(Math.max(0, Math.min(59, parseInt(e.target.value, 10))))}
@@ -114,21 +119,22 @@ export function Scoreboard() {
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
-                </div>
-                <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-                    <Flag className="h-4 w-4" />
-                    <span>P: {period}</span>
-                </div>
+                <div className="my-1 border-b-2 border-white/20 w-full"></div>
+                <span className="text-xs md:text-sm font-semibold uppercase tracking-widest">{getPeriodLabel(status, period)}</span>
             </div>
 
-            <TeamScoreSection 
-                team={teamB}
-                score={scoreB}
-                fouls={foulsB}
-                timeouts={timeoutsB}
-                alignment="right"
-                bgColorClass="bg-gradient-to-bl from-red-800 to-red-900/70"
-            />
+            {/* Equipo B (Visitante) */}
+             <div className="flex flex-col justify-between gap-2 p-2 flex-1 min-w-0 bg-[#c0392b]">
+                <h2 className="text-sm md:text-base font-extrabold tracking-wider uppercase leading-tight text-center truncate">{teamB.name}</h2>
+                <div className="flex items-center justify-around">
+                     <div className="text-4xl md:text-6xl font-orbitron font-black">{scoreB}</div>
+                    <Image src={teamB.logoUrl || ''} alt={`${teamB.name} logo`} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 object-contain flex-shrink-0" />
+                </div>
+                 <div className="flex items-center justify-around pt-1 border-t border-white/10">
+                    <StatDisplay label="T.M." value={timeoutsB} icon={<Timer className="text-green-400" />} />
+                    <StatDisplay label="Faltas" value={foulsB} icon={<ShieldOff />} hasPenalty={foulsB >= 6} />
+                </div>
+            </div>
         </div>
     </div>
   );
