@@ -11,7 +11,7 @@ import { motion } from 'framer-motion';
 
 export function EventButtons() {
   const { state, dispatch, createGameEvent } = useGame();
-  const { selectedPlayer, teamA, teamB, substitutionState, activePlayersA, activePlayersB } = state;
+  const { selectedPlayer, teamA, teamB, substitutionState } = state;
 
   const handleAddEvent = (type: GameEventType) => {
     if (type === 'SUBSTITUTION') {
@@ -55,15 +55,7 @@ export function EventButtons() {
 
   const selectedPlayerInfo = getPlayerInfo();
 
-  const isPlayerActive = () => {
-      if (!selectedPlayer) return false;
-      const activeList = selectedPlayer.teamId === 'A' ? activePlayersA : activePlayersB;
-      return activeList.includes(selectedPlayer.playerId);
-  }
-
-  const canRegisterAction = selectedPlayer && isPlayerActive();
-  const canRegisterCard = !!selectedPlayer;
-  const canRegisterSubstitution = canRegisterAction;
+  const canRegisterAction = !!selectedPlayer;
   
   if (substitutionState) {
     return (
@@ -146,7 +138,7 @@ export function EventButtons() {
         <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
         <Button
             onClick={() => handleAddEvent('YELLOW_CARD')}
-            disabled={!canRegisterCard}
+            disabled={!canRegisterAction}
             aria-label="Registrar tarjeta amarilla"
             className="bg-yellow-400 text-black hover:bg-yellow-500"
         >
@@ -157,7 +149,7 @@ export function EventButtons() {
         <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
         <Button
             onClick={() => handleAddEvent('RED_CARD')}
-            disabled={!canRegisterCard}
+            disabled={!canRegisterAction}
             aria-label="Registrar tarjeta roja"
             variant="destructive"
         >
@@ -168,7 +160,7 @@ export function EventButtons() {
         <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
             <Button
                 onClick={() => handleAddEvent('SUBSTITUTION')}
-                disabled={!canRegisterSubstitution}
+                disabled={!canRegisterAction}
                 aria-label="Registrar cambio"
                 variant="outline"
                 className="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"

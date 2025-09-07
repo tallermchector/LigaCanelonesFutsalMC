@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { useToast } from '@/hooks/use-toast';
-import { getMatchById, saveMatchState, createGameEvent } from '@/actions/match-actions';
-import type { FullMatch, MatchStatus } from '@/types';
+import { getMatchById } from '@/actions/match-actions';
+import type { FullMatch, Player } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
@@ -17,10 +17,17 @@ import { GameProvider, useGame } from '@/contexts/GameProvider';
 import { Scoreboard } from '@/components/controles/Scoreboard';
 import { GameControls } from '@/components/controles/GameControls';
 import { StarterSelection } from '@/components/controles/StarterSelection';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { ActionMenu } from '@/components/controles/ActionMenu';
 
 
 function MatchControlContent() {
-    const { state } = useGame();
+    const { state, dispatch } = useGame();
+    const { selectedPlayer } = state;
+
+    const handleSheetClose = () => {
+        dispatch({ type: 'SELECT_PLAYER', payload: null });
+    };
 
     if (state.status === 'SELECTING_STARTERS') {
         return <StarterSelection />;
@@ -34,6 +41,17 @@ function MatchControlContent() {
             <div className="flex-grow pt-4 w-full max-w-7xl mx-auto">
                 <GameControls />
             </div>
+             <Sheet open={!!selectedPlayer} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
+                <SheetContent>
+                    <SheetHeader>
+                        <SheetTitle>Registrar Acción</SheetTitle>
+                        <SheetDescription>
+                            Seleccione una acción para el jugador seleccionado.
+                        </SheetDescription>
+                    </SheetHeader>
+                    <ActionMenu onActionComplete={handleSheetClose} />
+                </SheetContent>
+            </Sheet>
         </>
     );
 }
@@ -78,7 +96,7 @@ export default function MatchControlPage() {
              if (fetchedMatch.status === 'SCHEDULED') {
               fetchedMatch.status = 'SELECTING_STARTERS';
             }
-            setMatch(fetchedMatch);
+            setMatch(fetchedMatch as FullMatch);
           } else {
             setError('Partido no encontrado.');
           }
@@ -127,11 +145,7 @@ export default function MatchControlPage() {
   if (!match) return null;
 
   return (
-    <GameProvider 
-        match={match} 
-        saveMatchState={saveMatchState}
-        createGameEvent={createGameEvent}
-    >
+    <GameProvider match={match}>
       <div className="flex flex-col h-screen bg-background text-foreground">
         <Header />
         <main className="container mx-auto px-4 py-4 flex-grow flex flex-col h-main-content pt-[var(--header-height)]">

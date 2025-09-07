@@ -69,7 +69,7 @@ export interface MatchStats extends FullMatch {
 export type SelectedPlayer = {
   teamId: 'A' | 'B';
   playerId: number;
-};
+} | null;
 
 export type PlayerPosition = {
     x: number;
@@ -98,9 +98,9 @@ export interface GameState {
   time: number; // in seconds
   isRunning: boolean;
   events: GameEvent[];
-  selectedPlayer: SelectedPlayer | null;
+  selectedPlayer: SelectedPlayer;
   substitutionState: {
-      playerOut: SelectedPlayer;
+      playerOut: NonNullable<SelectedPlayer>;
   } | null;
   activePlayersA: number[];
   activePlayersB: number[];
