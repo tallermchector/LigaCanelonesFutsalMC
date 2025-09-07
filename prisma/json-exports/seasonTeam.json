@@ -1,1 +1,54 @@
-[]
+[
+  {
+    "seasonId": 1,
+    "teamId": 13,
+    "position": 0,
+    "points": 0,
+    "played": 0,
+    "wins": 0,
+    "draws": 0,
+    "losses": 0,
+    "goalsFor": 0,
+    "goalsAgainst": 0,
+    "goalDifference": 0
+  },
+  {
+    "seasonId": 1,
+    "teamId": 14,
+    "position": 0,
+    "points": 0,
+    "played": 0,
+    "wins": 0,
+    "draws": 0,
+    "losses": 0,
+    "goalsFor": 0,
+    "goalsAgainst": 0,
+    "goalDifference": 0
+  },
+  {
+    "seasonId": 1,
+    "teamId": 10,
+    "position": 0,
+    "points": 0,
+    "played": 0,
+    "wins": 0,
+    "draws": 0,
+    "losses": 0,
+    "goalsFor": 0,
+    "goalsAgainst": 0,
+    "goalDifference": 0
+  },
+  {
+    "seasonId": 1,
+    "teamId": 11,
+    "position": 0,
+    "points": 0,
+    "played": 0,
+    "wins": 0,
+    "draws": 0,
+    "losses": 0,
+    "goalsFor": 0,
+    "goalsAgainst": 0,
+    "goalDifference": 0
+  }
+]
