@@ -1,5 +1,4 @@
 
-
 import type { ElementType } from 'react';
 import type { Season as PrismaSeason, Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent, PlayerMatchStats as PrismaPlayerMatchStats, SeasonTeam as PrismaSeasonTeam } from '@prisma/client';
 
@@ -21,6 +20,12 @@ export interface Team extends Omit<PrismaTeam, 'slug'> {
   slug: string;
   players: Player[];
   matches?: FullMatch[];
+  description?: string | null;
+  bannerUrl?: string | null;
+  instagram?: string | null;
+  facebook?: string | null;
+  whatsapp?: string | null;
+  phone?: string | null;
 }
 
 export type GameEventType = 'GOAL' | 'ASSIST' | 'FOUL' | 'SHOT' | 'YELLOW_CARD' | 'RED_CARD' | 'TIMEOUT' | 'SUBSTITUTION' | 'MATCH_START' | 'PERIOD_START' | 'MATCH_END';
