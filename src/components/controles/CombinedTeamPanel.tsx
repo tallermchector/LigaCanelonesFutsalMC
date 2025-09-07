@@ -4,7 +4,6 @@ import { useGame } from '@/contexts/GameProvider';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { JerseyButton } from './JerseyButton';
 import type { Player, SelectedPlayer } from '@/types';
-import { Shirt } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import React from 'react';
@@ -16,6 +15,7 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet';
 import { ActionMenu } from './ActionMenu';
+import { Shirt } from 'lucide-react';
 
 const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
     const { state, dispatch } = useGame();
@@ -34,7 +34,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
         return substitutionState?.playerOut?.teamId === teamId && substitutionState?.playerOut?.playerId === playerId;
     }
     
-    const getPlayerVariant = (playerId: number) => {
+    const getPlayerVariant = (playerId: number): 'default' | 'outline' | 'destructive' => {
         const isActive = activePlayers.includes(playerId);
         if (isPlayerBeingSubbedOut(playerId)) return 'destructive';
         if (isActive) return 'default';
