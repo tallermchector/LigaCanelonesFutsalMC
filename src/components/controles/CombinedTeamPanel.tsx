@@ -4,7 +4,6 @@ import { useGame } from '@/contexts/GameProvider';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { JerseyButton } from './JerseyButton';
 import type { SelectedPlayer, GameEvent, Player } from '@/types';
-import { motion } from 'framer-motion';
 import { Shirt } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -81,12 +80,12 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B'}) => {
         let isDisabled = false;
         if (substitutionState) {
             const subOutTeam = substitutionState.playerOut.teamId;
-            if (teamId === subOutTeam) {
-                if (playersWithStatus.find(p => p.id === player.id)?.isActive) {
-                    isDisabled = true;
-                }
-            } else {
+            // Disable all players on the other team during substitution
+            if (teamId !== subOutTeam) {
                 isDisabled = true;
+            } else {
+                // On the correct team, disable starters, enable substitutes
+                isDisabled = starters.some(p => p.id === player.id);
             }
         }
         
