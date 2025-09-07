@@ -34,23 +34,44 @@ export const TeamHeader = ({ team }: { team: Team }) => {
 
     const averageGoals = totalMatchesPlayed > 0 ? (totalGoalsScored / totalMatchesPlayed).toFixed(1) : '0';
 
+    const getSocialHandle = (platform: 'instagram' | 'facebook' | 'whatsapp', url: string): string => {
+        if (!url) return '';
+        try {
+            const path = new URL(url).pathname.split('/').filter(p => p);
+            if (platform === 'instagram') {
+                return `@${path[0]}`;
+            }
+            if (platform === 'facebook') {
+                return path[0];
+            }
+        } catch (e) {
+            // Handle cases where it's not a full URL (e.g., just a username)
+            if (platform === 'instagram') return url.startsWith('@') ? url : `@${url}`;
+            return url;
+        }
+        return '';
+    };
+
     const socialLinks = [
         {
             href: team.instagram,
             icon: <InstagramIcon width={24} height={24} />,
-            name: 'Instagram'
+            name: 'Instagram',
+            handle: getSocialHandle('instagram', team.instagram || '')
         },
         {
             href: team.facebook,
             icon: <FacebookIcon width={24} height={24} />,
-            name: 'Facebook'
+            name: 'Facebook',
+            handle: getSocialHandle('facebook', team.facebook || '')
         },
         {
             href: team.whatsapp,
             icon: <YoutubeIcon width={24} height={24} />, // Placeholder, assuming youtube icon for whatsapp
-            name: 'WhatsApp'
+            name: 'WhatsApp',
+            handle: team.whatsapp // For whatsapp, we just show the number/link as is
         }
-    ].filter(link => link.href);
+    ].filter(link => link.href && link.handle);
 
     return (
         <section 
@@ -84,9 +105,9 @@ export const TeamHeader = ({ team }: { team: Team }) => {
                         {socialLinks.length > 0 && (
                              <div className="mt-4 flex items-center justify-center md:justify-start gap-4">
                                 {socialLinks.map(link => (
-                                    <Link key={link.name} href={link.href!} target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors">
+                                    <Link key={link.name} href={link.href!} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white hover:text-primary transition-colors">
                                         {link.icon}
-                                        <span className="sr-only">{link.name}</span>
+                                        <span className="text-sm font-medium">{link.handle}</span>
                                     </Link>
                                 ))}
                             </div>
