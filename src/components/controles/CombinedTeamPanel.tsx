@@ -106,9 +106,10 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B'}) => {
             )
         }
 
+        // En escritorio, usamos el Popover. En móvil, el panel de acciones es visible por separado.
         return (
             <Popover key={player.id}>
-                <PopoverTrigger asChild>
+                <PopoverTrigger asChild className="hidden lg:inline-flex">
                      <JerseyButton
                         jerseyNumber={player.number}
                         playerName={player.name}
@@ -119,7 +120,18 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B'}) => {
                         onClick={() => handlePlayerSelect(player.id)}
                     />
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-1 bg-gray-900/80 border-gray-700 text-white backdrop-blur-md">
+                 <PopoverTrigger asChild className="lg:hidden">
+                     <JerseyButton
+                        jerseyNumber={player.number}
+                        playerName={player.name}
+                        isSelected={isSelected || isPlayerBeingSubbedOut(player.id)}
+                        isActive={activePlayers.includes(player.id)}
+                        isDisabled={isDisabled}
+                        variant={variant}
+                        onClick={() => handlePlayerSelect(player.id)}
+                    />
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-1 bg-gray-900/80 border-gray-700 text-white backdrop-blur-md hidden lg:block">
                      <ActionMenu player={player} />
                 </PopoverContent>
             </Popover>
