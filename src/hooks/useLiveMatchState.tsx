@@ -7,44 +7,69 @@ import type { GameState, FullMatch } from '@/types';
 
 export function useLiveMatchState(matchId: number | null, initialMatchData: FullMatch | null): GameState | null {
   const getInitialState = useCallback((): GameState | null => {
+    let localState: GameState | null = null;
     try {
       if (typeof window !== 'undefined' && matchId) {
-        const savedState = localStorage.getItem(`futsal-match-state-${matchId}`);
-        if (savedState) {
-            return JSON.parse(savedState) as GameState;
+        const savedStateJSON = localStorage.getItem(`futsal-match-state-${matchId}`);
+        if (savedStateJSON) {
+            localState = JSON.parse(savedStateJSON) as GameState;
         }
       }
     } catch (e) {
         console.error("Could not parse saved state", e);
+        localState = null;
+    }
+    
+    // Prioritize the most recent state
+    if (localState && initialMatchData) {
+        const localDate = localState.updatedAt ? new Date(localState.updatedAt) : new Date(0);
+        const serverDate = initialMatchData.updatedAt ? new Date(initialMatchData.updatedAt) : new Date(0);
+
+        if (serverDate > localDate) {
+            // Server state is newer, use it as the base
+             return {
+                ...initialStateFromProps(initialMatchData),
+                events: initialMatchData.events || []
+             };
+        }
+    }
+
+    if (localState) {
+        return localState;
     }
     
     if (initialMatchData) {
-        return {
-          matchId: initialMatchData.id,
-          status: initialMatchData.status,
-          teamA: initialMatchData.teamA,
-          teamB: initialMatchData.teamB,
-          scoreA: initialMatchData.scoreA,
-          scoreB: initialMatchData.scoreB,
-          foulsA: initialMatchData.foulsA,
-          foulsB: initialMatchData.foulsB,
-          timeoutsA: initialMatchData.timeoutsA,
-          timeoutsB: initialMatchData.timeoutsB,
-          period: initialMatchData.period,
-          time: initialMatchData.time,
-          isRunning: initialMatchData.isRunning,
-          events: initialMatchData.events || [],
-          selectedPlayer: null,
-          substitutionState: null,
-          activePlayersA: initialMatchData.activePlayersA || [],
-          activePlayersB: initialMatchData.activePlayersB || [],
-          playerPositions: {},
-          playerTimeTracker: {},
-          updatedAt: initialMatchData.updatedAt
-        }
+        return initialStateFromProps(initialMatchData);
     }
+
     return null;
   }, [matchId, initialMatchData]);
+
+  const initialStateFromProps = (matchData: FullMatch): GameState => {
+      return {
+          matchId: matchData.id,
+          status: matchData.status,
+          teamA: matchData.teamA,
+          teamB: matchData.teamB,
+          scoreA: matchData.scoreA,
+          scoreB: matchData.scoreB,
+          foulsA: matchData.foulsA,
+          foulsB: matchData.foulsB,
+          timeoutsA: matchData.timeoutsA,
+          timeoutsB: matchData.timeoutsB,
+          period: matchData.period,
+          time: matchData.time,
+          isRunning: matchData.isRunning,
+          events: matchData.events || [],
+          selectedPlayer: null,
+          substitutionState: null,
+          activePlayersA: matchData.activePlayersA || [],
+          activePlayersB: matchData.activePlayersB || [],
+          playerPositions: {},
+          playerTimeTracker: {},
+          updatedAt: matchData.updatedAt
+      }
+  }
 
   const [liveState, setLiveState] = useState<GameState | null>(getInitialState);
 
