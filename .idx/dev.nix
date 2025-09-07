@@ -27,6 +27,7 @@
     extensions = [
       # "vscodevim.vim"
       "Google.validation-agent-extension"
+      "google.gemini-cli-vscode-ide-companion"
       "ms-python.debugpy"
       "ms-python.python"
     ];
