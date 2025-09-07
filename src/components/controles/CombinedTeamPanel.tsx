@@ -129,22 +129,12 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B'}) => {
                         </div>
                     </div>
                     
-                    {!substitutionState && (
-                        <div className="mt-4">
-                            <Separator className="my-2" />
-                            <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Suplentes</h3>
-                            <div className="flex flex-wrap items-start justify-center gap-4">
-                                {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes.</p>}
-                            </div>
-                        </div>
-                    )}
-                    
                     {substitutionState && substitutionState.playerOut.teamId === teamId && (
                         <div className="mt-4">
                             <Separator className="my-2" />
                             <h3 className="px-2 mb-2 text-sm font-semibold text-blue-500 animate-pulse">Seleccione jugador entrante</h3>
                             <div className="flex flex-wrap items-start justify-center gap-4">
-                                {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes.</p>}
+                                {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes disponibles.</p>}
                             </div>
                         </div>
                     )}
