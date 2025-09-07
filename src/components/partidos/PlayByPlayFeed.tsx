@@ -1,8 +1,7 @@
 
-
 'use client';
 
-import type { GameEvent, GameEventType, Team } from '@/types';
+import type { GameEvent, GameEventType, Team, MatchStatus } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Hand, RefreshCw, Shield, Square, Timer, Target, ArrowLeft, ArrowRight, PlayCircle, Flag, CheckCircle } from 'lucide-react';
@@ -16,6 +15,8 @@ type PlayByPlayFeedProps = {
   events: GameEvent[];
   teamA: Team;
   teamB: Team;
+  period: number;
+  status: MatchStatus;
 };
 
 const eventDisplayConfig: Record<string, { icon: React.ReactNode; label: string; className: string; iconBg: string }> = {
@@ -132,18 +133,18 @@ const StructuralEventCard = ({ event }: { event: GameEvent }) => {
 };
 
 
-export function PlayByPlayFeed({ events, teamA, teamB }: PlayByPlayFeedProps) {
+export function PlayByPlayFeed({ events, teamA, teamB, period, status }: PlayByPlayFeedProps) {
 
   if (!teamA || !teamB) return null;
 
   const allEvents: GameEvent[] = [...(events || [])];
   
   allEvents.push({ id: -1, matchId: teamA.id, type: 'MATCH_START', timestamp: 2400, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
-  // Show "start of second half" if the match is in the second half or finished
-  if (events.some(e => e.type === 'MATCH_END') || events.some(e => e.timestamp < 1200)) {
+  
+  if (period === 2) {
     allEvents.push({ id: -2, matchId: teamA.id, type: 'PERIOD_START', timestamp: 1200, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
   }
-  if (events.some(e => e.type === 'MATCH_END')) {
+  if (status === 'FINISHED') {
       allEvents.push({ id: -3, matchId: teamA.id, type: 'MATCH_END', timestamp: 0, teamId: 0, playerId: null, teamName: '', playerName: '', playerInId: null, playerInName: null });
   }
   
