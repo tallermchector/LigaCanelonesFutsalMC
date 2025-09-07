@@ -52,7 +52,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
         <div className="flex-1">
             <CardHeader className="p-4">
                  <CardTitle className={cn("text-center", teamId === 'A' ? 'text-primary' : 'text-accent' )}>{team.name}</CardTitle>
-                 <div className="text-center text-sm text-muted-foreground font-semibold flex items-center justify-center gap-2">
+                 <div className="hidden md:flex text-center text-sm text-muted-foreground font-semibold items-center justify-center gap-2">
                     <Shirt className="h-4 w-4" />
                     <span>Activos: {activePlayers.length} / 5</span>
                 </div>
@@ -126,10 +126,9 @@ export function CombinedTeamPanel() {
   };
 
   return (
-    <Card className="h-full flex flex-col md:flex-row">
+    <Card className="h-full flex flex-col">
         <PlayerList teamId="A" />
-        <Separator orientation="vertical" className="hidden md:block h-auto" />
-        <Separator orientation="horizontal" className="md:hidden w-full" />
+        <Separator orientation="horizontal" className="w-full" />
         <PlayerList teamId="B" />
         <Sheet open={!!selectedPlayer && !state.substitutionState} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
             <SheetContent>
@@ -145,3 +144,4 @@ export function CombinedTeamPanel() {
     </Card>
   );
 }
+
