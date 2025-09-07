@@ -31,7 +31,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
     };
     
     const isPlayerBeingSubbedOut = (playerId: number) => {
-        return substitutionState?.playerOut.teamId === teamId && substitutionState?.playerOut.playerId === playerId;
+        return substitutionState?.playerOut?.teamId === teamId && substitutionState?.playerOut?.playerId === playerId;
     }
     
     const getPlayerVariant = (playerId: number) => {
@@ -132,7 +132,7 @@ export function CombinedTeamPanel() {
         <Separator orientation="horizontal" className="my-0 md:hidden" />
         <PlayerList teamId="B" />
       </div>
-      <Sheet open={!!selectedPlayer} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
+      <Sheet open={!!selectedPlayer && !state.substitutionState} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
         <SheetContent>
             <SheetHeader>
                 <SheetTitle>Registrar Acción</SheetTitle>
