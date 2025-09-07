@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useGame } from '@/contexts/GameProvider';
@@ -33,10 +34,10 @@ export function Scoreboard() {
 
   const TeamScoreSection = ({ team, score, fouls, timeouts, alignment, bgColorClass }: { team: NonNullable<typeof teamA>, score: number, fouls: number, timeouts: number, alignment: 'left' | 'right', bgColorClass: string }) => (
       <div className={cn(
-          "flex-1 flex flex-col p-2 rounded-lg text-white",
+          "flex-1 flex flex-col sm:flex-row items-center justify-between p-3 gap-2 rounded-lg text-white",
           bgColorClass
       )}>
-        <div className="flex items-center gap-2">
+        <div className={cn("flex items-center gap-3", alignment === 'right' && "sm:order-last")}>
             <Image
                 src={team.logoUrl || ''}
                 alt={`Logo de ${team.name}`}
@@ -46,12 +47,12 @@ export function Scoreboard() {
             />
             <h2 className="text-base sm:text-lg font-bold uppercase truncate">{team.name}</h2>
         </div>
-        <div className="flex-grow flex items-center justify-between mt-2">
-             <div className="flex items-center gap-2 sm:gap-4 text-xs text-white/90">
-                <div className="flex items-center gap-1"><Shield className="h-4 w-4" /> {fouls}</div>
+        <div className="flex items-center gap-4">
+             <div className="flex items-center gap-2 text-xs text-white/90">
                 <div className="flex items-center gap-1"><Timer className="h-4 w-4" /> {timeouts}</div>
+                <div className="flex items-center gap-1"><Shield className="h-4 w-4" /> {fouls}</div>
             </div>
-            <div className="text-4xl sm:text-5xl font-black">{score}</div>
+            <div className="text-3xl sm:text-4xl font-black">{score}</div>
         </div>
       </div>
   );
