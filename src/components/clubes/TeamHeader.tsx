@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Users, BarChart2, Clock, Goal, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../ui/button';
-import { InstagramIcon, FacebookIcon, YoutubeIcon } from '../icons';
+import { InstagramIcon, FacebookIcon,  WhatsAppIcon } from '../icons';
 import { motion } from 'framer-motion';
 
 
@@ -76,7 +76,7 @@ export const TeamHeader = ({ team }: { team: Team }) => {
         },
         {
             href: team.whatsapp,
-            icon: <YoutubeIcon width={24} height={24} />, // Placeholder, assuming youtube icon for whatsapp
+            icon: <WhatsAppIcon width={24} height={24} />,
             name: 'WhatsApp',
             handle: team.whatsapp // For whatsapp, we just show the number/link as is
         }

@@ -17,6 +17,10 @@ export const FacebookIcon = ({ width = 48, height = 48, ...props }: CustomIconPr
   <Image src="/icon/icon-facebook.svg" alt="Facebook icon" width={width} height={height} {...props} />
 );
 
+export const WhatsAppIcon = ({ width = 48, height = 48, ...props }: CustomIconProps) => (
+  <Image src="/icon/icon-whatsapp.svg" alt="WhatsApp icon" width={width} height={height} {...props} />
+);
+
 export const GlobeIcon = (props: SVGProps<SVGSVGElement>) => (
   <Globe {...props} />
 );
