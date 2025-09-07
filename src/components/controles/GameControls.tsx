@@ -16,7 +16,7 @@ export function GameControls() {
       <div className="lg:col-span-2">
         <CombinedTeamPanel />
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="lg:col-span-1 flex flex-col gap-4">
         <ControlsPanel />
       </div>
     </div>

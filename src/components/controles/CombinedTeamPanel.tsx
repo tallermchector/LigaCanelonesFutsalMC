@@ -3,11 +3,19 @@
 import { useGame } from '@/contexts/GameProvider';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { JerseyButton } from './JerseyButton';
-import type { SelectedPlayer } from '@/types';
+import type { Player, SelectedPlayer } from '@/types';
 import { Shirt } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import React from 'react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet';
+import { ActionMenu } from './ActionMenu';
 
 const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
     const { state, dispatch } = useGame();
@@ -17,8 +25,8 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
 
     if (!team) return null;
 
-    const handlePlayerSelect = (playerId: number) => {
-        const payload: SelectedPlayer = { teamId, playerId };
+    const handlePlayerSelect = (player: Player) => {
+        const payload: SelectedPlayer = { teamId, playerId: player.id };
         dispatch({ type: 'SELECT_PLAYER', payload });
     };
     
@@ -75,8 +83,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
                                     playerName={p.name}
                                     isSelected={selectedPlayer?.playerId === p.id}
                                     isActive={true}
-                                    onClick={() => handlePlayerSelect(p.id)}
-                                    variant={selectedPlayer?.playerId === p.id ? (teamId === 'A' ? 'accent-blue' : 'accent-red') : 'default'}
+                                    onClick={() => handlePlayerSelect(p)}
                                 />
                             )) : <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares.</p>}
                         </div>
@@ -110,14 +117,32 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B' }) => {
 
 
 export function CombinedTeamPanel() {
-    return (
-        <Card className="h-full flex flex-col">
-            <div className="flex-grow flex flex-col md:flex-row">
-                <PlayerList teamId="A" />
-                <Separator orientation="vertical" className="h-auto mx-0 hidden md:block" />
-                <Separator orientation="horizontal" className="my-0 md:hidden" />
-                <PlayerList teamId="B" />
-            </div>
-        </Card>
-    )
+  const { state, dispatch } = useGame();
+  const { selectedPlayer } = state;
+
+  const handleSheetClose = () => {
+    dispatch({ type: 'SELECT_PLAYER', payload: null });
+  };
+
+  return (
+    <Card className="h-full flex flex-col">
+      <div className="flex-grow flex flex-col md:flex-row">
+        <PlayerList teamId="A" />
+        <Separator orientation="vertical" className="h-auto mx-0 hidden md:block" />
+        <Separator orientation="horizontal" className="my-0 md:hidden" />
+        <PlayerList teamId="B" />
+      </div>
+      <Sheet open={!!selectedPlayer} onOpenChange={(isOpen) => !isOpen && handleSheetClose()}>
+        <SheetContent>
+            <SheetHeader>
+                <SheetTitle>Registrar Acción</SheetTitle>
+                <SheetDescription>
+                    Seleccione una acción para el jugador seleccionado.
+                </SheetDescription>
+            </SheetHeader>
+            <ActionMenu onActionComplete={handleSheetClose} />
+        </SheetContent>
+      </Sheet>
+    </Card>
+  );
 }
