@@ -5,12 +5,13 @@ import React from 'react';
 import { motion, Variants } from 'framer-motion';
 import { FutsalBallIcon } from '@/components/icons'; 
 import { cn } from '@/lib/utils';
+import { Newspaper } from 'lucide-react';
 
 type PageHeroProps = {
   title: string;
   description?: string;
   children?: React.ReactNode;
-  icon?: boolean; // Changed to a boolean to control visibility
+  icon?: boolean; 
 };
 
 const containerVariants: Variants = {
@@ -41,13 +42,11 @@ export function PageHero({ title, description, icon, children }: PageHeroProps) 
       <div className="absolute inset-0 bg-gradient-to-b from-secondary/10 via-transparent to-secondary/20"></div>
       
       <div className="relative container mx-auto px-4 text-center">
-        {icon && (
-          <motion.div variants={itemVariants} className="flex justify-center mb-4">
-              <div className="p-4 bg-primary/10 border-2 border-primary/20 rounded-full">
-                <FutsalBallIcon className="h-12 w-12 text-primary" />
-              </div>
-          </motion.div>
-        )}
+        <motion.div variants={itemVariants} className="flex justify-center mb-4">
+            <div className="p-4 bg-primary/10 border-2 border-primary/20 rounded-full">
+                <Newspaper className="h-12 w-12 text-primary" />
+            </div>
+        </motion.div>
         <motion.h1 
           className="text-5xl md:text-7xl font-bold font-orbitron"
           variants={itemVariants}

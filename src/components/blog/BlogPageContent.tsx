@@ -11,6 +11,8 @@ import { BlogPagination } from '@/components/blog/Pagination';
 import { animationVariants } from '@/lib/animations';
 import type { Post } from '@/types';
 import { Skeleton } from '../ui/skeleton';
+import Image from 'next/image';
+import Link from 'next/link';
 
 function BlogPageSkeleton() {
     return (
@@ -22,6 +24,24 @@ function BlogPageSkeleton() {
         </div>
     );
 }
+
+const SmallPostCard = ({ post }: { post: Post }) => (
+    <Link href={`/blog/${post.slug}`} className="group flex gap-4 items-center">
+        <div className="relative w-24 h-24 rounded-lg overflow-hidden shrink-0">
+            <Image 
+                src={post.imageUrl} 
+                alt={post.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+        </div>
+        <div className="flex-grow">
+            <p className="text-primary text-sm font-semibold">{post.category}</p>
+            <h4 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">{post.title}</h4>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{post.excerpt}</p>
+        </div>
+    </Link>
+)
 
 
 export function BlogPageContent() {
@@ -42,33 +62,26 @@ export function BlogPageContent() {
 
   const { posts, totalPages } = postsData;
 
-  // Separate the first post only if we are on the first page
-  const featuredPost = currentPage === 1 && posts.length > 0 ? posts[0] : null;
-  const regularPosts = currentPage === 1 && posts.length > 0 ? posts.slice(1) : posts;
+  const featuredPost = posts.length > 0 ? posts[0] : null;
+  const otherPosts = posts.length > 1 ? posts.slice(1, 5) : [];
 
 
   return (
     <div className="container mx-auto p-4 py-8 md:p-8">
         {loading ? (
             <BlogPageSkeleton />
-        ) : posts.length > 0 || featuredPost ? (
+        ) : posts.length > 0 ? (
         <>
-            <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            variants={animationVariants.staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            >
-            {featuredPost && (
-                <div className="md:col-span-2 lg:col-span-3">
-                <PostCard post={featuredPost} isFeatured={true} />
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                {featuredPost && (
+                    <PostCard post={featuredPost} isFeatured={true} />
+                )}
+                <div className="flex flex-col gap-6">
+                    {otherPosts.map(post => (
+                        <SmallPostCard key={post.id} post={post} />
+                    ))}
                 </div>
-            )}
-            {regularPosts.map((post) => (
-                <PostCard key={post.slug} post={post} />
-            ))}
-            </motion.div>
+           </div>
 
             {totalPages > 1 && (
                 <div className="mt-12">

@@ -17,20 +17,23 @@ export function PostCard({ post, isFeatured = false }: { post: Post, isFeatured?
     return (
       <motion.div
         variants={animationVariants.slideInUp}
+         whileHover={{ y: -5, scale: 1.01 }}
+         transition={{ type: "spring", stiffness: 300 }}
       >
-        <Card className="flex flex-col md:flex-row overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-primary/20 w-full group">
-          <div className="md:w-1/2 relative min-h-[250px]">
+        <Card className="flex flex-col overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-primary/20 w-full group">
+          <div className="relative min-h-[250px] aspect-video">
             <Link href={`/blog/${post.slug}`} className="block h-full" aria-label={`Leer más sobre ${post.title}`}>
               <Image
                 src={post.imageUrl}
                 alt={`Imagen para ${post.title}`}
                 fill
-                className="object-cover"
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </Link>
+             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             <Badge className="absolute top-3 right-3">{post.category}</Badge>
           </div>
-          <div className="md:w-1/2 flex flex-col p-6">
+          <div className="flex flex-col p-6 bg-card">
              <CardHeader className="p-0">
                <div className="flex items-center text-sm text-muted-foreground mb-2">
                   <Calendar className="mr-2 h-4 w-4" />
@@ -41,11 +44,11 @@ export function PostCard({ post, isFeatured = false }: { post: Post, isFeatured?
                </CardTitle>
              </CardHeader>
              <CardContent className="p-0 flex-grow">
-               <CardDescription className="text-base text-muted-foreground line-clamp-4">
+               <CardDescription className="text-base text-muted-foreground line-clamp-3">
                    {post.excerpt}
                </CardDescription>
              </CardContent>
-             <CardFooter className="p-0 pt-4">
+             <CardFooter className="p-0 pt-4 mt-auto">
                 <Link href={`/blog/${post.slug}`} className="font-semibold text-primary inline-flex items-center group-hover:underline">
                     Leer más <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
