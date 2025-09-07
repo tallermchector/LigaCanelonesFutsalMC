@@ -37,18 +37,12 @@ function AlternativeMatchTimer({ match }: { match: FullMatch | null }) {
     const [targetDate, setTargetDate] = useState<Date | null>(null);
 
     useEffect(() => {
-        if (match?.isRunning && match.updatedAt) {
-            const serverTime = match.time;
-            const lastUpdate = new Date(match.updatedAt).getTime();
+        if (match) {
+            // Calculate the exact end time based on the current moment plus the remaining seconds
             const now = Date.now();
-            const elapsed = (now - lastUpdate) / 1000;
-            const currentTime = Math.max(0, serverTime - elapsed);
-            
-            const newTargetDate = new Date(now + (currentTime * 1000));
+            const remainingMilliseconds = match.time * 1000;
+            const newTargetDate = new Date(now + remainingMilliseconds);
             setTargetDate(newTargetDate);
-        } else if (match) {
-             const newTargetDate = new Date(Date.now() + (match.time * 1000));
-             setTargetDate(newTargetDate);
         } else {
             setTargetDate(null);
         }
@@ -58,6 +52,8 @@ function AlternativeMatchTimer({ match }: { match: FullMatch | null }) {
         return <Skeleton className="h-16 w-48 bg-muted" />;
     }
     
+    // LiveClock's `ticking` prop controls if it updates. We use match.isRunning.
+    // The `date` prop set to an empty string and a `targetDate` makes it a countdown.
     return (
          <div className="text-6xl font-mono font-bold text-foreground bg-card p-4 rounded-lg border">
             <LiveClock
