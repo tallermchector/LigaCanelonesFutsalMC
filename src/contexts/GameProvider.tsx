@@ -165,7 +165,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
             // Do not change selectedPlayer while substitution is in progress
             return state;
         }
-        if (state.selectedPlayer?.playerId === selected.playerId && state.selectedPlayer?.teamId === selected.teamId) {
+        if (state.selectedPlayer?.playerId === selected?.playerId && state.selectedPlayer?.teamId === selected?.teamId) {
             return { ...state, selectedPlayer: null };
         }
 
