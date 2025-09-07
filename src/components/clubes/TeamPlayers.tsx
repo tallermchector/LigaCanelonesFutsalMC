@@ -1,10 +1,10 @@
 
-import type { Player } from '@/types';
+import type { Player, Team } from '@/types';
 import { CardContent } from '../ui/card';
 import { PlayerInfoCard } from './PlayerInfoCard';
 
 interface TeamPlayersProps {
-    players: Player[];
+    team: Team;
 }
 
 const positionTranslations: { [key: string]: string } = {
@@ -16,8 +16,8 @@ const positionTranslations: { [key: string]: string } = {
 
 const orderedPositions = ['GOLERO', 'DEFENSA', 'ALA', 'PIVOT'];
 
-export function TeamPlayers({ players }: TeamPlayersProps) {
-    const groupedPlayers = players.reduce((acc, player) => {
+export function TeamPlayers({ team }: TeamPlayersProps) {
+    const groupedPlayers = (team.players || []).reduce((acc, player) => {
         const position = player.position || 'Unknown';
         if (!acc[position]) {
             acc[position] = [];
@@ -37,7 +37,7 @@ export function TeamPlayers({ players }: TeamPlayersProps) {
                             </h3>
                             <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 {groupedPlayers[position].map(player => (
-                                    <PlayerInfoCard key={player.id} player={player} />
+                                    <PlayerInfoCard key={player.id} player={player} team={team} />
                                 ))}
                             </div>
                         </div>

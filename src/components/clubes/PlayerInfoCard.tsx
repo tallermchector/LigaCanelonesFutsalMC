@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { Player } from '@/types';
+import type { Player, Team } from '@/types';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,9 +10,10 @@ import { playerAvatars } from '@/data/datosgenerales';
 
 interface PlayerInfoCardProps {
   player: Player;
+  team: Team;
 }
 
-export function PlayerInfoCard({ player }: PlayerInfoCardProps) {
+export function PlayerInfoCard({ player, team }: PlayerInfoCardProps) {
   const avatarUrl = playerAvatars[player.id] || `/avatar/1.png`;
 
   return (
@@ -27,7 +28,7 @@ export function PlayerInfoCard({ player }: PlayerInfoCardProps) {
         <Card className="flex flex-col h-full overflow-hidden shadow-lg transition-all duration-300 group-hover:shadow-primary/20 bg-card relative isolate">
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-10 z-0 transition-opacity group-hover:opacity-20"
-            style={{ backgroundImage: `url(${player.team.bannerUrl || '/banner_youtube.jpg'})` }}
+            style={{ backgroundImage: `url(${team.bannerUrl || '/banner_youtube.jpg'})` }}
           ></div>
           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-transparent z-10"></div>
           
