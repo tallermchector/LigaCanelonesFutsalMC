@@ -2,7 +2,6 @@
 
 import { ControlsPanel } from './ControlsPanel';
 import { useGame } from '@/contexts/GameProvider';
-import { EventButtons } from './EventButtons';
 import { CombinedTeamPanel } from './CombinedTeamPanel';
 
 export function GameControls() {
@@ -19,7 +18,6 @@ export function GameControls() {
       </div>
       <div className="flex flex-col gap-4">
         <ControlsPanel />
-        <EventButtons />
       </div>
     </div>
   );

@@ -8,6 +8,9 @@ import { motion } from 'framer-motion';
 import { Shirt } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { ActionMenu } from './ActionMenu';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import React from 'react';
 
 
 const PlayerList = ({ teamId }: { teamId: 'A' | 'B'}) => {
@@ -47,7 +50,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B'}) => {
         if (status === 'SELECTING_STARTERS') {
             dispatch({ type: 'TOGGLE_ACTIVE_PLAYER', payload });
         } else {
-            dispatch({ type: 'SELECT_PLAYER', payload });
+             dispatch({ type: 'SELECT_PLAYER', payload });
         }
     };
     
@@ -69,30 +72,45 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B'}) => {
     
     const isSelectionMode = status === 'SELECTING_STARTERS';
 
-    const renderPlayerButtons = (playersToRender: Player[]) => {
-        return playersToRender.map((player) => {
-            const isSelected = (!!selectedPlayer &&
-                                selectedPlayer.teamId === teamId &&
-                                selectedPlayer.playerId === player.id) ||
-                                (isSelectionMode && activePlayers.includes(player.id));
-            
-            let isDisabled = false;
-            if (substitutionState) {
-                const subOutTeam = substitutionState.playerOut.teamId;
-                if (teamId === subOutTeam) {
-                    if (playersWithStatus.find(p => p.id === player.id)?.isActive) {
-                        isDisabled = true;
-                    }
-                } else {
+    const renderPlayerButton = (player: Player) => {
+        const isSelected = (!!selectedPlayer &&
+                            selectedPlayer.teamId === teamId &&
+                            selectedPlayer.playerId === player.id) ||
+                            (isSelectionMode && activePlayers.includes(player.id));
+        
+        let isDisabled = false;
+        if (substitutionState) {
+            const subOutTeam = substitutionState.playerOut.teamId;
+            if (teamId === subOutTeam) {
+                if (playersWithStatus.find(p => p.id === player.id)?.isActive) {
                     isDisabled = true;
                 }
+            } else {
+                isDisabled = true;
             }
-            
-            const variant = getPlayerVariant(player.id, isSelected);
+        }
+        
+        const variant = getPlayerVariant(player.id, isSelected);
 
-            return (
-                <motion.div key={player.id} whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
-                    <JerseyButton
+        if (isSelectionMode) {
+             return (
+                 <JerseyButton
+                    key={player.id}
+                    jerseyNumber={player.number}
+                    playerName={player.name}
+                    isSelected={isSelected || isPlayerBeingSubbedOut(player.id)}
+                    isActive={activePlayers.includes(player.id)}
+                    isDisabled={isDisabled}
+                    variant={variant}
+                    onClick={() => handlePlayerSelect(player.id)}
+                />
+            )
+        }
+
+        return (
+            <Popover key={player.id}>
+                <PopoverTrigger asChild>
+                     <JerseyButton
                         jerseyNumber={player.number}
                         playerName={player.name}
                         isSelected={isSelected || isPlayerBeingSubbedOut(player.id)}
@@ -101,9 +119,13 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B'}) => {
                         variant={variant}
                         onClick={() => handlePlayerSelect(player.id)}
                     />
-                </motion.div>
-            );
-        });
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-1 bg-gray-900/80 border-gray-700 text-white backdrop-blur-md">
+                     <ActionMenu player={player} />
+                </PopoverContent>
+            </Popover>
+        )
+
     }
 
     return (
@@ -118,14 +140,14 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B'}) => {
             <CardContent className="flex-grow p-2 overflow-y-auto">
                  { isSelectionMode ? (
                     <div className="flex flex-wrap items-start justify-center gap-4">
-                        {renderPlayerButtons(team.players)}
+                        {team.players.map(renderPlayerButton)}
                     </div>
                  ) : (
                     <>
                     <div>
                         <h3 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">Titulares</h3>
                         <div className="flex flex-wrap items-start justify-center gap-4">
-                            {starters.length > 0 ? renderPlayerButtons(starters) : <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares.</p>}
+                            {starters.length > 0 ? starters.map(renderPlayerButton) : <p className="text-xs text-muted-foreground p-4 text-center">No hay titulares.</p>}
                         </div>
                     </div>
                     
@@ -134,7 +156,7 @@ const PlayerList = ({ teamId }: { teamId: 'A' | 'B'}) => {
                             <Separator className="my-2" />
                             <h3 className="px-2 mb-2 text-sm font-semibold text-blue-500 animate-pulse">Seleccione jugador entrante</h3>
                             <div className="flex flex-wrap items-start justify-center gap-4">
-                                {substitutes.length > 0 ? renderPlayerButtons(substitutes) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes disponibles.</p>}
+                                {substitutes.length > 0 ? substitutes.map(renderPlayerButton) : <p className="text-xs text-muted-foreground p-4 text-center">No hay suplentes disponibles.</p>}
                             </div>
                         </div>
                     )}
