@@ -62,6 +62,7 @@ export function Header() {
       { href: '/gestion/clubes', label: 'Clubes', icon: <Shield /> },
       { href: '/gestion/jugadores', label: 'Jugadores', icon: <Users /> },
       { href: '/gestion/temporadas', label: 'Temporadas', icon: <Trophy /> },
+      { href: '/gestion/configuracion', label: 'Configuración', icon: <Settings /> },
   ]
   
   if (!isMounted) {
@@ -145,21 +146,37 @@ export function Header() {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                 <Button variant="ghost" asChild className={cn(
-                    "relative text-sm font-medium transition-colors",
-                    pathname.startsWith('/gestion') ? 'text-primary' : 'text-foreground/80 hover:text-primary'
-                )}>
-                    <Link href="/gestion" className="group">
+                
+                 <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className={cn(
+                        "relative text-sm font-medium transition-colors",
+                        pathname.startsWith('/gestion') ? 'text-primary' : 'text-foreground/80 hover:text-primary'
+                    )}>
+                       <div className="group">
                         <span className="flex items-center gap-2">
-                             <ListChecks className="h-4 w-4" />
-                             Gestión
+                            <ListChecks className="h-4 w-4" />
+                            Gestión
+                            <ChevronDown className="h-4 w-4" />
                         </span>
                         <span className={cn(
                              "absolute bottom-0 left-0 h-0.5 bg-primary w-full transform scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100",
                              pathname.startsWith('/gestion') ? 'scale-x-100' : 'scale-x-0'
                         )} />
-                    </Link>
-                </Button>
+                       </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    {gestionLinks.map((link) => (
+                        <DropdownMenuItem key={link.href} asChild>
+                          <Link href={link.href}>
+                            {React.cloneElement(link.icon, { className: 'mr-2 h-4 w-4' })}
+                            <span>{link.label}</span>
+                          </Link>
+                        </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
             </nav>
             <div className="hidden md:block">
                 <DropdownMenu>
@@ -240,18 +257,32 @@ export function Header() {
                                     </nav>
                                 </AccordionContent>
                             </AccordionItem>
+                             <AccordionItem value="gestion-links" className="border-b-0">
+                                <AccordionTrigger className={cn("flex items-center gap-4 px-4 py-3 text-base rounded-md font-medium hover:no-underline",
+                                 pathname.startsWith('/gestion') ? 'bg-primary/10 text-primary' : 'text-foreground/80 hover:bg-muted'
+                                )}>
+                                    <ListChecks className="h-5 w-5" />
+                                    <span className="flex-1 text-left">Gestión</span>
+                                </AccordionTrigger>
+                                <AccordionContent className="pb-0 pl-8">
+                                    <nav className="flex flex-col gap-1 py-2">
+                                        {gestionLinks.map((link) => (
+                                        <SheetClose asChild key={`${link.href}-${link.label}-mobile-gestion`}>
+                                            <Link
+                                            href={link.href}
+                                            className={cn("flex items-center gap-4 px-4 py-3 text-base rounded-md font-medium",
+                                                pathname.startsWith(link.href) ? 'bg-primary/10 text-primary' : 'text-foreground/80 hover:bg-muted'
+                                            )}
+                                            >
+                                            {React.cloneElement(link.icon, { className: 'h-5 w-5' })}
+                                            {link.label}
+                                            </Link>
+                                        </SheetClose>
+                                        ))}
+                                    </nav>
+                                </AccordionContent>
+                            </AccordionItem>
                          </Accordion>
-                         <SheetClose asChild>
-                            <Link
-                            href="/gestion"
-                            className={cn("flex items-center gap-4 px-4 py-3 text-base rounded-md font-medium",
-                                pathname.startsWith('/gestion') ? 'bg-primary/10 text-primary' : 'text-foreground/80 hover:bg-muted'
-                            )}
-                            >
-                            <ListChecks className="h-5 w-5" />
-                            Gestión
-                            </Link>
-                        </SheetClose>
                     </nav>
                 </div>
                  <div className="p-4 border-t">
