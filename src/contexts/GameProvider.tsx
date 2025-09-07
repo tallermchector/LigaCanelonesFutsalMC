@@ -118,11 +118,15 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       return { ...state, period: action.payload, time: initialState.time, isRunning: false };
     case 'SET_TIME':
         return { ...state, time: action.payload, isRunning: false };
-    case 'SET_STATUS':
-        if (action.payload === 'FINISHED') {
-            return { ...state, status: 'FINISHED', isRunning: false, time: 0 };
-        }
-        return { ...state, status: action.payload, isRunning: action.payload !== 'FINISHED' && state.isRunning };
+    case 'SET_STATUS': {
+        const newStatus = action.payload;
+        return {
+            ...state,
+            status: newStatus,
+            isRunning: newStatus === 'FINISHED' ? false : state.isRunning,
+            time: newStatus === 'FINISHED' ? 0 : state.time,
+        };
+    }
     case 'TOGGLE_TIMER':
       return { ...state, isRunning: !state.isRunning };
     case 'RESET_TIMER':
