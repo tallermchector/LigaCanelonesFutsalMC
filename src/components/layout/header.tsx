@@ -5,7 +5,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from '@/components/ui/sheet';
 import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown, BarChartHorizontal, PenSquare, LayoutDashboard, Trophy, Users, Info, Briefcase, ListChecks } from 'lucide-react';
 import {
   Accordion,
@@ -24,6 +24,7 @@ import { motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 
 export function Header() {
@@ -210,14 +211,17 @@ export function Header() {
                 </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-full max-w-xs p-0 flex flex-col bg-background/95 backdrop-blur-lg">
-                    <SheetClose asChild>
-                      <header className="p-4 border-b">
-                          <Link href="/" className="flex items-center space-x-2">
-                              <Image src="/logofu.svg" alt="Liga Futsal Logo" width={24} height={24} />
-                              <span className="font-bold text-base">Liga Canaria Futsal</span>
-                          </Link>
-                      </header>
-                    </SheetClose>
+                    <SheetHeader className="p-4 border-b">
+                        <SheetClose asChild>
+                            <Link href="/" className="flex items-center space-x-2">
+                                <Image src="/logofu.svg" alt="Liga Futsal Logo" width={24} height={24} />
+                                <span className="font-bold text-base">Liga Canaria Futsal</span>
+                            </Link>
+                        </SheetClose>
+                        <VisuallyHidden>
+                            <SheetTitle>Menu de Navegación</SheetTitle>
+                        </VisuallyHidden>
+                    </SheetHeader>
                 <div className="flex-grow overflow-y-auto">
                     <nav className="flex flex-col gap-1 p-4">
                         {navLinks.map((link) => (
@@ -319,3 +323,5 @@ export function Header() {
     </motion.header>
   );
 }
+
+    
