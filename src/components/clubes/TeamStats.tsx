@@ -13,9 +13,9 @@ interface TeamStatsProps {
 }
 
 const StatRow = ({ label, value }: { label: string, value: number | string }) => (
-    <div className="flex items-center justify-between py-4">
-        <p className="text-sm text-muted-foreground">{label}</p>
-        <p className="text-2xl font-bold text-primary">{value}</p>
+    <div className="flex flex-col sm:flex-row items-center justify-between py-3 px-4 sm:px-6">
+        <p className="text-sm font-semibold text-muted-foreground">{label}</p>
+        <p className="text-3xl font-bold text-primary">{value}</p>
     </div>
 );
 
@@ -51,22 +51,26 @@ export function TeamStats({ team }: TeamStatsProps) {
     ];
 
     return (
-        <CardContent className="p-4 md:p-6">
+        <CardContent className="p-0">
             <Accordion type="multiple" defaultValue={['item-1', 'item-2']} className="w-full">
                 <AccordionItem value="item-1">
-                    <AccordionTrigger className="text-lg font-bold">ATAQUE</AccordionTrigger>
-                    <AccordionContent className="divide-y divide-border">
-                        {attackStats.map(stat => (
-                            <StatRow key={stat.label} label={stat.label} value={stat.value} />
-                        ))}
+                    <AccordionTrigger className="text-lg font-bold px-4 sm:px-6">ATAQUE</AccordionTrigger>
+                    <AccordionContent className="p-0">
+                        <div className="divide-y divide-border">
+                            {attackStats.map(stat => (
+                                <StatRow key={stat.label} label={stat.label} value={stat.value} />
+                            ))}
+                        </div>
                     </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="item-2">
-                    <AccordionTrigger className="text-lg font-bold">JUEGO EN EQUIPO</AccordionTrigger>
-                    <AccordionContent className="divide-y divide-border">
-                         {teamPlayStats.map(stat => (
-                            <StatRow key={stat.label} label={stat.label} value={stat.value} />
-                        ))}
+                <AccordionItem value="item-2" className="border-b-0">
+                    <AccordionTrigger className="text-lg font-bold px-4 sm:px-6">JUEGO EN EQUIPO</AccordionTrigger>
+                    <AccordionContent className="p-0">
+                         <div className="divide-y divide-border">
+                            {teamPlayStats.map(stat => (
+                                <StatRow key={stat.label} label={stat.label} value={stat.value} />
+                            ))}
+                        </div>
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
