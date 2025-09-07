@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -38,7 +37,7 @@ export function Footer() {
             <div className="flex flex-col items-start gap-4">
                  <Link href="/" className="flex items-center space-x-2">
                     <Image src="/logofu.svg" alt="Liga Futsal Logo" width={32} height={32} />
-                    <span className="font-bold text-lg whitespace-nowrap">
+                    <span className="font-bold text-lg whitespace-nowrap font-orbitron">
                       Liga Canaria Futsal 
                     </span>
                 </Link>
@@ -54,6 +53,7 @@ export function Footer() {
                     <QuickLink href="/partidos" icon={<GanttChartSquare />}>Partidos</QuickLink>
                     <QuickLink href="/posiciones" icon={<Shield />}>Posiciones</QuickLink>
                     <QuickLink href="/clubes" icon={<Users />}>Clubes</QuickLink>
+                    <QuickLink href="/jugadores" icon={<Users />}>Jugadores</QuickLink>
                     <QuickLink href="/blog" icon={<Newspaper />}>Noticias</QuickLink>
                 </nav>
             </div>
