@@ -7,6 +7,11 @@ import { useGame } from '@/contexts/GameProvider';
 import type { FullMatch, MatchStatus } from '@/types';
 import { cn } from '@/lib/utils';
 import { FutsalBallIcon } from '@/components/icons';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useState } from 'react';
 
 
 // --- Funciones de Ayuda ---
@@ -38,9 +43,16 @@ const StatDisplay = ({ label, value, icon, hasPenalty }: { label: string, value:
 
 // --- Componente Principal ---
 export function TacticalHeader({ match }: { match: FullMatch }) {
-    const { state } = useGame();
+    const { state, dispatch } = useGame();
     // Usamos los datos del estado del juego, pero si no existen, usamos los del 'match' inicial.
     const { teamA, teamB, scoreA, scoreB, time, period, status, timeoutsA, timeoutsB, foulsA, foulsB } = state.teamA ? state : match;
+    const [newMinutes, setNewMinutes] = useState(Math.floor(time / 60));
+    const [newSeconds, setNewSeconds] = useState(time % 60);
+
+    const handleTimeChange = () => {
+        const totalSeconds = (newMinutes * 60) + newSeconds;
+        dispatch({ type: 'SET_TIME', payload: totalSeconds });
+    };
 
     if (!teamA || !teamB) {
         return null; // O mostrar un esqueleto de carga
@@ -73,7 +85,43 @@ export function TacticalHeader({ match }: { match: FullMatch }) {
                 
                 {/* Centro: Tiempo y Período */}
                 <div className="flex-shrink-0 flex flex-col items-center justify-center bg-transparent text-xl md:text-3xl font-black px-2 md:px-4 py-2">
-                    <span className="text-3xl md:text-4xl font-bold font-orbitron">{formatTime(time)}</span>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                             <span className="text-3xl md:text-4xl font-bold font-orbitron cursor-pointer hover:text-primary/80 transition-colors">{formatTime(time)}</span>
+                        </DialogTrigger>
+                         <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Editar Tiempo</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid grid-cols-2 gap-4 py-4">
+                                <div>
+                                    <Label htmlFor="minutes-header" className="text-right">Minutos</Label>
+                                    <Input
+                                        id="minutes-header"
+                                        type="number"
+                                        value={newMinutes}
+                                        onChange={(e) => setNewMinutes(Math.max(0, parseInt(e.target.value, 10)))}
+                                        className="col-span-3"
+                                    />
+                                </div>
+                                <div>
+                                    <Label htmlFor="seconds-header" className="text-right">Segundos</Label>
+                                    <Input
+                                        id="seconds-header"
+                                        type="number"
+                                        value={newSeconds}
+                                        onChange={(e) => setNewSeconds(Math.max(0, Math.min(59, parseInt(e.target.value, 10))))}
+                                        className="col-span-3"
+                                    />
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button type="button" onClick={handleTimeChange}>Guardar Cambios</Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                     <div className="my-1 border-b-2 border-white/20 w-full"></div>
                     <span className="text-xs md:text-sm font-semibold uppercase tracking-widest">{getPeriodLabel(status, period)}</span>
                 </div>
