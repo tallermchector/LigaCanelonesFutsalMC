@@ -48,14 +48,16 @@ export function SeasonSetup({ allTeams }: SeasonSetupProps) {
     setStep('FIXTURE');
   };
   
-  const getStepContent = (currentStep: Step) => {
+  const getStepContent = (currentStep: Step): string => {
       switch(currentStep) {
           case 'SEASON':
-              return <p className="text-sm text-muted-foreground mt-2">Dale un nombre a tu nueva temporada para empezar.</p>
+              return "Dale un nombre a tu nueva temporada para empezar.";
           case 'TEAMS':
-              return <p className="text-sm text-muted-foreground mt-2">Selecciona los equipos que participarán en esta temporada.</p>
+              return "Selecciona los equipos que participarán en esta temporada.";
           case 'FIXTURE':
-              return <p className="text-sm text-muted-foreground mt-2">Guarda los equipos y genera el calendario de partidos.</p>
+              return "Guarda los equipos y genera el calendario de partidos.";
+          default:
+              return "";
       }
   }
 
@@ -67,7 +69,7 @@ export function SeasonSetup({ allTeams }: SeasonSetupProps) {
         <StepIndicator label="Paso 1: Crear Temporada" isCompleted={!!season} isActive={step === 'SEASON'} />
         <div className="pl-8 mt-2 border-l-2 border-dashed ml-3 pb-6 border-border">
           <div className="pl-4">
-             {getStepContent(step) && <p className="text-sm text-muted-foreground mb-4">{getStepContent('SEASON')}</p>}
+             <p className="text-sm text-muted-foreground mb-4">{getStepContent('SEASON')}</p>
              <CreateSeasonForm
               onSeasonCreated={handleSeasonCreated}
               isDisabled={step !== 'SEASON'}
@@ -81,6 +83,7 @@ export function SeasonSetup({ allTeams }: SeasonSetupProps) {
          <StepIndicator label="Paso 2: Seleccionar Equipos" isCompleted={step === 'FIXTURE'} isActive={step === 'TEAMS'} />
          <div className="pl-8 mt-2 border-l-2 border-dashed ml-3 pb-6 border-border">
           <div className="pl-4">
+             <p className="text-sm text-muted-foreground mb-4">{getStepContent('TEAMS')}</p>
             <TeamSelection
               allTeams={allTeams}
               isDisabled={step !== 'TEAMS'}
@@ -96,6 +99,7 @@ export function SeasonSetup({ allTeams }: SeasonSetupProps) {
          <StepIndicator label="Paso 3: Generar Fixture" isCompleted={false} isActive={step === 'FIXTURE'} />
         <div className="pl-8 mt-2 ml-3">
             <div className="pl-4">
+                 <p className="text-sm text-muted-foreground mb-4">{getStepContent('FIXTURE')}</p>
                  <FixtureGeneration
                     isDisabled={step !== 'FIXTURE'}
                     season={season}
