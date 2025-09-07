@@ -3,7 +3,9 @@
 
 import type { Team } from '@/types';
 import Image from 'next/image';
-import { Users, BarChart2, Clock, Goal } from 'lucide-react';
+import { Users, BarChart2, Clock, Goal, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '../ui/button';
 
 const Stat = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: number | string }) => (
     <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-black/30 backdrop-blur-sm text-white shadow-lg">
@@ -40,6 +42,12 @@ export const TeamHeader = ({ team }: { team: Team }) => {
             <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
             
             <div className="container mx-auto px-4 relative z-10">
+                <Button asChild variant="outline" className="absolute top-4 right-4 bg-background/60 backdrop-blur-sm hover:bg-background/80">
+                    <Link href="/clubes">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Volver a Clubes
+                    </Link>
+                </Button>
                 <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
                     <Image
                         src={team.logoUrl || '/logofu.svg'}

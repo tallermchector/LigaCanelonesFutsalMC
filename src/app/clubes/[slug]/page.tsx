@@ -4,9 +4,6 @@ import { notFound } from 'next/navigation';
 import { TeamHeader } from '@/components/clubes/TeamHeader';
 import { TeamTabs } from '@/components/clubes/TeamTabs';
 import type { Team } from '@/types';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
 
 interface ClubPageProps {
     params: {
@@ -27,12 +24,6 @@ export default async function ClubPage({ params }: ClubPageProps) {
             <main className="flex-1">
                 <TeamHeader team={team as Team} />
                 <div className="container mx-auto max-w-6xl -mt-16 pb-12">
-                     <Button asChild variant="outline" className="mb-4 bg-background/80 backdrop-blur-sm">
-                        <Link href="/clubes">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Volver a Clubes
-                        </Link>
-                     </Button>
                      <TeamTabs team={team as Team} />
                 </div>
             </main>
