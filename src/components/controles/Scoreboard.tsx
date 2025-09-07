@@ -28,9 +28,9 @@ function getPeriodLabel(status: MatchStatus, period: number) {
 
 const StatDisplay = ({ label, value, icon, hasPenalty }: { label: string, value: number, icon: React.ReactNode, hasPenalty?: boolean }) => (
     <div className="flex flex-col items-center gap-1 text-center text-white">
-        <div className="flex items-center gap-1.5">
-            <div className={cn('h-4 w-4 sm:h-5 sm:w-5', hasPenalty ? 'text-red-400' : 'text-white/70')}>{icon}</div>
-            <span className={cn('font-orbitron font-bold text-lg sm:text-xl md:text-2xl', hasPenalty ? 'text-red-400' : 'text-white')}>
+        <div className={cn("flex items-center gap-1.5 text-lg sm:text-xl md:text-2xl", hasPenalty ? 'text-red-400' : 'text-white/80')}>
+            <div className='flex-shrink-0'>{icon}</div>
+            <span className={cn('font-orbitron font-bold', hasPenalty ? 'text-red-400' : 'text-white')}>
                 {value}
             </span>
         </div>
