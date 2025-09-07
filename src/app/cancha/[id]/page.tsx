@@ -15,6 +15,7 @@ import { TacticalHeader } from '@/components/cancha/TacticalHeader';
 import { TacticalActions } from '@/components/cancha/TacticalActions';
 import { PlayerColumn } from '@/components/cancha/PlayerColumn';
 import { cn } from '@/lib/utils';
+import { TacticalBoard } from '@/components/cancha/TacticalBoard';
 
 
 function TacticalBoardSkeleton() {
