@@ -3,7 +3,7 @@
 
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { Hand, RefreshCw, Shield, Square, Timer, Footprints, Target, FileText, ArrowRight, ArrowLeft, PlayCircle, Flag, CheckCircle } from 'lucide-react';
+import { Hand, RefreshCw, Shield, Square, Timer, Target, ArrowLeft, ArrowRight, PlayCircle, Flag, CheckCircle } from 'lucide-react';
 import type { GameEvent, GameEventType, Team } from '@/types';
 import { cn } from '@/lib/utils';
 import { animationVariants } from '@/lib/animations';
@@ -53,9 +53,9 @@ const formatTimeFromTotalSeconds = (totalSeconds: number, eventType: GameEvent['
 }
 
 const PlayerLink = ({ id, name }: { id: number | null, name: string }) => {
-    if (!id) return <span className="font-semibold text-sm md:text-base text-white truncate">{name}</span>;
+    if (!id) return <span className="font-semibold text-sm text-white truncate">{name}</span>;
     return (
-        <Link href={`/jugadores/${id}`} className="font-semibold text-sm md:text-base text-white truncate hover:underline hover:text-primary transition-colors">
+        <Link href={`/jugadores/${id}`} className="font-semibold text-sm text-white truncate hover:underline hover:text-primary transition-colors">
             {name}
         </Link>
     );
@@ -69,7 +69,7 @@ const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team | nu
         if (event.type === 'SUBSTITUTION' && event.playerInName && event.playerInId) {
             return (
                 <>
-                    <p className="font-semibold text-sm md:text-base text-white truncate">{config.label}</p>
+                    <p className="font-semibold text-sm text-white truncate">{config.label}</p>
                     <div className="flex flex-col gap-1 w-full text-xs mt-1">
                         <div className="flex items-center gap-2 text-green-400">
                             <ArrowLeft className="w-3 h-3 shrink-0" />
@@ -86,7 +86,7 @@ const EventCard = ({ event, team, isTeamA }: { event: GameEvent, team: Team | nu
         return (
             <>
                 <PlayerLink id={event.playerId} name={event.playerName || team?.name || ''} />
-                <p className={cn("text-xs md:text-sm", config.className)}>{config.label}</p>
+                <p className={cn("text-xs", config.className)}>{config.label}</p>
             </>
         );
     };
