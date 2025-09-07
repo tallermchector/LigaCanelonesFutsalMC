@@ -1,10 +1,7 @@
 
 import type { Player } from '@/types';
 import { CardContent } from '../ui/card';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
-import { playerAvatars } from '@/data/datosgenerales';
+import { PlayerInfoCard } from './PlayerInfoCard';
 
 interface TeamPlayersProps {
     players: Player[];
@@ -17,7 +14,6 @@ const positionTranslations: { [key: string]: string } = {
     PIVOT: 'Pivots',
 };
 
-// Definir el orden de las posiciones
 const orderedPositions = ['GOLERO', 'DEFENSA', 'ALA', 'PIVOT'];
 
 export function TeamPlayers({ players }: TeamPlayersProps) {
@@ -32,35 +28,17 @@ export function TeamPlayers({ players }: TeamPlayersProps) {
 
     return (
         <CardContent className="p-0">
-            <div className="space-y-4">
+            <div className="space-y-6">
                 {orderedPositions.map(position => (
                     groupedPlayers[position] && (
                         <div key={position}>
-                            <h3 className="bg-muted/50 px-4 py-2 text-sm font-semibold text-muted-foreground">
+                            <h3 className="bg-muted/50 px-4 py-2 text-sm font-semibold text-muted-foreground sticky top-0 z-10">
                                 {positionTranslations[position] || position}
                             </h3>
-                            <div className="divide-y divide-border">
-                                {groupedPlayers[position].map(player => {
-                                    const avatarUrl = playerAvatars[player.id] || `/avatar/1.png`;
-                                    return (
-                                        <Link key={player.id} href={`/jugadores/${player.id}`} className="flex items-center gap-4 p-4 hover:bg-muted/30 group">
-                                            <div className="w-8 text-center font-bold text-primary text-lg">
-                                                {player.number}
-                                            </div>
-                                            <Image
-                                                src={avatarUrl}
-                                                alt={`Foto de ${player.name}`}
-                                                width={40}
-                                                height={40}
-                                                className="rounded-full aspect-square object-cover"
-                                            />
-                                            <div className="font-medium text-foreground group-hover:text-primary transition-colors">
-                                                {player.name}
-                                            </div>
-                                            <ChevronRight className="ml-auto h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
-                                        </Link>
-                                    );
-                                })}
+                            <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {groupedPlayers[position].map(player => (
+                                    <PlayerInfoCard key={player.id} player={player} />
+                                ))}
                             </div>
                         </div>
                     )
