@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import React, { useState } from 'react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Hand, RefreshCw, Shield, Square, Timer, Target, Goal, Footprints } from 'lucide-react';
+import { Hand, RefreshCw, Shield, Square, Timer, Target, Goal, Footprints, Minus, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 
@@ -37,11 +37,12 @@ const EventCreationForm = ({ player, onEventCreated }: { player: Player; onEvent
     const [eventType, setEventType] = useState<GameEventType | null>(null);
     const { toast } = useToast();
     
-    const initialMinute = Math.floor(state.time / 60);
-    const initialSecond = state.time % 60;
+    // Use the current game time as the default
+    const [timeValue, setTimeValue] = useState(state.time);
 
-    const [minute, setMinute] = useState(20 - initialMinute - (initialSecond > 0 ? 1 : 0));
-    const [second, setSecond] = useState(initialSecond > 0 ? 60 - initialSecond : 0);
+    const handleTimeChange = (delta: number) => {
+        setTimeValue(prev => Math.max(0, Math.min(1200, prev + delta)));
+    };
 
     const handleAddEvent = () => {
         if (!eventType) {
@@ -53,8 +54,8 @@ const EventCreationForm = ({ player, onEventCreated }: { player: Player; onEvent
         const teamName = player.teamId === state.teamA?.id ? state.teamA.name : state.teamB?.name;
         
         if(!teamId || !teamName) return;
-
-        const timeInSeconds = (20 - minute) * 60 - second;
+        
+        const timestamp = timeValue;
 
         const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
             type: eventType,
@@ -62,7 +63,7 @@ const EventCreationForm = ({ player, onEventCreated }: { player: Player; onEvent
             playerId: player.id,
             playerName: player.name,
             teamName,
-            timestamp: timeInSeconds,
+            timestamp: timestamp, // Use the adjusted time
             playerInId: null,
             playerInName: null,
         };
@@ -72,12 +73,18 @@ const EventCreationForm = ({ player, onEventCreated }: { player: Player; onEvent
 
         toast({
             title: "Evento Registrado",
-            description: `${eventType} para ${player.name} en el minuto ${minute}:${String(second).padStart(2, '0')}.`
+            description: `${eventType} para ${player.name}.`
         });
         
         onEventCreated();
     };
     
+    const formatTime = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
     return (
         <Card>
             <CardContent className="p-4 space-y-4">
@@ -107,16 +114,25 @@ const EventCreationForm = ({ player, onEventCreated }: { player: Player; onEvent
                     ))}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <Label htmlFor={`minute-${player.id}`}>Minuto</Label>
-                        <Input id={`minute-${player.id}`} type="number" value={minute} onChange={e => setMinute(parseInt(e.target.value))} />
-                    </div>
-                     <div>
-                        <Label htmlFor={`second-${player.id}`}>Segundo</Label>
-                        <Input id={`second-${player.id}`} type="number" value={second} onChange={e => setSecond(parseInt(e.target.value))} />
+                <div>
+                    <Label htmlFor={`time-${player.id}`} className="mb-2 block text-center">Tiempo del Evento (MM:SS)</Label>
+                    <div className="flex items-center justify-center gap-2">
+                        <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => handleTimeChange(-10)}>
+                            <Minus className="h-4 w-4" />
+                        </Button>
+                        <Input
+                            id={`time-${player.id}`}
+                            type="text"
+                            value={formatTime(timeValue)}
+                            readOnly
+                            className="w-24 text-center text-lg font-mono"
+                        />
+                         <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => handleTimeChange(10)}>
+                            <Plus className="h-4 w-4" />
+                        </Button>
                     </div>
                 </div>
+
                 <Button onClick={handleAddEvent} disabled={!eventType} className="w-full">
                     Añadir Evento
                 </Button>
@@ -287,7 +303,7 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
     
     return (
         <div className="mt-8 space-y-6">
-            <div className="grid grid-cols-2 gap-2">
+             <div className="grid grid-cols-2 gap-2">
                 <TeamPlayerGrid teamId="A" team={match.teamA} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerData?.playerId || null} />
                 <TeamPlayerGrid teamId="B" team={match.teamB} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerData?.playerId || null} />
             </div>
