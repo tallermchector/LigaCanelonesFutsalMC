@@ -127,7 +127,7 @@ const EventCreationForm = ({ player, onEventCreated, initialTime }: { player: Pl
                 <div>
                     <Label htmlFor={`time-${player.id}`} className="mb-2 block text-center">Tiempo del Evento (MM:SS)</Label>
                     <div className="flex items-center justify-center gap-2">
-                        <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => handleTimeChange(-10)}>
+                        <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => handleTimeChange(-30)}>
                             <Minus className="h-4 w-4" />
                         </Button>
                         <Input
@@ -137,7 +137,7 @@ const EventCreationForm = ({ player, onEventCreated, initialTime }: { player: Pl
                             readOnly
                             className="w-24 text-center text-lg font-mono"
                         />
-                         <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => handleTimeChange(10)}>
+                         <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => handleTimeChange(30)}>
                             <Plus className="h-4 w-4" />
                         </Button>
                     </div>
@@ -160,12 +160,12 @@ const PlayerButton = ({ player, team, onSelect, isSelected, isActive, className,
 
     const buttonContent = (
         <div className="relative w-full h-full flex flex-col items-center justify-center">
+             <Image src={team.logoUrl || ''} alt={team.name} width={24} height={24} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 opacity-10" />
             {isActive && !isSelectionMode && (
                 <div className="absolute top-1 right-1 bg-black/50 text-white rounded-full h-4 w-4 flex items-center justify-center text-[10px] font-bold">
                     T
                 </div>
             )}
-             <Image src={team.logoUrl || ''} alt={team.name} width={24} height={24} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 opacity-20" />
             <span className="relative text-lg font-bold">{player.number}</span>
         </div>
     );
@@ -274,7 +274,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
         )}>
             <CardContent className="flex-grow flex flex-col gap-0 p-0 h-full">
                 {isSelectionMode ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 p-0 h-full">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 p-0 h-full overflow-y-auto">
                         {sortedPlayers.map((player) => (
                             <PlayerButton
                                 key={player.id}
@@ -290,7 +290,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                     </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-2 gap-0 p-0">
+                         <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-2 gap-0 p-0">
                            {starters.map((player) => (
                                 <PlayerButton
                                     key={player.id}
@@ -305,7 +305,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                             ))}
                         </div>
                         <Separator />
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 p-0 flex-grow">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 p-0 flex-grow overflow-y-auto">
                              {substitutes.map((player) => (
                                 <PlayerButton
                                     key={player.id}
@@ -389,7 +389,7 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
     };
     
     return (
-        <div className="mt-8 space-y-6">
+        <div className="space-y-6">
              <div className="grid grid-cols-2 gap-2">
                 <TeamPlayerGrid 
                     teamId="A" 
