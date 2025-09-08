@@ -4,7 +4,7 @@
 import type { FullMatch, Player } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useGame } from '@/contexts/GameProvider';
 import { cn } from '@/lib/utils';
 import { Save } from 'lucide-react';
 
@@ -26,7 +26,7 @@ const PlayerButton = ({ player, onSelect, isSelected, className }: { player: Pla
     </Button>
 );
 
-const TeamPlayerGrid = ({ team, onPlayerSelect, selectedPlayerId }: { team: FullMatch['teamA'], onPlayerSelect: (playerId: number) => void, selectedPlayerId: number | null }) => {
+const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId }: { teamId: 'A' | 'B', team: FullMatch['teamA'], onPlayerSelect: (teamId: 'A' | 'B', playerId: number) => void, selectedPlayerId: number | null }) => {
     const positionOrder: Player['position'][] = ["GOLERO", "DEFENSA", "ALA", "PIVOT"];
 
     const sortedPlayers = [...team.players].sort((a, b) => {
@@ -51,7 +51,7 @@ const TeamPlayerGrid = ({ team, onPlayerSelect, selectedPlayerId }: { team: Full
                     <PlayerButton
                         key={player.id}
                         player={player}
-                        onSelect={() => onPlayerSelect(player.id)}
+                        onSelect={() => onPlayerSelect(teamId, player.id)}
                         isSelected={selectedPlayerId === player.id}
                         className={cn(
                            index === 2 && "rounded-tr-lg",
@@ -66,23 +66,22 @@ const TeamPlayerGrid = ({ team, onPlayerSelect, selectedPlayerId }: { team: Full
 
 
 export function ManualEntryForm({ match }: ManualEntryFormProps) {
-    const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
+    const { state, dispatch } = useGame();
+    const { selectedPlayer } = state;
 
-    const handlePlayerSelect = (playerId: number) => {
-        setSelectedPlayerId(current => (current === playerId ? null : playerId));
+    const handlePlayerSelect = (teamId: 'A' | 'B', playerId: number) => {
+        if (selectedPlayer?.playerId === playerId) {
+            dispatch({ type: 'SELECT_PLAYER', payload: null });
+        } else {
+            dispatch({ type: 'SELECT_PLAYER', payload: { teamId, playerId } });
+        }
     }
     
     return (
         <div className="mt-8 space-y-6">
-            <div className="grid grid-cols-2 gap-4 h-96">
-                <TeamPlayerGrid team={match.teamA} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerId} />
-                <TeamPlayerGrid team={match.teamB} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerId} />
-            </div>
-            <div className="flex justify-end">
-                <Button size="lg" variant="accent" disabled={!selectedPlayerId}>
-                    <Save className="mr-2 h-5 w-5" />
-                    Asignar Evento
-                </Button>
+            <div className="grid grid-cols-2 gap-2 h-96">
+                <TeamPlayerGrid teamId="A" team={match.teamA} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayer?.playerId || null} />
+                <TeamPlayerGrid teamId="B" team={match.teamB} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayer?.playerId || null} />
             </div>
         </div>
     );

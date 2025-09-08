@@ -8,13 +8,14 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getMatchById } from '@/actions/prisma-actions';
-import type { FullMatch } from '@/types';
+import type { FullMatch, Player } from '@/types';
 import { notFound, useParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScoreboardManual } from '@/components/ingreso-manual/ScoreboardManual';
 import { ManualEntryForm } from '@/components/ingreso-manual/ManualEntryForm';
-import { GameProvider } from '@/contexts/GameProvider';
+import { GameProvider, useGame } from '@/contexts/GameProvider';
 import { ManualEventActions } from '@/components/ingreso-manual/ManualEventActions';
+
 
 function ManualEntrySkeleton() {
     return (
@@ -25,6 +26,43 @@ function ManualEntrySkeleton() {
                 <Skeleton className="h-64" />
             </div>
             <Skeleton className="h-96" />
+        </div>
+    )
+}
+
+function PageContent({ match }: { match: FullMatch }) {
+    const { state, dispatch } = useGame();
+    const { selectedPlayer } = state;
+
+    const getSelectedPlayerData = (): Player | null => {
+        if (!selectedPlayer) return null;
+        const team = selectedPlayer.teamId === 'A' ? state.teamA : state.teamB;
+        return team?.players.find(p => p.id === selectedPlayer.playerId) || null;
+    }
+
+    const player = getSelectedPlayerData();
+
+    return (
+         <div className="max-w-4xl mx-auto">
+            <Button asChild variant="outline" className="mb-8">
+                <Link href="/ingreso-manual">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Volver a la selección de partidos
+                </Link>
+            </Button>
+            
+            <ScoreboardManual />
+            {player && (
+                 <div className="mt-8">
+                    <ManualEventActions
+                        player={player}
+                        onAction={() => dispatch({ type: 'SELECT_PLAYER', payload: null })}
+                    />
+                </div>
+            )}
+            <div className="mt-8">
+                <ManualEntryForm match={match} />
+            </div>
         </div>
     )
 }
@@ -74,22 +112,7 @@ export default function IngresoManualPartidoPage() {
                 <Header />
                 <main className="flex-1 pt-[var(--header-height)]">
                     <div className="container mx-auto p-4 py-8 md:p-8">
-                        <div className="max-w-4xl mx-auto">
-                            <Button asChild variant="outline" className="mb-8">
-                                <Link href="/ingreso-manual">
-                                    <ArrowLeft className="mr-2 h-4 w-4" />
-                                    Volver a la selección de partidos
-                                </Link>
-                            </Button>
-                            
-                            <ScoreboardManual />
-                            <div className="mt-8">
-                                <ManualEventActions />
-                            </div>
-                            <div className="mt-8">
-                                <ManualEntryForm match={match} />
-                            </div>
-                        </div>
+                        <PageContent match={match} />
                     </div>
                 </main>
                 <Footer />
