@@ -75,6 +75,7 @@ function ClockDebugger() {
 
     // Logic for the second, alternative timer
     const [alternativeTime, setAlternativeTime] = useState<number | null>(null);
+    const lastTickRef = useRef<number | null>(null);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     
     // Effect to get live matches
@@ -86,7 +87,7 @@ function ClockDebugger() {
         });
     }, []);
 
-    // Effect to manage the alternative timer
+    // Effect to manage the alternative timer with high-precision calculation
     useEffect(() => {
         // Set the initial time when a match is selected
         if (selectedMatch) {
@@ -98,20 +99,27 @@ function ClockDebugger() {
         // Clear any existing interval when the selected match changes
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
+            lastTickRef.current = null;
         }
 
         // Start a new interval if a match is selected and is running
         if (selectedMatch && selectedMatch.isRunning) {
+            lastTickRef.current = Date.now();
             intervalRef.current = setInterval(() => {
                 setAlternativeTime(prevTime => {
-                    if (prevTime !== null && prevTime > 0) {
-                        return prevTime - 1;
+                    if (prevTime === null || prevTime <= 0 || !lastTickRef.current) {
+                        if (intervalRef.current) clearInterval(intervalRef.current);
+                        return 0;
                     }
-                    // Stop the interval if time runs out
-                    if (intervalRef.current) {
+                    const now = Date.now();
+                    const timePassed = (now - lastTickRef.current) / 1000;
+                    lastTickRef.current = now;
+
+                    const newTime = Math.max(0, prevTime - timePassed);
+                    if (newTime <= 0 && intervalRef.current) {
                         clearInterval(intervalRef.current);
                     }
-                    return 0;
+                    return newTime;
                 });
             }, 1000);
         }
@@ -122,7 +130,7 @@ function ClockDebugger() {
                 clearInterval(intervalRef.current);
             }
         };
-    }, [selectedMatch]); // This effect depends only on the selectedMatch
+    }, [selectedMatch]);
     
     return (
          <Card className="w-full max-w-4xl">
