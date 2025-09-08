@@ -161,7 +161,12 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'ADD_EVENT': {
       if (!state.matchId) return state;
 
-      let newState: GameState = { ...state, events: [...state.events, { ...action.payload.event, id: Date.now(), matchId: state.matchId }], selectedPlayer: null };
+      let newState: GameState = { 
+          ...state, 
+          events: [...state.events, { ...action.payload.event, id: Date.now(), matchId: state.matchId }], 
+          selectedPlayer: null,
+          time: action.payload.event.timestamp, // Update game time to event time
+      };
 
       if (action.payload.event.type === 'GOAL' && action.payload.event.teamId) {
           const team = action.payload.event.teamId === state.teamA?.id ? 'A' : 'B';
