@@ -3,17 +3,17 @@
 
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { PageHero } from '@/components/layout/PageHero';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, PenSquare } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getMatchById } from '@/actions/prisma-actions';
 import type { FullMatch } from '@/types';
 import { notFound, useParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ScoreboardManual } from '@/components/ingreso-manual/ScoreboardManual';
 import { ManualEntryForm } from '@/components/ingreso-manual/ManualEntryForm';
+import { GameProvider } from '@/contexts/GameProvider';
 
 function ManualEntrySkeleton() {
     return (
@@ -54,10 +54,6 @@ export default function IngresoManualPartidoPage() {
              <div className="flex min-h-screen flex-col bg-background">
                 <Header />
                 <main className="flex-1 pt-[var(--header-height)]">
-                     <PageHero
-                        title="Ingreso Manual de Datos"
-                        description="Registra los resultados y eventos clave del partido una vez finalizado."
-                    />
                     <div className="container mx-auto p-4 py-8 md:p-8">
                         <ManualEntrySkeleton />
                     </div>
@@ -72,27 +68,28 @@ export default function IngresoManualPartidoPage() {
     }
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
-            <Header />
-            <main className="flex-1 pt-[var(--header-height)]">
-                <PageHero
-                    title={`${match.teamA.name} vs ${match.teamB.name}`}
-                    description="Registra los resultados y eventos clave del partido una vez finalizado."
-                />
-                <div className="container mx-auto p-4 py-8 md:p-8">
-                     <div className="max-w-4xl mx-auto">
-                        <Button asChild variant="outline" className="mb-8">
-                            <Link href="/ingreso-manual">
-                                <ArrowLeft className="mr-2 h-4 w-4" />
-                                Volver a la selección de partidos
-                            </Link>
-                        </Button>
-
-                        <ManualEntryForm match={match} />
+        <GameProvider match={match}>
+            <div className="flex min-h-screen flex-col bg-background">
+                <Header />
+                <main className="flex-1 pt-[var(--header-height)]">
+                    <div className="container mx-auto p-4 py-8 md:p-8">
+                        <div className="max-w-4xl mx-auto">
+                            <Button asChild variant="outline" className="mb-8">
+                                <Link href="/ingreso-manual">
+                                    <ArrowLeft className="mr-2 h-4 w-4" />
+                                    Volver a la selección de partidos
+                                </Link>
+                            </Button>
+                            
+                            <ScoreboardManual />
+                            <div className="mt-8">
+                                <ManualEntryForm match={match} />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </main>
-            <Footer />
-        </div>
+                </main>
+                <Footer />
+            </div>
+        </GameProvider>
     );
 }
