@@ -16,6 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { cn } from '@/lib/utils';
 
 export function ManualControls() {
     const { state, dispatch } = useGame();
@@ -33,46 +34,50 @@ export function ManualControls() {
 
     return (
         <Card>
-            <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                    <Button 
-                        variant={state.period === 1 ? 'default' : 'outline'}
-                        onClick={() => handleSetPeriod(1)}
-                        disabled={state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS'}
-                    >
-                        <Flag className="mr-2 h-4 w-4" />
-                        Primer Tiempo
-                    </Button>
-                    <Button
-                        variant={state.period === 2 ? 'default' : 'outline'}
-                        onClick={() => handleSetPeriod(2)}
-                        disabled={state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS'}
-                    >
-                         <Flag className="mr-2 h-4 w-4" />
-                        Segundo Tiempo
-                    </Button>
-                </div>
-                 <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <Button variant="destructive">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Limpiar Partido
+            <CardContent className="p-4">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="grid grid-cols-2 gap-2 w-full sm:w-auto">
+                        <Button 
+                            variant={state.period === 1 ? 'default' : 'outline'}
+                            onClick={() => handleSetPeriod(1)}
+                            disabled={state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS'}
+                            className="w-full"
+                        >
+                            <Flag className="mr-2 h-4 w-4" />
+                            1er Tiempo
                         </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                        <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Esta acción limpiará todos los datos de este partido guardados localmente (marcador, eventos, etc.) y recargará la página.
-                            No afectará los datos guardados en la base de datos hasta que guardes los cambios.
-                        </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleClearMatch}>Sí, limpiar</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+                        <Button
+                            variant={state.period === 2 ? 'default' : 'outline'}
+                            onClick={() => handleSetPeriod(2)}
+                            disabled={state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS'}
+                            className="w-full"
+                        >
+                            <Flag className="mr-2 h-4 w-4" />
+                            2do Tiempo
+                        </Button>
+                    </div>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="destructive" className="w-full sm:w-auto">
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Limpiar Partido
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                            <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Esta acción limpiará todos los datos de este partido guardados localmente (marcador, eventos, etc.) y recargará la página.
+                                No afectará los datos guardados en la base de datos hasta que guardes los cambios.
+                            </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleClearMatch}>Sí, limpiar</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
             </CardContent>
         </Card>
     );
