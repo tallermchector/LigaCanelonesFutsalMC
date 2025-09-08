@@ -13,7 +13,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { Timer } from 'lucide-react';
 
-const formatTime = (seconds: number) => {
+const formatTime = (seconds: number | null) => {
+    if (seconds === null) return '00:00';
     const flooredSeconds = Math.floor(seconds);
     const minutes = Math.floor(flooredSeconds / 60);
     const remainingSeconds = flooredSeconds % 60;
@@ -21,10 +22,6 @@ const formatTime = (seconds: number) => {
 };
 
 function MatchTimer({ time }: { time: number | null }) {
-    if (time === null) {
-        return <Skeleton className="h-16 w-48 bg-muted" />;
-    }
-
     return (
         <div className="text-6xl font-mono font-bold text-foreground bg-card p-4 rounded-lg border">
             {formatTime(time)}
@@ -72,13 +69,13 @@ function ClockDebugger() {
     // Logic for the first timer (using the main hook)
     const liveState = useLiveMatchState(selectedMatch ? selectedMatch.id : null, selectedMatch);
     const hookTime = liveState?.time ?? null;
+    const isRunning = liveState?.isRunning ?? false;
 
     // Logic for the second, alternative timer
     const [alternativeTime, setAlternativeTime] = useState<number | null>(null);
     const lastTickRef = useRef<number | null>(null);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     
-    // Effect to get live matches
     useEffect(() => {
         getAllMatches().then(matches => {
             const live = matches.filter(m => m.status === 'LIVE');
@@ -87,23 +84,27 @@ function ClockDebugger() {
         });
     }, []);
 
-    // Effect to manage the alternative timer with high-precision calculation
+    // Effect to SYNC the alternative timer's start time with the hook's time
     useEffect(() => {
-        // Set the initial time when a match is selected
-        if (selectedMatch) {
-          setAlternativeTime(selectedMatch.time);
-        } else {
-          setAlternativeTime(null);
+        if (hookTime !== null && alternativeTime === null) {
+             setAlternativeTime(hookTime);
         }
+        // If match is deselected, reset alternativeTime
+        if (!selectedMatchId) {
+            setAlternativeTime(null);
+        }
+    }, [hookTime, selectedMatchId, alternativeTime]);
 
-        // Clear any existing interval when the selected match changes
+
+    // Effect to manage the alternative timer's countdown with high-precision calculation
+    useEffect(() => {
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
-            lastTickRef.current = null;
+            intervalRef.current = null;
         }
-
-        // Start a new interval if a match is selected and is running
-        if (selectedMatch && selectedMatch.isRunning) {
+        lastTickRef.current = null;
+        
+        if (isRunning && alternativeTime !== null && alternativeTime > 0) {
             lastTickRef.current = Date.now();
             intervalRef.current = setInterval(() => {
                 setAlternativeTime(prevTime => {
@@ -121,16 +122,15 @@ function ClockDebugger() {
                     }
                     return newTime;
                 });
-            }, 100); // Check more frequently for better precision display
+            }, 100);
         }
-
-        // Cleanup function to clear interval on unmount or re-render
+        
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
         };
-    }, [selectedMatch]);
+    }, [isRunning, alternativeTime]);
     
     return (
          <Card className="w-full max-w-4xl">
@@ -143,7 +143,10 @@ function ClockDebugger() {
             <CardContent className="flex flex-col items-center justify-center gap-6">
                 
                 <div className="w-full max-w-sm">
-                     <Select onValueChange={setSelectedMatchId} disabled={loading || liveMatches.length === 0}>
+                     <Select onValueChange={(value) => {
+                         setSelectedMatchId(value);
+                         setAlternativeTime(null); // Reset on new selection
+                     }} disabled={loading || liveMatches.length === 0}>
                         <SelectTrigger>
                             <SelectValue placeholder={loading ? "Cargando partidos..." : "Seleccione un partido en vivo"} />
                         </SelectTrigger>
@@ -167,7 +170,7 @@ function ClockDebugger() {
                             </div>
                             <div className="flex flex-col items-center gap-2">
                                 <h3 className="font-semibold text-muted-foreground">Temporizador (useEffect local)</h3>
-                                <MatchTimer time={alternativeTime} />
+                                {alternativeTime === null ? <Skeleton className="h-20 w-48 bg-muted" /> : <MatchTimer time={alternativeTime} />}
                             </div>
                         </div>
                         <TimeDifferenceDisplay time1={hookTime} time2={alternativeTime} />
