@@ -25,23 +25,43 @@ const PlayerButton = ({ player, onSelect, isSelected }: { player: Player, onSele
     </Button>
 );
 
-const TeamPlayerGrid = ({ team, onPlayerSelect, selectedPlayerId }: { team: FullMatch['teamA'], onPlayerSelect: (playerId: number) => void, selectedPlayerId: number | null }) => (
-    <Card className="flex-1">
-        <CardHeader>
-            <CardTitle className="text-center">{team.name}</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-4 gap-2">
-            {team.players.slice(0, 12).map(player => (
-                <PlayerButton
-                    key={player.id}
-                    player={player}
-                    onSelect={() => onPlayerSelect(player.id)}
-                    isSelected={selectedPlayerId === player.id}
-                />
-            ))}
-        </CardContent>
-    </Card>
-);
+const TeamPlayerGrid = ({ team, onPlayerSelect, selectedPlayerId }: { team: FullMatch['teamA'], onPlayerSelect: (playerId: number) => void, selectedPlayerId: number | null }) => {
+    const positionOrder: Player['position'][] = ["GOLERO", "DEFENSA", "ALA", "PIVOT"];
+
+    const sortedPlayers = [...team.players].sort((a, b) => {
+        const posA = positionOrder.indexOf(a.position);
+        const posB = positionOrder.indexOf(b.position);
+        
+        // Handle cases where a position might not be in our list
+        if (posA === -1) return 1;
+        if (posB === -1) return -1;
+
+        if (posA !== posB) {
+            return posA - posB;
+        }
+        // If positions are the same, sort by number
+        return a.number - b.number;
+    });
+
+    return (
+        <Card className="flex-1">
+            <CardHeader>
+                <CardTitle className="text-center">{team.name}</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-4 gap-2">
+                {sortedPlayers.slice(0, 12).map(player => (
+                    <PlayerButton
+                        key={player.id}
+                        player={player}
+                        onSelect={() => onPlayerSelect(player.id)}
+                        isSelected={selectedPlayerId === player.id}
+                    />
+                ))}
+            </CardContent>
+        </Card>
+    );
+};
+
 
 export function ManualEntryForm({ match }: ManualEntryFormProps) {
     const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
