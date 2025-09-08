@@ -205,10 +205,12 @@ export function Header() {
             </div>
             <Sheet>
                 <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Toggle Menu</span>
-                </Button>
+                  <motion.div whileHover={{ scale: 1.1, rotate: 10 }} whileTap={{ scale: 0.9 }}>
+                    <Button variant="ghost" size="icon" className="md:hidden">
+                        <Menu className="h-6 w-6" />
+                        <span className="sr-only">Toggle Menu</span>
+                    </Button>
+                  </motion.div>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-full max-w-xs p-0 flex flex-col bg-background/95 backdrop-blur-lg">
                     <SheetHeader className="p-4 border-b">
