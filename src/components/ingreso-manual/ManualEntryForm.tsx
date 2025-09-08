@@ -152,7 +152,7 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
     
     return (
         <div className="mt-8 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2">
                 <TeamPlayerGrid teamId="A" team={match.teamA} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayer?.playerId || null} />
                 <TeamPlayerGrid teamId="B" team={match.teamB} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayer?.playerId || null} />
             </div>
