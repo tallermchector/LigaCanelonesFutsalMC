@@ -44,11 +44,11 @@ function PageContent({ match }: { match: FullMatch }) {
             <ScoreboardManual />
 
             <div className="mt-8">
-                <ManualControls />
+                <ManualEntryForm match={match} />
             </div>
             
             <div className="mt-8">
-                <ManualEntryForm match={match} />
+                <ManualControls />
             </div>
              <ManualEntryActions />
         </div>
