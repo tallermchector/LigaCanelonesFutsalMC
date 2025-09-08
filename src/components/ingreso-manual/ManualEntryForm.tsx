@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import React, { useState } from 'react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Hand, RefreshCw, Shield, Square, Timer, Target, Goal } from 'lucide-react';
+import { Hand, RefreshCw, Shield, Square, Timer, Target, Goal, Footprints } from 'lucide-react';
 
 
 interface ManualEntryFormProps {
