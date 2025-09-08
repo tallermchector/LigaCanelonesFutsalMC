@@ -15,7 +15,6 @@ import { ScoreboardManual } from '@/components/ingreso-manual/ScoreboardManual';
 import { ManualEntryForm } from '@/components/ingreso-manual/ManualEntryForm';
 import { GameProvider, useGame } from '@/contexts/GameProvider';
 import { ManualEntryActions } from '@/components/ingreso-manual/ManualEntryActions';
-import { ActionMenuManual } from '@/components/ingreso-manual/ActionMenuManual';
 
 
 function ManualEntrySkeleton() {
@@ -32,17 +31,6 @@ function ManualEntrySkeleton() {
 }
 
 function PageContent({ match }: { match: FullMatch }) {
-    const { state, dispatch } = useGame();
-    const { selectedPlayer } = state;
-
-    const getSelectedPlayerData = (): Player | null => {
-        if (!selectedPlayer) return null;
-        const team = selectedPlayer.teamId === 'A' ? state.teamA : state.teamB;
-        return team?.players.find(p => p.id === selectedPlayer.playerId) || null;
-    }
-
-    const player = getSelectedPlayerData();
-
     return (
          <div className="max-w-4xl mx-auto">
             <Button asChild variant="outline" className="mb-8">
