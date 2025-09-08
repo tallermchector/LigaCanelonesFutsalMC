@@ -7,7 +7,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { GameState, GameEvent, Team, FullMatch } from '@/types';
+import { GameState, GameEvent, Team, FullMatch, GameEventType } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScoreboardManual } from '@/components/ingreso-manual/ScoreboardManual';
 import { GameProvider, useGame } from '@/contexts/GameProvider';
@@ -31,6 +31,20 @@ const eventIcons: Record<GameEvent['type'], React.ReactNode> = {
     MATCH_START: <CheckCircle className="h-4 w-4 text-gray-500" />,
     PERIOD_START: <CheckCircle className="h-4 w-4 text-gray-500" />,
     MATCH_END: <CheckCircle className="h-4 w-4 text-gray-500" />,
+};
+
+const eventTranslations: Record<GameEventType, string> = {
+    GOAL: 'Gol',
+    ASSIST: 'Asistencia',
+    SHOT: 'Tiro',
+    FOUL: 'Falta',
+    YELLOW_CARD: 'Tarjeta Amarilla',
+    RED_CARD: 'Tarjeta Roja',
+    TIMEOUT: 'Tiempo Muerto',
+    SUBSTITUTION: 'Cambio',
+    MATCH_START: 'Inicio de Partido',
+    PERIOD_START: 'Inicio de Período',
+    MATCH_END: 'Fin de Partido',
 };
 
 function formatTime(seconds: number) {
@@ -140,7 +154,7 @@ function ConfirmationContent() {
                            teamAEvents.map(event => (
                             <div key={event.id} className="flex items-center gap-2 text-sm p-2 bg-muted/50 rounded-md">
                                 {eventIcons[event.type]}
-                                <span>{event.type} - {event.playerName} ({formatTime(event.timestamp)})</span>
+                                <span>{eventTranslations[event.type]} - {event.playerName} ({formatTime(event.timestamp)})</span>
                             </div>
                            ))
                         ) : <p className="text-xs text-muted-foreground">Sin eventos.</p>}
@@ -154,7 +168,7 @@ function ConfirmationContent() {
                            teamBEvents.map(event => (
                             <div key={event.id} className="flex items-center gap-2 text-sm p-2 bg-muted/50 rounded-md">
                                 {eventIcons[event.type]}
-                                <span>{event.type} - {event.playerName} ({formatTime(event.timestamp)})</span>
+                                <span>{eventTranslations[event.type]} - {event.playerName} ({formatTime(event.timestamp)})</span>
                             </div>
                            ))
                         ) : <p className="text-xs text-muted-foreground">Sin eventos.</p>}
