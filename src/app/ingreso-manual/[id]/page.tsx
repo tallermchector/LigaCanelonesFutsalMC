@@ -1,28 +1,82 @@
 
+'use client';
+
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { PageHero } from '@/components/layout/PageHero';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PenSquare } from 'lucide-react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, PenSquare } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { getMatchById } from '@/actions/prisma-actions';
+import type { FullMatch } from '@/types';
+import { notFound, useParams } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ManualEntryForm } from '@/components/ingreso-manual/ManualEntryForm';
 
-interface IngresoManualPartidoPageProps {
-    params: {
-        id: string;
-    };
+function ManualEntrySkeleton() {
+    return (
+        <div className="max-w-4xl mx-auto space-y-8">
+            <Skeleton className="h-10 w-48" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <Skeleton className="h-64" />
+                <Skeleton className="h-64" />
+            </div>
+            <Skeleton className="h-96" />
+        </div>
+    )
 }
 
-export default async function IngresoManualPartidoPage({ params }: IngresoManualPartidoPageProps) {
-    const matchId = params.id;
+export default function IngresoManualPartidoPage() {
+    const params = useParams();
+    const matchId = parseInt(params.id as string, 10);
+    const [match, setMatch] = useState<FullMatch | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (isNaN(matchId)) {
+            setLoading(false);
+            return;
+        }
+
+        getMatchById(matchId).then(data => {
+            if (data) {
+                setMatch(data);
+            }
+            setLoading(false);
+        });
+
+    }, [matchId]);
+
+    if (loading) {
+        return (
+             <div className="flex min-h-screen flex-col bg-background">
+                <Header />
+                <main className="flex-1 pt-[var(--header-height)]">
+                     <PageHero
+                        title="Ingreso Manual de Datos"
+                        description="Registra los resultados y eventos clave del partido una vez finalizado."
+                    />
+                    <div className="container mx-auto p-4 py-8 md:p-8">
+                        <ManualEntrySkeleton />
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        )
+    }
+
+    if (!match) {
+        notFound();
+    }
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
             <Header />
             <main className="flex-1 pt-[var(--header-height)]">
                 <PageHero
-                    title={`Ingreso Manual: Partido #${matchId}`}
+                    title={`${match.teamA.name} vs ${match.teamB.name}`}
                     description="Registra los resultados y eventos clave del partido una vez finalizado."
                 />
                 <div className="container mx-auto p-4 py-8 md:p-8">
@@ -34,20 +88,7 @@ export default async function IngresoManualPartidoPage({ params }: IngresoManual
                             </Link>
                         </Button>
 
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <PenSquare className="h-5 w-5 text-primary" />
-                                    <span>Panel de Ingreso</span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="prose dark:prose-invert max-w-none">
-                                <p>
-                                    Esta sección está en construcción. Aquí podrás registrar el resultado final, 
-                                    goleadores, asistencias, tarjetas y otras incidencias del partido con ID: <strong>{matchId}</strong>.
-                                </p>
-                            </CardContent>
-                        </Card>
+                        <ManualEntryForm match={match} />
                     </div>
                 </div>
             </main>
