@@ -11,7 +11,7 @@ import type { FullMatch } from '@/types';
 import { useLiveMatchState } from '@/hooks/useLiveMatchState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import { Timer } from 'lucide-react';
+import { Timer, History } from 'lucide-react';
 
 const formatTime = (seconds: number | null) => {
     if (seconds === null) return '00:00';
@@ -34,7 +34,7 @@ function TimeDifferenceDisplay({ time1, time2 }: { time1: number | null, time2: 
         return null;
     }
     const difference = Math.abs(time1 - time2);
-    const isDifferent = difference > 0.1; // Use a small threshold to avoid floating point issues
+    const isDifferent = difference > 0.1;
 
     return (
         <Card className={cn(
@@ -59,6 +59,43 @@ function TimeDifferenceDisplay({ time1, time2 }: { time1: number | null, time2: 
     );
 }
 
+type DifferenceLogEntry = {
+    gameTime: number;
+    difference: number;
+};
+
+function DifferenceLog({ log }: { log: DifferenceLogEntry[] }) {
+    if (log.length === 0) {
+        return null;
+    }
+    return (
+        <Card className="w-full max-w-sm mt-6">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                    <History className="h-5 w-5 text-primary" />
+                    Historial de Diferencias
+                </CardTitle>
+                <CardDescription>Capturas cada 30 segundos.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <ul className="space-y-2 text-sm">
+                    {log.map((entry, index) => (
+                        <li key={index} className="flex justify-between items-center bg-muted/50 p-2 rounded-md">
+                            <span className="font-mono text-muted-foreground">Tiempo: {formatTime(entry.gameTime)}</span>
+                            <span className={cn(
+                                "font-bold font-mono",
+                                Math.abs(entry.difference) > 0.1 ? "text-destructive" : "text-green-500"
+                            )}>
+                                {entry.difference.toFixed(3)}s
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+            </CardContent>
+        </Card>
+    )
+}
+
 function ClockDebugger() {
     const [liveMatches, setLiveMatches] = useState<FullMatch[]>([]);
     const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
@@ -73,8 +110,10 @@ function ClockDebugger() {
 
     // Logic for the second, alternative timer
     const [alternativeTime, setAlternativeTime] = useState<number | null>(null);
+    const [differenceLog, setDifferenceLog] = useState<DifferenceLogEntry[]>([]);
     const lastTickRef = useRef<number | null>(null);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const logIntervalRef = useRef<NodeJS.Timeout | null>(null);
     
     useEffect(() => {
         getAllMatches().then(matches => {
@@ -86,26 +125,27 @@ function ClockDebugger() {
 
     // Effect to SYNC the alternative timer's start time with the hook's time
     useEffect(() => {
-        if (hookTime !== null && alternativeTime === null) {
+        if (hookTime !== null) {
              setAlternativeTime(hookTime);
         }
-        // If match is deselected, reset alternativeTime
+        // If match is deselected, reset timers and log
         if (!selectedMatchId) {
             setAlternativeTime(null);
+            setDifferenceLog([]);
         }
-    }, [hookTime, selectedMatchId, alternativeTime]);
+    }, [hookTime, selectedMatchId]);
 
 
     // Effect to manage the alternative timer's countdown with high-precision calculation
     useEffect(() => {
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        if (logIntervalRef.current) clearInterval(logIntervalRef.current);
+        
         lastTickRef.current = null;
         
         if (isRunning && alternativeTime !== null && alternativeTime > 0) {
             lastTickRef.current = Date.now();
+            
             intervalRef.current = setInterval(() => {
                 setAlternativeTime(prevTime => {
                     if (prevTime === null || prevTime <= 0 || !lastTickRef.current) {
@@ -123,14 +163,30 @@ function ClockDebugger() {
                     return newTime;
                 });
             }, 100);
+
+            // Setup the difference logger
+            logIntervalRef.current = setInterval(() => {
+                setDifferenceLog(prevLog => {
+                    const currentHookTime = hookTime; // Get fresh value
+                    const currentAlternativeTime = alternativeTime;
+                    if (currentHookTime !== null && currentAlternativeTime !== null) {
+                         const newEntry = {
+                            gameTime: currentHookTime,
+                            difference: currentHookTime - currentAlternativeTime,
+                        };
+                        return [...prevLog, newEntry];
+                    }
+                    return prevLog;
+                });
+            }, 30000); // Log every 30 seconds
         }
         
         return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            if (logIntervalRef.current) clearInterval(logIntervalRef.current);
         };
-    }, [isRunning, alternativeTime]);
+    // We need to include hookTime and alternativeTime in dependencies for the logger to get the latest values
+    }, [isRunning, alternativeTime, hookTime]);
     
     return (
          <Card className="w-full max-w-4xl">
@@ -145,7 +201,8 @@ function ClockDebugger() {
                 <div className="w-full max-w-sm">
                      <Select onValueChange={(value) => {
                          setSelectedMatchId(value);
-                         setAlternativeTime(null); // Reset on new selection
+                         setAlternativeTime(null);
+                         setDifferenceLog([]);
                      }} disabled={loading || liveMatches.length === 0}>
                         <SelectTrigger>
                             <SelectValue placeholder={loading ? "Cargando partidos..." : "Seleccione un partido en vivo"} />
@@ -173,7 +230,10 @@ function ClockDebugger() {
                                 {alternativeTime === null ? <Skeleton className="h-20 w-48 bg-muted" /> : <MatchTimer time={alternativeTime} />}
                             </div>
                         </div>
-                        <TimeDifferenceDisplay time1={hookTime} time2={alternativeTime} />
+                        <div className="flex flex-col items-center gap-4 w-full">
+                           <TimeDifferenceDisplay time1={hookTime} time2={alternativeTime} />
+                           <DifferenceLog log={differenceLog} />
+                        </div>
                     </>
                 )}
                
