@@ -53,6 +53,12 @@ const EventCreationForm = ({ player, onEventCreated, initialTime }: { player: Pl
             return;
         }
 
+        if (eventType === 'SUBSTITUTION') {
+            dispatch({ type: 'INITIATE_SUBSTITUTION' });
+            onEventCreated(timeValue); // Close popover
+            return;
+        }
+
         const teamId = player.teamId === state.teamA?.id ? state.teamA.id : state.teamB?.id;
         const teamName = player.teamId === state.teamA?.id ? state.teamA.name : state.teamB?.name;
         
@@ -195,8 +201,8 @@ const PlayerButton = ({ player, onSelect, isSelected, isActive, className, onEve
 };
 
 const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEventCreated, lastEventTime }: { teamId: 'A' | 'B', team: FullMatch['teamA'], onPlayerSelect: (teamId: 'A' | 'B', playerId: number) => void, selectedPlayerId: number | null, onEventCreated: (time: number) => void, lastEventTime: number }) => {
-    const { state } = useGame();
-    const { status } = state;
+    const { state, dispatch } = useGame();
+    const { status, substitutionState } = state;
     const activePlayers = teamId === 'A' ? state.activePlayersA : state.activePlayersB;
 
     const positionOrder: Player['position'][] = ["GOLERO", "DEFENSA", "ALA", "PIVOT"];
@@ -218,6 +224,32 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
     
     const starters = isSelectionMode ? [] : sortedPlayers.filter(p => activePlayers.includes(p.id));
     const substitutes = isSelectionMode ? sortedPlayers.slice(0,12) : sortedPlayers.filter(p => !activePlayers.includes(p.id));
+    
+    const handleSubstituteClick = (playerInId: number) => {
+        dispatch({ type: 'COMPLETE_SUBSTITUTION', payload: { playerInId } });
+    }
+
+    if (substitutionState && substitutionState.playerOut.teamId === teamId) {
+        return (
+            <Card className="flex-1 overflow-hidden">
+                <CardContent className="p-4 h-full">
+                     <h3 className="text-center font-bold text-primary mb-2">Seleccionar Suplente</h3>
+                     <div className="grid grid-cols-3 grid-rows-4 gap-1 p-0 h-full">
+                        {substitutes.map(player => (
+                           <Button
+                                key={player.id}
+                                variant="outline"
+                                className="aspect-square h-full w-full text-lg font-bold"
+                                onClick={() => handleSubstituteClick(player.id)}
+                            >
+                                {player.number}
+                            </Button>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card className="flex-1 overflow-hidden">
@@ -303,7 +335,7 @@ const StarterSelectionActions = () => {
 
 export function ManualEntryForm({ match }: ManualEntryFormProps) {
     const { state, dispatch } = useGame();
-    const { selectedPlayer: selectedPlayerData } = state;
+    const { selectedPlayer: selectedPlayerData, substitutionState } = state;
     const [lastEventTime, setLastEventTime] = useState(state.time);
 
     const storageKey = `futsal-last-event-time-${match.id}`;
@@ -321,6 +353,10 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
         if (state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS') {
              dispatch({ type: 'TOGGLE_ACTIVE_PLAYER', payload: { teamId, playerId } });
         } else {
+            if (substitutionState) {
+                dispatch({ type: 'CANCEL_SUBSTITUTION' });
+            }
+
             if (selectedPlayerData?.playerId === playerId) {
                 dispatch({ type: 'SELECT_PLAYER', payload: null });
             } else {

@@ -15,6 +15,7 @@ import { ScoreboardManual } from '@/components/ingreso-manual/ScoreboardManual';
 import { ManualEntryForm } from '@/components/ingreso-manual/ManualEntryForm';
 import { GameProvider, useGame } from '@/contexts/GameProvider';
 import { ManualEntryActions } from '@/components/ingreso-manual/ManualEntryActions';
+import { ManualControls } from '@/components/ingreso-manual/ManualControls';
 
 
 function ManualEntrySkeleton() {
@@ -41,6 +42,10 @@ function PageContent({ match }: { match: FullMatch }) {
             </Button>
             
             <ScoreboardManual />
+
+            <div className="mt-8">
+                <ManualControls />
+            </div>
             
             <div className="mt-8">
                 <ManualEntryForm match={match} />
