@@ -32,14 +32,12 @@ const TeamPlayerGrid = ({ team, onPlayerSelect, selectedPlayerId }: { team: Full
         const posA = positionOrder.indexOf(a.position);
         const posB = positionOrder.indexOf(b.position);
         
-        // Handle cases where a position might not be in our list
         if (posA === -1) return 1;
         if (posB === -1) return -1;
 
         if (posA !== posB) {
             return posA - posB;
         }
-        // If positions are the same, sort by number
         return a.number - b.number;
     });
 
@@ -72,7 +70,7 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
     
     return (
         <div className="mt-8 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-4">
                 <TeamPlayerGrid team={match.teamA} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerId} />
                 <TeamPlayerGrid team={match.teamB} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerId} />
             </div>
