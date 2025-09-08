@@ -76,7 +76,8 @@ function ClockDebugger() {
     // Logic for the second, alternative timer
     const [alternativeTime, setAlternativeTime] = useState<number | null>(null);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
+    
+    // Effect to get live matches
     useEffect(() => {
         getAllMatches().then(matches => {
             const live = matches.filter(m => m.status === 'LIVE');
@@ -85,19 +86,28 @@ function ClockDebugger() {
         });
     }, []);
 
+    // Effect to manage the alternative timer
     useEffect(() => {
-        setAlternativeTime(selectedMatch?.time ?? null);
+        // Set the initial time when a match is selected
+        if (selectedMatch) {
+          setAlternativeTime(selectedMatch.time);
+        } else {
+          setAlternativeTime(null);
+        }
 
+        // Clear any existing interval when the selected match changes
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }
 
+        // Start a new interval if a match is selected and is running
         if (selectedMatch && selectedMatch.isRunning) {
             intervalRef.current = setInterval(() => {
                 setAlternativeTime(prevTime => {
                     if (prevTime !== null && prevTime > 0) {
                         return prevTime - 1;
                     }
+                    // Stop the interval if time runs out
                     if (intervalRef.current) {
                         clearInterval(intervalRef.current);
                     }
@@ -106,12 +116,13 @@ function ClockDebugger() {
             }, 1000);
         }
 
+        // Cleanup function to clear interval on unmount or re-render
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
         };
-    }, [selectedMatch]);
+    }, [selectedMatch]); // This effect depends only on the selectedMatch
     
     return (
          <Card className="w-full max-w-4xl">
