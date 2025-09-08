@@ -269,10 +269,10 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
 
     return (
         <Card className={cn(
-            "flex-1 overflow-hidden",
+            "flex-1 overflow-hidden flex flex-col",
             teamId === 'A' ? 'bg-blue-900/10' : 'bg-red-900/10'
         )}>
-            <CardContent className="grid grid-cols-1 grid-rows-1 gap-0 p-0 h-full">
+            <CardContent className="flex-grow flex flex-col gap-0 p-0 h-full">
                 {isSelectionMode ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 p-0 h-full">
                         {sortedPlayers.map((player) => (
@@ -289,7 +289,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                         ))}
                     </div>
                 ) : (
-                    <div className="flex flex-col h-full">
+                    <>
                         <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-2 gap-0 p-0">
                            {starters.map((player) => (
                                 <PlayerButton
@@ -319,7 +319,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                                 />
                             ))}
                         </div>
-                    </div>
+                    </>
                 )}
             </CardContent>
         </Card>
@@ -414,3 +414,5 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
         </div>
     );
 }
+
+    
