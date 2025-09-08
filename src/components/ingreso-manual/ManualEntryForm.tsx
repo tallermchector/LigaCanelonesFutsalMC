@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Hand, RefreshCw, Shield, Square, Timer, Target, Goal, Footprints, Minus, Plus } from 'lucide-react';
@@ -32,16 +32,19 @@ const actionButtons: { type: GameEventType; label: string; icon: React.ReactNode
 ];
 
 
-const EventCreationForm = ({ player, onEventCreated }: { player: Player; onEventCreated: () => void }) => {
+const EventCreationForm = ({ player, onEventCreated, initialTime }: { player: Player; onEventCreated: (time: number) => void; initialTime: number }) => {
     const { state, dispatch, handleCreateGameEvent } = useGame();
     const [eventType, setEventType] = useState<GameEventType | null>(null);
     const { toast } = useToast();
-    
-    // Use the current game time as the default
-    const [timeValue, setTimeValue] = useState(state.time);
+    const [timeValue, setTimeValue] = useState(initialTime);
+
+    useEffect(() => {
+        setTimeValue(initialTime);
+    }, [initialTime]);
+
 
     const handleTimeChange = (delta: number) => {
-        setTimeValue(prev => Math.max(0, Math.min(1200, prev + delta)));
+        setTimeValue(prev => Math.max(0, Math.min(2400, prev + delta)));
     };
 
     const handleAddEvent = () => {
@@ -63,7 +66,7 @@ const EventCreationForm = ({ player, onEventCreated }: { player: Player; onEvent
             playerId: player.id,
             playerName: player.name,
             teamName,
-            timestamp: timestamp, // Use the adjusted time
+            timestamp: timestamp,
             playerInId: null,
             playerInName: null,
         };
@@ -76,7 +79,7 @@ const EventCreationForm = ({ player, onEventCreated }: { player: Player; onEvent
             description: `${eventType} para ${player.name}.`
         });
         
-        onEventCreated();
+        onEventCreated(timeValue);
     };
     
     const formatTime = (seconds: number) => {
@@ -142,7 +145,7 @@ const EventCreationForm = ({ player, onEventCreated }: { player: Player; onEvent
 }
 
 
-const PlayerButton = ({ player, onSelect, isSelected, isActive, className }: { player: Player, onSelect: () => void, isSelected: boolean, isActive: boolean, className?: string }) => {
+const PlayerButton = ({ player, onSelect, isSelected, isActive, className, onEventCreated, initialTime }: { player: Player, onSelect: () => void, isSelected: boolean, isActive: boolean, className?: string, onEventCreated: (time: number) => void, initialTime: number }) => {
     const { state } = useGame();
     const [popoverOpen, setPopoverOpen] = useState(false);
     
@@ -178,13 +181,20 @@ const PlayerButton = ({ player, onSelect, isSelected, isActive, className }: { p
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80 p-0">
-                <EventCreationForm player={player} onEventCreated={() => setPopoverOpen(false)} />
+                <EventCreationForm 
+                    player={player} 
+                    onEventCreated={(time) => {
+                        onEventCreated(time);
+                        setPopoverOpen(false);
+                    }}
+                    initialTime={initialTime}
+                />
             </PopoverContent>
         </Popover>
     );
 };
 
-const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId }: { teamId: 'A' | 'B', team: FullMatch['teamA'], onPlayerSelect: (teamId: 'A' | 'B', playerId: number) => void, selectedPlayerId: number | null }) => {
+const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEventCreated, lastEventTime }: { teamId: 'A' | 'B', team: FullMatch['teamA'], onPlayerSelect: (teamId: 'A' | 'B', playerId: number) => void, selectedPlayerId: number | null, onEventCreated: (time: number) => void, lastEventTime: number }) => {
     const { state } = useGame();
     const { status } = state;
     const activePlayers = teamId === 'A' ? state.activePlayersA : state.activePlayersB;
@@ -225,6 +235,8 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId }: { te
                                 index === 2 && "rounded-tr-lg",
                                 index === 9 && "rounded-bl-lg",
                                 )}
+                                onEventCreated={onEventCreated}
+                                initialTime={lastEventTime}
                             />
                         ))}
                     </div>
@@ -238,6 +250,8 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId }: { te
                                     onSelect={() => onPlayerSelect(teamId, player.id)}
                                     isSelected={selectedPlayerId === player.id}
                                     isActive={true}
+                                    onEventCreated={onEventCreated}
+                                    initialTime={lastEventTime}
                                 />
                             ))}
                         </div>
@@ -250,6 +264,8 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId }: { te
                                     onSelect={() => onPlayerSelect(teamId, player.id)}
                                     isSelected={selectedPlayerId === player.id}
                                     isActive={false}
+                                    onEventCreated={onEventCreated}
+                                    initialTime={lastEventTime}
                                 />
                             ))}
                         </div>
@@ -288,6 +304,18 @@ const StarterSelectionActions = () => {
 export function ManualEntryForm({ match }: ManualEntryFormProps) {
     const { state, dispatch } = useGame();
     const { selectedPlayer: selectedPlayerData } = state;
+    const [lastEventTime, setLastEventTime] = useState(state.time);
+
+    const storageKey = `futsal-last-event-time-${match.id}`;
+
+    useEffect(() => {
+        const savedTime = localStorage.getItem(storageKey);
+        if (savedTime) {
+            setLastEventTime(parseInt(savedTime, 10));
+        } else {
+            setLastEventTime(state.time);
+        }
+    }, [storageKey, state.time]);
 
     const handlePlayerSelect = (teamId: 'A' | 'B', playerId: number) => {
         if (state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS') {
@@ -300,12 +328,31 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
             }
         }
     }
+
+    const handleEventCreated = (time: number) => {
+        setLastEventTime(time);
+        localStorage.setItem(storageKey, String(time));
+    };
     
     return (
         <div className="mt-8 space-y-6">
              <div className="grid grid-cols-2 gap-2">
-                <TeamPlayerGrid teamId="A" team={match.teamA} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerData?.playerId || null} />
-                <TeamPlayerGrid teamId="B" team={match.teamB} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerData?.playerId || null} />
+                <TeamPlayerGrid 
+                    teamId="A" 
+                    team={match.teamA} 
+                    onPlayerSelect={handlePlayerSelect} 
+                    selectedPlayerId={selectedPlayerData?.playerId || null}
+                    onEventCreated={handleEventCreated}
+                    lastEventTime={lastEventTime}
+                />
+                <TeamPlayerGrid 
+                    teamId="B" 
+                    team={match.teamB} 
+                    onPlayerSelect={handlePlayerSelect} 
+                    selectedPlayerId={selectedPlayerData?.playerId || null} 
+                    onEventCreated={handleEventCreated}
+                    lastEventTime={lastEventTime}
+                />
             </div>
             {(state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS') && (
                 <StarterSelectionActions />
