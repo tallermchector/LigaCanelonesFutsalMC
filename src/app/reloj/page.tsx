@@ -103,12 +103,10 @@ function ClockDebugger() {
 
     const selectedMatch = liveMatches.find(m => String(m.id) === selectedMatchId) || null;
     
-    // Logic for the first timer (using the main hook)
     const liveState = useLiveMatchState(selectedMatch ? selectedMatch.id : null, selectedMatch);
     const hookTime = liveState?.time ?? null;
     const isRunning = liveState?.isRunning ?? false;
 
-    // Logic for the second, alternative timer
     const [alternativeTime, setAlternativeTime] = useState<number | null>(null);
     const [differenceLog, setDifferenceLog] = useState<DifferenceLogEntry[]>([]);
     const lastTickRef = useRef<number | null>(null);
@@ -123,12 +121,10 @@ function ClockDebugger() {
         });
     }, []);
 
-    // Effect to SYNC the alternative timer's start time with the hook's time
     useEffect(() => {
         if (hookTime !== null) {
              setAlternativeTime(hookTime);
         }
-        // If match is deselected, reset timers and log
         if (!selectedMatchId) {
             setAlternativeTime(null);
             setDifferenceLog([]);
@@ -136,7 +132,6 @@ function ClockDebugger() {
     }, [hookTime, selectedMatchId]);
 
 
-    // Effect to manage the alternative timer's countdown with high-precision calculation
     useEffect(() => {
         if (intervalRef.current) clearInterval(intervalRef.current);
         if (logIntervalRef.current) clearInterval(logIntervalRef.current);
@@ -164,10 +159,9 @@ function ClockDebugger() {
                 });
             }, 100);
 
-            // Setup the difference logger
             logIntervalRef.current = setInterval(() => {
                 setDifferenceLog(prevLog => {
-                    const currentHookTime = hookTime; // Get fresh value
+                    const currentHookTime = hookTime;
                     const currentAlternativeTime = alternativeTime;
                     if (currentHookTime !== null && currentAlternativeTime !== null) {
                          const newEntry = {
@@ -178,14 +172,13 @@ function ClockDebugger() {
                     }
                     return prevLog;
                 });
-            }, 30000); // Log every 30 seconds
+            }, 30000);
         }
         
         return () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
             if (logIntervalRef.current) clearInterval(logIntervalRef.current);
         };
-    // We need to include hookTime and alternativeTime in dependencies for the logger to get the latest values
     }, [isRunning, alternativeTime, hookTime]);
     
     return (
