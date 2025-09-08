@@ -11,12 +11,15 @@ import { GameState, GameEvent, Team, FullMatch, GameEventType } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScoreboardManual } from '@/components/ingreso-manual/ScoreboardManual';
 import { GameProvider, useGame } from '@/contexts/GameProvider';
-import { ArrowLeft, Save, CheckCircle, Shield, Hand, Footprints, Square, RefreshCw, Timer, Goal } from 'lucide-react';
+import { ArrowLeft, Save, CheckCircle, Shield, Hand, Footprints, Square, RefreshCw, Timer, Goal, BarChart2, Users, PieChart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getMatchById } from '@/actions/prisma-actions';
 import { saveMatchState } from '@/actions/match-actions';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MatchPlayers } from '@/components/resumen/MatchPlayers';
+import { GraphicalSummary } from '@/components/resumen/GraphicalSummary';
 
 
 const eventIcons: Record<GameEvent['type'], React.ReactNode> = {
@@ -122,10 +125,24 @@ function ConfirmationContent() {
         return <Skeleton className="h-96 w-full max-w-4xl mx-auto" />
     }
 
-    if (!gameState) {
+    if (!gameState || !gameState.teamA || !gameState.teamB) {
         return <p className="text-center text-destructive">No se pudo cargar el estado del partido desde el almacenamiento local.</p>;
     }
     
+    // Create a mock MatchStats object for the components
+    const mockMatchStats = {
+        ...gameState,
+        scheduledTime: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        stats: {
+            topScorers: [],
+            assistsLeaders: [],
+            foulsByPlayer: [],
+            shotsByPlayer: [],
+        }
+    } as unknown as FullMatch;
+
+
     return (
         <div className="max-w-4xl mx-auto space-y-8">
              <div className="flex justify-between items-center">
@@ -141,39 +158,54 @@ function ConfirmationContent() {
             </GameProvider>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Resumen de Eventos Registrados</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <h3 className="font-semibold flex items-center gap-2">
-                             <Image src={gameState.teamA?.logoUrl || ''} alt={gameState.teamA?.name || ''} width={24} height={24} />
-                            {gameState.teamA?.name}
-                        </h3>
-                        {teamAEvents.length > 0 ? (
-                           teamAEvents.map(event => (
-                            <div key={event.id} className="flex items-center gap-2 text-sm p-2 bg-muted/50 rounded-md">
-                                {eventIcons[event.type]}
-                                <span>{eventTranslations[event.type]} - {event.playerName} ({formatTime(event.timestamp)})</span>
+                <Tabs defaultValue="events" className="w-full">
+                    <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="events"><BarChart2 className="w-4 h-4 mr-2" />Eventos</TabsTrigger>
+                        <TabsTrigger value="players"><Users className="w-4 h-4 mr-2" />Jugadores</TabsTrigger>
+                        <TabsTrigger value="summary"><PieChart className="w-4 h-4 mr-2" />Gráficos</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="events">
+                        <CardHeader>
+                            <CardTitle>Resumen de Eventos Registrados</CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <h3 className="font-semibold flex items-center gap-2">
+                                    <Image src={gameState.teamA?.logoUrl || ''} alt={gameState.teamA?.name || ''} width={24} height={24} />
+                                    {gameState.teamA?.name}
+                                </h3>
+                                {teamAEvents.length > 0 ? (
+                                teamAEvents.map(event => (
+                                    <div key={event.id} className="flex items-center gap-2 text-sm p-2 bg-muted/50 rounded-md">
+                                        {eventIcons[event.type]}
+                                        <span>{eventTranslations[event.type]} - {event.playerName} ({formatTime(event.timestamp)})</span>
+                                    </div>
+                                ))
+                                ) : <p className="text-xs text-muted-foreground">Sin eventos.</p>}
                             </div>
-                           ))
-                        ) : <p className="text-xs text-muted-foreground">Sin eventos.</p>}
-                    </div>
-                     <div className="space-y-2">
-                         <h3 className="font-semibold flex items-center gap-2">
-                             <Image src={gameState.teamB?.logoUrl || ''} alt={gameState.teamB?.name || ''} width={24} height={24} />
-                            {gameState.teamB?.name}
-                        </h3>
-                         {teamBEvents.length > 0 ? (
-                           teamBEvents.map(event => (
-                            <div key={event.id} className="flex items-center gap-2 text-sm p-2 bg-muted/50 rounded-md">
-                                {eventIcons[event.type]}
-                                <span>{eventTranslations[event.type]} - {event.playerName} ({formatTime(event.timestamp)})</span>
+                            <div className="space-y-2">
+                                <h3 className="font-semibold flex items-center gap-2">
+                                    <Image src={gameState.teamB?.logoUrl || ''} alt={gameState.teamB?.name || ''} width={24} height={24} />
+                                    {gameState.teamB?.name}
+                                </h3>
+                                {teamBEvents.length > 0 ? (
+                                teamBEvents.map(event => (
+                                    <div key={event.id} className="flex items-center gap-2 text-sm p-2 bg-muted/50 rounded-md">
+                                        {eventIcons[event.type]}
+                                        <span>{eventTranslations[event.type]} - {event.playerName} ({formatTime(event.timestamp)})</span>
+                                    </div>
+                                ))
+                                ) : <p className="text-xs text-muted-foreground">Sin eventos.</p>}
                             </div>
-                           ))
-                        ) : <p className="text-xs text-muted-foreground">Sin eventos.</p>}
-                    </div>
-                </CardContent>
+                        </CardContent>
+                    </TabsContent>
+                    <TabsContent value="players">
+                       <MatchPlayers match={mockMatchStats as any} />
+                    </TabsContent>
+                    <TabsContent value="summary">
+                       <GraphicalSummary match={mockMatchStats as any} />
+                    </TabsContent>
+                </Tabs>
             </Card>
 
             <div className="flex justify-center">

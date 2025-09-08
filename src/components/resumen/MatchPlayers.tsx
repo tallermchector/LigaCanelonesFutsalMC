@@ -1,13 +1,16 @@
 
 'use client';
 
-import type { MatchStats, Player } from '@/types';
+import type { MatchStats, Player, Team } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface MatchPlayersProps {
-    match: MatchStats;
+    match: {
+        teamA: Team;
+        teamB: Team;
+    }
 }
 
 const PlayerRow = ({ player }: { player: Player }) => (
@@ -32,7 +35,7 @@ const PlayerRow = ({ player }: { player: Player }) => (
 );
 
 
-const TeamPlayerList = ({ team, title }: { team: MatchStats['teamA'], title: string }) => (
+const TeamPlayerList = ({ team, title }: { team: Team, title: string }) => (
     <div>
         <h3 className="text-lg font-bold text-center mb-4 text-primary">{title}</h3>
         <div className="space-y-2">

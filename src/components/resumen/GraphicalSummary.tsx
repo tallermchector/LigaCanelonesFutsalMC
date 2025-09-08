@@ -1,16 +1,22 @@
 
 'use client';
 
-import type { MatchStats } from '@/types';
+import type { MatchStats, GameEvent } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 interface GraphicalSummaryProps {
-    match: MatchStats;
+    match: {
+        scoreA: number;
+        scoreB: number;
+        events: GameEvent[];
+        teamA: { id: number; name: string; };
+        teamB: { id: number; name: string; };
+    };
 }
 
 const SimpleBarChart = ({ data, teamAColor, teamBColor }: { data: any[], teamAColor: string, teamBColor: string }) => (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={100}>
         <BarChart data={data} layout="vertical" margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
             <XAxis type="number" hide />
             <YAxis type="category" dataKey="name" hide />
@@ -29,7 +35,7 @@ const SimpleBarChart = ({ data, teamAColor, teamBColor }: { data: any[], teamACo
 );
 
 export function GraphicalSummary({ match }: GraphicalSummaryProps) {
-    const { teamA, teamB, events } = match;
+    const { teamA, teamB, events, scoreA, scoreB } = match;
 
     const getStatCount = (teamId: number, eventType: string) => {
         return events.filter(e => e.teamId === teamId && e.type === eventType).length;
@@ -38,8 +44,8 @@ export function GraphicalSummary({ match }: GraphicalSummaryProps) {
     const chartData = [
         { 
             name: 'Goles', 
-            teamA: match.scoreA, 
-            teamB: match.scoreB,
+            teamA: scoreA, 
+            teamB: scoreB,
             teamAName: teamA.name,
             teamBName: teamB.name
         },
@@ -72,10 +78,13 @@ export function GraphicalSummary({ match }: GraphicalSummaryProps) {
                     <div key={data.name}>
                         <h3 className="text-center font-semibold text-muted-foreground mb-2">{data.name}</h3>
                         <SimpleBarChart data={[data]} teamAColor={teamAColor} teamBColor={teamBColor} />
+                         <div className="flex justify-between items-center text-foreground font-bold text-lg px-1 sm:px-2 -mt-4">
+                            <span className="tabular-nums">{data.teamA}</span>
+                            <span className="tabular-nums">{data.teamB}</span>
+                        </div>
                     </div>
                 ))}
             </CardContent>
         </Card>
     );
 }
-
