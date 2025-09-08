@@ -3,12 +3,13 @@
 
 import * as React from "react";
 import { Button } from '@/components/ui/button';
-import type { GameEventType } from '@/types';
+import type { GameEventType, Player } from '@/types';
 import { Goal, Shield, Hand, Footprints, Square, RefreshCw, Timer } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface ActionMenuManualProps {
+  player: Player;
   onAction: (type: GameEventType) => void;
   selectedEventType: GameEventType | null;
 }
@@ -46,4 +47,3 @@ export function ActionMenuManual({ onAction, selectedEventType }: ActionMenuManu
     </div>
   );
 }
-

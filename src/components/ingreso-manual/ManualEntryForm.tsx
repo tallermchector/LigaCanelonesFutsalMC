@@ -9,17 +9,125 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { ActionMenuManual } from './ActionMenuManual';
 import React, { useState } from 'react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { Hand, RefreshCw, Shield, Square, Timer, Target, Goal } from 'lucide-react';
+
 
 interface ManualEntryFormProps {
   match: FullMatch;
 }
 
+const actionButtons: { type: GameEventType; label: string; icon: React.ReactNode; className?: string }[] = [
+  { type: 'GOAL', label: 'Gol', icon: <Goal />, className: 'bg-green-600 hover:bg-green-700 text-white' },
+  { type: 'ASSIST', label: 'Asistencia', icon: <Hand /> },
+  { type: 'SHOT', label: 'Tiro', icon: <Footprints /> },
+  { type: 'FOUL', label: 'Falta', icon: <Shield />, className: 'bg-orange-500 hover:bg-orange-600 text-white' },
+  { type: 'YELLOW_CARD', label: 'Amarilla', icon: <Square className="text-yellow-400 fill-current" />, className: 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30' },
+  { type: 'RED_CARD', label: 'Roja', icon: <Square className="text-red-500 fill-current" />, className: 'bg-red-500/20 text-red-400 hover:bg-red-500/30' },
+  { type: 'SUBSTITUTION', label: 'Cambio', icon: <RefreshCw />, className: 'bg-blue-600 hover:bg-blue-700 text-white' },
+  { type: 'TIMEOUT', label: 'T. Muerto', icon: <Timer />, className: 'bg-teal-600 hover:bg-teal-700 text-white' },
+];
+
+
+const EventCreationForm = ({ player, onEventCreated }: { player: Player; onEventCreated: () => void }) => {
+    const { state, dispatch, handleCreateGameEvent } = useGame();
+    const [eventType, setEventType] = useState<GameEventType | null>(null);
+    const { toast } = useToast();
+    
+    const initialMinute = Math.floor(state.time / 60);
+    const initialSecond = state.time % 60;
+
+    const [minute, setMinute] = useState(20 - initialMinute - (initialSecond > 0 ? 1 : 0));
+    const [second, setSecond] = useState(initialSecond > 0 ? 60 - initialSecond : 0);
+
+    const handleAddEvent = () => {
+        if (!eventType) {
+            toast({ variant: 'destructive', title: "Faltan datos", description: "Por favor, seleccione un tipo de evento."});
+            return;
+        }
+
+        const teamId = player.teamId === state.teamA?.id ? state.teamA.id : state.teamB?.id;
+        const teamName = player.teamId === state.teamA?.id ? state.teamA.name : state.teamB?.name;
+        
+        if(!teamId || !teamName) return;
+
+        const timeInSeconds = (20 - minute) * 60 - second;
+
+        const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
+            type: eventType,
+            teamId,
+            playerId: player.id,
+            playerName: player.name,
+            teamName,
+            timestamp: timeInSeconds,
+            playerInId: null,
+            playerInName: null,
+        };
+
+        dispatch({ type: 'ADD_EVENT', payload: { event: newEvent } });
+        handleCreateGameEvent(newEvent);
+
+        toast({
+            title: "Evento Registrado",
+            description: `${eventType} para ${player.name} en el minuto ${minute}:${String(second).padStart(2, '0')}.`
+        });
+        
+        onEventCreated();
+    };
+    
+    return (
+        <Card>
+            <CardContent className="p-4 space-y-4">
+                 <div className="text-center">
+                    <h3 className="font-bold">Registrar Evento</h3>
+                    <p className="text-sm text-muted-foreground">
+                        Para: {player.name}
+                    </p>
+                </div>
+                
+                 <div className="grid grid-cols-4 gap-2">
+                    {actionButtons.map(action => (
+                        <motion.div key={action.type} whileTap={{ scale: 0.95 }}>
+                        <Button
+                            variant={eventType === action.type ? 'default' : 'outline'}
+                            size="sm"
+                            className={cn(
+                                "w-full flex-col h-16",
+                                eventType !== action.type && action.className
+                            )}
+                            onClick={() => setEventType(action.type)}
+                        >
+                            {React.cloneElement(action.icon as React.ReactElement, { className: 'h-5 w-5 mb-1' })}
+                            <span className="text-xs">{action.label}</span>
+                        </Button>
+                        </motion.div>
+                    ))}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <Label htmlFor={`minute-${player.id}`}>Minuto</Label>
+                        <Input id={`minute-${player.id}`} type="number" value={minute} onChange={e => setMinute(parseInt(e.target.value))} />
+                    </div>
+                     <div>
+                        <Label htmlFor={`second-${player.id}`}>Segundo</Label>
+                        <Input id={`second-${player.id}`} type="number" value={second} onChange={e => setSecond(parseInt(e.target.value))} />
+                    </div>
+                </div>
+                <Button onClick={handleAddEvent} disabled={!eventType} className="w-full">
+                    Añadir Evento
+                </Button>
+            </CardContent>
+        </Card>
+    )
+}
+
+
 const PlayerButton = ({ player, onSelect, isSelected, isActive, className }: { player: Player, onSelect: () => void, isSelected: boolean, isActive: boolean, className?: string }) => {
     const { state } = useGame();
+    const [popoverOpen, setPopoverOpen] = useState(false);
     
     if(state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS') {
         return (
@@ -38,19 +146,25 @@ const PlayerButton = ({ player, onSelect, isSelected, isActive, className }: { p
     }
 
     return (
-         <Button
-            variant="outline"
-            className={cn(
-                "aspect-square h-full w-full text-lg font-bold transition-all duration-200 ease-in-out rounded-none text-foreground/80 border-border/30 hover:bg-muted/50",
-                isSelected && 'ring-2 ring-offset-2 ring-primary ring-offset-background',
-                isActive && !isSelected && 'bg-primary/10',
-                className
-            )}
-            onClick={onSelect}
-        >
-            {player.number}
-        </Button>
-    )
+        <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    className={cn(
+                        "aspect-square h-full w-full text-lg font-bold transition-all duration-200 ease-in-out rounded-none text-foreground/80 border-border/30 hover:bg-muted/50",
+                        isSelected && 'ring-2 ring-offset-2 ring-primary ring-offset-background',
+                        isActive && !isSelected && 'bg-primary/10',
+                        className
+                    )}
+                >
+                    {player.number}
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-0">
+                <EventCreationForm player={player} onEventCreated={() => setPopoverOpen(false)} />
+            </PopoverContent>
+        </Popover>
+    );
 };
 
 const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId }: { teamId: 'A' | 'B', team: FullMatch['teamA'], onPlayerSelect: (teamId: 'A' | 'B', playerId: number) => void, selectedPlayerId: number | null }) => {
@@ -154,98 +268,9 @@ const StarterSelectionActions = () => {
     )
 }
 
-const EventCreationForm = ({ selectedPlayer }: { selectedPlayer: Player | null }) => {
-    const { state, dispatch, handleCreateGameEvent } = useGame();
-    const [eventType, setEventType] = useState<GameEventType | null>(null);
-    const [minute, setMinute] = useState(0);
-    const [second, setSecond] = useState(0);
-    const { toast } = useToast();
-
-    React.useEffect(() => {
-        const gameTime = state.time;
-        const totalMinutes = Math.floor(gameTime / 60);
-        const remainingSeconds = gameTime % 60;
-        setMinute(20 - totalMinutes - (remainingSeconds > 0 ? 1 : 0));
-        setSecond(remainingSeconds > 0 ? 60 - remainingSeconds : 0);
-    }, [state.time, selectedPlayer]);
-
-    const handleAddEvent = () => {
-        if (!selectedPlayer || !eventType) {
-            toast({ variant: 'destructive', title: "Faltan datos", description: "Por favor, seleccione un jugador y un tipo de evento."});
-            return;
-        }
-
-        const teamId = selectedPlayer.teamId === state.teamA?.id ? state.teamA.id : state.teamB?.id;
-        const teamName = selectedPlayer.teamId === state.teamA?.id ? state.teamA.name : state.teamB?.name;
-        
-        if(!teamId || !teamName) return;
-
-        const timeInSeconds = (20 - minute) * 60 - second;
-
-        const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
-            type: eventType,
-            teamId,
-            playerId: selectedPlayer.id,
-            playerName: selectedPlayer.name,
-            teamName,
-            timestamp: timeInSeconds,
-            playerInId: null,
-            playerInName: null,
-        };
-
-        dispatch({ type: 'ADD_EVENT', payload: { event: newEvent } });
-        handleCreateGameEvent(newEvent);
-
-        toast({
-            title: "Evento Registrado",
-            description: `${eventType} para ${selectedPlayer.name} en el minuto ${minute}:${second}.`
-        });
-        
-        // Reset
-        setEventType(null);
-        dispatch({ type: 'SELECT_PLAYER', payload: null });
-    };
-
-    return (
-        <Card>
-            <CardContent className="p-4 space-y-4">
-                 <div className="text-center">
-                    <h3 className="font-bold">Registrar Nuevo Evento</h3>
-                    <p className="text-sm text-muted-foreground">
-                        {selectedPlayer ? `Para: ${selectedPlayer.name}` : 'Seleccione un jugador'}
-                    </p>
-                </div>
-                 <ActionMenuManual
-                    onAction={(type) => setEventType(type)}
-                    selectedEventType={eventType}
-                 />
-
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <Label htmlFor="minute">Minuto</Label>
-                        <Input id="minute" type="number" value={minute} onChange={e => setMinute(parseInt(e.target.value))} />
-                    </div>
-                     <div>
-                        <Label htmlFor="second">Segundo</Label>
-                        <Input id="second" type="number" value={second} onChange={e => setSecond(parseInt(e.target.value))} />
-                    </div>
-                </div>
-                <Button onClick={handleAddEvent} disabled={!selectedPlayer || !eventType} className="w-full">
-                    Añadir Evento
-                </Button>
-            </CardContent>
-        </Card>
-    )
-}
-
-
 export function ManualEntryForm({ match }: ManualEntryFormProps) {
     const { state, dispatch } = useGame();
     const { selectedPlayer: selectedPlayerData } = state;
-
-    const selectedPlayer = selectedPlayerData 
-      ? state.teamA?.players.find(p => p.id === selectedPlayerData.playerId) || state.teamB?.players.find(p => p.id === selectedPlayerData.playerId) || null 
-      : null;
 
     const handlePlayerSelect = (teamId: 'A' | 'B', playerId: number) => {
         if (state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS') {
@@ -265,10 +290,8 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
                 <TeamPlayerGrid teamId="A" team={match.teamA} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerData?.playerId || null} />
                 <TeamPlayerGrid teamId="B" team={match.teamB} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerData?.playerId || null} />
             </div>
-            {(state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS') ? (
+            {(state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS') && (
                 <StarterSelectionActions />
-            ) : (
-                <EventCreationForm selectedPlayer={selectedPlayer}/>
             )}
         </div>
     );
