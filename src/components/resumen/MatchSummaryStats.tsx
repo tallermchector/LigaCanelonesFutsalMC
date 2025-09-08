@@ -16,20 +16,14 @@ interface MatchSummaryStatsProps {
 
 const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; valueB: number }) => {
     const total = valueA + valueB;
-    const percentageA = total > 0 ? (valueA / total) * 100 : 0;
-    const percentageB = total > 0 ? (valueB / total) * 100 : 0;
-
+    const percentageA = total > 0 ? (valueA / total) * 100 : 50;
+    
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.5 });
     
-    const variantsA = {
+    const variants = {
       hidden: { width: '0%' },
       visible: { width: `${percentageA}%`, transition: { duration: 0.8, ease: 'easeOut', delay: 0.2 } }
-    };
-    
-    const variantsB = {
-      hidden: { width: '0%' },
-      visible: { width: `${percentageB}%`, transition: { duration: 0.8, ease: 'easeOut', delay: 0.2 } }
     };
 
     return (
@@ -39,18 +33,11 @@ const StatBar = ({ label, valueA, valueB }: { label: string; valueA: number; val
                 <span className="uppercase tracking-wider text-muted-foreground text-xs sm:text-sm text-center">{label}</span>
                 <span className="tabular-nums">{valueB}</span>
             </div>
-            <div className="h-2 sm:h-3 md:h-4 w-full bg-muted/80 rounded-full overflow-hidden flex justify-between">
+            <div className="h-2 sm:h-3 md:h-4 w-full bg-muted/80 rounded-full overflow-hidden flex">
                 <motion.div
-                    className="h-full bg-primary rounded-l-full"
+                    className="h-full bg-primary"
                     style={{ background: `linear-gradient(90deg, hsl(var(--primary) / 0.7), hsl(var(--primary)))` }}
-                    variants={variantsA}
-                    initial="hidden"
-                    animate={isInView ? "visible" : "hidden"}
-                />
-                <motion.div
-                    className="h-full bg-accent rounded-r-full"
-                    style={{ background: `linear-gradient(270deg, hsl(var(--accent) / 0.7), hsl(var(--accent)))` }}
-                    variants={variantsB}
+                    variants={variants}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
                 />
