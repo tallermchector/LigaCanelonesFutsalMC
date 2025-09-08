@@ -121,8 +121,12 @@ export function MatchSummaryStats({ match }: MatchSummaryStatsProps) {
 
     const getStatCount = (teamId: number, eventType: GameEventType) => {
         return events.filter(e => {
-            const playerTeam = match.teamA.players.some(p => p.id === e.playerId) ? match.teamA.id : match.teamB.id;
-            return playerTeam === teamId && e.type === eventType;
+            const playerInMatch = teamA.players.find(p => p.id === e.playerId) || teamB.players.find(p => p.id === e.playerId);
+            if (!playerInMatch) return false;
+            
+            // Simplified logic: Check which team the player belongs to
+            const playerTeamId = teamA.players.some(p => p.id === e.playerId) ? teamA.id : teamB.id;
+            return playerTeamId === teamId && e.type === eventType;
         }).length;
     };
     
