@@ -114,18 +114,49 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         return { ...state, timeoutsA: Math.max(0, state.timeoutsA + action.payload.delta) };
       }
       return { ...state, timeoutsB: Math.max(0, state.timeoutsB + action.payload.delta) };
-    case 'SET_PERIOD':
-      return { ...state, period: action.payload, time: initialState.time, isRunning: false };
+    case 'SET_PERIOD': {
+        const newState = { ...state, period: action.payload, time: initialState.time, isRunning: false };
+        if (state.matchId) {
+            const periodEvent: Omit<GameEvent, 'id' | 'matchId'> = {
+                type: 'PERIOD_START',
+                teamId: 0,
+                playerId: null,
+                playerName: '',
+                teamName: '',
+                timestamp: initialState.time,
+                playerInId: null,
+                playerInName: null,
+            };
+            return gameReducer(newState, { type: 'ADD_EVENT', payload: { event: periodEvent } });
+        }
+        return newState;
+    }
     case 'SET_TIME':
         return { ...state, time: action.payload, isRunning: false };
     case 'SET_STATUS': {
         const newStatus = action.payload;
-        return {
+        let newState = {
             ...state,
             status: newStatus,
             isRunning: newStatus === 'FINISHED' ? false : state.isRunning,
             time: newStatus === 'FINISHED' ? 0 : state.time,
         };
+
+        if (newStatus === 'LIVE' && state.status !== 'LIVE') {
+             const startEvent: Omit<GameEvent, 'id' | 'matchId'> = {
+                type: 'MATCH_START',
+                teamId: 0,
+                playerId: null,
+                playerName: '',
+                teamName: '',
+                timestamp: initialState.time, 
+                playerInId: null,
+                playerInName: null,
+            };
+            newState = gameReducer(newState, { type: 'ADD_EVENT', payload: { event: startEvent } });
+        }
+        
+        return newState;
     }
     case 'TOGGLE_TIMER':
       return { ...state, isRunning: !state.isRunning };
