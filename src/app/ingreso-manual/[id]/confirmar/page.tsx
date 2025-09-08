@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
@@ -67,7 +68,16 @@ function ConfirmationContent() {
         }
         setIsSaving(true);
         try {
-            await saveMatchState(matchId, gameState);
+            // Set match to finished before saving
+            const finalState: GameState = {
+                ...gameState,
+                status: 'FINISHED',
+                time: 0,
+                isRunning: false,
+            };
+
+            await saveMatchState(matchId, finalState);
+
             toast({
                 title: '¡Partido Guardado!',
                 description: 'Los datos del partido han sido guardados exitosamente en la base de datos.',
