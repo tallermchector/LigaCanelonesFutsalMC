@@ -2,11 +2,10 @@
 'use client';
 
 import type { FullMatch, Player, SelectedPlayer } from '@/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useGame } from '@/contexts/GameProvider';
 import { cn } from '@/lib/utils';
-import { Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ManualEntryFormProps {
@@ -82,13 +81,17 @@ const StarterSelectionActions = () => {
             toast({ variant: 'destructive', title: "Error", description: "No puede haber más de 5 jugadores por equipo."});
             return;
         }
+         if (state.activePlayersA.length < 5 || state.activePlayersB.length < 5) {
+            toast({ variant: 'destructive', title: "Error", description: "Debe seleccionar 5 jugadores por equipo."});
+            return;
+        }
         dispatch({ type: 'SET_STATUS', payload: 'LIVE' });
         toast({ title: "Titulares Confirmados", description: "El partido está listo para comenzar."});
     };
 
     return (
         <div className="text-center space-y-2">
-            <p className="text-sm text-muted-foreground">Selecciona hasta 5 jugadores por equipo.</p>
+            <p className="text-sm text-muted-foreground">Selecciona 5 jugadores por equipo para definir los titulares.</p>
             <Button onClick={handleConfirmStarters}>Confirmar Titulares e Iniciar</Button>
         </div>
     )
