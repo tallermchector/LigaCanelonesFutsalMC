@@ -14,7 +14,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ScoreboardManual } from '@/components/ingreso-manual/ScoreboardManual';
 import { ManualEntryForm } from '@/components/ingreso-manual/ManualEntryForm';
 import { GameProvider, useGame } from '@/contexts/GameProvider';
-import { ManualEventActions } from '@/components/ingreso-manual/ManualEventActions';
+import { ManualEntryActions } from '@/components/ingreso-manual/ManualEntryActions';
+import { ActionMenuManual } from '@/components/ingreso-manual/ActionMenuManual';
 
 
 function ManualEntrySkeleton() {
@@ -53,18 +54,10 @@ function PageContent({ match }: { match: FullMatch }) {
             
             <ScoreboardManual />
             
-            {player && (
-                 <div className="mt-8">
-                    <ManualEventActions
-                        player={player}
-                        onAction={() => dispatch({ type: 'SELECT_PLAYER', payload: null })}
-                    />
-                </div>
-            )}
-            
             <div className="mt-8">
                 <ManualEntryForm match={match} />
             </div>
+             <ManualEntryActions />
         </div>
     )
 }

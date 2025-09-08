@@ -8,28 +8,55 @@ import { useGame } from '@/contexts/GameProvider';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { ActionMenuManual } from './ActionMenuManual';
+import React from 'react';
 
 interface ManualEntryFormProps {
   match: FullMatch;
 }
 
-const PlayerButton = ({ player, onSelect, isSelected, isActive, className }: { player: Player, onSelect: () => void, isSelected: boolean, isActive: boolean, className?: string }) => (
-    <div className="relative">
-         <Button
-            variant="outline"
-            className={cn(
-                "aspect-square h-full w-full text-lg font-bold transition-all duration-200 ease-in-out rounded-none text-foreground/80 border-border/30 hover:bg-muted/50",
-                isSelected && 'ring-2 ring-offset-2 ring-primary ring-offset-background',
-                isActive && !isSelected && 'bg-primary/10',
-                className
-            )}
-            onClick={onSelect}
-        >
-            {player.number}
-        </Button>
-        {isActive && <div className="absolute top-1 right-1 h-2 w-2 rounded-full bg-green-500 ring-1 ring-background" />}
-    </div>
-);
+const PlayerButton = ({ player, onSelect, isSelected, isActive, className }: { player: Player, onSelect: () => void, isSelected: boolean, isActive: boolean, className?: string }) => {
+    const { state } = useGame();
+    
+    if(state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS') {
+        return (
+             <Button
+                variant="outline"
+                className={cn(
+                    "aspect-square h-full w-full text-lg font-bold transition-all duration-200 ease-in-out rounded-none text-foreground/80 border-border/30 hover:bg-muted/50",
+                    isSelected && 'ring-2 ring-offset-2 ring-primary ring-offset-background',
+                    className
+                )}
+                onClick={onSelect}
+            >
+                {player.number}
+            </Button>
+        )
+    }
+
+    return (
+        <Popover>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    className={cn(
+                        "aspect-square h-full w-full text-lg font-bold transition-all duration-200 ease-in-out rounded-none text-foreground/80 border-border/30 hover:bg-muted/50",
+                        isSelected && 'ring-2 ring-offset-2 ring-primary ring-offset-background',
+                        isActive && !isSelected && 'bg-primary/10',
+                        className
+                    )}
+                    onClick={onSelect}
+                >
+                    {player.number}
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 bg-gray-900/80 border-gray-700 text-white backdrop-blur-md">
+                <ActionMenuManual player={player} onAction={() => {}} />
+            </PopoverContent>
+        </Popover>
+    )
+};
 
 const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId }: { teamId: 'A' | 'B', team: FullMatch['teamA'], onPlayerSelect: (teamId: 'A' | 'B', playerId: number) => void, selectedPlayerId: number | null }) => {
     const { state } = useGame();
