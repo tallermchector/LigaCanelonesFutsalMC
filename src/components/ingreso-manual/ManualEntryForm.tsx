@@ -2,7 +2,7 @@
 'use client';
 
 import type { FullMatch, Player } from '@/types';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -12,12 +12,13 @@ interface ManualEntryFormProps {
   match: FullMatch;
 }
 
-const PlayerButton = ({ player, onSelect, isSelected }: { player: Player, onSelect: () => void, isSelected: boolean }) => (
+const PlayerButton = ({ player, onSelect, isSelected, className }: { player: Player, onSelect: () => void, isSelected: boolean, className?: string }) => (
     <Button
         variant="outline"
         className={cn(
-            "aspect-square h-16 w-16 text-lg font-bold transition-all duration-200 ease-in-out",
-            isSelected && 'bg-primary text-primary-foreground hover:bg-primary/90'
+            "aspect-square h-full w-full text-lg font-bold transition-all duration-200 ease-in-out rounded-none text-foreground/80 border-border/30 hover:bg-muted/50",
+            isSelected && 'bg-primary text-primary-foreground hover:bg-primary/90',
+            className
         )}
         onClick={onSelect}
     >
@@ -40,19 +41,22 @@ const TeamPlayerGrid = ({ team, onPlayerSelect, selectedPlayerId }: { team: Full
         }
         return a.number - b.number;
     });
+    
+    const playersToDisplay = sortedPlayers.slice(0, 12);
 
     return (
-        <Card className="flex-1">
-            <CardHeader>
-                <CardTitle className="text-center">{team.name}</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-4 gap-2">
-                {sortedPlayers.slice(0, 12).map(player => (
+        <Card className="flex-1 overflow-hidden">
+            <CardContent className="grid grid-cols-3 grid-rows-4 gap-0 p-0 h-full">
+                {playersToDisplay.map((player, index) => (
                     <PlayerButton
                         key={player.id}
                         player={player}
                         onSelect={() => onPlayerSelect(player.id)}
                         isSelected={selectedPlayerId === player.id}
+                        className={cn(
+                           index === 2 && "rounded-tr-lg",
+                           index === 9 && "rounded-bl-lg",
+                        )}
                     />
                 ))}
             </CardContent>
@@ -70,7 +74,7 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
     
     return (
         <div className="mt-8 space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 h-96">
                 <TeamPlayerGrid team={match.teamA} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerId} />
                 <TeamPlayerGrid team={match.teamB} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayerId} />
             </div>
