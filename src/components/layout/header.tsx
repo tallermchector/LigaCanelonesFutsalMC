@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle, SheetHeader } from '@/components/ui/sheet';
-import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown, BarChartHorizontal, PenSquare, LayoutDashboard, Trophy, Users, Info, Briefcase, ListChecks } from 'lucide-react';
+import { Menu, Shield, Home, Newspaper, CalendarDays, Tv, Settings, ChevronDown, BarChartHorizontal, PenSquare, LayoutDashboard, Trophy, Users, Info, Briefcase, ListChecks, BookUser } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -59,6 +59,7 @@ export function Header() {
       { href: '/controles', label: 'Control de Partidos', icon: <Settings /> },
       { href: '/cancha', label: 'Pizarra Táctica', icon: <LayoutDashboard /> },
       { href: '/banner', label: 'Banner en Vivo', icon: <Tv /> },
+      { href: '/ingreso-manual', label: 'Ingreso Manual', icon: <PenSquare /> },
   ]
   
   const gestionLinks = [
@@ -67,6 +68,7 @@ export function Header() {
       { href: '/gestion/jugadores', label: 'Jugadores', icon: <Users /> },
       { href: '/gestion/temporadas', label: 'Temporadas', icon: <Trophy /> },
       { href: '/gestion/configuracion', label: 'Configuración', icon: <Settings /> },
+      { href: '/manual', label: 'Manual de Usuario', icon: <BookUser /> },
   ]
   
   if (!isMounted) {
