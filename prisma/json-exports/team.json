@@ -1,19 +1,5 @@
 [
   {
-    "id": 4,
-    "name": "PEDRENSE",
-    "slug": "pedrense",
-    "logoUrl": "/equipos/4.png",
-    "description": "🇭🇺𝘾𝙪𝙚𝙣𝙩𝙖 𝙤𝙛𝙞𝙘𝙞𝙖𝙡 𝙙𝙚𝙡 𝘾𝙡𝙪𝙗 𝘼𝙩𝙡𝙚𝙩𝙞𝙘𝙤 𝙋𝙚𝙙𝙧𝙚𝙣𝙨𝙚🇭🇺 ⚽🏀🧩❤️ 𝙇𝙖𝙨 𝙋𝙞𝙚𝙙𝙧𝙖𝙨🇺🇾",
-    "bannerUrl": "/banners/pedrense.jpg",
-    "instagram": "https://www.instagram.com/clubatleticopedrense/",
-    "facebook": "",
-    "whatsapp": "",
-    "phone": "",
-    "createdAt": "2025-09-06T02:11:09.842Z",
-    "updatedAt": "2025-09-07T06:26:31.740Z"
-  },
-  {
     "id": 9,
     "name": "CAPINCHO",
     "slug": "capincho",
@@ -124,6 +110,20 @@
     "phone": "",
     "createdAt": "2025-09-06T02:11:09.842Z",
     "updatedAt": "2025-09-07T06:27:39.772Z"
+  },
+  {
+    "id": 4,
+    "name": "PEDRENSE",
+    "slug": "pedrense",
+    "logoUrl": "/equipos/4.png",
+    "description": "C𝙪𝙚𝙣𝙩𝙖 𝙤𝙛𝙞𝙘𝙞𝙖𝙡 𝙙𝙚𝙡 𝘾𝙡𝙪𝙗 𝘼𝙩𝙡𝙚𝙩𝙞𝙘𝙤 𝙋𝙚𝙙𝙧𝙚𝙣𝙨𝙚🇭🇺 ⚽🏀🧩❤️ 𝙇𝙖𝙨 𝙋𝙞𝙚𝙙𝙧𝙖",
+    "bannerUrl": "/banners/pedrense.jpg",
+    "instagram": "https://www.instagram.com/clubatleticopedrense/",
+    "facebook": "",
+    "whatsapp": "",
+    "phone": "",
+    "createdAt": "2025-09-06T02:11:09.842Z",
+    "updatedAt": "2025-09-07T06:30:58.443Z"
   },
   {
     "id": 12,
