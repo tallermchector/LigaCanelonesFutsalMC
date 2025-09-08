@@ -14,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ScoreboardManual } from '@/components/ingreso-manual/ScoreboardManual';
 import { ManualEntryForm } from '@/components/ingreso-manual/ManualEntryForm';
 import { GameProvider } from '@/contexts/GameProvider';
+import { ManualEventActions } from '@/components/ingreso-manual/ManualEventActions';
 
 function ManualEntrySkeleton() {
     return (
@@ -82,6 +83,9 @@ export default function IngresoManualPartidoPage() {
                             </Button>
                             
                             <ScoreboardManual />
+                            <div className="mt-8">
+                                <ManualEventActions />
+                            </div>
                             <div className="mt-8">
                                 <ManualEntryForm match={match} />
                             </div>
