@@ -268,11 +268,14 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
     }
 
     return (
-        <Card className="flex-1 overflow-hidden">
+        <Card className={cn(
+            "flex-1 overflow-hidden",
+            teamId === 'A' ? 'bg-blue-900/10' : 'bg-red-900/10'
+        )}>
             <CardContent className="grid grid-cols-1 grid-rows-1 gap-0 p-0 h-full">
                 {isSelectionMode ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 p-0 h-full">
-                        {sortedPlayers.map((player, index) => (
+                        {sortedPlayers.map((player) => (
                             <PlayerButton
                                 key={player.id}
                                 player={player}
@@ -280,10 +283,6 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                                 onSelect={() => onPlayerSelect(teamId, player.id)}
                                 isSelected={activePlayers.includes(player.id)}
                                 isActive={activePlayers.includes(player.id)}
-                                className={cn(
-                                index === 2 && "rounded-tr-lg",
-                                index === 9 && "rounded-bl-lg",
-                                )}
                                 onEventCreated={onEventCreated}
                                 initialTime={lastEventTime}
                             />
