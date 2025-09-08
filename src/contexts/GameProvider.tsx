@@ -196,8 +196,12 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           ...state, 
           events: [...state.events, { ...action.payload.event, id: Date.now(), matchId: state.matchId }], 
           selectedPlayer: null,
-          time: action.payload.event.timestamp, // Update game time to event time
       };
+
+       // Only manually update time if it's not a structural event
+      if(!['MATCH_START', 'PERIOD_START', 'MATCH_END'].includes(action.payload.event.type)) {
+        newState.time = action.payload.event.timestamp;
+      }
 
       if (action.payload.event.type === 'GOAL' && action.payload.event.teamId) {
           const team = action.payload.event.teamId === state.teamA?.id ? 'A' : 'B';
