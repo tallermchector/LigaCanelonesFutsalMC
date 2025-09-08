@@ -52,6 +52,7 @@ function PageContent({ match }: { match: FullMatch }) {
             </Button>
             
             <ScoreboardManual />
+            
             {player && (
                  <div className="mt-8">
                     <ManualEventActions
@@ -60,6 +61,7 @@ function PageContent({ match }: { match: FullMatch }) {
                     />
                 </div>
             )}
+            
             <div className="mt-8">
                 <ManualEntryForm match={match} />
             </div>
