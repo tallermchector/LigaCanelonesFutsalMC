@@ -222,8 +222,8 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
 
     const isSelectionMode = status === 'SCHEDULED' || status === 'SELECTING_STARTERS';
     
-    const starters = isSelectionMode ? [] : sortedPlayers.filter(p => activePlayers.includes(p.id));
-    const substitutes = isSelectionMode ? sortedPlayers.slice(0,12) : sortedPlayers.filter(p => !activePlayers.includes(p.id));
+    const starters = isSelectionMode ? sortedPlayers.filter(p => activePlayers.includes(p.id)) : sortedPlayers.filter(p => activePlayers.includes(p.id));
+    const substitutes = isSelectionMode ? sortedPlayers : sortedPlayers.filter(p => !activePlayers.includes(p.id));
     
     const handleSubstituteClick = (playerInId: number) => {
         dispatch({ type: 'COMPLETE_SUBSTITUTION', payload: { playerInId } });
@@ -288,8 +288,8 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                             ))}
                         </div>
                         <Separator />
-                        <div className="grid grid-cols-3 grid-rows-2 gap-0 p-0 flex-grow">
-                             {substitutes.slice(0,6).map((player) => (
+                        <div className="grid grid-cols-3 grid-rows-4 gap-0 p-0 flex-grow">
+                             {substitutes.map((player) => (
                                 <PlayerButton
                                     key={player.id}
                                     player={player}
