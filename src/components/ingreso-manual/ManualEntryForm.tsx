@@ -250,7 +250,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
             <Card className="flex-1 overflow-hidden">
                 <CardContent className="p-4 h-full">
                      <h3 className="text-center font-bold text-primary mb-2">Seleccionar Suplente</h3>
-                     <div className="grid grid-cols-3 grid-rows-4 gap-1 p-0 h-full">
+                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 p-0 h-full">
                         {substitutes.map(player => (
                            <Button
                                 key={player.id}
@@ -271,7 +271,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
         <Card className="flex-1 overflow-hidden">
             <CardContent className="grid grid-cols-1 grid-rows-1 gap-0 p-0 h-full">
                 {isSelectionMode ? (
-                    <div className="grid grid-cols-3 grid-rows-4 gap-0 p-0 h-full">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 p-0 h-full">
                         {sortedPlayers.map((player, index) => (
                             <PlayerButton
                                 key={player.id}
@@ -291,7 +291,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                     </div>
                 ) : (
                     <div className="flex flex-col h-full">
-                        <div className="grid grid-cols-3 grid-rows-2 gap-0 p-0">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-2 gap-0 p-0">
                            {starters.map((player) => (
                                 <PlayerButton
                                     key={player.id}
@@ -306,7 +306,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                             ))}
                         </div>
                         <Separator />
-                        <div className="grid grid-cols-3 grid-rows-4 gap-0 p-0 flex-grow">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 p-0 flex-grow">
                              {substitutes.map((player) => (
                                 <PlayerButton
                                     key={player.id}
