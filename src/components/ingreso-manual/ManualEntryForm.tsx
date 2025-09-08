@@ -27,7 +27,7 @@ const PlayerButton = ({ player, onSelect, isSelected, isActive, className }: { p
         >
             {player.number}
         </Button>
-        {isActive && <div className="absolute top-1 right-1 h-2 w-2 rounded-full bg-green-500" />}
+        {isActive && <div className="absolute top-1 right-1 h-2 w-2 rounded-full bg-green-500 ring-1 ring-background" />}
     </div>
 );
 
@@ -152,7 +152,7 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
     
     return (
         <div className="mt-8 space-y-6">
-            <div className="grid grid-cols-2 gap-2 h-96">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <TeamPlayerGrid teamId="A" team={match.teamA} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayer?.playerId || null} />
                 <TeamPlayerGrid teamId="B" team={match.teamB} onPlayerSelect={handlePlayerSelect} selectedPlayerId={selectedPlayer?.playerId || null} />
             </div>
