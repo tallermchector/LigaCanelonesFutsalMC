@@ -137,7 +137,7 @@ export function useLiveMatchState(matchId: number | null, initialMatchData: Full
         lastTickRef.current = null;
       }
     };
-  }, [liveState?.isRunning]);
+  }, [liveState?.isRunning, liveState?.time]);
 
 
   return liveState;
