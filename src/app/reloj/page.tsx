@@ -10,6 +10,8 @@ import { getAllMatches } from '@/actions/prisma-actions';
 import type { FullMatch } from '@/types';
 import { useLiveMatchState } from '@/hooks/useLiveMatchState';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
+import { Timer } from 'lucide-react';
 
 const formatTime = (seconds: number) => {
     const flooredSeconds = Math.floor(seconds);
@@ -18,72 +20,62 @@ const formatTime = (seconds: number) => {
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 };
 
-function MatchTimer({ match }: { match: FullMatch | null }) {
-    const liveState = useLiveMatchState(match ? match.id : null, match);
-
-    if (!liveState) {
+function MatchTimer({ time }: { time: number | null }) {
+    if (time === null) {
         return <Skeleton className="h-16 w-48 bg-muted" />;
     }
 
     return (
         <div className="text-6xl font-mono font-bold text-foreground bg-card p-4 rounded-lg border">
-            {formatTime(liveState.time)}
+            {formatTime(time)}
         </div>
     );
 }
 
-function AlternativeMatchTimer({ match }: { match: FullMatch | null }) {
-    const [time, setTime] = useState(match?.time || 0);
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-    useEffect(() => {
-        // Cuando cambia el partido, reseteamos el tiempo.
-        setTime(match?.time || 0);
-
-        // Limpiamos el intervalo anterior si existe
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-        }
-
-        // Si el partido está corriendo, iniciamos un nuevo intervalo
-        if (match && match.isRunning) {
-            intervalRef.current = setInterval(() => {
-                setTime(prevTime => {
-                    if (prevTime > 0) {
-                        return prevTime - 1;
-                    }
-                    // Si el tiempo llega a 0, detenemos el intervalo.
-                    if (intervalRef.current) {
-                        clearInterval(intervalRef.current);
-                    }
-                    return 0;
-                });
-            }, 1000);
-        }
-
-        // Función de limpieza para cuando el componente se desmonta o el partido cambia.
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
-    }, [match]);
-    
-    if (!match) {
-        return <Skeleton className="h-16 w-48 bg-muted" />;
+function TimeDifferenceDisplay({ time1, time2 }: { time1: number | null, time2: number | null }) {
+    if (time1 === null || time2 === null) {
+        return null;
     }
-    
+    const difference = Math.abs(time1 - time2);
+    const isDifferent = difference > 0.1; // Use a small threshold to avoid floating point issues
+
     return (
-         <div className="text-6xl font-mono font-bold text-foreground bg-card p-4 rounded-lg border">
-            {formatTime(time)}
-        </div>
-    )
+        <Card className={cn(
+            "w-full max-w-sm mt-6 border-2 transition-colors",
+            isDifferent ? "border-destructive bg-destructive/10" : "border-green-500/50 bg-green-500/10"
+        )}>
+            <CardHeader className="pb-2">
+                 <CardTitle className={cn(
+                    "text-center text-lg flex items-center justify-center gap-2",
+                     isDifferent ? "text-destructive" : "text-green-500"
+                 )}>
+                    <Timer className="h-5 w-5" />
+                    Diferencia de Tiempo
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="text-center text-4xl font-mono font-bold">
+                    {difference.toFixed(2)}s
+                </p>
+            </CardContent>
+        </Card>
+    );
 }
 
 function ClockDebugger() {
     const [liveMatches, setLiveMatches] = useState<FullMatch[]>([]);
     const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+
+    const selectedMatch = liveMatches.find(m => String(m.id) === selectedMatchId) || null;
+    
+    // Logic for the first timer (using the main hook)
+    const liveState = useLiveMatchState(selectedMatch ? selectedMatch.id : null, selectedMatch);
+    const hookTime = liveState?.time ?? null;
+
+    // Logic for the second, alternative timer
+    const [alternativeTime, setAlternativeTime] = useState<number | null>(null);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         getAllMatches().then(matches => {
@@ -92,11 +84,37 @@ function ClockDebugger() {
             setLoading(false);
         });
     }, []);
-    
-    const selectedMatch = liveMatches.find(m => String(m.id) === selectedMatchId) || null;
+
+    useEffect(() => {
+        setAlternativeTime(selectedMatch?.time ?? null);
+
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+
+        if (selectedMatch && selectedMatch.isRunning) {
+            intervalRef.current = setInterval(() => {
+                setAlternativeTime(prevTime => {
+                    if (prevTime !== null && prevTime > 0) {
+                        return prevTime - 1;
+                    }
+                    if (intervalRef.current) {
+                        clearInterval(intervalRef.current);
+                    }
+                    return 0;
+                });
+            }, 1000);
+        }
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, [selectedMatch]);
     
     return (
-         <Card className="w-full max-w-2xl">
+         <Card className="w-full max-w-4xl">
             <CardHeader>
                 <CardTitle className="text-center text-primary">Página de Depuración de Reloj</CardTitle>
                 <CardDescription className="text-center">
@@ -122,16 +140,19 @@ function ClockDebugger() {
                 </div>
 
                 {selectedMatch && (
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
-                        <div className="flex flex-col items-center gap-2">
-                            <h3 className="font-semibold text-muted-foreground">Temporizador (useLiveMatchState)</h3>
-                            <MatchTimer match={selectedMatch} />
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                            <div className="flex flex-col items-center gap-2">
+                                <h3 className="font-semibold text-muted-foreground">Temporizador (useLiveMatchState)</h3>
+                                <MatchTimer time={hookTime} />
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <h3 className="font-semibold text-muted-foreground">Temporizador (useEffect local)</h3>
+                                <MatchTimer time={alternativeTime} />
+                            </div>
                         </div>
-                        <div className="flex flex-col items-center gap-2">
-                            <h3 className="font-semibold text-muted-foreground">Temporizador (useEffect local)</h3>
-                            <AlternativeMatchTimer match={selectedMatch} />
-                        </div>
-                    </div>
+                        <TimeDifferenceDisplay time1={hookTime} time2={alternativeTime} />
+                    </>
                 )}
                
             </CardContent>
