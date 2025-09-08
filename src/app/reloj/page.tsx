@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -10,7 +10,6 @@ import { getAllMatches } from '@/actions/prisma-actions';
 import type { FullMatch } from '@/types';
 import { useLiveMatchState } from '@/hooks/useLiveMatchState';
 import { Skeleton } from '@/components/ui/skeleton';
-import LiveClock from 'react-live-clock';
 
 const formatTime = (seconds: number) => {
     const flooredSeconds = Math.floor(seconds);
@@ -34,39 +33,49 @@ function MatchTimer({ match }: { match: FullMatch | null }) {
 }
 
 function AlternativeMatchTimer({ match }: { match: FullMatch | null }) {
-    const [targetDate, setTargetDate] = useState<Date | null>(null);
+    const [time, setTime] = useState(match?.time || 0);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        if (match && match.isRunning) {
-            const now = Date.now();
-            const remainingMilliseconds = match.time * 1000;
-            const newTargetDate = new Date(now + remainingMilliseconds);
-            setTargetDate(newTargetDate);
-        } else {
-            setTargetDate(null);
+        // Cuando cambia el partido, reseteamos el tiempo.
+        setTime(match?.time || 0);
+
+        // Limpiamos el intervalo anterior si existe
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
         }
+
+        // Si el partido está corriendo, iniciamos un nuevo intervalo
+        if (match && match.isRunning) {
+            intervalRef.current = setInterval(() => {
+                setTime(prevTime => {
+                    if (prevTime > 0) {
+                        return prevTime - 1;
+                    }
+                    // Si el tiempo llega a 0, detenemos el intervalo.
+                    if (intervalRef.current) {
+                        clearInterval(intervalRef.current);
+                    }
+                    return 0;
+                });
+            }, 1000);
+        }
+
+        // Función de limpieza para cuando el componente se desmonta o el partido cambia.
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
     }, [match]);
     
     if (!match) {
         return <Skeleton className="h-16 w-48 bg-muted" />;
     }
     
-    if (!match.isRunning || !targetDate) {
-        return (
-            <div className="text-6xl font-mono font-bold text-foreground bg-card p-4 rounded-lg border">
-                {formatTime(match.time)}
-            </div>
-        );
-    }
-    
     return (
          <div className="text-6xl font-mono font-bold text-foreground bg-card p-4 rounded-lg border">
-            <LiveClock
-                targetDate={targetDate.toISOString()}
-                ticking={match.isRunning}
-                format={'mm:ss'}
-                date="" 
-            />
+            {formatTime(time)}
         </div>
     )
 }
@@ -119,7 +128,7 @@ function ClockDebugger() {
                             <MatchTimer match={selectedMatch} />
                         </div>
                         <div className="flex flex-col items-center gap-2">
-                            <h3 className="font-semibold text-muted-foreground">Temporizador (react-live-clock)</h3>
+                            <h3 className="font-semibold text-muted-foreground">Temporizador (useEffect local)</h3>
                             <AlternativeMatchTimer match={selectedMatch} />
                         </div>
                     </div>
