@@ -13,6 +13,7 @@ import React, { useState } from 'react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Hand, RefreshCw, Shield, Square, Timer, Target, Goal, Footprints } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 
 interface ManualEntryFormProps {
