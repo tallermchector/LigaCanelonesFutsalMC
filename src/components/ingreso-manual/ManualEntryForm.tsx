@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { FullMatch, GameEvent, GameEventType, Player, SelectedPlayer } from '@/types';
+import type { FullMatch, GameEvent, GameEventType, Player, SelectedPlayer, Team } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useGame } from '@/contexts/GameProvider';
@@ -14,6 +14,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Hand, RefreshCw, Shield, Square, Timer, Target, Goal, Footprints, Minus, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 
 interface ManualEntryFormProps {
@@ -151,11 +152,25 @@ const EventCreationForm = ({ player, onEventCreated, initialTime }: { player: Pl
 }
 
 
-const PlayerButton = ({ player, onSelect, isSelected, isActive, className, onEventCreated, initialTime }: { player: Player, onSelect: () => void, isSelected: boolean, isActive: boolean, className?: string, onEventCreated: (time: number) => void, initialTime: number }) => {
+const PlayerButton = ({ player, team, onSelect, isSelected, isActive, className, onEventCreated, initialTime }: { player: Player, team: Team, onSelect: () => void, isSelected: boolean, isActive: boolean, className?: string, onEventCreated: (time: number) => void, initialTime: number }) => {
     const { state } = useGame();
     const [popoverOpen, setPopoverOpen] = useState(false);
     
-    if(state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS') {
+    const buttonContent = (
+        <div className="relative w-full h-full flex flex-col items-center justify-center">
+            {isActive && !isSelectionMode && (
+                <div className="absolute top-1 right-1 bg-black/50 text-white rounded-full h-4 w-4 flex items-center justify-center text-[10px] font-bold">
+                    T
+                </div>
+            )}
+             <Image src={team.logoUrl || ''} alt={team.name} width={24} height={24} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 opacity-20" />
+            <span className="relative text-lg font-bold">{player.number}</span>
+        </div>
+    );
+    
+    const isSelectionMode = state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS';
+
+    if(isSelectionMode) {
         return (
              <Button
                 variant="outline"
@@ -166,7 +181,7 @@ const PlayerButton = ({ player, onSelect, isSelected, isActive, className, onEve
                 )}
                 onClick={onSelect}
             >
-                {player.number}
+                {buttonContent}
             </Button>
         )
     }
@@ -183,7 +198,7 @@ const PlayerButton = ({ player, onSelect, isSelected, isActive, className, onEve
                         className
                     )}
                 >
-                    {player.number}
+                    {buttonContent}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80 p-0">
@@ -222,8 +237,8 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
 
     const isSelectionMode = status === 'SCHEDULED' || status === 'SELECTING_STARTERS';
     
-    const starters = isSelectionMode ? sortedPlayers.filter(p => activePlayers.includes(p.id)) : sortedPlayers.filter(p => activePlayers.includes(p.id));
-    const substitutes = isSelectionMode ? sortedPlayers : sortedPlayers.filter(p => !activePlayers.includes(p.id));
+    const starters = sortedPlayers.filter(p => activePlayers.includes(p.id));
+    const substitutes = sortedPlayers.filter(p => !activePlayers.includes(p.id));
     
     const handleSubstituteClick = (playerInId: number) => {
         dispatch({ type: 'COMPLETE_SUBSTITUTION', payload: { playerInId } });
@@ -256,10 +271,11 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
             <CardContent className="grid grid-cols-1 grid-rows-1 gap-0 p-0 h-full">
                 {isSelectionMode ? (
                     <div className="grid grid-cols-3 grid-rows-4 gap-0 p-0 h-full">
-                        {substitutes.map((player, index) => (
+                        {sortedPlayers.map((player, index) => (
                             <PlayerButton
                                 key={player.id}
                                 player={player}
+                                team={team}
                                 onSelect={() => onPlayerSelect(teamId, player.id)}
                                 isSelected={activePlayers.includes(player.id)}
                                 isActive={activePlayers.includes(player.id)}
@@ -279,6 +295,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                                 <PlayerButton
                                     key={player.id}
                                     player={player}
+                                    team={team}
                                     onSelect={() => onPlayerSelect(teamId, player.id)}
                                     isSelected={selectedPlayerId === player.id}
                                     isActive={true}
@@ -293,6 +310,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                                 <PlayerButton
                                     key={player.id}
                                     player={player}
+                                    team={team}
                                     onSelect={() => onPlayerSelect(teamId, player.id)}
                                     isSelected={selectedPlayerId === player.id}
                                     isActive={false}
