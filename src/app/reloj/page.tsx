@@ -121,7 +121,7 @@ function ClockDebugger() {
                     }
                     return newTime;
                 });
-            }, 1000);
+            }, 100); // Check more frequently for better precision display
         }
 
         // Cleanup function to clear interval on unmount or re-render
