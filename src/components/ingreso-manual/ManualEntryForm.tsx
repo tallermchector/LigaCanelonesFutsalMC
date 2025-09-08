@@ -156,6 +156,8 @@ const PlayerButton = ({ player, team, onSelect, isSelected, isActive, className,
     const { state } = useGame();
     const [popoverOpen, setPopoverOpen] = useState(false);
     
+    const isSelectionMode = state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS';
+
     const buttonContent = (
         <div className="relative w-full h-full flex flex-col items-center justify-center">
             {isActive && !isSelectionMode && (
@@ -168,7 +170,6 @@ const PlayerButton = ({ player, team, onSelect, isSelected, isActive, className,
         </div>
     );
     
-    const isSelectionMode = state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS';
 
     if(isSelectionMode) {
         return (
