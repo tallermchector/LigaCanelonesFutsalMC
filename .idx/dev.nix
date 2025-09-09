@@ -32,11 +32,10 @@
       "bungcip.better-toml"
       "YoavBls.pretty-ts-errors"
     ];
-    # Configuración del espacio de trabajo
-    workspace = {
-      # Archivos que se abren automáticamente al crear o reiniciar el espacio de trabajo
+   workspace = {
       onCreate = {
         default.openFiles = [
+          "src/app/page.tsx"
         ];
       };
     };

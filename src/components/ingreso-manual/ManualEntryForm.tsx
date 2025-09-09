@@ -35,7 +35,7 @@ const actionButtons: { type: GameEventType; label: string; icon: React.ReactNode
 ];
 
 
-const EventCreationForm = ({ player, onEventCreated, initialTime }: { player: Player; onEventCreated: (time: number) => void; initialTime: number }) => {
+const EventCreationForm = ({ player, teamId, onEventCreated, initialTime }: { player: Player; teamId: 'A' | 'B', onEventCreated: (time: number) => void; initialTime: number }) => {
     const { state, dispatch, handleCreateGameEvent } = useGame();
     const [eventType, setEventType] = useState<GameEventType | null>(null);
     const { toast } = useToast();
@@ -56,27 +56,23 @@ const EventCreationForm = ({ player, onEventCreated, initialTime }: { player: Pl
             return;
         }
 
-        const teamId = player.teamId === state.teamA?.id ? state.teamA.id : state.teamB?.id;
-        if (!state.selectedPlayer || !teamId) return;
+        const team = teamId === 'A' ? state.teamA : state.teamB;
+        if (!team) return;
 
         if (eventType === 'SUBSTITUTION') {
-            dispatch({ type: 'INITIATE_SUBSTITUTION', payload: { playerOut: { playerId: player.id, teamId: state.selectedPlayer.teamId } } });
+            dispatch({ type: 'INITIATE_SUBSTITUTION', payload: { playerOut: { playerId: player.id, teamId: teamId } } });
             onEventCreated(timeValue);
             return;
         }
 
-        const teamName = player.teamId === state.teamA?.id ? state.teamA.name : state.teamB?.name;
-        
-        if(!teamId || !teamName) return;
-        
         const timestamp = timeValue;
 
         const newEvent: Omit<GameEvent, 'id' | 'matchId'> = {
             type: eventType,
-            teamId,
+            teamId: team.id,
             playerId: player.id,
             playerName: player.name,
-            teamName,
+            teamName: team.name,
             timestamp: timestamp,
             playerInId: null,
             playerInName: null,
@@ -161,10 +157,11 @@ const PlayerButton = ({ player, team, onSelect, isSelected, isActive, className,
     const [popoverOpen, setPopoverOpen] = useState(false);
     
     const isSelectionMode = state.status === 'SCHEDULED' || state.status === 'SELECTING_STARTERS';
+    const teamId = team.id === state.teamA?.id ? 'A' : 'B';
 
     const buttonContent = (
         <div className="relative w-full h-full flex flex-col items-center justify-center">
-            <TshirtIcon className={cn("w-16 h-16 transition-all duration-200 ease-in-out group-hover:scale-110", team.id === state.teamA?.id ? 'text-blue-500' : 'text-red-500')} />
+            <TshirtIcon className={cn("w-16 h-16 transition-all duration-200 ease-in-out group-hover:scale-110", teamId === 'A' ? 'text-blue-500' : 'text-red-500')} />
             {isActive && !isSelectionMode && (
                 <div className="absolute top-1 right-1 bg-black/50 text-white rounded-full h-4 w-4 flex items-center justify-center text-[10px] font-bold">
                     T
@@ -204,6 +201,7 @@ const PlayerButton = ({ player, team, onSelect, isSelected, isActive, className,
                         isActive && !isSelected && 'bg-primary/10',
                         className
                     )}
+                    onClick={onSelect}
                 >
                     {buttonContent}
                 </Button>
@@ -211,6 +209,7 @@ const PlayerButton = ({ player, team, onSelect, isSelected, isActive, className,
             <PopoverContent className="w-80 p-0">
                 <EventCreationForm 
                     player={player} 
+                    teamId={teamId}
                     onEventCreated={(time) => {
                         onEventCreated(time);
                         setPopoverOpen(false);
