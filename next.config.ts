@@ -37,6 +37,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverComponentsExternalPackages: ['handlebars'],
+  },
 
   async redirects() {
     return [
