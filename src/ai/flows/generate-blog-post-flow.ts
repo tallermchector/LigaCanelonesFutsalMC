@@ -1,62 +1,95 @@
-'use server';
+
+"use server";
 /**
  * @fileOverview Flow para generar una publicación de blog completa con IA.
- * 
+ *
  * - generateBlogPost - Genera título, extracto, contenido y URL de imagen.
  */
 
-import { z } from 'zod';
-import { futsalTeams } from '@/data/teams';
-import { players } from '@/data/players';
-import { matchStatuses } from '@/data/matchData';
-import { newsCategories } from '@/data/news-categories';
-import { ai } from '../../ai/genkit';
-import { googleAI } from '@genkit-ai/googleai';
+import { z } from "zod";
+import { futsalTeams } from "@/data/teams";
+import { players } from "@/data/players";
+import { matchStatuses } from "@/data/matchData";
+import { newsCategories } from "@/data/news-categories";
+import { ai } from "@/ai/genkit";
+import { googleAI } from "@genkit-ai/googleai";
 
 const GenerateBlogPostInputSchema = z.object({
-  topic: z.string().describe('El tema o título inicial para la publicación del blog.'),
-  category: z.string().describe('La categoría seleccionada para la publicación del blog.'),
+  topic: z
+    .string()
+    .describe("El tema o título inicial para la publicación del blog."),
+  category: z
+    .string()
+    .describe("La categoría seleccionada para la publicación del blog."),
 });
 export type GenerateBlogPostInput = z.infer<typeof GenerateBlogPostInputSchema>;
 
 const GenerateBlogPostOutputSchema = z.object({
-  title: z.string().describe('Un título atractivo y optimizado para SEO para la publicación del blog.'),
-  excerpt: z.string().describe('Un extracto o resumen corto (2-3 frases) del contenido del artículo.'),
-  content: z.string().describe('El contenido completo del artículo, formateado en Markdown. Debe ser informativo, atractivo y visualmente moderno.'),
-  imageUrl: z.string().url().describe('Una URL a una imagen de alta calidad de picsum.photos que sea relevante para el tema. Debe ser de 1200x600px.'),
+  title: z
+    .string()
+    .describe(
+      "Un título atractivo y optimizado para SEO para la publicación del blog."
+    ),
+  excerpt: z
+    .string()
+    .describe(
+      "Un extracto o resumen corto (2-3 frases) del contenido del artículo."
+    ),
+  content: z
+    .string()
+    .describe(
+      "El contenido completo del artículo, formateado en Markdown. Debe ser informativo, atractivo y visualmente moderno."
+    ),
+  imageUrl: z
+    .string()
+    .url()
+    .describe(
+      "Una URL a una imagen de alta calidad de picsum.photos que sea relevante para el tema. Debe ser de 1200x600px."
+    ),
 });
-export type GenerateBlogPostOutput = z.infer<typeof GenerateBlogPostOutputSchema>;
+export type GenerateBlogPostOutput = z.infer<
+  typeof GenerateBlogPostOutputSchema
+>;
 
-
-export async function generateBlogPost(input: GenerateBlogPostInput): Promise<GenerateBlogPostOutput> {
+export async function generateBlogPost(
+  input: GenerateBlogPostInput
+): Promise<GenerateBlogPostOutput> {
   return generateBlogPostFlow(input);
 }
 
-
-const teamsContext = futsalTeams.map(team => ({
-    id: team.id,
-    name: team.name,
-    slug: team.slug,
-    description: team.description,
-    players: team.players.map(p => ({ id: p.id, name: p.name, number: p.number, position: p.position }))
+const teamsContext = futsalTeams.map((team) => ({
+  id: team.id,
+  name: team.name,
+  slug: team.slug,
+  description: team.description,
+  players: team.players.map((p) => ({
+    id: p.id,
+    name: p.name,
+    number: p.number,
+    position: p.position,
+  })),
 }));
 
-const playersContext = players.map(player => ({
-    id: player.id,
-    name: player.name,
-    number: player.number,
-    position: player.position,
-    teamId: player.teamId,
+const playersContext = players.map((player) => ({
+  id: player.id,
+  name: player.name,
+  number: player.number,
+  position: player.position,
+  teamId: player.teamId,
 }));
 
-const categoriesContext = newsCategories.map(c => ({ slug: c.slug, name: c.name, description: c.description }));
-
+const categoriesContext = newsCategories.map((c) => ({
+  slug: c.slug,
+  name: c.name,
+  description: c.description,
+}));
 
 const blogPostPrompt = ai.definePrompt({
-    name: 'generateBlogPostPrompt',
-    input: { schema: GenerateBlogPostInputSchema },
-    output: { schema: GenerateBlogPostOutputSchema },
-    prompt: `
+  name: "generateBlogPostPrompt",
+  input: { schema: GenerateBlogPostInputSchema },
+  output: { schema: GenerateBlogPostOutputSchema },
+  model: googleAI.model("gemini-pro"),
+  prompt: `
         Eres un periodista deportivo y diseñador de contenido experto en futsal, especializado en la Liga Canaria de Futsal de Uruguay.
         Tu tarea es escribir una publicación de blog atractiva, informativa y con un diseño moderno usando Markdown, basándote en los datos reales de la liga que te proporciono.
 
@@ -89,25 +122,16 @@ const blogPostPrompt = ai.definePrompt({
     `,
 });
 
-
 const generateBlogPostFlow = ai.defineFlow(
   {
-    name: 'generateBlogPostFlow',
+    name: "generateBlogPostFlow",
     inputSchema: GenerateBlogPostInputSchema,
     outputSchema: GenerateBlogPostOutputSchema,
   },
   async (input) => {
-    const { output } = await ai.generate({
-      model: googleAI.model('gemini-pro'),
-      prompt: blogPostPrompt.prompt,
-      input: input,
-      output: {
-        schema: GenerateBlogPostOutputSchema,
-      },
-    });
-
+    const { output } = await blogPostPrompt(input);
     if (!output) {
-      throw new Error('La IA no pudo generar la publicación del blog.');
+      throw new Error("La IA no pudo generar la publicación del blog.");
     }
     return output;
   }
