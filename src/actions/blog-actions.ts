@@ -12,13 +12,17 @@ import { notFound } from 'next/navigation';
 const postsDirectory = path.join(process.cwd(), 'src/content/blog');
 
 function slugify(text: string): string {
-  return text
+  const baseSlug = text
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, '-')       // Replace spaces with -
-    .replace(/[^\w-]+/g, '')   // Remove all non-word chars
-    .replace(/--+/g, '-');      // Replace multiple - with single -
+    .replace(/[^\w\s-]/g, '') // Remove all non-word chars except spaces and hyphens
+    .replace(/\s+/g, '-')    // Replace spaces with -
+    .replace(/--+/g, '-');   // Replace multiple - with single -
+
+  // Limit to the first 8 words
+  const words = baseSlug.split('-');
+  return words.slice(0, 8).join('-');
 }
 
 const postSchema = z.object({
