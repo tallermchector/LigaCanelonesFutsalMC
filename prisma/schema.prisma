@@ -13,27 +13,27 @@ datasource db {
 }
 
 model Team {
-  id               Int                @id @default(autoincrement())
-  name             String             @unique
-  slug             String             @unique
-  logoUrl          String?
-  description      String?
-  bannerUrl        String?
-  instagram        String?
-  facebook         String?
-  whatsapp         String?
-  phone            String?
-  players          Player[]
-  teamAInMatches   Match[]            @relation("TeamA")
-  teamBInMatches   Match[]            @relation("TeamB")
-  gameEvents       GameEvent[]
-  seasons          SeasonTeam[]
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  id             Int          @id @default(autoincrement())
+  name           String       @unique
+  slug           String       @unique
+  logoUrl        String?
+  description    String?
+  bannerUrl      String?
+  instagram      String?
+  facebook       String?
+  whatsapp       String?
+  phone          String?
+  players        Player[]
+  teamAInMatches Match[]      @relation("TeamA")
+  teamBInMatches Match[]      @relation("TeamB")
+  gameEvents     GameEvent[]
+  seasons        SeasonTeam[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model Player {
-  id          Int      @id @default(autoincrement())
+  id          Int                @id @default(autoincrement())
   name        String
   number      Int
   position    PlayerPosition
@@ -42,7 +42,7 @@ model Player {
   weight      Int?
   nationality String?
   teamId      Int
-  team        Team     @relation(fields: [teamId], references: [id])
+  team        Team               @relation(fields: [teamId], references: [id])
   stats       PlayerMatchStats[]
   events      GameEvent[]
 
@@ -51,44 +51,44 @@ model Player {
 }
 
 model Match {
-  id              Int                @id @default(autoincrement())
-  teamAId         Int
-  teamA           Team               @relation("TeamA", fields: [teamAId], references: [id])
-  teamBId         Int
-  teamB           Team               @relation("TeamB", fields: [teamBId], references: [id])
-  scheduledTime   DateTime
-  status          MatchStatus        @default(SCHEDULED)
-  scoreA          Int?
-  scoreB          Int?
-  period          Int?
-  time            Int?
-  foulsA          Int?
-  foulsB          Int?
-  timeoutsA       Int?
-  timeoutsB       Int?
-  isRunning       Boolean?
-  activePlayersA  Int[]
-  activePlayersB  Int[]
-  events          GameEvent[]
+  id               Int                @id @default(autoincrement())
+  teamAId          Int
+  teamA            Team               @relation("TeamA", fields: [teamAId], references: [id])
+  teamBId          Int
+  teamB            Team               @relation("TeamB", fields: [teamBId], references: [id])
+  scheduledTime    DateTime
+  status           MatchStatus        @default(SCHEDULED)
+  scoreA           Int?
+  scoreB           Int?
+  period           Int?
+  time             Int?
+  foulsA           Int?
+  foulsB           Int?
+  timeoutsA        Int?
+  timeoutsB        Int?
+  isRunning        Boolean?
+  activePlayersA   Int[]
+  activePlayersB   Int[]
+  events           GameEvent[]
   playerMatchStats PlayerMatchStats[]
-  seasonId        Int
-  season          Season             @relation(fields: [seasonId], references: [id])
-  round           Int?
+  seasonId         Int
+  season           Season             @relation(fields: [seasonId], references: [id])
+  round            Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model GameEvent {
-  id           Int        @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   matchId      Int
-  match        Match      @relation(fields: [matchId], references: [id])
+  match        Match     @relation(fields: [matchId], references: [id])
   type         EventType
   timestamp    Int
   teamId       Int
-  team         Team       @relation(fields: [teamId], references: [id])
+  team         Team      @relation(fields: [teamId], references: [id])
   playerId     Int?
-  player       Player?    @relation(fields: [playerId], references: [id])
+  player       Player?   @relation(fields: [playerId], references: [id])
   playerName   String?
   teamName     String?
   playerInId   Int?
@@ -96,18 +96,18 @@ model GameEvent {
 }
 
 model PlayerMatchStats {
-  id                  Int     @id @default(autoincrement())
+  id                  Int    @id @default(autoincrement())
   matchId             Int
-  match               Match   @relation(fields: [matchId], references: [id])
+  match               Match  @relation(fields: [matchId], references: [id])
   playerId            Int
-  player              Player  @relation(fields: [playerId], references: [id])
-  timePlayedInSeconds Int     @default(0)
-  goals               Int     @default(0)
-  assists             Int     @default(0)
-  shots               Int     @default(0)
-  yellowCards         Int     @default(0)
-  redCards            Int     @default(0)
-  foulsCommitted      Int     @default(0)
+  player              Player @relation(fields: [playerId], references: [id])
+  timePlayedInSeconds Int    @default(0)
+  goals               Int    @default(0)
+  assists             Int    @default(0)
+  shots               Int    @default(0)
+  yellowCards         Int    @default(0)
+  redCards            Int    @default(0)
+  foulsCommitted      Int    @default(0)
 
   @@unique([matchId, playerId])
 }
@@ -123,29 +123,28 @@ model Season {
 }
 
 model SeasonTeam {
-  seasonId        Int
-  teamId          Int
-  position        Int
-  points          Int
-  played          Int
-  wins            Int
-  draws           Int
-  losses          Int
-  goalsFor        Int
-  goalsAgainst    Int
-  goalDifference  Int
-  season          Season @relation(fields: [seasonId], references: [id])
-  team            Team   @relation(fields: [teamId], references: [id])
+  seasonId       Int
+  teamId         Int
+  position       Int
+  points         Int
+  played         Int
+  wins           Int
+  draws          Int
+  losses         Int
+  goalsFor       Int
+  goalsAgainst   Int
+  goalDifference Int
+  season         Season @relation(fields: [seasonId], references: [id])
+  team           Team   @relation(fields: [teamId], references: [id])
 
   @@id([seasonId, teamId])
 }
-
 
 enum MatchStatus {
   SCHEDULED
   FINISHED
   POSTPONED
-  IN_PROGRESS 
+  IN_PROGRESS
   LIVE
   SELECTING_STARTERS
 }
