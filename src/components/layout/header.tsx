@@ -68,6 +68,7 @@ export function Header() {
       { href: '/gestion/jugadores', label: 'Jugadores', icon: <Users /> },
       { href: '/gestion/temporadas', label: 'Temporadas', icon: <Trophy /> },
       { href: '/gestion/configuracion', label: 'Configuración', icon: <Settings /> },
+      { href: '/gestion/blog', label: 'Blog', icon: <Newspaper /> },
       { href: '/manual', label: 'Manual de Usuario', icon: <BookUser /> },
   ]
   
