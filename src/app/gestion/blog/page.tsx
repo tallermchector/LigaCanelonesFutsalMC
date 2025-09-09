@@ -2,11 +2,12 @@
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { PageHero } from '@/components/layout/PageHero';
-import { CreatePostForm } from '@/components/gestion/blog/CreatePostForm';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Newspaper } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Newspaper, PlusCircle } from 'lucide-react';
 import { PostList } from '@/components/gestion/blog/PostList';
 import { getPosts } from '@/actions/blog-actions';
+import Link from 'next/link';
 
 export default async function GestionBlogPage() {
     const { posts } = await getPosts();
@@ -20,33 +21,26 @@ export default async function GestionBlogPage() {
                     description="Crea, edita y administra las publicaciones del blog de la liga."
                 />
                 <div className="container mx-auto p-4 py-8 md:p-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                        <div className="lg:col-span-2 space-y-8">
-                            <Card>
-                                <CardHeader>
+                    <div className="space-y-8">
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between">
+                                <div>
                                     <CardTitle>Publicaciones Existentes</CardTitle>
                                     <CardDescription>
                                         Aquí puedes ver, editar o eliminar las publicaciones del blog.
                                     </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <PostList posts={posts} />
-                                </CardContent>
-                            </Card>
-                        </div>
-                        <div>
-                             <Card>
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2">
-                                        <Newspaper className="h-5 w-5 text-primary" />
-                                        Crear Nueva Publicación
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <CreatePostForm />
-                                </CardContent>
-                            </Card>
-                        </div>
+                                </div>
+                                <Button asChild>
+                                    <Link href="/gestion/blog/crear">
+                                        <PlusCircle className="mr-2 h-4 w-4" />
+                                        Crear Publicación
+                                    </Link>
+                                </Button>
+                            </CardHeader>
+                            <CardContent>
+                                <PostList posts={posts} />
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
             </main>

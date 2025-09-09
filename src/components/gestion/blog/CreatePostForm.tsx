@@ -92,7 +92,7 @@ export function CreatePostForm() {
         description: 'La nueva publicación ha sido creada exitosamente.',
       });
       form.reset();
-      router.push('/blog');
+      router.push('/gestion/blog');
       router.refresh();
     } catch (error) {
       const errorMessage =
