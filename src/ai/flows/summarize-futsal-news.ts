@@ -9,7 +9,7 @@
  * - SummarizeFutsalNewsOutput - The return type for the summarizeFutsalNews function.
  */
 
-import {ai} from '@/ai/dev';
+import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SummarizeFutsalNewsInputSchema = z.object({

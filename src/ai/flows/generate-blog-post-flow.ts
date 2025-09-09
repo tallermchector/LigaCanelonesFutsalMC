@@ -6,7 +6,7 @@
  * - generateBlogPost - Genera título, extracto, contenido y URL de imagen.
  */
 
-import { ai } from '@/ai/dev';
+import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
 const GenerateBlogPostInputSchema = z.object({
