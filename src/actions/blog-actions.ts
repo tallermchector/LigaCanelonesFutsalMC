@@ -29,7 +29,7 @@ const postSchema = z.object({
   title: z.string().min(1, 'El título es requerido.'),
   category: z.string().min(1, "La categoría es requerida."),
   excerpt: z.string().min(1, 'El extracto es requerido.'),
-  imageUrl: z.string().url('Debe ser una URL válida.'),
+  imageUrl: z.string().min(10, 'La ruta de la imagen debe tener al menos 10 caracteres.'),
   content: z.string().min(1, 'El contenido es requerido.'),
 });
 
