@@ -1,37 +1,59 @@
-# AI Assistant Guidelines for This Repository
+# GEMINI.md - Onboarding Guide for AI Assistants
 
-Welcome, Google AI! This document provides the essential guidelines for contributing to this project. Your primary role is to act as an expert, friendly, and collaborative coding partner, assisting users with modifications to their web application.
+¡Hola! Soy un asistente de IA de Google, listo para ayudarte a construir y mejorar este proyecto. Este documento es mi guía de referencia para entender el proyecto, su arquitectura y las convenciones de código.
 
-## 1. Project Mission & Core Role
+## Misión del Proyecto
 
-Your mission is to help users build and iterate on their application by understanding their requests and translating them into high-quality code changes.
+El objetivo de este proyecto es desarrollar un **Sistema de Gestión de Torneos de Futsal Amateur**. La plataforma debe ser una solución integral que permita a los organizadores gestionar equipos, jugadores, partidos, estadísticas y temporadas de manera eficiente.
 
-- **Personality**: Be a friendly, collaborative, and highly skilled AI coding partner.
-- **Goal**: Assist users with making changes to their app code conversationally and intuitively.
-- **Interaction**: Engage in natural dialogue. Ask for clarification when requests are ambiguous. Explain your reasoning clearly but concisely.
+## Stack Tecnológico Principal
 
-## 2. Technology Stack
+Este proyecto está construido con un stack moderno de tecnologías de desarrollo web:
 
-This project uses a specific, modern technology stack. Adherence to this stack is mandatory. Do not introduce or suggest alternative frameworks or libraries unless they are part of this stack.
+-   **Framework:** [Next.js](https://nextjs.org/) (App Router)
+-   **Lenguaje:** [TypeScript](https://www.typescriptlang.org/)
+-   **ORM:** [Prisma](https://www.prisma.io/)
+-   **Base de Datos:** PostgreSQL
+-   **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
+-   **Componentes UI:** [shadcn/ui](https://ui.shadcn.com/)
+-   **Runtime de JavaScript:** [Bun](https://bun.sh/)
+-   **Integración de IA:** [Google AI (Genkit)](https://firebase.google.com/docs/genkit)
 
-- **Framework**: Next.js (App Router)
-- **UI Library**: React with TypeScript
-- **Component Library**: ShadCN UI
-- **Styling**: Tailwind CSS
-- **Generative AI**: Genkit
-- **Database ORM**: Prisma
+## Arquitectura de Datos
 
-## 3. Core Responsibilities & Workflow
+La gestión de datos se centraliza a través de **Prisma**.
 
-Your primary responsibility is to modify the application's codebase in response to user requests. This is accomplished by generating a specific XML structure that the host environment parses and executes.
+-   **`prisma/schema.prisma`**: Este archivo es la única fuente de verdad para el esquema de la base de datos. Define todos los modelos, sus campos y relaciones. Cualquier cambio en la estructura de datos debe realizarse aquí.
+-   **Cliente de Prisma**: Las consultas a la base de datos se realizan a través del cliente de Prisma, que proporciona seguridad de tipos de extremo a extremo.
 
-### Strict Output Format
+## Flujo de Desarrollo
 
-All code modifications **MUST** be enclosed within a `<changes>` block. This is the only mechanism for applying changes.
+Para poner en marcha el entorno de desarrollo, sigue estos pasos:
 
-```xml
-<changes>
-  <description>[A concise summary of the overall changes being made]</description>
-  <change>
-    <file>[The ABSOLUTE, FULL path to the file being modified]</file>
-    <content><![CDATA[The ENTIRE, FINAL, intended content of the file. Do NOT provide diffs or partial snippets. Ensure all code is properly escaped.
+1.  **Instalar Dependencias:**
+    ```bash
+    bun install
+    ```
+2.  **Aplicar Cambios en la Base de Datos:**
+    Si has modificado el `schema.prisma`, actualiza la base de datos con:
+    ```bash
+    prisma db push
+    ```
+3.  **Poblar la Base de Datos (Opcional):**
+    Para llenar la base de datos con datos de prueba, ejecuta:
+    ```bash
+    bun run db:seed
+    ```
+4.  **Ejecutar el Servidor de Desarrollo:**
+    ```bash
+    bun run dev
+    ```
+    La aplicación estará disponible en `http://localhost:9002`.
+
+## Guía de Estilo y Convenciones de Código
+
+-   **Coherencia:** Sigue siempre el estilo y los patrones del código existente.
+-   **Componentes de UI:** Utiliza los componentes de `src/components/ui/` (shadcn/ui) como base para cualquier nuevo elemento de la interfaz.
+-   **Mutaciones de Datos:** Implementa toda la lógica de creación, actualización o eliminación de datos a través de **Server Actions**, ubicadas en `src/actions/`.
+-   **Modularidad:** Mantén los componentes pequeños y enfocados en una única responsabilidad para facilitar su mantenimiento y reutilización.
+-   **Assets:** Los archivos estáticos como imágenes e íconos se encuentran en la carpeta `public/`.

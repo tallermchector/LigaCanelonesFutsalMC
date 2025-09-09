@@ -1,49 +1,58 @@
-# Next.js build output
-.next/
+# This file tells AI agents which files and directories to ignore.
+# It's based on .gitignore, with some additions for development-specific files.
 
 # Dependencies
-node_modules/
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# VS Code settings
-.vscode/
+# Testing
+/coverage
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Next.js build artifacts
+/.next/
+/out/
 
-# Logs
-*.log
+# Production build
+/build
+
+# Miscellaneous
+.DS_Store
+*.pem
+
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnpm-debug.log*
+logs/
+*.log
 
-# Documentation & Config
-*.md
-*.mdx
-*.toml
-*.yaml
-*.py
-guidelines.txt
+# Vercel
+.vercel
 
-# Assets
-public/
-/src/data/
-/prisma/json-exports/
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
 
-# JSON config files (package.json is still included)
-components.json
-tsconfig.json
+# Genkit
+.genkit/*
 
-# Lockfiles
-bun.lockb
-package-lock.json
-pnpm-lock.yaml
-yarn.lock
+# Environment variables
+.env*
 
-# Other
-/informe/
+# Firebase
+firebase-debug.log
+firestore-debug.log
+
+# IDE-specific
+.vscode/
+
+# Project context files
+project_context.txt
 estructura_y_contenido.json
