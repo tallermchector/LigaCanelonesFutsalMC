@@ -3,11 +3,9 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "files.exclude": {
     "**/.git": true,
-    "**/.next": true,
-    "**/node_modules": true
+    "**/.next": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "eslint.experimental.useFlatConfig": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
