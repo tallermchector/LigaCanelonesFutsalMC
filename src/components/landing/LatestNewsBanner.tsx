@@ -53,7 +53,6 @@ const SmallPostCard = ({ post }: { post: Post }) => (
             />
         </div>
         <div className="flex-grow">
-            <p className="text-primary text-sm font-semibold">{post.category}</p>
             <h4 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">{post.title}</h4>
             <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{post.excerpt}</p>
         </div>
@@ -66,7 +65,7 @@ export function LatestNewsBanner() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getPosts(1).then(({ posts }) => {
+        getPosts().then(({ posts }) => {
             setPosts(posts);
             setLoading(false);
         });
@@ -92,7 +91,7 @@ export function LatestNewsBanner() {
                 <>
                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                         {featuredPost && (
-                            <PostCard post={featuredPost} isFeatured={true} />
+                            <PostCard post={featuredPost} />
                         )}
                         <div className="flex flex-col gap-6">
                             {otherPosts.map(post => (

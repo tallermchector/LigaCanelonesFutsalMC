@@ -1,40 +1,63 @@
 'use server';
 
-import { mockPosts } from '@/data/posts';
 import type { Post } from '@/types';
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
 
-const POSTS_PER_PAGE = 4;
+const postsDirectory = path.join(process.cwd(), 'src/content/blog');
 
-// Simula la obtención de posts con paginación
-/**
- * Retrieves a paginated list of published blog posts.
- *
- * @param {number} [page=1] - The page number to retrieve.
- * @returns {Promise<{ posts: Post[], totalPages: number }>} A promise that resolves to an object containing the posts for the requested page and the total number of pages.
- */
-export async function getPosts(page: number = 1): Promise<{ posts: Post[], totalPages: number }> {
-  await new Promise(resolve => setTimeout(resolve, 500)); // Simular retraso de red
+export async function getPosts(): Promise<{ posts: Post[], totalPages: number }> {
+  const fileNames = fs.readdirSync(postsDirectory);
+  const allPosts = fileNames.map((fileName) => {
+    const slug = fileName.replace(/\.md$/, '');
+    const fullPath = path.join(postsDirectory, fileName);
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const matterResult = matter(fileContents);
 
-  const publishedPosts = mockPosts.filter(post => post.published);
+    return {
+      id: slug, // Using slug as ID for simplicity
+      slug,
+      title: matterResult.data.title,
+      excerpt: matterResult.data.excerpt,
+      imageUrl: matterResult.data.imageUrl,
+      createdAt: matterResult.data.createdAt,
+      content: matterResult.content,
+      published: true, // Assuming all markdown files are published
+    } as Post;
+  });
 
-  const totalPages = Math.ceil(publishedPosts.length / POSTS_PER_PAGE);
-  const startIndex = (page - 1) * POSTS_PER_PAGE;
-  const endIndex = startIndex + POSTS_PER_PAGE;
+  const sortedPosts = allPosts.sort((a, b) => {
+    if (a.createdAt < b.createdAt) {
+      return 1;
+    } else {
+      return -1;
+    }
+  });
 
-  const posts = publishedPosts.slice(startIndex, endIndex);
-
-  return { posts, totalPages };
+  // The pagination logic is removed as per the new design.
+  // Returning totalPages as 1, but this can be adjusted if pagination is added back.
+  return { posts: sortedPosts, totalPages: 1 };
 }
 
-// Simula la obtención de un post por su slug
-/**
- * Retrieves a single blog post by its slug.
- *
- * @param {string} slug - The slug of the post to retrieve.
- * @returns {Promise<Post | undefined>} A promise that resolves to the post object if found, otherwise undefined.
- */
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
-  await new Promise(resolve => setTimeout(resolve, 500)); // Simular retraso de red
+  const fullPath = path.join(postsDirectory, `${slug}.md`);
+  try {
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const matterResult = matter(fileContents);
 
-  return mockPosts.find(post => post.slug === slug && post.published);
+    return {
+      id: slug,
+      slug,
+      title: matterResult.data.title,
+      excerpt: matterResult.data.excerpt,
+      imageUrl: matterResult.data.imageUrl,
+      createdAt: matterResult.data.createdAt,
+      content: matterResult.content,
+      published: true,
+    } as Post;
+  } catch (error) {
+    console.error(`Error reading post with slug ${slug}:`, error);
+    return undefined;
+  }
 }

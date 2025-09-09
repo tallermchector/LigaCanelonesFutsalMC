@@ -43,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Páginas dinámicas de blog
-  const { posts: allPosts } = await getPosts(1); // Suponiendo que esto puede obtener todos los posts
+  const { posts: allPosts } = await getPosts(); // Suponiendo que esto puede obtener todos los posts
   const blogPostRoutes = allPosts.map(post => ({
       url: `${baseUrl}/blog/${post.slug}`,
       lastModified: new Date(post.createdAt).toISOString(),

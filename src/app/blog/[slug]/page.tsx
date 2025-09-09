@@ -1,4 +1,3 @@
-
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { notFound } from 'next/navigation';
@@ -7,18 +6,17 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { getPostBySlug } from '@/actions/blog-actions';
 import Image from 'next/image';
-import { Badge } from '@/components/ui/badge';
 import { BlogSidebar } from '@/components/blog/BlogSidebar';
+import { BlogContent } from '@/components/blog/BlogContent';
 
 interface PostPageProps {
-  params: Promise<{
-    id: string;
-  }>;
+  params: {
+    slug: string;
+  };
 }
 
-export default async function SinglePostPage(props: PostPageProps) {
-  const params = await props.params;
-  const post = await getPostBySlug(params.id);
+export default async function SinglePostPage({ params }: PostPageProps) {
+  const post = await getPostBySlug(params.slug);
 
   if (!post) {
     notFound();
@@ -39,7 +37,6 @@ export default async function SinglePostPage(props: PostPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
             <article className="lg:col-span-2">
               <header className="mb-8">
-                <Badge variant="secondary" className="mb-2">{post.category}</Badge>
                 <h1 className="text-4xl font-bold text-primary leading-tight">{post.title}</h1>
                 <p className="mt-2 text-muted-foreground">
                   <span>{new Date(post.createdAt).toLocaleDateString('es-UY', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
@@ -54,10 +51,8 @@ export default async function SinglePostPage(props: PostPageProps) {
                   className="w-full rounded-lg object-cover aspect-video mb-8"
               />
 
-              <div 
-                className="prose dark:prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
+              <BlogContent content={post.content} />
+
             </article>
 
             <aside className="lg:col-span-1">

@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Newspaper } from "lucide-react";
 
 export async function BlogSidebar() {
-    // Fetch the latest 5 posts. getPosts returns paginated results.
-    const { posts } = await getPosts(1); 
+    // Fetch the latest 5 posts.
+    const { posts } = await getPosts();
     const recentPosts = posts.slice(0, 5);
 
     return (
