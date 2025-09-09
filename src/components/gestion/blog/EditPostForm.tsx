@@ -20,8 +20,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Textarea } from '@/components/ui/textarea';
 import { updatePostAction } from '@/actions/blog-actions';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Save, Sparkles } from 'lucide-react';
 import type { Post } from '@/types';
+import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
 
 const editPostSchema = z.object({
   title: z.string().min(10, 'El título debe tener al menos 10 caracteres.'),
@@ -42,6 +43,7 @@ export function EditPostForm({ post }: EditPostFormProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const form = useForm<EditPostFormValues>({
     resolver: zodResolver(editPostSchema),
@@ -52,6 +54,39 @@ export function EditPostForm({ post }: EditPostFormProps) {
       content: post.content,
     },
   });
+
+  const handleGenerateContent = async () => {
+    const title = form.getValues('title');
+    if (!title) {
+      toast({
+        variant: 'destructive',
+        title: 'Falta el título',
+        description: 'Por favor, escribe un título o tema para generar el contenido.',
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const result = await generateBlogPost({ topic: title });
+      form.setValue('title', result.title, { shouldValidate: true });
+      form.setValue('excerpt', result.excerpt, { shouldValidate: true });
+      form.setValue('content', result.content, { shouldValidate: true });
+      form.setValue('imageUrl', result.imageUrl, { shouldValidate: true });
+      toast({
+        title: 'Contenido Regenerado',
+        description: 'Se ha generado un nuevo borrador para tu publicación.',
+      });
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error de IA',
+        description: 'No se pudo generar el contenido.',
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   async function onSubmit(values: EditPostFormValues) {
     setIsSubmitting(true);
@@ -95,6 +130,11 @@ export function EditPostForm({ post }: EditPostFormProps) {
             </FormItem>
           )}
         />
+
+        <Button type="button" onClick={handleGenerateContent} disabled={isGenerating || isSubmitting} variant="outline">
+          {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+          {isGenerating ? 'Generando...' : 'Optimizar Contenido con IA'}
+        </Button>
         
         <FormField
           control={form.control}
@@ -153,7 +193,7 @@ export function EditPostForm({ post }: EditPostFormProps) {
             <Button type="button" variant="outline" onClick={() => router.push('/gestion/blog')}>
                 Cancelar
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="w-40">
+            <Button type="submit" disabled={isSubmitting || isGenerating} className="w-40">
               {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
               {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
             </Button>
