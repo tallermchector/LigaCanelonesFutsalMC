@@ -111,14 +111,13 @@ export interface GameState {
 }
 
 export type Post = {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   content: string;
   imageUrl: string;
   published: boolean;
   createdAt: string;
-  category: string;
   excerpt: string;
 };
 
