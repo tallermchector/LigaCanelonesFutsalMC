@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { newsCategories } from '@/data/news-categories';
+import { Label } from '@/components/ui/label';
 
 
 const createPostSchema = z.object({
