@@ -38,7 +38,7 @@ export default function RootLayout({
         <link rel="manifest" href="/favicon/site.webmanifest" />
         <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png"></link>
       </head>
-      <body className="font-roboto antialiased">
+      <body className="font-roboto antialiased" suppressHydrationWarning={true}>
         {children}
         <Toaster />
       </body>
