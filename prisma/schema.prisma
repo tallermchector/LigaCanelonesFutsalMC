@@ -2,165 +2,144 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Team {
-  id             Int          @id @default(autoincrement())
-  name           String       @unique
-  slug           String       @unique
-  logoUrl        String?
-  description    String?
-  bannerUrl      String?
-  instagram      String?
-  facebook       String?
-  whatsapp       String?
-  phone          String?
-  players        Player[]
-  teamAInMatches Match[]      @relation("TeamA")
-  teamBInMatches Match[]      @relation("TeamB")
-  gameEvents     GameEvent[]
-  seasons        SeasonTeam[]
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  slug            String   @unique
+  logoUrl         String?
+  description     String?  @db.Text
+  bannerUrl       String?
+  instagram       String?
+  facebook        String?
+  whatsapp        String?
+  phone           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  players         Player[]
+  matchesA        Match[]  @relation("TeamAMatches")
+  matchesB        Match[]  @relation("TeamBMatches")
+  seasonTeams     SeasonTeam[]
+  gameEvents      GameEvent[]
 }
 
 model Player {
-  id          Int                @id @default(autoincrement())
-  name        String
-  number      Int
-  position    PlayerPosition
-  birthDate   DateTime?
-  height      Int?
-  weight      Int?
-  nationality String?
-  teamId      Int
-  team        Team               @relation(fields: [teamId], references: [id])
-  stats       PlayerMatchStats[]
-  events      GameEvent[]
+  id              Int      @id @default(autoincrement())
+  name            String
+  number          Int
+  position        PlayerPosition
+  birthDate       DateTime?
+  height          Int?
+  weight          Int?
+  nationality     String?
+  teamId          Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  team            Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  stats           PlayerMatchStats[]
+  gameEvents      GameEvent[]
+}
 
+model Season {
+  id      Int      @id @default(autoincrement())
+  name    String
+  year    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  teams   SeasonTeam[]
+  matches Match[]
+}
+
+model SeasonTeam {
+  seasonId      Int
+  teamId        Int
+  position      Int      @default(0)
+  points        Int      @default(0)
+  played        Int      @default(0)
+  wins          Int      @default(0)
+  draws         Int      @default(0)
+  losses        Int      @default(0)
+  goalsFor      Int      @default(0)
+  goalsAgainst  Int      @default(0)
+  goalDifference Int     @default(0)
+  season        Season   @relation(fields: [seasonId], references: [id])
+  team          Team     @relation(fields: [teamId], references: [id])
+
+  @@id([seasonId, teamId])
 }
 
 model Match {
-  id               Int                @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   teamAId          Int
-  teamA            Team               @relation("TeamA", fields: [teamAId], references: [id])
   teamBId          Int
-  teamB            Team               @relation("TeamB", fields: [teamBId], references: [id])
   scheduledTime    DateTime
-  status           MatchStatus        @default(SCHEDULED)
+  status           MatchStatus @default(SCHEDULED)
   scoreA           Int?
   scoreB           Int?
   period           Int?
-  time             Int?
+  time             Int?     // Current time in seconds for the period
   foulsA           Int?
   foulsB           Int?
   timeoutsA        Int?
   timeoutsB        Int?
   isRunning        Boolean?
-  activePlayersA   Int[]
-  activePlayersB   Int[]
+  activePlayersA   Int[]    @default([])
+  activePlayersB   Int[]    @default([])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  teamA            Team     @relation("TeamAMatches", fields: [teamAId], references: [id])
+  teamB            Team     @relation("TeamBMatches", fields: [teamBId], references: [id])
   events           GameEvent[]
   playerMatchStats PlayerMatchStats[]
-  seasonId         Int
-  season           Season             @relation(fields: [seasonId], references: [id])
   round            Int?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model GameEvent {
-  id           Int       @id @default(autoincrement())
-  matchId      Int
-  match        Match     @relation(fields: [matchId], references: [id])
-  type         EventType
-  timestamp    Int
-  teamId       Int
-  team         Team      @relation(fields: [teamId], references: [id])
-  playerId     Int?
-  player       Player?   @relation(fields: [playerId], references: [id])
-  playerName   String?
-  teamName     String?
-  playerInId   Int?
-  playerInName String?
+  seasonId         Int?
+  season           Season?  @relation(fields: [seasonId], references: [id])
 }
 
 model PlayerMatchStats {
-  id                  Int    @id @default(autoincrement())
-  matchId             Int
-  match               Match  @relation(fields: [matchId], references: [id])
-  playerId            Int
-  player              Player @relation(fields: [playerId], references: [id])
-  timePlayedInSeconds Int    @default(0)
-  goals               Int    @default(0)
-  assists             Int    @default(0)
-  shots               Int    @default(0)
-  yellowCards         Int    @default(0)
-  redCards            Int    @default(0)
-  foulsCommitted      Int    @default(0)
-
-  @@unique([matchId, playerId])
+  matchId            Int
+  playerId           Int
+  timePlayedInSeconds Int      @default(0)
+  match              Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player             Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  
+  @@id([matchId, playerId])
 }
 
-model Season {
-  id        Int          @id @default(autoincrement())
-  name      String
-  year      Int
-  teams     SeasonTeam[]
-  matches   Match[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-}
-
-model SeasonTeam {
-  seasonId       Int
+model GameEvent {
+  id             Int      @id @default(autoincrement())
+  matchId        Int
+  type           EventType
+  timestamp      Int      // Time in seconds when the event occurred
   teamId         Int
-  position       Int
-  points         Int
-  played         Int
-  wins           Int
-  draws          Int
-  losses         Int
-  goalsFor       Int
-  goalsAgainst   Int
-  goalDifference Int
-  season         Season @relation(fields: [seasonId], references: [id])
-  team           Team   @relation(fields: [teamId], references: [id])
-
-  @@id([seasonId, teamId])
+  playerId       Int?
+  playerName     String?
+  teamName       String?
+  playerInId     Int?
+  playerInName   String?
+  match          Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  team           Team     @relation(fields: [teamId], references: [id])
+  player         Player?  @relation(fields: [playerId], references: [id])
 }
 
-enum MatchStatus {
-  SCHEDULED
-  FINISHED
-  POSTPONED
-  IN_PROGRESS
-  LIVE
-  SELECTING_STARTERS
-}
-
-enum EventType {
-  GOAL
-  ASSIST
-  FOUL
-  YELLOW_CARD
-  RED_CARD
-  SUBSTITUTION
-  TIMEOUT
-  SHOT
-  MATCH_START
-  PERIOD_START
-  MATCH_END
+model Post {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  title      String
+  excerpt    String   @db.Text
+  content    String   @db.Text
+  imageUrl   String
+  category   String
+  published  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 enum PlayerPosition {
@@ -168,4 +147,27 @@ enum PlayerPosition {
   DEFENSA
   ALA
   PIVOT
+}
+
+enum MatchStatus {
+  SCHEDULED
+  LIVE
+  FINISHED
+  SELECTING_STARTERS
+  POSTPONED
+  IN_PROGRESS
+}
+
+enum EventType {
+  GOAL
+  ASSIST
+  FOUL
+  SHOT
+  YELLOW_CARD
+  RED_CARD
+  TIMEOUT
+  SUBSTITUTION
+  MATCH_START
+  PERIOD_START
+  MATCH_END
 }

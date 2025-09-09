@@ -1,5 +1,5 @@
 import type { ElementType } from 'react';
-import type { Season as PrismaSeason, Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent, PlayerMatchStats as PrismaPlayerMatchStats, SeasonTeam as PrismaSeasonTeam } from '@prisma/client';
+import type { Season as PrismaSeason, Match as PrismaMatch, Team as PrismaTeam, Player as PrismaPlayer, GameEvent as PrismaGameEvent, PlayerMatchStats as PrismaPlayerMatchStats, SeasonTeam as PrismaSeasonTeam, Post as PrismaPost } from '@prisma/client';
 
 export type MatchStatus = 'SCHEDULED' | 'LIVE' | 'FINISHED' | 'SELECTING_STARTERS'| 'POSTPONED' | 'IN_PROGRESS' ;
 export type PlayerPositionType = "GOLERO" | "DEFENSA" | "ALA" | "PIVOT";
@@ -110,17 +110,10 @@ export interface GameState {
   updatedAt: string | null;
 }
 
-export type Post = {
-  id: string;
-  title: string;
-  slug: string;
-  content: string;
-  imageUrl: string;
-  published: boolean;
+export interface Post extends Omit<PrismaPost, 'createdAt' | 'updatedAt'> {
   createdAt: string;
-  excerpt: string;
-  category: string;
-};
+  updatedAt: string;
+}
 
 export interface SocialLink {
   name: string;
