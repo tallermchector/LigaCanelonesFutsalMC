@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import type { FullMatch, GameEvent, GameEventType, Player, SelectedPlayer, Team } from '@/types';
@@ -15,6 +16,7 @@ import { Label } from '../ui/label';
 import { Hand, RefreshCw, Shield, Square, Timer, Target, Goal, Footprints, Minus, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { TshirtIcon } from '@/components/icons';
 
 
 interface ManualEntryFormProps {
@@ -160,13 +162,15 @@ const PlayerButton = ({ player, team, onSelect, isSelected, isActive, className,
 
     const buttonContent = (
         <div className="relative w-full h-full flex flex-col items-center justify-center">
-             <Image src={team.logoUrl || ''} alt={team.name} width={24} height={24} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 opacity-10" />
+            <TshirtIcon className={cn("w-16 h-16 transition-all duration-200 ease-in-out group-hover:scale-110", team.id === state.teamA?.id ? 'text-blue-500' : 'text-red-500')} />
             {isActive && !isSelectionMode && (
                 <div className="absolute top-1 right-1 bg-black/50 text-white rounded-full h-4 w-4 flex items-center justify-center text-[10px] font-bold">
                     T
                 </div>
             )}
-            <span className="relative text-lg font-bold">{player.number}</span>
+            <span className="absolute text-white font-bold text-lg md:text-2xl select-none transition-all duration-200 ease-in-out group-hover:scale-110 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                {player.number}
+            </span>
         </div>
     );
     
@@ -289,37 +293,20 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                         ))}
                     </div>
                 ) : (
-                    <>
-                         <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-2 gap-0 p-0">
-                           {starters.map((player) => (
-                                <PlayerButton
-                                    key={player.id}
-                                    player={player}
-                                    team={team}
-                                    onSelect={() => onPlayerSelect(teamId, player.id)}
-                                    isSelected={selectedPlayerId === player.id}
-                                    isActive={true}
-                                    onEventCreated={onEventCreated}
-                                    initialTime={lastEventTime}
-                                />
-                            ))}
-                        </div>
-                        <Separator />
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 p-0 flex-grow overflow-y-auto">
-                             {substitutes.map((player) => (
-                                <PlayerButton
-                                    key={player.id}
-                                    player={player}
-                                    team={team}
-                                    onSelect={() => onPlayerSelect(teamId, player.id)}
-                                    isSelected={selectedPlayerId === player.id}
-                                    isActive={false}
-                                    onEventCreated={onEventCreated}
-                                    initialTime={lastEventTime}
-                                />
-                            ))}
-                        </div>
-                    </>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-4 gap-0 p-0 h-full flex-grow overflow-y-auto">
+                        {sortedPlayers.map((player) => (
+                            <PlayerButton
+                                key={player.id}
+                                player={player}
+                                team={team}
+                                onSelect={() => onPlayerSelect(teamId, player.id)}
+                                isSelected={selectedPlayerId === player.id}
+                                isActive={activePlayers.includes(player.id)}
+                                onEventCreated={onEventCreated}
+                                initialTime={lastEventTime}
+                            />
+                        ))}
+                    </div>
                 )}
             </CardContent>
         </Card>
