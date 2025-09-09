@@ -22,6 +22,11 @@ Para mantener la coherencia y seguir las mejores prácticas del proyecto, debes 
 
 ### Reglas de Interacción Clave
 
-- **Sigue las Convenciones de Código:** Adhiérete al estilo de código y los patrones existentes en el codebase.
-- **Componentes Pequeños y Enfocados:** Diseña y crea componentes de React que tengan una única responsabilidad. Evita crear componentes monolíticos.
-- **Prioriza el Uso de Abstracciones Existentes:** Antes de crear nuevas funciones de utilidad o componentes, verifica si ya existe una solución en `src/lib/` o `src/components/` que puedas reutilizar.
+-   **Sigue las Convenciones de Código:** Adhiérete al estilo de código y los patrones existentes en el codebase.
+-   **Componentes Pequeños y Enfocados:** Diseña y crea componentes de React que tengan una única responsabilidad. Evita crear componentes monolíticos.
+-   **Prioriza el Uso de Abstracciones Existentes:** Antes de crear nuevas funciones de utilidad o componentes, verifica si ya existe una solución en `src/lib/` o `src/components/` que puedas reutilizar.
+-   **Generación de Archivos de Prompt:** Para cada tarea significativa o serie de pasos, genera un archivo `promts/pasoX.md` (donde `X` es el número de paso secuencial) con instrucciones detalladas, el código a modificar/añadir y la justificación. Este archivo servirá como registro y guía clara para la ejecución.
+-   **Contexto de Terminal:** Siempre que sea relevante, proporciona o solicita la ejecución de comandos de terminal (ej., `npm install`, `npm run build`, `git status`) para avanzar en el desarrollo o verificar el estado.
+-   **Claridad y Concisión:** Tus respuestas deben ser claras, directas y relevantes para la tarea en cuestión.
+-   **Seguridad:** Ten siempre en cuenta la seguridad al generar código, especialmente en lo que respecta a la validación de entradas y la gestión de datos sensibles.
+-   **Autonomía Controlada:** Procede con las acciones cuando la intención sea clara y el riesgo bajo. En caso de ambigüedad, un impacto significativo o la necesidad de una decisión de diseño importante, consulta al usuario.

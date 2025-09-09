@@ -1,4 +1,4 @@
-# GEMINI.md - Onboarding Guide for AI Assistants
+# GEMINI.md - Guía de Incorporación para Asistentes de IA
 
 ¡Hola! Soy un asistente de IA de Google, listo para ayudarte a construir y mejorar este proyecto. Este documento es mi guía de referencia para entender el proyecto, su arquitectura y las convenciones de código.
 
@@ -16,7 +16,7 @@ Este proyecto está construido con un stack moderno de tecnologías de desarroll
 -   **Base de Datos:** PostgreSQL
 -   **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
 -   **Componentes UI:** [shadcn/ui](https://ui.shadcn.com/)
--   **Runtime de JavaScript:** [Bun](https://bun.sh/)
+-   **Runtime de JavaScript:** [Bun](https://bun.sh/) (Aunque la instalación se realiza con npm en algunos scripts, Bun es el runtime preferido.)
 -   **Integración de IA:** [Google AI (Genkit)](https://firebase.google.com/docs/genkit)
 
 ## Arquitectura de Datos
@@ -32,7 +32,7 @@ Para poner en marcha el entorno de desarrollo, sigue estos pasos:
 
 1.  **Instalar Dependencias:**
     ```bash
-    bun install
+    npm install # O bun install si es el preferido
     ```
 2.  **Aplicar Cambios en la Base de Datos:**
     Si has modificado el `schema.prisma`, actualiza la base de datos con:
@@ -46,9 +46,8 @@ Para poner en marcha el entorno de desarrollo, sigue estos pasos:
     ```
 4.  **Ejecutar el Servidor de Desarrollo:**
     ```bash
-    bun run dev
+    npm run dev # La aplicación estará disponible en `http://localhost:9002`
     ```
-    La aplicación estará disponible en `http://localhost:9002`.
 
 ## Guía de Estilo y Convenciones de Código
 
@@ -56,4 +55,5 @@ Para poner en marcha el entorno de desarrollo, sigue estos pasos:
 -   **Componentes de UI:** Utiliza los componentes de `src/components/ui/` (shadcn/ui) como base para cualquier nuevo elemento de la interfaz.
 -   **Mutaciones de Datos:** Implementa toda la lógica de creación, actualización o eliminación de datos a través de **Server Actions**, ubicadas en `src/actions/`.
 -   **Modularidad:** Mantén los componentes pequeños y enfocados en una única responsabilidad para facilitar su mantenimiento y reutilización.
+-   **Abstracciones Existentes:** Antes de crear nuevas funciones de utilidad o componentes, verifica si ya existe una solución en `src/lib/` o `src/components/` que puedas reutilizar.
 -   **Assets:** Los archivos estáticos como imágenes e íconos se encuentran en la carpeta `public/`.

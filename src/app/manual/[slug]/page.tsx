@@ -8,6 +8,7 @@ import { ManualContent } from '@/components/manual/ManualContent';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { ManualSidebar } from '@/components/manual/ManualSidebar';
 
 // Esta función genera los parámetros estáticos para cada página del manual en tiempo de build
 export async function generateStaticParams() {
@@ -60,18 +61,23 @@ export default async function ManualDetailPage({ params }: ManualDetailPageProps
       <Header />
       <main className="flex-1 pt-[var(--header-height)]">
         <PageHero title={title} />
-        <div className="container mx-auto p-4 py-8 md:p-8">
-          <div className="max-w-4xl mx-auto">
-            <Link href="/manual">
-              <Button variant="outline" className="mb-8 flex items-center gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Volver al Manual
-              </Button>
-            </Link>
-            <article>
-              <ManualContent content={content} />
-            </article>
-          </div>
+        <div className="container mx-auto max-w-7xl p-4 py-8 md:p-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
+               <aside className="lg:col-span-1">
+                    <ManualSidebar currentSlug={slug} />
+                </aside>
+                <div className="lg:col-span-3">
+                    <article>
+                    <ManualContent content={content} />
+                    </article>
+                     <Button asChild variant="outline" className="mt-12">
+                        <Link href="/manual">
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Volver al índice del Manual
+                        </Link>
+                    </Button>
+                </div>
+            </div>
         </div>
       </main>
       <Footer />

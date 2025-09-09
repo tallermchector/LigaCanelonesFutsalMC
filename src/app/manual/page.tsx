@@ -3,7 +3,8 @@ import { Footer } from '@/components/layout/footer';
 import { PageHero } from '@/components/layout/PageHero';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { Settings, Gamepad2, LayoutGrid, Shield, Users, Trophy } from 'lucide-react';
+import { Settings, Gamepad2, LayoutGrid, Shield, Users, Trophy, BookOpen } from 'lucide-react';
+import { ManualCard } from '@/components/manual/ManualCard';
 
 const manualSections = [
   {
@@ -52,21 +53,12 @@ export default function ManualPage() {
         <PageHero
           title="Manual de Usuario"
           description="Guía y documentación para utilizar la plataforma de gestión de torneos."
+          icon={true}
         />
         <div className="container mx-auto p-4 py-8 md:p-8">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {manualSections.map((section) => (
-              <Link href={`/manual/${section.slug}`} key={section.slug}>
-                <Card className="flex h-full transform flex-col transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-                  <CardHeader className="flex flex-row items-center gap-4">
-                    {section.icon}
-                    <CardTitle>{section.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{section.description}</p>
-                  </CardContent>
-                </Card>
-              </Link>
+              <ManualCard key={section.slug} section={section} />
             ))}
           </div>
         </div>
