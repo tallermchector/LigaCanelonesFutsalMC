@@ -6,12 +6,12 @@
  * - generateBlogPost - Genera título, extracto, contenido y URL de imagen.
  */
 
-import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import { futsalTeams } from '@/data/teams';
 import { players } from '@/data/players';
 import { matchStatuses } from '@/data/matchData';
 import { newsCategories } from '@/data/news-categories';
+import { ai } from '../../ai/genkit';
 
 const GenerateBlogPostInputSchema = z.object({
   topic: z.string().describe('El tema o título inicial para la publicación del blog.'),
@@ -59,7 +59,7 @@ const generateBlogPostFlow = ai.defineFlow(
     const categoriesContext = newsCategories.map(c => ({ slug: c.slug, name: c.name, description: c.description }));
 
 
-    const prompt = ai.definePrompt({
+    const blogPostPrompt = ai.definePrompt({
         name: 'generateBlogPostPrompt',
         input: { schema: GenerateBlogPostInputSchema },
         output: { schema: GenerateBlogPostOutputSchema },
@@ -96,7 +96,7 @@ const generateBlogPostFlow = ai.defineFlow(
         `,
     });
 
-    const { output } = await prompt(input);
+    const { output } = await ai.prompt(blogPostPrompt, input);
     if (!output) {
       throw new Error('La IA no pudo generar la publicación del blog.');
     }
