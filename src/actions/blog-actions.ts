@@ -7,6 +7,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { notFound } from 'next/navigation';
 
 const postsDirectory = path.join(process.cwd(), 'src/content/blog');
 
@@ -20,15 +21,15 @@ function slugify(text: string): string {
     .replace(/--+/g, '-');      // Replace multiple - with single -
 }
 
-const createPostSchema = z.object({
-  title: z.string(),
-  excerpt: z.string(),
-  imageUrl: z.string().url(),
-  content: z.string(),
+const postSchema = z.object({
+  title: z.string().min(1, 'El título es requerido.'),
+  excerpt: z.string().min(1, 'El extracto es requerido.'),
+  imageUrl: z.string().url('Debe ser una URL válida.'),
+  content: z.string().min(1, 'El contenido es requerido.'),
 });
 
-export async function createPostAction(values: z.infer<typeof createPostSchema>) {
-  const validatedFields = createPostSchema.safeParse(values);
+export async function createPostAction(values: z.infer<typeof postSchema>) {
+  const validatedFields = postSchema.safeParse(values);
 
   if (!validatedFields.success) {
     throw new Error('Datos inválidos para crear la publicación.');
@@ -53,11 +54,74 @@ ${content}
   try {
     await fs.writeFile(filePath, fileContent);
     revalidatePath('/blog');
+    revalidatePath('/gestion/blog');
     revalidatePath(`/blog/${slug}`);
   } catch (error) {
     console.error('Failed to write blog post file:', error);
     throw new Error('No se pudo guardar la publicación.');
   }
+}
+
+export async function updatePostAction(originalSlug: string, values: z.infer<typeof postSchema>) {
+  const validatedFields = postSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    throw new Error('Datos inválidos para actualizar la publicación.');
+  }
+
+  const { title, excerpt, imageUrl, content } = validatedFields.data;
+
+  const originalPost = await getPostBySlug(originalSlug);
+  if (!originalPost) {
+    throw new Error('La publicación original no existe.');
+  }
+
+  const newSlug = slugify(title);
+  const originalFilePath = path.join(postsDirectory, `${originalSlug}.md`);
+  const newFilePath = path.join(postsDirectory, `${newSlug}.md`);
+
+  const fileContent = `---
+title: '${title.replace(/'/g, "\\'")}'
+createdAt: '${originalPost.createdAt}'
+imageUrl: '${imageUrl}'
+excerpt: '${excerpt.replace(/'/g, "\\'")}'
+---
+${content}
+`;
+
+  try {
+    // If the slug changed, delete the old file
+    if (originalSlug !== newSlug) {
+      await fs.unlink(originalFilePath);
+    }
+    // Write the new or updated file
+    await fs.writeFile(newFilePath, fileContent);
+
+    revalidatePath('/blog');
+    revalidatePath('/gestion/blog');
+    revalidatePath(`/blog/${originalSlug}`);
+    if (originalSlug !== newSlug) {
+      revalidatePath(`/blog/${newSlug}`);
+    }
+  } catch (error) {
+    console.error('Failed to update blog post file:', error);
+    throw new Error('No se pudo actualizar la publicación.');
+  }
+}
+
+
+export async function deletePostAction(slug: string) {
+    const filePath = path.join(postsDirectory, `${slug}.md`);
+
+    try {
+        await fs.unlink(filePath);
+        revalidatePath('/blog');
+        revalidatePath('/gestion/blog');
+        revalidatePath(`/blog/${slug}`);
+    } catch (error) {
+        console.error('Failed to delete blog post file:', error);
+        throw new Error('No se pudo eliminar la publicación.');
+    }
 }
 
 export async function getPosts(): Promise<{ posts: Post[], totalPages: number }> {
@@ -108,7 +172,10 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
       published: true,
     } as Post;
   } catch (error) {
-    console.error(`Error reading post with slug ${slug}:`, error);
+    // Do not log "file not found" errors as they are expected
+    if (error.code !== 'ENOENT') {
+      console.error(`Error reading post with slug ${slug}:`, error);
+    }
     return undefined;
   }
 }
