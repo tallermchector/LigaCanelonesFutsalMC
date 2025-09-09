@@ -32,7 +32,7 @@ const editPostSchema = z.object({
   excerpt: z
     .string()
     .min(20, 'El extracto debe tener al menos 20 caracteres.'),
-  imageUrl: z.string().url('Debe ser una URL válida.'),
+  imageUrl: z.string().min(10, 'La ruta de la imagen debe tener al menos 10 caracteres.'),
   content: z.string().min(50, 'El contenido debe tener al menos 50 caracteres.'),
 });
 
@@ -200,8 +200,11 @@ export function EditPostForm({ post }: EditPostFormProps) {
             <FormItem>
               <FormLabel>URL de la Imagen Destacada</FormLabel>
               <FormControl>
-                <Input placeholder="https://picsum.photos/1200/600" {...field} />
+                <Input placeholder="Ej: /blog/noticias/mi-imagen.png" {...field} />
               </FormControl>
+               <FormDescription>
+                Puedes usar una URL completa (https://...) o una ruta local (ej: /blog/imagen.png).
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
