@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from "react";
@@ -30,7 +31,16 @@ export function ActionMenu({ player, onAction }: ActionMenuProps) {
 
   const handleActionClick = (type: GameEventType) => {
     if (type === 'SUBSTITUTION') {
-        dispatch({ type: 'INITIATE_SUBSTITUTION' });
+        const teamId = state.teamA?.players.some(p => p.id === player.id) ? 'A' : 'B';
+        dispatch({ 
+            type: 'INITIATE_SUBSTITUTION',
+            payload: {
+                playerOut: {
+                    playerId: player.id,
+                    teamId: teamId
+                }
+            }
+        });
     } else {
         const teamId = state.teamA?.players.some(p => p.id === player.id) ? state.teamA.id : state.teamB?.id;
         const teamName = state.teamA?.players.some(p => p.id === player.id) ? state.teamA.name : state.teamB?.name;
