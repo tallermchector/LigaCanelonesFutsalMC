@@ -27,7 +27,7 @@ type GameAction =
   | { type: 'TICK'; payload: { timePassed: number } }
   | { type: 'SELECT_PLAYER'; payload: SelectedPlayer }
   | { type: 'ADD_EVENT'; payload: { event: Omit<GameEvent, 'id' | 'matchId'> } }
-  | { type: 'INITIATE_SUBSTITUTION' }
+  | { type: 'INITIATE_SUBSTITUTION'; payload: { playerOut: NonNullable<SelectedPlayer> } }
   | { type: 'CANCEL_SUBSTITUTION' }
   | { type: 'COMPLETE_SUBSTITUTION'; payload: { playerInId: number } }
   | { type: 'TOGGLE_ACTIVE_PLAYER'; payload: { teamId: 'A' | 'B'; playerId: number } }
@@ -219,17 +219,16 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       return newState;
     }
     case 'INITIATE_SUBSTITUTION':
-        if (!state.selectedPlayer) return state;
         return {
             ...state,
-            substitutionState: { playerOut: state.selectedPlayer },
+            substitutionState: { playerOut: action.payload.playerOut },
             selectedPlayer: null,
         };
     case 'CANCEL_SUBSTITUTION':
         return { ...state, substitutionState: null };
     
-     case 'COMPLETE_SUBSTITUTION': {
-        if (!state.substitutionState) return state;
+    case 'COMPLETE_SUBSTITUTION': {
+        if (!state.substitutionState || !state.matchId) return state;
 
         const { playerOut } = state.substitutionState;
         const playerInId = action.payload.playerInId;
@@ -254,13 +253,26 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         }
         delete newPlayerPositions[pOut.id];
 
-        return {
+        const substitutionEvent: Omit<GameEvent, 'id' | 'matchId'> = {
+            type: 'SUBSTITUTION',
+            teamId: team.id,
+            teamName: team.name,
+            playerId: pOut.id,
+            playerName: pOut.name,
+            playerInId: pIn.id,
+            playerInName: pIn.name,
+            timestamp: state.time,
+        };
+        
+        const stateWithSub = {
             ...state,
             [activePlayersKey]: updatedActivePlayers,
             playerPositions: newPlayerPositions,
             substitutionState: null,
             selectedPlayer: null,
-        };
+        }
+
+        return gameReducer(stateWithSub, { type: 'ADD_EVENT', payload: { event: substitutionEvent }});
     }
     
     case 'TOGGLE_ACTIVE_PLAYER': {

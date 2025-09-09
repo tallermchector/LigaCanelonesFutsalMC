@@ -56,13 +56,15 @@ const EventCreationForm = ({ player, onEventCreated, initialTime }: { player: Pl
             return;
         }
 
+        const teamId = player.teamId === state.teamA?.id ? state.teamA.id : state.teamB?.id;
+        if (!state.selectedPlayer || !teamId) return;
+
         if (eventType === 'SUBSTITUTION') {
-            dispatch({ type: 'INITIATE_SUBSTITUTION' });
-            onEventCreated(timeValue); // Close popover
+            dispatch({ type: 'INITIATE_SUBSTITUTION', payload: { playerOut: { playerId: player.id, teamId: state.selectedPlayer.teamId } } });
+            onEventCreated(timeValue);
             return;
         }
 
-        const teamId = player.teamId === state.teamA?.id ? state.teamA.id : state.teamB?.id;
         const teamName = player.teamId === state.teamA?.id ? state.teamA.name : state.teamB?.name;
         
         if(!teamId || !teamName) return;
@@ -253,7 +255,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
 
     if (substitutionState && substitutionState.playerOut.teamId === teamId) {
         return (
-            <Card className="flex-1 overflow-hidden">
+            <Card className="flex-1 overflow-hidden bg-blue-900/10">
                 <CardContent className="p-4 h-full">
                      <h3 className="text-center font-bold text-primary mb-2">Seleccionar Suplente</h3>
                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 p-0 h-full">
@@ -290,6 +292,7 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
                             isActive={activePlayers.includes(player.id)}
                             onEventCreated={onEventCreated}
                             initialTime={lastEventTime}
+                            className={!isSelectionMode && !activePlayers.includes(player.id) ? 'opacity-50' : ''}
                         />
                     ))}
                 </div>
