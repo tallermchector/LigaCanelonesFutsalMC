@@ -37,10 +37,6 @@
       # Archivos que se abren automáticamente al crear o reiniciar el espacio de trabajo
       onCreate = {
         default.openFiles = [
-          "README.md"
-          "GEMINI.md"
-          "src/app/page.tsx"
-          ".idx/airules.md"
         ];
       };
     };
