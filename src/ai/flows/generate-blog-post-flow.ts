@@ -11,9 +11,11 @@ import { z } from 'zod';
 import { futsalTeams } from '@/data/teams';
 import { players } from '@/data/players';
 import { matchStatuses } from '@/data/matchData';
+import { newsCategories } from '@/data/news-categories';
 
 const GenerateBlogPostInputSchema = z.object({
   topic: z.string().describe('El tema o título inicial para la publicación del blog.'),
+  category: z.string().describe('La categoría seleccionada para la publicación del blog.'),
 });
 export type GenerateBlogPostInput = z.infer<typeof GenerateBlogPostInputSchema>;
 
@@ -53,6 +55,8 @@ const generateBlogPostFlow = ai.defineFlow(
         position: player.position,
         teamId: player.teamId,
     }));
+    
+    const categoriesContext = newsCategories.map(c => ({ slug: c.slug, name: c.name, description: c.description }));
 
 
     const prompt = ai.definePrompt({
@@ -64,6 +68,7 @@ const generateBlogPostFlow = ai.defineFlow(
             Tu tarea es escribir una publicación de blog atractiva, informativa y con un diseño moderno usando Markdown, basándote en los datos reales de la liga que te proporciono.
 
             Tema: {{{topic}}}
+            Categoría: {{{category}}}
 
             ## Contexto de la Liga (Datos Reales):
 
@@ -76,11 +81,13 @@ const generateBlogPostFlow = ai.defineFlow(
             ### Estados de Partido Posibles:
             ${JSON.stringify(matchStatuses, null, 2)}
 
+            ### Categorías de Noticias:
+            ${JSON.stringify(categoriesContext, null, 2)}
 
             ## Instrucciones:
-            1.  **Título:** Crea un título que sea pegadizo, relevante y optimizado para SEO.
+            1.  **Título:** Crea un título que sea pegadizo, relevante para el tema y la categoría, y optimizado para SEO.
             2.  **Extracto:** Escribe un resumen corto (2-3 frases) que enganche al lector.
-            3.  **Contenido:** Desarrolla el tema en un artículo completo y bien estructurado.
+            3.  **Contenido:** Desarrolla el tema en un artículo completo y bien estructurado, **teniendo en cuenta la categoría seleccionada**.
                 *   **Usa los Datos:** Integra los nombres de equipos y jugadores del contexto proporcionado para que el artículo sea auténtico y específico de la liga.
                 *   **Estructura Moderna:** Utiliza subtítulos (##), listas con viñetas (*), y citas destacadas (>) para romper el texto y hacerlo más legible y dinámico.
                 *   **Tono:** Apasionado, conocedor y profesional.
