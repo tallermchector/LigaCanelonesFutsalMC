@@ -12,6 +12,7 @@ import { players } from '@/data/players';
 import { matchStatuses } from '@/data/matchData';
 import { newsCategories } from '@/data/news-categories';
 import { ai } from '../../ai/genkit';
+import { googleAI } from '@genkit-ai/googleai';
 
 const GenerateBlogPostInputSchema = z.object({
   topic: z.string().describe('El tema o título inicial para la publicación del blog.'),
@@ -98,7 +99,15 @@ const generateBlogPostFlow = ai.defineFlow(
   },
   async (input) => {
 
-    const { output } = await blogPostPrompt(input);
+    const { output } = await ai.generate({
+        prompt: blogPostPrompt.prompt,
+        model: googleAI('gemini-pro'),
+        input: input,
+        output: {
+            schema: GenerateBlogPostOutputSchema,
+        }
+    });
+
     if (!output) {
       throw new Error('La IA no pudo generar la publicación del blog.');
     }
