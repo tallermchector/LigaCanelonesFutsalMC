@@ -1,5 +1,16 @@
 {
     "recommendations": [
-        "google.validation-agent-extension",
+      "google.gemini-cli-vscode-ide-companion",
+      "ms-python.debugpy",
+      "ms-python.python",
+      "google.geminicodeassist",
+      "mblode.pretty-formatter",
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "bradlc.vscode-tailwindcss",
+      "prisma.prisma",
+      "vscode-icons-team.vscode-icons",
+      "bungcip.better-toml",
+      "yoavbls.pretty-ts-errors"
     ]
-}
+  }

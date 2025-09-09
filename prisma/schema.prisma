@@ -7,94 +7,72 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-// CORRECCIÓN: Se añaden los estados que tu aplicación necesita.
-enum MatchStatus {
-  SCHEDULED
-  FINISHED
-  POSTPONED
-  IN_PROGRESS 
-  LIVE
-  SELECTING_STARTERS
-}
-
-// CORRECCIÓN: Se añade el tipo de evento que faltaba.
-enum EventType {
-  GOAL
-  ASSIST
-  FOUL
-  YELLOW_CARD
-  RED_CARD
-  SUBSTITUTION
-  TIMEOUT
-  SHOT
-}
-
-model Team {
-  id        Int          @id @default(autoincrement())
-  name      String
-  slug      String       @unique
-  logoUrl   String?
-  description String?
-  bannerUrl   String?
-  instagram   String?
-  facebook    String?
-  whatsapp    String?
-  phone       String?
-  players   Player[]
-  seasons   SeasonTeam[]
-  matchesA  Match[]      @relation("TeamAMatches")
-  matchesB  Match[]      @relation("TeamBMatches")
-  events    GameEvent[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-}
-
-model Player {
-  id                      Int                @id @default(autoincrement())
-  name                    String
-  number                  Int
-  position                String
-  birthDate               DateTime?
-  height                  Int?
-  weight                  Int?
-  nationality             String?
-  teamId                  Int
-  team                    Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  matchStats              PlayerMatchStats[]
-  gameEventsAsPlayer      GameEvent[]        @relation("PlayerEvents")
-  gameEventsAsSubstituted GameEvent[]        @relation("PlayerInEvents")
-  createdAt               DateTime           @default(now())
-  updatedAt               DateTime           @updatedAt
-
-  @@index([teamId])
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_DIRECT_URL")
 }
 
 model Season {
   id        Int          @id @default(autoincrement())
   name      String
-  year      Int          @unique
+  year      Int
   teams     SeasonTeam[]
-  matches   Match[] // Relación con Match
+  matches   Match[]
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
+}
+
+model Team {
+  id          Int          @id @default(autoincrement())
+  name        String
+  slug        String       @unique
+  logoUrl     String?
+  description String?      @db.Text
+  bannerUrl   String?
+  instagram   String?
+  facebook    String?
+  whatsapp    String?
+  phone       String?
+  players     Player[]
+  seasons     SeasonTeam[]
+  matchesA    Match[]      @relation("TeamAMatches")
+  matchesB    Match[]      @relation("TeamBMatches")
+  events      GameEvent[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Player {
+  id        Int      @id @default(autoincrement())
+  name      String
+  number    Int
+  position  String // e.g., 'GOLERO', 'DEFENSA', 'ALA', 'PIVOT'
+  birthDate DateTime?
+  height    Int?
+  weight    Int?
+  nationality String?
+  teamId    Int
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  
+  matchStats PlayerMatchStats[]
+  gameEvents GameEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model SeasonTeam {
   seasonId Int
   teamId   Int
-  position Int
-  points   Int
-  played   Int
-  wins     Int
-  draws    Int
-  losses   Int
-  goalsFor Int
-  goalsAgainst Int
-  goalDifference Int
+  position Int     @default(0)
+  points   Int     @default(0)
+  played   Int     @default(0)
+  wins     Int     @default(0)
+  draws    Int     @default(0)
+  losses   Int     @default(0)
+  goalsFor Int     @default(0)
+  goalsAgainst Int @default(0)
+  goalDifference Int @default(0)
 
   season Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
   team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -103,39 +81,36 @@ model SeasonTeam {
 }
 
 model Match {
-  id               Int                @id @default(autoincrement())
-  scheduledTime    DateTime
-  status           MatchStatus        @default(SCHEDULED)
-  round            Int?
-  period           Int                @default(1)
-  time             Int                @default(0)
-  isRunning        Boolean            @default(false)
-  teamAId          Int
-  teamBId          Int
-  scoreA           Int                @default(0)
-  scoreB           Int                @default(0)
-  foulsA           Int                @default(0)
-  foulsB           Int                @default(0)
-  timeoutsA        Int                @default(0)
-  timeoutsB        Int                @default(0)
-  activePlayersA   Int[]
-  activePlayersB   Int[]
-  seasonId         Int // Relación con Season
-  teamA            Team               @relation("TeamAMatches", fields: [teamAId], references: [id], onDelete: Restrict)
-  teamB            Team               @relation("TeamBMatches", fields: [teamBId], references: [id], onDelete: Restrict)
-  season           Season             @relation(fields: [seasonId], references: [id])
-  events           GameEvent[]
+  id            Int      @id @default(autoincrement())
+  seasonId      Int
+  round         Int?
+  teamAId       Int
+  teamBId       Int
+  scheduledTime DateTime
+  status        String   // e.g., 'SCHEDULED', 'LIVE', 'FINISHED'
+  scoreA        Int?
+  scoreB        Int?
+  period        Int?     // e.g., 1 or 2
+  time          Int?     // Remaining time in seconds
+  foulsA        Int?
+  foulsB        Int?
+  timeoutsA     Int?
+  timeoutsB     Int?
+  isRunning     Boolean? @default(false)
+  activePlayersA Int[]
+  activePlayersB Int[]
+  
+  season          Season             @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  teamA           Team               @relation("TeamAMatches", fields: [teamAId], references: [id], onDelete: Cascade)
+  teamB           Team               @relation("TeamBMatches", fields: [teamBId], references: [id], onDelete: Cascade)
+  events          GameEvent[]
   playerMatchStats PlayerMatchStats[]
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
 
-  @@index([teamAId])
-  @@index([teamBId])
-  @@index([seasonId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PlayerMatchStats {
-  id                  Int @id @default(autoincrement())
   matchId             Int
   playerId            Int
   timePlayedInSeconds Int @default(0)
@@ -143,29 +118,19 @@ model PlayerMatchStats {
   match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
   player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
-  @@unique([matchId, playerId])
-  @@index([playerId])
+  @@id([matchId, playerId])
 }
 
 model GameEvent {
-  id           Int       @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   matchId      Int
-  teamId       Int?
+  type         String  // e.g., 'GOAL', 'ASSIST', 'FOUL', 'YELLOW_CARD', 'RED_CARD', 'TIMEOUT', 'SUBSTITUTION'
+  timestamp    Int     // Game time in seconds when event occurred
+  teamId       Int
   playerId     Int?
   playerInId   Int?
-  type         EventType
-  timestamp    Int
-  teamName     String?
-  playerName   String?
-  playerInName String?
-
-  match    Match   @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  team     Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull)
-  player   Player? @relation("PlayerEvents", fields: [playerId], references: [id], onDelete: SetNull)
-  playerIn Player? @relation("PlayerInEvents", fields: [playerInId], references: [id], onDelete: SetNull)
-
-  @@index([matchId])
-  @@index([teamId])
-  @@index([playerId])
-  @@index([playerInId])
+  
+  match        Match   @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  team         Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  player       Player? @relation(fields: [playerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

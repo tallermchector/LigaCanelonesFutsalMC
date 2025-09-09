@@ -1,46 +1,50 @@
-# To learn more about how to use Nix to configure your environment
-# see: https://firebase.google.com/docs/studio/customize-workspace
-{pkgs}: {
-  # Which nixpkgs channel to use.
-  channel = "stable-25.05"; # or "unstable"
-  # Use https://search.nixos.org/packages to find packages
+# .idx/dev.nix
+# Configuración del entorno de desarrollo de Project IDX
+
+{pkgs, ...}:
+{
+  # Definición de paquetes del sistema disponibles en el entorno
   packages = [
-    pkgs.nodejs_20
-    pkgs.zulu
-    pkgs.bun
+    pkgs.bun # Runtime de JavaScript para ejecutar scripts y desarrollo
+    pkgs.nodejs # Incluye node, npm y npx, necesarios para algunas dependencias y scripts
+    pkgs.postgresql # Base de datos del proyecto
+    pkgs.git # Control de versiones
+    pkgs.python3 # Intérprete de Python 3
     pkgs.openssl
-    pkgs.python313
-    pkgs.tree
   ];
-  # Sets environment variables in the workspace
-  env = {};
-  # This adds a file watcher to startup the firebase emulators. The emulators will only start if
-  # a firebase.json file is written into the user's directory
-  services.firebase.emulators = {
-    # Disabling because we are using prod backends right now
-    detect = false;
-    projectId = "demo-app";
-    services = ["auth" "firestore"];
-  };
+
+  # Configuración específica para el editor VS Code
   idx = {
-    # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
+    # Extensiones de VS Code a instalar automáticamente
+    # Listado ampliado para soportar el stack tecnológico del proyecto
     extensions = [
-      # "vscodevim.vim"
-      "Google.validation-agent-extension"
+            "Google.validation-agent-extension"
       "google.gemini-cli-vscode-ide-companion"
       "ms-python.debugpy"
       "ms-python.python"
       "google.geminicodeassist"
-      "mblode.pretty-formatter"
+      "mblode.pretty-formatter" # Formateador genérico, puede ser complementado o reemplazado por Prettier
+      "dbaeumer.vscode-eslint" # Integración de ESLint para análisis de código estático
+      "esbenp.prettier-vscode" # Formateador de código universal para consistencia
+      "bradlc.vscode-tailwindcss" # Soporte mejorado para Tailwind CSS
+      "prisma.prisma" # Resaltado de sintaxis y herramientas para Prisma
+      "vscode-icons-team.vscode-icons" # Iconos de archivo mejorados para una navegación visual más fácil
+      "bungcip.better-toml"
+      "YoavBls.pretty-ts-errors"
     ];
+    # Configuración del espacio de trabajo
     workspace = {
+      # Archivos que se abren automáticamente al crear o reiniciar el espacio de trabajo
       onCreate = {
         default.openFiles = [
+          "README.md"
+          "GEMINI.md"
           "src/app/page.tsx"
+          ".idx/airules.md"
         ];
       };
     };
-    # Enable previews and customize configuration
+    # Habilitar y personalizar las vistas previas de la aplicación
     previews = {
       enable = true;
       previews = {
