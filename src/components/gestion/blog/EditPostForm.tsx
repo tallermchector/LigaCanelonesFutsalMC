@@ -25,6 +25,7 @@ import type { Post } from '@/types';
 import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { newsCategories } from '@/data/news-categories';
+import { Label } from '@/components/ui/label';
 
 const editPostSchema = z.object({
   title: z.string().min(10, 'El título debe tener al menos 10 caracteres.'),
@@ -32,8 +33,12 @@ const editPostSchema = z.object({
   excerpt: z
     .string()
     .min(20, 'El extracto debe tener al menos 20 caracteres.'),
-  imageUrl: z.string().min(10, 'La ruta de la imagen debe tener al menos 10 caracteres.'),
+  imageUrl: z.string().optional(),
+  imageBlob: z.string().optional(),
   content: z.string().min(50, 'El contenido debe tener al menos 50 caracteres.'),
+}).refine(data => data.imageUrl || data.imageBlob, {
+  message: "Debe proporcionar una URL de imagen o subir un archivo.",
+  path: ["imageUrl"], 
 });
 
 type EditPostFormValues = z.infer<typeof editPostSchema>;
@@ -47,17 +52,35 @@ export function EditPostForm({ post }: EditPostFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(post.imageUrl || (post.imageBlob ? `data:image/jpeg;base64,${post.imageBlob}`: null));
 
   const form = useForm<EditPostFormValues>({
     resolver: zodResolver(editPostSchema),
     defaultValues: {
       title: post.title,
       excerpt: post.excerpt,
-      imageUrl: post.imageUrl,
+      imageUrl: post.imageUrl || '',
+      imageBlob: post.imageBlob || '',
       content: post.content,
       category: post.category,
     },
   });
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+              const base64String = reader.result?.toString().split(',')[1];
+              if (base64String) {
+                  form.setValue('imageBlob', base64String);
+                  form.setValue('imageUrl', ''); // Clear imageUrl if a file is uploaded
+                  setImagePreview(reader.result as string);
+              }
+          };
+          reader.readAsDataURL(file);
+      }
+  };
 
   const handleGenerateContent = async () => {
     const title = form.getValues('title');
@@ -86,6 +109,8 @@ export function EditPostForm({ post }: EditPostFormProps) {
       form.setValue('excerpt', result.excerpt, { shouldValidate: true });
       form.setValue('content', result.content, { shouldValidate: true });
       form.setValue('imageUrl', result.imageUrl, { shouldValidate: true });
+      form.setValue('imageBlob', '');
+      setImagePreview(result.imageUrl);
       toast({
         title: 'Contenido Regenerado',
         description: 'Se ha generado un nuevo borrador para tu publicación.',
@@ -192,23 +217,47 @@ export function EditPostForm({ post }: EditPostFormProps) {
             </FormItem>
           )}
         />
-
-        <FormField
-          control={form.control}
-          name="imageUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>URL de la Imagen Destacada</FormLabel>
-              <FormControl>
-                <Input placeholder="Ej: /blog/noticias/mi-imagen.png" {...field} />
-              </FormControl>
-               <FormDescription>
-                Puedes usar una URL completa (https://...) o una ruta local (ej: /blog/imagen.png).
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        
+        <div className="space-y-2">
+            <Label>Imagen Destacada</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+                 <FormField
+                    control={form.control}
+                    name="imageUrl"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel className="text-xs text-muted-foreground">Desde URL</FormLabel>
+                        <FormControl>
+                            <Input placeholder="https://ejemplo.com/imagen.png" {...field} onChange={(e) => {
+                                field.onChange(e);
+                                form.setValue('imageBlob', '');
+                                setImagePreview(e.target.value);
+                            }} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="imageBlob"
+                    render={({ field }) => (
+                        <FormItem>
+                         <FormLabel className="text-xs text-muted-foreground">O Subir Archivo</FormLabel>
+                          <FormControl>
+                            <Input type="file" accept="image/*" onChange={handleImageUpload} className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"/>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
+            {imagePreview && (
+                <div className="mt-4">
+                    <img src={imagePreview} alt="Vista previa" className="rounded-md max-h-48 w-auto" />
+                </div>
+            )}
+        </div>
         
         <FormField
           control={form.control}

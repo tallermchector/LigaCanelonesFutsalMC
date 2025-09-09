@@ -110,10 +110,12 @@ export interface GameState {
   updatedAt: string | null;
 }
 
-export interface Post extends Omit<PrismaPost, 'createdAt' | 'updatedAt'> {
+export interface Post extends Omit<PrismaPost, 'createdAt' | 'updatedAt' | 'imageBlob'> {
   createdAt: string;
   updatedAt: string;
+  imageBlob: string | null; // Changed to string for Base64 representation
 }
+
 
 export interface SocialLink {
   name: string;

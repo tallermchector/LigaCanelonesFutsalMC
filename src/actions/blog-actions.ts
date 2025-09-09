@@ -24,7 +24,8 @@ const postSchema = z.object({
   title: z.string().min(1, 'El título es requerido.'),
   category: z.string().min(1, "La categoría es requerida."),
   excerpt: z.string().min(1, 'El extracto es requerido.'),
-  imageUrl: z.string().min(10, 'La ruta de la imagen debe tener al menos 10 caracteres.'),
+  imageUrl: z.string().optional(),
+  imageBlob: z.string().optional(),
   content: z.string().min(1, 'El contenido es requerido.'),
 });
 
@@ -35,7 +36,7 @@ export async function createPostAction(values: z.infer<typeof postSchema>) {
     throw new Error('Datos inválidos para crear la publicación.');
   }
   
-  const { title, excerpt, imageUrl, content, category } = validatedFields.data;
+  const { title, excerpt, imageUrl, imageBlob, content, category } = validatedFields.data;
   const slug = slugify(title);
 
   try {
@@ -44,7 +45,8 @@ export async function createPostAction(values: z.infer<typeof postSchema>) {
         title,
         slug,
         excerpt,
-        imageUrl,
+        imageUrl: imageUrl || '',
+        imageBlob: imageBlob ? Buffer.from(imageBlob, 'base64') : null,
         content,
         category,
         published: true, // Default to published
@@ -65,7 +67,7 @@ export async function updatePostAction(originalSlug: string, values: z.infer<typ
     throw new Error('Datos inválidos para actualizar la publicación.');
   }
 
-  const { title, excerpt, imageUrl, content, category } = validatedFields.data;
+  const { title, excerpt, imageUrl, imageBlob, content, category } = validatedFields.data;
   const newSlug = slugify(title);
 
   try {
@@ -80,7 +82,8 @@ export async function updatePostAction(originalSlug: string, values: z.infer<typ
         title,
         slug: newSlug,
         excerpt,
-        imageUrl,
+        imageUrl: imageUrl || '',
+        imageBlob: imageBlob ? Buffer.from(imageBlob, 'base64') : post.imageBlob,
         content,
         category,
       },
@@ -114,14 +117,19 @@ export async function deletePostAction(slug: string) {
 }
 
 export async function getPosts(): Promise<{ posts: Post[], totalPages: number }> {
-  const posts = await prisma.post.findMany({
+  const postsFromDb = await prisma.post.findMany({
     where: { published: true },
     orderBy: {
       createdAt: 'desc',
     },
   });
 
-  return { posts: posts as Post[], totalPages: 1 };
+  const posts = postsFromDb.map(post => ({
+      ...post,
+      imageBlob: post.imageBlob ? post.imageBlob.toString('base64') : null,
+  }))
+
+  return { posts, totalPages: 1 };
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
@@ -132,7 +140,10 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
 
     if (!post) return undefined;
 
-    return post as Post;
+    return {
+        ...post,
+        imageBlob: post.imageBlob ? post.imageBlob.toString('base64') : null
+    };
   } catch (error) {
     console.error(`Error reading post with slug ${slug}:`, error);
     return undefined;
