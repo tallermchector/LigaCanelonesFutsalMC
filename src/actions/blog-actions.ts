@@ -27,6 +27,7 @@ function slugify(text: string): string {
 
 const postSchema = z.object({
   title: z.string().min(1, 'El título es requerido.'),
+  category: z.string().min(1, "La categoría es requerida."),
   excerpt: z.string().min(1, 'El extracto es requerido.'),
   imageUrl: z.string().url('Debe ser una URL válida.'),
   content: z.string().min(1, 'El contenido es requerido.'),
@@ -39,7 +40,7 @@ export async function createPostAction(values: z.infer<typeof postSchema>) {
     throw new Error('Datos inválidos para crear la publicación.');
   }
   
-  const { title, excerpt, imageUrl, content } = validatedFields.data;
+  const { title, excerpt, imageUrl, content, category } = validatedFields.data;
 
   const slug = slugify(title);
   const createdAt = new Date().toISOString();
@@ -49,6 +50,7 @@ title: '${title.replace(/'/g, "\\'")}'
 createdAt: '${createdAt}'
 imageUrl: '${imageUrl}'
 excerpt: '${excerpt.replace(/'/g, "\\'")}'
+category: '${category}'
 ---
 ${content}
 `;
@@ -73,7 +75,7 @@ export async function updatePostAction(originalSlug: string, values: z.infer<typ
     throw new Error('Datos inválidos para actualizar la publicación.');
   }
 
-  const { title, excerpt, imageUrl, content } = validatedFields.data;
+  const { title, excerpt, imageUrl, content, category } = validatedFields.data;
 
   const originalPost = await getPostBySlug(originalSlug);
   if (!originalPost) {
@@ -89,6 +91,7 @@ title: '${title.replace(/'/g, "\\'")}'
 createdAt: '${originalPost.createdAt}'
 imageUrl: '${imageUrl}'
 excerpt: '${excerpt.replace(/'/g, "\\'")}'
+category: '${category}'
 ---
 ${content}
 `;
@@ -143,6 +146,7 @@ export async function getPosts(): Promise<{ posts: Post[], totalPages: number }>
       excerpt: matterResult.data.excerpt,
       imageUrl: matterResult.data.imageUrl,
       createdAt: matterResult.data.createdAt,
+      category: matterResult.data.category || 'General',
       content: matterResult.content,
       published: true, // Assuming all markdown files are published
     } as Post;
@@ -172,12 +176,13 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
       excerpt: matterResult.data.excerpt,
       imageUrl: matterResult.data.imageUrl,
       createdAt: matterResult.data.createdAt,
+      category: matterResult.data.category || 'General',
       content: matterResult.content,
       published: true,
     } as Post;
   } catch (error) {
     // Do not log "file not found" errors as they are expected
-    if (error.code !== 'ENOENT') {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
       console.error(`Error reading post with slug ${slug}:`, error);
     }
     return undefined;

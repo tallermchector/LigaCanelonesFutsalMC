@@ -119,6 +119,7 @@ export type Post = {
   published: boolean;
   createdAt: string;
   excerpt: string;
+  category: string;
 };
 
 export interface SocialLink {

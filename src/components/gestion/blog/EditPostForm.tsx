@@ -23,9 +23,12 @@ import { updatePostAction } from '@/actions/blog-actions';
 import { Loader2, Save, Sparkles } from 'lucide-react';
 import type { Post } from '@/types';
 import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { newsCategories } from '@/data/news-categories';
 
 const editPostSchema = z.object({
   title: z.string().min(10, 'El título debe tener al menos 10 caracteres.'),
+  category: z.string().min(1, "Debes seleccionar una categoría."),
   excerpt: z
     .string()
     .min(20, 'El extracto debe tener al menos 20 caracteres.'),
@@ -52,11 +55,13 @@ export function EditPostForm({ post }: EditPostFormProps) {
       excerpt: post.excerpt,
       imageUrl: post.imageUrl,
       content: post.content,
+      category: post.category,
     },
   });
 
   const handleGenerateContent = async () => {
     const title = form.getValues('title');
+    const category = form.getValues('category');
     if (!title) {
       toast({
         variant: 'destructive',
@@ -65,10 +70,18 @@ export function EditPostForm({ post }: EditPostFormProps) {
       });
       return;
     }
+     if (!category) {
+      toast({
+        variant: 'destructive',
+        title: 'Falta la categoría',
+        description: 'Por favor, selecciona una categoría para generar el contenido.',
+      });
+      return;
+    }
 
     setIsGenerating(true);
     try {
-      const result = await generateBlogPost({ topic: title, category: "Análisis Táctico" });
+      const result = await generateBlogPost({ topic: title, category });
       form.setValue('title', result.title, { shouldValidate: true });
       form.setValue('excerpt', result.excerpt, { shouldValidate: true });
       form.setValue('content', result.content, { shouldValidate: true });
@@ -114,22 +127,48 @@ export function EditPostForm({ post }: EditPostFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Título de la Publicación</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Ej: Análisis de los favoritos al título"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Título de la Publicación</FormLabel>
+                <FormControl>
+                    <Input
+                    placeholder="Ej: Análisis de los favoritos al título"
+                    {...field}
+                    />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+            <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Categoría</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Selecciona una categoría" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                    {newsCategories.map((category) => (
+                        <SelectItem key={category.slug} value={category.name}>
+                        {category.name}
+                        </SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+        </div>
 
         <Button type="button" onClick={handleGenerateContent} disabled={isGenerating || isSubmitting} variant="outline">
           {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
