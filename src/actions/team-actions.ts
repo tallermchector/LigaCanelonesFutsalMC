@@ -68,6 +68,7 @@ export async function getTeamBySlug(slug: string): Promise<TeamWithMatches | nul
             return {
                 ...match,
                 scheduledTime: match.scheduledTime.toISOString(),
+                updatedAt: match.updatedAt.toISOString(),
                 status: match.status as FullMatch['status'],
                 teamA: match.teamA as Team,
                 teamB: match.teamB as Team,
