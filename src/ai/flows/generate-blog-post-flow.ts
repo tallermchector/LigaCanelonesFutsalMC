@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview Flow para generar una publicación de blog completa con IA.
@@ -98,14 +97,13 @@ const generateBlogPostFlow = ai.defineFlow(
     outputSchema: GenerateBlogPostOutputSchema,
   },
   async (input) => {
-
     const { output } = await ai.generate({
-        prompt: blogPostPrompt.prompt,
-        model: googleAI('gemini-pro'),
-        input: input,
-        output: {
-            schema: GenerateBlogPostOutputSchema,
-        }
+      model: googleAI.model('gemini-pro'),
+      prompt: blogPostPrompt.prompt,
+      input: input,
+      output: {
+        schema: GenerateBlogPostOutputSchema,
+      },
     });
 
     if (!output) {
