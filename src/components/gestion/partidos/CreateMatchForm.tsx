@@ -90,7 +90,7 @@ export function CreateMatchForm({ teams, seasonId, onMatchCreated }: CreateMatch
             const combinedDateTime = new Date(values.scheduledDate);
             combinedDateTime.setHours(hours, minutes);
 
-            await createMatch({
+            const newMatch = await createMatch({
                 teamAId: parseInt(values.teamAId),
                 teamBId: parseInt(values.teamBId),
                 scheduledTime: combinedDateTime,
@@ -102,9 +102,8 @@ export function CreateMatchForm({ teams, seasonId, onMatchCreated }: CreateMatch
                 description: "El nuevo partido ha sido programado exitosamente.",
             })
             
-            // Re-fetch data from the server instead of updating local state
-            // This ensures the new match has all its relational data (teams) included
-            router.refresh();
+            // This now receives the full match object from the action
+            onMatchCreated(newMatch);
 
             form.reset({ round: 1, teamAId: '', teamBId: '', scheduledDate: new Date(), scheduledTime: '19:00' })
         } catch (error) {
