@@ -68,7 +68,7 @@ export function EditPostForm({ post }: EditPostFormProps) {
 
     setIsGenerating(true);
     try {
-      const result = await generateBlogPost({ topic: title });
+      const result = await generateBlogPost({ topic: title, category: "Análisis Táctico" });
       form.setValue('title', result.title, { shouldValidate: true });
       form.setValue('excerpt', result.excerpt, { shouldValidate: true });
       form.setValue('content', result.content, { shouldValidate: true });
