@@ -88,7 +88,7 @@ const blogPostPrompt = ai.definePrompt({
   name: "generateBlogPostPrompt",
   input: { schema: GenerateBlogPostInputSchema },
   output: { schema: GenerateBlogPostOutputSchema },
-  model: googleAI.model("gemini-pro"),
+  model: googleAI.model("gemini-1.5-flash-latest"),
   prompt: `
         Eres un periodista deportivo y diseñador de contenido experto en futsal, especializado en la Liga Canaria de Futsal de Uruguay.
         Tu tarea es escribir una publicación de blog atractiva, informativa y con un diseño moderno usando Markdown, basándote en los datos reales de la liga que te proporciono.
