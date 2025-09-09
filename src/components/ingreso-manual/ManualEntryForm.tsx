@@ -245,6 +245,8 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
     const starters = sortedPlayers.filter(p => activePlayers.includes(p.id));
     const substitutes = sortedPlayers.filter(p => !activePlayers.includes(p.id));
     
+    const displayPlayers = isSelectionMode ? sortedPlayers : [...starters, ...substitutes];
+
     const handleSubstituteClick = (playerInId: number) => {
         dispatch({ type: 'COMPLETE_SUBSTITUTION', payload: { playerInId } });
     }
@@ -277,37 +279,20 @@ const TeamPlayerGrid = ({ teamId, team, onPlayerSelect, selectedPlayerId, onEven
             teamId === 'A' ? 'bg-blue-900/10' : 'bg-red-900/10'
         )}>
             <CardContent className="flex-grow flex flex-col gap-0 p-0 h-full">
-                {isSelectionMode ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 p-0 h-full overflow-y-auto">
-                        {sortedPlayers.map((player) => (
-                            <PlayerButton
-                                key={player.id}
-                                player={player}
-                                team={team}
-                                onSelect={() => onPlayerSelect(teamId, player.id)}
-                                isSelected={activePlayers.includes(player.id)}
-                                isActive={activePlayers.includes(player.id)}
-                                onEventCreated={onEventCreated}
-                                initialTime={lastEventTime}
-                            />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-4 gap-0 p-0 h-full flex-grow overflow-y-auto">
-                        {sortedPlayers.map((player) => (
-                            <PlayerButton
-                                key={player.id}
-                                player={player}
-                                team={team}
-                                onSelect={() => onPlayerSelect(teamId, player.id)}
-                                isSelected={selectedPlayerId === player.id}
-                                isActive={activePlayers.includes(player.id)}
-                                onEventCreated={onEventCreated}
-                                initialTime={lastEventTime}
-                            />
-                        ))}
-                    </div>
-                )}
+                <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-4 gap-0 p-0 h-full flex-grow overflow-y-auto">
+                    {displayPlayers.map((player) => (
+                        <PlayerButton
+                            key={player.id}
+                            player={player}
+                            team={team}
+                            onSelect={() => onPlayerSelect(teamId, player.id)}
+                            isSelected={selectedPlayerId === player.id || (isSelectionMode && activePlayers.includes(player.id))}
+                            isActive={activePlayers.includes(player.id)}
+                            onEventCreated={onEventCreated}
+                            initialTime={lastEventTime}
+                        />
+                    ))}
+                </div>
             </CardContent>
         </Card>
     );
@@ -401,5 +386,3 @@ export function ManualEntryForm({ match }: ManualEntryFormProps) {
         </div>
     );
 }
-
-    
