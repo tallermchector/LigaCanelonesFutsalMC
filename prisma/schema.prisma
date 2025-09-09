@@ -12,89 +12,87 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// Modelos de la base de datos
-
 model Team {
-  id             Int          @id @default(autoincrement())
-  name           String
-  slug           String       @unique
-  logoUrl        String?
-  players        Player[]
-  matchesAsTeamA Match[]      @relation("TeamAMatches")
-  matchesAsTeamB Match[]      @relation("TeamBMatches")
-  gameEvents     GameEvent[]
-  SeasonTeam     SeasonTeam[]
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  description    String?
-  bannerUrl      String?
-  instagram      String?
-  facebook       String?
-  whatsapp       String?
-  phone          String?
-}
-
-model Player {
-  id                Int                @id @default(autoincrement())
-  name              String
-  number            Int
-  position          PlayerPositionType
-  birthDate         DateTime?
-  height            Int?
-  weight            Int?
-  nationality       String?
-  teamId            Int
-  team              Team               @relation(fields: [teamId], references: [id])
-  gameEvents        GameEvent[]
-  playerMatchStats  PlayerMatchStats[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  avatarUrl         String?
-}
-
-model Match {
   id               Int                @id @default(autoincrement())
-  teamAId          Int
-  teamBId          Int
-  teamA            Team               @relation("TeamAMatches", fields: [teamAId], references: [id])
-  teamB            Team               @relation("TeamBMatches", fields: [teamBId], references: [id])
-  scheduledTime    DateTime
-  status           MatchStatus
-  scoreA           Int?
-  scoreB           Int?
-  period           Int?
-  time             Int? // in seconds
-  foulsA           Int?
-  foulsB           Int?
-  timeoutsA        Int?
-  timeoutsB        Int?
-  isRunning        Boolean?
-  activePlayersA   Int[]
-  activePlayersB   Int[]
-  events           GameEvent[]
-  playerMatchStats PlayerMatchStats[]
-  seasonId         Int
-  season           Season             @relation(fields: [seasonId], references: [id])
-  round            Int?
+  name             String             @unique
+  slug             String             @unique
+  logoUrl          String?
+  description      String?
+  bannerUrl        String?
+  instagram        String?
+  facebook         String?
+  whatsapp         String?
+  phone            String?
+  players          Player[]
+  teamAInMatches   Match[]            @relation("TeamA")
+  teamBInMatches   Match[]            @relation("TeamB")
+  gameEvents       GameEvent[]
+  seasons          SeasonTeam[]
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 }
 
+model Player {
+  id          Int      @id @default(autoincrement())
+  name        String
+  number      Int
+  position    PlayerPosition
+  birthDate   DateTime?
+  height      Int?
+  weight      Int?
+  nationality String?
+  teamId      Int
+  team        Team     @relation(fields: [teamId], references: [id])
+  stats       PlayerMatchStats[]
+  events      GameEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Match {
+  id              Int                @id @default(autoincrement())
+  teamAId         Int
+  teamA           Team               @relation("TeamA", fields: [teamAId], references: [id])
+  teamBId         Int
+  teamB           Team               @relation("TeamB", fields: [teamBId], references: [id])
+  scheduledTime   DateTime
+  status          MatchStatus        @default(SCHEDULED)
+  scoreA          Int?
+  scoreB          Int?
+  period          Int?
+  time            Int?
+  foulsA          Int?
+  foulsB          Int?
+  timeoutsA       Int?
+  timeoutsB       Int?
+  isRunning       Boolean?
+  activePlayersA  Int[]
+  activePlayersB  Int[]
+  events          GameEvent[]
+  playerMatchStats PlayerMatchStats[]
+  seasonId        Int
+  season          Season             @relation(fields: [seasonId], references: [id])
+  round           Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model GameEvent {
-  id            Int       @id @default(autoincrement())
-  matchId       Int
-  match         Match     @relation(fields: [matchId], references: [id])
-  type          EventType
-  timestamp     Int // game time in seconds
-  teamId        Int
-  team          Team      @relation(fields: [teamId], references: [id])
-  playerId      Int?
-  player        Player?   @relation(fields: [playerId], references: [id])
-  playerName    String?
-  teamName      String?
-  playerInId    Int?
-  playerInName  String?
-  createdAt     DateTime  @default(now())
+  id           Int        @id @default(autoincrement())
+  matchId      Int
+  match        Match      @relation(fields: [matchId], references: [id])
+  type         EventType
+  timestamp    Int
+  teamId       Int
+  team         Team       @relation(fields: [teamId], references: [id])
+  playerId     Int?
+  player       Player?    @relation(fields: [playerId], references: [id])
+  playerName   String?
+  teamName     String?
+  playerInId   Int?
+  playerInName String?
 }
 
 model PlayerMatchStats {
@@ -103,55 +101,52 @@ model PlayerMatchStats {
   match               Match   @relation(fields: [matchId], references: [id])
   playerId            Int
   player              Player  @relation(fields: [playerId], references: [id])
-  timePlayedInSeconds Int
-  // Otras estadísticas aquí...
+  timePlayedInSeconds Int     @default(0)
+  goals               Int     @default(0)
+  assists             Int     @default(0)
+  shots               Int     @default(0)
+  yellowCards         Int     @default(0)
+  redCards            Int     @default(0)
+  foulsCommitted      Int     @default(0)
 
   @@unique([matchId, playerId])
 }
 
 model Season {
-  id      Int          @id @default(autoincrement())
-  name    String
-  year    Int
-  teams   SeasonTeam[]
-  matches Match[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id        Int          @id @default(autoincrement())
+  name      String
+  year      Int
+  teams     SeasonTeam[]
+  matches   Match[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 }
 
 model SeasonTeam {
   seasonId        Int
   teamId          Int
-  season          Season         @relation(fields: [seasonId], references: [id])
-  team            Team           @relation(fields: [teamId], references: [id])
-  position        Int?
-  points          Int?
-  played          Int?
-  wins            Int?
-  draws           Int?
-  losses          Int?
-  goalsFor        Int?
-  goalsAgainst    Int?
-  goalDifference  Int?
+  position        Int
+  points          Int
+  played          Int
+  wins            Int
+  draws           Int
+  losses          Int
+  goalsFor        Int
+  goalsAgainst    Int
+  goalDifference  Int
+  season          Season @relation(fields: [seasonId], references: [id])
+  team            Team   @relation(fields: [teamId], references: [id])
 
   @@id([seasonId, teamId])
 }
 
-// Enums
-
-enum PlayerPositionType {
-  GOLERO
-  DEFENSA
-  ALA
-  PIVOT
-}
 
 enum MatchStatus {
   SCHEDULED
-  LIVE
   FINISHED
   POSTPONED
-  IN_PROGRESS
+  IN_PROGRESS 
+  LIVE
   SELECTING_STARTERS
 }
 
@@ -167,4 +162,11 @@ enum EventType {
   MATCH_START
   PERIOD_START
   MATCH_END
+}
+
+enum PlayerPosition {
+  GOLERO
+  DEFENSA
+  ALA
+  PIVOT
 }
