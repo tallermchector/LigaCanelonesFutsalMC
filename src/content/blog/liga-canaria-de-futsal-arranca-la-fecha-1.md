@@ -1,7 +1,7 @@
 ---
 title: 'Liga Canaria de Futsal: ¡Arranca la Fecha 1 con todo!'
 createdAt: '2025-09-09T10:59:14.362Z'
-imageUrl: 'https://picsum.photos/1200/600'
+imageUrl: '/blog/noticias/quito-valde.png'
 excerpt: 'La Liga Canaria de Futsal Uruguay da inicio a su temporada.  En esta publicación te presentamos un resumen visual de la Fecha 1 con los equipos y jugadores que buscarán la gloria. ¡No te lo pierdas!'
 category: 'Banners informativos'
 ---
@@ -32,4 +32,5 @@ category: 'Banners informativos'
 ##  Un Torneo que promete
 
 Seguiremos de cerca la acción de esta primera fecha, para que no te pierdas ni un detalle.  Recuerda que el futsal uruguayo está lleno de talento.   A lo largo de las próximas jornadas, seguiremos presentando análisis tácticos, entrevistas, y más información de lo que va pasando en esta apasionante edición de la Liga Canaria de Futsal. ¡Mantente conectado!
+
 
