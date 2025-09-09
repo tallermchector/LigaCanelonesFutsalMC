@@ -1,9 +1,10 @@
 
+'use server';
 import { genkit } from 'genkit';
-import { googleAI } from '@genkit-ai/googleai';
 
-export const ai = genkit({
-  plugins: [googleAI({
-    apiVersion: "v1beta"
-  })],
-});
+/**
+ * Este es el objeto `ai` seguro para ser importado
+ * por los flujos que se usan dentro de la aplicación Next.js.
+ * No contiene inicialización de plugins para evitar conflictos de compilación.
+ */
+export const ai = genkit();
