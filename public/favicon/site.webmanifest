@@ -1,21 +1,27 @@
 {
-  "name": "Liga Canelones Futsal",
-  "short_name": "L.C.F",
+  "name": "Liga Canaria Futsal",
+  "short_name": "LCFutsal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#003049",
+  "theme_color": "#C1121F",
+  "description": "La plataforma definitiva para los amantes del futsal en la región de Canelones.",
   "icons": [
     {
-      "src": "/favicon/web-app-manifest-192x192.png",
+      "src": "/favicon/android-chrome-192x192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     },
     {
-      "src": "/favicon/web-app-manifest-512x512.png",
+      "src": "/favicon/android-chrome-512x512.png",
       "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/apple-touch-icon.png",
+      "sizes": "180x180",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "apple touch icon"
     }
-  ],
-  "theme_color": "#4070ca",
-  "background_color": "#4070ca",
-  "display": "standalone"
+  ]
 }

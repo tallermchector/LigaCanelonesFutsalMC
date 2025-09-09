@@ -35,6 +35,8 @@ export default function RootLayout({
         <meta property="og:site_name" content="Liga Canelones Futsal" />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="es_UY" />
+        <link rel="manifest" href="/favicon/site.webmanifest" />
+        <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png"></link>
       </head>
       <body className="font-roboto antialiased">
         {children}
