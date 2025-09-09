@@ -1,3 +1,4 @@
+
 // SummarizeFutsalNews Flow
 'use server';
 /**
@@ -8,7 +9,7 @@
  * - SummarizeFutsalNewsOutput - The return type for the summarizeFutsalNews function.
  */
 
-import {ai} from '@/ai/genkit';
+import {ai} from '@/ai/dev';
 import {z} from 'genkit';
 
 const SummarizeFutsalNewsInputSchema = z.object({

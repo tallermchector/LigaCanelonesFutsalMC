@@ -8,7 +8,7 @@
  * - generateFixtureForSeason - Genera el calendario de partidos para una temporada.
  */
 
-import { ai } from '@/ai/genkit';
+import { ai } from '@/ai/dev';
 import prisma from '@/lib/prisma';
 import { generateFixture } from '@/actions/match-actions';
 import { z } from 'zod';
