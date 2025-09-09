@@ -1,8 +1,8 @@
 ---
-title: 'Liga Canaria de Futsal: ¡Conocé a los Contendientes de la Temporada!'
-createdAt: '2025-09-09T10:51:53.078Z'
-imageUrl: 'https://picsum.photos/1200/600'
-excerpt: 'La Liga Canaria de Futsal está a punto de comenzar y la emoción es palpable.  En este artículo, te presentamos a los equipos participantes y sus jugadores clave, para que estés listo para disfrutar de la acción. ¡Prepárate para una temporada llena de goles y adrenalina!'
+title: ''
+createdAt: ''
+imageUrl: ''
+excerpt: ''
 ---
 ## Liga Canaria de Futsal: ¡Conocé a los Contendientes de la Temporada!
 

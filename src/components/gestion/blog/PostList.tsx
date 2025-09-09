@@ -11,7 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, Copy } from 'lucide-react';
 import Link from 'next/link';
 import {
   AlertDialog,
@@ -60,6 +60,29 @@ export function PostList({ posts }: PostListProps) {
     }
   };
 
+  const handleCopyToClipboard = (post: Post) => {
+    const markdownContent = `---
+title: '${post.title}'
+createdAt: '${post.createdAt}'
+imageUrl: '${post.imageUrl}'
+excerpt: '${post.excerpt}'
+---
+${post.content}`;
+
+    navigator.clipboard.writeText(markdownContent).then(() => {
+      toast({
+        title: "Contenido Copiado",
+        description: "El post en formato Markdown ha sido copiado al portapapeles."
+      });
+    }).catch(err => {
+       toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo copiar el contenido."
+      });
+    });
+  }
+
   if (posts.length === 0) {
     return <p className="text-muted-foreground text-center">No hay publicaciones para mostrar.</p>;
   }
@@ -96,6 +119,9 @@ export function PostList({ posts }: PostListProps) {
                       <Link href={`/gestion/blog/${post.slug}/edit`}>
                         <Edit className="h-4 w-4" />
                       </Link>
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleCopyToClipboard(post)}>
+                      <Copy className="h-4 w-4" />
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
